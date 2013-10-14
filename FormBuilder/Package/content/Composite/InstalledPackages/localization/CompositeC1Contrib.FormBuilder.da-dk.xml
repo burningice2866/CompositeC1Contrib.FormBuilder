@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<strings>
+  <string key="Validation.ErrorNotificationTop" value="Du mangler at udfylde nogle felter:" />
+  <string key="Validation.ErrorNotificationBottom" value="Udfyld venligst felterne og send igen." />
+  <string key="Widgets.Dropdown.SelectLabel" value="Vælg" />
+</strings>

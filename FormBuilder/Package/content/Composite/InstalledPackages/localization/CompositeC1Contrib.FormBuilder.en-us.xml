@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<strings>
+  <string key="Validation.ErrorNotificationTop" value="You need to fill in some fields:" />
+  <string key="Validation.ErrorNotificationBottom" value="Please fill in the fields below and resubmit." />
+  <string key="Widgets.Dropdown.SelectLabel" value="Choose" />
+</strings>

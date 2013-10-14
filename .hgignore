@@ -1,0 +1,11 @@
+.*/*.suo
+.*/*.user
+.*/*.layout
+
+.*/Package/Bin/./*
+.vendor/*
+
+.*/bin/./*
+.*/obj/./*
+
+packages/*

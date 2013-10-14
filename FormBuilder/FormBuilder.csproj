@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{09196DDC-350F-4E16-BA0F-312C67224559}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CompositeC1Contrib.FormBuilder</RootNamespace>
+    <AssemblyName>CompositeC1Contrib.FormBuilder</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Composite">
+      <HintPath>..\.vendor\Composite.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.30506.0\lib\net40\System.Web.Razor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes\DisplayFormatAttribute.cs" />
+    <Compile Include="Attributes\FunctionBasedInputElementProviderAttribute.cs" />
+    <Compile Include="Attributes\TypeBasedInputElementProviderAttribute.cs" />
+    <Compile Include="Attributes\PlaceholderTextAttribute.cs" />
+    <Compile Include="Attributes\ForceHttpsConnectionAttribute.cs" />
+    <Compile Include="Attributes\FormNameAttribute.cs" />
+    <Compile Include="Attributes\DataSourceAttribute.cs" />
+    <Compile Include="Validation\CredentialsValidatorAttribute.cs" />
+    <Compile Include="Validation\DaysFromNowValidatorAttribute.cs" />
+    <Compile Include="Validation\EmailExistsValidatorAttribute.cs" />
+    <Compile Include="Validation\EqualsConstantValidatorAttribute.cs" />
+    <Compile Include="Attributes\FieldHelpAttribute.cs" />
+    <Compile Include="Attributes\FieldLabelAttribute.cs" />
+    <Compile Include="Attributes\HtmlTagAttribute.cs" />
+    <Compile Include="Attributes\FunctionBasedDataSourceAttribute.cs" />
+    <Compile Include="Attributes\InputElementProviderAttribute.cs" />
+    <Compile Include="Attributes\MethodBasedDataSourceAttribute.cs" />
+    <Compile Include="Attributes\StringBasedDataSourceAttribute.cs" />
+    <Compile Include="Attributes\SubmitButtonLabelAttribute.cs" />
+    <Compile Include="Attributes\TextBeforeAttribute.cs" />
+    <Compile Include="Attributes\DependsOnConstantAttribute.cs" />
+    <Compile Include="Attributes\FormDependencyAttribute.cs" />
+    <Compile Include="FormField.cs" />
+    <Compile Include="FormFile.cs" />
+    <Compile Include="Validation\RegexValidatorAttribute.cs" />
+    <Compile Include="Validation\UpdatePasswordValidatorAttribute.cs" />
+    <Compile Include="Web\UI\CheckboxInputElement.cs" />
+    <Compile Include="Web\UI\FunctionbasedInputElement.cs" />
+    <Compile Include="Web\UI\PasswordInputElement.cs" />
+    <Compile Include="Web\UI\DropdownInputElement.cs" />
+    <Compile Include="Web\UI\TextAreaInputElement.cs" />
+    <Compile Include="Web\UI\RadioButtonInputElement.cs" />
+    <Compile Include="Web\UI\FileuploadInputElement.cs" />
+    <Compile Include="Web\UI\FormsPage.cs" />
+    <Compile Include="FormModel.cs" />
+    <Compile Include="FormValidationEventArgs.cs" />
+    <Compile Include="Localization.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Localization.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Validation\BaseFormValidationAttribute.cs" />
+    <Compile Include="Validation\CompareFieldsValidatorAttribute.cs" />
+    <Compile Include="Validation\CompareOperator.cs" />
+    <Compile Include="Validation\DecimalFieldValidatorAttribute.cs" />
+    <Compile Include="Validation\DecimalRangeFieldValidatorAttribute.cs" />
+    <Compile Include="Validation\EmailFieldValidatorAttribute.cs" />
+    <Compile Include="Validation\EmailInUseValidatorAttribute.cs" />
+    <Compile Include="Validation\FileMimeTypeValidatorAttribute.cs" />
+    <Compile Include="Validation\FormValidationRule.cs" />
+    <Compile Include="Validation\IntegerFieldValidatorAttribute.cs" />
+    <Compile Include="Validation\IntegerRangeFieldValidatorAttribute.cs" />
+    <Compile Include="Validation\MaxFieldLengthAttribute.cs" />
+    <Compile Include="Validation\MinFieldLengthAttribute.cs" />
+    <Compile Include="Validation\RequiredFieldAttribute.cs" />
+    <Compile Include="Web\UI\FormRenderer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Web\UI\FormOptions.cs" />
+    <Compile Include="Web\UI\HtmlForm.cs" />
+    <Compile Include="Web\UI\IInputElementHandler.cs" />
+    <Compile Include="Web\UI\TextboxInputElement.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Package\content\App_Data\Composite\DynamicTypeForms\CompositeC1Contrib\FormBuilder\Data\Types\IDefaultFormField.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\ConfirmMessage.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\CreateForm.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\CreateFormField.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\EditForm.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Package\content\Composite\InstalledPackages\localization\CompositeC1Contrib.FormBuilder.en-us.xml" />
+    <Content Include="Package\content\Composite\InstalledPackages\localization\CompositeC1Contrib.FormBuilder.da-dk.xml" />
+    <Content Include="Package\content\Frontend\js\plugins\jquery.formbuilder.js" />
+    <Content Include="Package\install.xml">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Localization.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Localization.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)Package\Bin\$(TargetFileName)"
+del "$(ProjectDir)\Package\package.zip"
+"$(ProjectDir)..\.vendor\7z.exe" a "$(ProjectDir)\Package\package.zip" -tzip -r "$(ProjectDir)\Package\*"</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

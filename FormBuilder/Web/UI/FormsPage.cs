@@ -27,7 +27,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             get { return _renderingModel; }
 
-            set
+            private set
             {
                 _renderingModel = value;
 
@@ -68,6 +68,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public override void ExecutePageHierarchy()
         {
+            RenderingModel = ResolveFormModel();
+
             if (RenderingModel.ForceHttps && !Request.IsSecureConnection)
             {
                 string redirectUrl = Request.Url.ToString().Replace("http:", "https:");
@@ -113,6 +115,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             base.ExecutePageHierarchy();
         }
 
+        protected abstract FormModel ResolveFormModel();
         protected virtual void OnMappedValues() { }
         protected virtual void OnSubmit() { }
 

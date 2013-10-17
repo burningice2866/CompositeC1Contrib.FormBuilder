@@ -4,19 +4,19 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class MinFieldLengthAttribute : FormValidationAttribute
     {
-        private int _length;
+        public int Length { get; private set; }
 
         public MinFieldLengthAttribute(string message, int length)
             : base(message)
         {
-            _length = length;
+            Length = length;
         }
 
         public override FormValidationRule CreateRule(FormField field)
         {
             var value = (string)field.Value;
 
-            return new FormValidationRule(new[] { field.Name }, String.Format(Message, _length))
+            return new FormValidationRule(new[] { field.Name }, String.Format(Message, Length))
             {
                 Rule = () =>
                 {
@@ -26,7 +26,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
                     }
                     else
                     {
-                        return value.Length >= _length;
+                        return value.Length >= Length;
                     }
                 }
             };

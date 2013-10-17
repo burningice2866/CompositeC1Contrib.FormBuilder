@@ -14,7 +14,7 @@ namespace CompositeC1Contrib.FormBuilder
         public FormModel OwningForm { get; private set; }
 
         public string Name { get; set; }
-        public IEnumerable<Attribute> Attributes { get; private set; }
+        public IList<Attribute> Attributes { get; private set; }
         public object Value { get; set; }
         public Type ValueType { get; private set; }
 

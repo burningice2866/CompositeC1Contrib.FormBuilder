@@ -11,10 +11,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
     {
         protected T Form { get; private set; }
 
-        public POCOBasedFormsPage()
+        protected override FormModel ResolveFormModel()
         {
             Form = Activator.CreateInstance<T>();
-            RenderingModel = FromBaseForm<T>(Form, Options);
+
+            return FromBaseForm<T>(Form, Options);
         }
 
         public override void ExecutePageHierarchy()
@@ -135,6 +136,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             }
 
             return model;
+        }
+
+        public override void Execute()
+        {
+            
         }
     }
 }

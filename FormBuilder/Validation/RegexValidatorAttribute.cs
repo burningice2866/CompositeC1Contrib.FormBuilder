@@ -7,10 +7,13 @@ namespace CompositeC1Contrib.FormBuilder.Validation
     {
         private static Regex _regex;
 
+        public string Regex { get; private set; }
+
         public RegexValidatorAttribute(string message, string regex)
             : base(message)
         {
-            _regex = new Regex(regex, RegexOptions.Compiled);
+            Regex = regex;
+            _regex = new Regex(Regex, RegexOptions.Compiled);
         }
 
         public override FormValidationRule CreateRule(FormField field)

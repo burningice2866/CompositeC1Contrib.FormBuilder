@@ -12,7 +12,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
     public class DynamicFormsFacade
     {
+        private static IList<Action> _formChangeNotifications = new List<Action>();
         private static string _basePath = HostingEnvironment.MapPath("~/App_Data/FormBuilder/FormDefinitions");
+
+        public static void SubscribeToFormChanges(Action notify)
+        {
+            _formChangeNotifications.Add(notify);
+        }        
 
         public static FormModel GetFormByName(string name)
         {
@@ -36,6 +42,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         public static void SaveForm(FormModel model)
         {
             var file = Path.Combine(_basePath, model.Name + ".xml");
+            var newForm = !File.Exists(file);
+
             var root = new XElement("FormBuilder.DynamicForms");
             var fields = new XElement("Fields");
 
@@ -123,6 +131,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
             root.Add(fields);
             root.Save(file);
+
+            if (newForm)
+            {
+                NotifyFormChanges();
+            }
         }
 
         public static void DeleteModel(FormModel model)
@@ -130,6 +143,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             var file = Path.Combine(_basePath, model.Name + ".xml");
 
             File.Delete(file);
+            NotifyFormChanges();
         }
 
         private static FormModel FromBaseForm(string file, string name)
@@ -249,6 +263,14 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             var type = Type.GetType(typeString);
 
             attrs.Add(new TypeBasedInputElementProviderAttribute(type));
+        }
+
+        private static void NotifyFormChanges()
+        {
+            foreach (var action in _formChangeNotifications)
+            {
+                action();
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public abstract class DynamicBasedFormsPage : FormsPage
     {
-        protected abstract string FormName { get; }
+        public string FormName { get; set; }
 
         public override void ExecutePageHierarchy()
         {

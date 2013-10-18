@@ -25,13 +25,16 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         private FormModel _renderingModel;
         protected FormModel RenderingModel
         {
-            get { return _renderingModel; }
-
-            private set
+            get
             {
-                _renderingModel = value;
+                if (_renderingModel == null)
+                {
+                    _renderingModel = ResolveFormModel();
 
-                FormModel.SetCurrent(RenderingModel.Name, _renderingModel);
+                    FormModel.SetCurrent(RenderingModel.Name, _renderingModel);
+                }
+
+                return _renderingModel;
             }
         }
 
@@ -68,8 +71,6 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public override void ExecutePageHierarchy()
         {
-            RenderingModel = ResolveFormModel();
-
             if (RenderingModel.ForceHttps && !Request.IsSecureConnection)
             {
                 string redirectUrl = Request.Url.ToString().Replace("http:", "https:");

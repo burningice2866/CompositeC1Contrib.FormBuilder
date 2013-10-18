@@ -35,12 +35,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
         public FlowToken Execute(EntityToken entityToken, ActionToken actionToken, FlowControllerServicesContainer flowControllerServicesContainer)
         {
             var fieldToken = (FormFieldEntityToken)entityToken;
-            var model = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
-            var field = model.Fields.Single(f => f.Name == fieldToken.FieldName);
+            var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
+            var field = definition.Model.Fields.Single(f => f.Name == fieldToken.FieldName);
 
-            model.Fields.Remove(field);
+            definition.Model.Fields.Remove(field);
 
-            DynamicFormsFacade.SaveForm(model);
+            DynamicFormsFacade.SaveForm(definition);
 
             var treeRefresher = new ParentTreeRefresher(flowControllerServicesContainer);
             treeRefresher.PostRefreshMesseges(entityToken);

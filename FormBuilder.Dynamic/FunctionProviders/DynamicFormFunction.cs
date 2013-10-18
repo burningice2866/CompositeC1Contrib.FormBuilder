@@ -6,18 +6,21 @@ using Composite.C1Console.Security;
 using Composite.Core.Xml;
 using Composite.Functions;
 
+using CompositeC1Contrib.FormBuilder.Dynamic;
+using CompositeC1Contrib.FormBuilder.Dynamic.Configuration;
+
 namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 {
     public class DynamicFormFunction : IFunction
     {
-        private FormModel _model;
+        private DynamicFormDefinition _definition;
 
         public string Namespace { get; private set; }
         public string Name { get; private set; }
 
         public EntityToken EntityToken
         {
-            get { return new DynamicFormFunctionEntityToken(typeof(DynamicFormFunctionProvider).Name, _model.Name); }
+            get { return new DynamicFormFunctionEntityToken(typeof(DynamicFormFunctionProvider).Name, _definition.Name); }
         }
 
         public string Description
@@ -43,11 +46,11 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             }
         }
 
-        public DynamicFormFunction(FormModel form)
+        public DynamicFormFunction(DynamicFormDefinition definition)
         {
-            _model = form;
+            _definition = definition;
 
-            var parts = form.Name.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            var parts = _definition.Name.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
 
             Namespace = String.Join(".", parts.Take(parts.Length - 1));
             Name = parts.Skip(parts.Length - 1).Take(1).Single();
@@ -55,10 +58,16 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
         public object Execute(ParameterList parameters, FunctionContextContainer context)
         {
-            var dynamicFormExecutor = FunctionFacade.GetFunction("FormBuilder.DynamicFormExecutor");
+            var formExecutorFunction = _definition.FormExecutor;
+            if (String.IsNullOrEmpty(formExecutorFunction))
+            {
+                formExecutorFunction = DynamicSection.GetSection().DefaultFunctionExecutor;
+            }
+
+            var dynamicFormExecutor = FunctionFacade.GetFunction(formExecutorFunction);
             var functionParameters = new Dictionary<string, object>
             {
-                { "FormName", _model.Name },
+                { "FormName", _definition.Name },
                 { "IntroText", parameters.GetParameter("IntroText") },
                 { "SuccessResponse", parameters.GetParameter("SuccessResponse") },
             };

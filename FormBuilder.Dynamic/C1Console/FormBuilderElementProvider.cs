@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using Composite.C1Console.Elements;
 using Composite.C1Console.Elements.Plugins.ElementProvider;
 using Composite.C1Console.Security;
-using Composite.C1Console.Trees.Workflows;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
-using Composite.Core.Serialization;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
@@ -74,7 +71,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
                 var form = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
                 if (form != null)
                 {
-                    var field = form.Fields.SingleOrDefault(f => f.Name == fieldToken.FieldName);
+                    var field = form.Model.Fields.SingleOrDefault(f => f.Name == fieldToken.FieldName);
                     if (field != null)
                     {
                         var datasourceAttribute = field.Attributes.OfType<DataSourceAttribute>().FirstOrDefault();
@@ -123,7 +120,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
                     var form = DynamicFormsFacade.GetFormByName(dataSourceToken.FormName);
                     if (form != null)
                     {
-                        var field = form.Fields.SingleOrDefault(f => f.Name == dataSourceToken.FieldName);
+                        var field = form.Model.Fields.SingleOrDefault(f => f.Name == dataSourceToken.FieldName);
                         if (field != null)
                         {
                             var dataSource = field.DataSource;
@@ -225,10 +222,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
 
         private IEnumerable<Element> getFormElements()
         {
-            var forms = DynamicFormsFacade.GetFormDefinitions();
-            foreach (var form in forms)
+            var formDefinitions = DynamicFormsFacade.GetFormDefinitions();
+            foreach (var definition in formDefinitions)
             {
-                var label = form.Name;
+                var label = definition.Name;
 
                 var elementHandle = _context.CreateElementHandle(new FormInstanceEntityToken(label));
                 var formElement = new Element(elementHandle)
@@ -242,6 +239,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
                         OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
                     }
                 };
+
+                var editActionToken = new WorkflowActionToken(typeof(EditFormWorkflow));
+                formElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
+                {
+                    VisualData = new ActionVisualizedData
+                    {
+                        Label = "Edit",
+                        ToolTip = "Edit",
+                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                        ActionLocation = _actionLocation
+                    }
+                });
 
                 var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + label, typeof(DeleteFormActionToken));
                 formElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
@@ -261,12 +270,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
 
         private IEnumerable<Element> getFormFieldElements(FormFolderEntityToken folder)
         {
-            var form = DynamicFormsFacade.GetFormByName(folder.FormName);
-            if (form != null)
+            var definition = DynamicFormsFacade.GetFormByName(folder.FormName);
+            if (definition != null)
             {
-                foreach (var field in form.Fields)
+                foreach (var field in definition.Model.Fields)
                 {
-                    var elementHandle = _context.CreateElementHandle(new FormFieldEntityToken(form.Name, field.Name));
+                    var elementHandle = _context.CreateElementHandle(new FormFieldEntityToken(definition.Name, field.Name));
 
                     var fieldElement = new Element(elementHandle)
                     {

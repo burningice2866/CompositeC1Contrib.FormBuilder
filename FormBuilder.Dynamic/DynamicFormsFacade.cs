@@ -6,7 +6,6 @@ using System.Web.Hosting;
 using System.Xml.Linq;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
-using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
@@ -18,16 +17,28 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         public static void SubscribeToFormChanges(Action notify)
         {
             _formChangeNotifications.Add(notify);
-        }        
+        }
 
-        public static FormModel GetFormByName(string name)
+        public static DynamicFormDefinition GetFormByName(string name)
         {
             var file = Path.Combine(_basePath, name + ".xml");
 
             return FromBaseForm(file, name);
         }
 
-        public static IEnumerable<FormModel> GetFormDefinitions()
+        public static DynamicFormDefinition FromBaseForm(string file, string name)
+        {
+            if (!File.Exists(file))
+            {
+                return null;
+            }
+
+            var xml = XElement.Load(file);
+
+            return DynamicFormDefinition.Parse(name, xml);
+        }
+
+        public static IEnumerable<DynamicFormDefinition> GetFormDefinitions()
         {
             var files = Directory.GetFiles(_basePath);
 
@@ -39,12 +50,24 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
         }
 
-        public static void SaveForm(FormModel model)
+        public static void SaveForm(DynamicFormDefinition definition)
         {
-            var file = Path.Combine(_basePath, model.Name + ".xml");
-            var newForm = !File.Exists(file);
+            var model = definition.Model;
+            var file = Path.Combine(_basePath, definition.Name + ".xml");
 
-            var root = new XElement("FormBuilder.DynamicForms");
+            var root = new XElement("FormBuilder.DynamicForm",
+                new XAttribute("name", definition.Name));
+
+            if (!String.IsNullOrEmpty(definition.FormExecutor))
+            {
+                var metaData = new XElement("MetaData");
+
+                metaData.Add(new XElement("FormExecutor",
+                    new XAttribute("functionName", definition.FormExecutor)));
+
+                root.Add(metaData);
+            }
+
             var fields = new XElement("Fields");
 
             foreach (var field in model.Fields)
@@ -132,137 +155,15 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             root.Add(fields);
             root.Save(file);
 
-            if (newForm)
-            {
-                NotifyFormChanges();
-            }
-        }
-
-        public static void DeleteModel(FormModel model)
-        {
-            var file = Path.Combine(_basePath, model.Name + ".xml");
-
-            File.Delete(file);
             NotifyFormChanges();
         }
 
-        private static FormModel FromBaseForm(string file, string name)
+        public static void DeleteModel(DynamicFormDefinition definition)
         {
-            if (!File.Exists(file))
-            {
-                return null;
-            }
+            var file = Path.Combine(_basePath, definition.Name + ".xml");
 
-            var xml = XElement.Load(file);
-            var model = new FormModel(name);
-
-            var fields = xml.Element("Fields").Elements("Add");
-            foreach (var f in fields)
-            {
-                var attrs = new List<Attribute>();
-                var fieldName = f.Attribute("name").Value;
-                
-                var label = f.Attribute("label");
-                if (label != null)
-                {
-                    attrs.Add(new FieldLabelAttribute(label.Value));
-                }
-
-                var help = f.Attribute("help");
-                if (help != null)
-                {
-                    attrs.Add(new FieldHelpAttribute(help.Value));
-                }
-
-                foreach (var el in f.Elements())
-                {
-                    switch (el.Name.LocalName)
-                    {
-                        case "InputElement": parseElementType(el, attrs); break;
-                        case "ValidationRules": parseValidationRules(el, attrs); break;
-                        case "DataSource": parseDataSource(el, attrs); break;
-                        case "Dependencies": parseDependencies(el, attrs); break;
-                    }
-                }
-
-                var formField = new FormField(model, fieldName, typeof(string), attrs);
-
-                model.Fields.Add(formField);
-            }
-
-            model.OnSubmitHandler = () => { };
-
-            return model;
-        }
-
-        private static void parseDependencies(XElement el, List<Attribute> attrs)
-        {
-            var dependencies = el.Elements("Add");
-            foreach (var dep in dependencies)
-            {
-                var field = dep.Attribute("field").Value;
-                var value = dep.Attribute("value").Value;
-                var attribute = new DependsOnConstantAttribute(field, value);
-
-                attrs.Add(attribute);
-            }
-        }
-
-        private static void parseDataSource(XElement el, List<Attribute> attrs)
-        {
-            var typeString = el.Attribute("type").Value;
-            var type = Type.GetType(typeString);
-
-            if ((typeof(StringBasedDataSourceAttribute).IsAssignableFrom(type)))
-            {
-                var values = el.Element("values").Elements("item").Select(itm => itm.Attribute("value").Value).ToArray();
-                var attribute = (Attribute)Activator.CreateInstance(type, new[] { values });
-
-                attrs.Add(attribute);
-            }
-        }
-
-        private static void parseValidationRules(XElement el, List<Attribute> attrs)
-        {
-            var rules = el.Elements("Add");
-            foreach (var rule in rules)
-            {
-                var ctorParams = new Dictionary<string, object>();
-
-                var typeString = rule.Attribute("type").Value;
-                var type = Type.GetType(typeString);
-                var ctor = type.GetConstructors().First();
-
-                foreach (var param in ctor.GetParameters())
-                {
-                    var name = param.Name;
-                    var valueString = rule.Attribute(name).Value;
-                    object value = null;
-
-                    if (param.ParameterType == typeof(int))
-                    {
-                        value = int.Parse(valueString);
-                    }
-                    else
-                    {
-                        value = valueString;
-                    }
-
-                    ctorParams.Add(name, value);
-                }
-
-                var ruleAttribute = (FormValidationAttribute)ctor.Invoke(ctorParams.Values.ToArray());
-
-                attrs.Add(ruleAttribute);
-            }
-        }
-
-        private static void parseElementType(XElement el, List<Attribute> attrs)
-        {
-            var typeString = el.Element("Type").Value;
-            var type = Type.GetType(typeString);
-
-            attrs.Add(new TypeBasedInputElementProviderAttribute(type));
+            File.Delete(file);
+            NotifyFormChanges();
         }
 
         private static void NotifyFormChanges()

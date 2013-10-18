@@ -69,6 +69,7 @@
     <Compile Include="Attributes\ForceHttpsConnectionAttribute.cs" />
     <Compile Include="Attributes\FormNameAttribute.cs" />
     <Compile Include="Attributes\DataSourceAttribute.cs" />
+    <Compile Include="Configuration\ConfigurationSectionHelper.cs" />
     <Compile Include="Validation\CredentialsValidatorAttribute.cs" />
     <Compile Include="Validation\DaysFromNowValidatorAttribute.cs" />
     <Compile Include="Validation\EmailExistsValidatorAttribute.cs" />

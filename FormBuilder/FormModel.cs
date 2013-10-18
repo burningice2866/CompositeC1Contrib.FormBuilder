@@ -11,7 +11,7 @@ using CompositeC1Contrib.FormBuilder.Web.UI;
 
 namespace CompositeC1Contrib.FormBuilder
 {
-    public class FormModel
+    public sealed class FormModel
     {
         private IDictionary<FormField, IList<FormValidationRule>> _ruleList = null;
 

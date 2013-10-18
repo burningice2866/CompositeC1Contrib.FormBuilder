@@ -20,8 +20,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             var entryValue = GetBinding<string>("EntryValue");
 
-            var model = DynamicFormsFacade.GetFormByName(dataSourceToken.FormName);
-            var field = model.Fields.Single(f => f.Name == dataSourceToken.FieldName);
+            var definition = DynamicFormsFacade.GetFormByName(dataSourceToken.FormName);
+            var field = definition.Model.Fields.Single(f => f.Name == dataSourceToken.FieldName);
             var datasSource = field.DataSource.Select(itm => itm.Key).ToList();
 
             if (datasSource.Any(itm => itm == entryValue))
@@ -52,8 +52,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             var entryValue = GetBinding<string>("EntryValue");
 
-            var model = DynamicFormsFacade.GetFormByName(dataSourceToken.FormName);
-            var field = model.Fields.Single(f => f.Name == dataSourceToken.FieldName);
+            var definition = DynamicFormsFacade.GetFormByName(dataSourceToken.FormName);
+            var field = definition.Model.Fields.Single(f => f.Name == dataSourceToken.FieldName);
             var datasSource = field.DataSource.Select(itm => itm.Key).ToList();
 
             datasSource.Add(entryValue);
@@ -66,7 +66,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             field.Attributes.Add(dataSourceAttribute);
 
-            DynamicFormsFacade.SaveForm(model);
+            DynamicFormsFacade.SaveForm(definition);
 
             var addNewTreeRefresher = CreateAddNewTreeRefresher(EntityToken);
             addNewTreeRefresher.PostRefreshMesseges(new StringBasedDataSourceEntryEntityToken(dataSourceToken.FormName, dataSourceToken.FieldName, entryValue));

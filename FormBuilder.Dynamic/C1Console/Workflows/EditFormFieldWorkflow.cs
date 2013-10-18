@@ -4,8 +4,8 @@ using System.Workflow.Activities;
 
 using Composite.C1Console.Workflow;
 
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Attributes;
+using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
@@ -23,8 +23,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             {
                 var fieldToken = (FormFieldEntityToken)EntityToken;
 
-                var model = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
-                var field = model.Fields.Single(f => f.Name == fieldToken.FieldName);
+                var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
+                var field = definition.Model.Fields.Single(f => f.Name == fieldToken.FieldName);
 
                 Bindings.Add("FieldName", field.Name);
                 Bindings.Add("Label", field.Label == null ? String.Empty : field.Label.Label);
@@ -40,8 +40,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             if (fieldName != fieldToken.FieldName)
             {
-                var model = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
-                var field = model.Fields.SingleOrDefault(f => f.Name == fieldName);
+                var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
+                var field = definition.Model.Fields.SingleOrDefault(f => f.Name == fieldName);
 
                 if (field != null)
                 {
@@ -66,8 +66,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var placeholderText = GetBinding<string>("PlaceholderText");
             var help = GetBinding<string>("Help");
 
-            var model = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
-            var field = model.Fields.Single(f => f.Name == fieldToken.FieldName);
+            var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
+            var field = definition.Model.Fields.Single(f => f.Name == fieldToken.FieldName);
 
             field.Name = fieldName;
 
@@ -107,7 +107,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 field.Attributes.Add(helpAttribute);
             }
 
-            DynamicFormsFacade.SaveForm(model);
+            DynamicFormsFacade.SaveForm(definition);
 
             var treeRefresher = CreateParentTreeRefresher();
             treeRefresher.PostRefreshMesseges(EntityToken);

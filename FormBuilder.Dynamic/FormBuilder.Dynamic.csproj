@@ -86,6 +86,14 @@
     <Compile Include="C1Console\EntityTokens\FormFieldDataSourceEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormFieldEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormInstanceEntityToken.cs" />
+    <Compile Include="C1Console\Workflows\EditFormWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="C1Console\Workflows\EditFormWorkflow.Designer.cs">
+      <DependentUpon>EditFormWorkflow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\DynamicSection.cs" />
+    <Compile Include="DynamicFormDefinition.cs" />
     <Compile Include="FunctionProviders\DynamicFormFunction.cs">
       <SubType>Code</SubType>
     </Compile>

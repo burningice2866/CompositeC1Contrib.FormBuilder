@@ -36,14 +36,14 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected override FormModel ResolveFormModel()
         {
-            var model = DynamicFormsFacade.GetFormByName(FormName);
+            var definition = DynamicFormsFacade.GetFormByName(FormName);
 
-            model.Options = new FormOptions
+            definition.Model.Options = new FormOptions
             {
                 HideLabels = false
             };
 
-            return model;
+            return definition.Model;
         }
     }
 }

@@ -21,8 +21,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var folderToken = (FormFolderEntityToken)EntityToken;
 
             var fieldName = GetBinding<string>("FieldName");
-            var model = DynamicFormsFacade.GetFormByName(folderToken.FormName);
-            var field = model.Fields.SingleOrDefault(f => f.Name == fieldName);
+            var definition = DynamicFormsFacade.GetFormByName(folderToken.FormName);
+            var field = definition.Model.Fields.SingleOrDefault(f => f.Name == fieldName);
 
             if (field != null)
             {
@@ -50,12 +50,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var folderToken = (FormFolderEntityToken)EntityToken;
 
             var fieldName = GetBinding<string>("FieldName");
-            var model = DynamicFormsFacade.GetFormByName(folderToken.FormName);
-            var field = new FormField(model, fieldName, typeof(string), new List<Attribute>());
+            var definition = DynamicFormsFacade.GetFormByName(folderToken.FormName);
+            var field = new FormField(definition.Model, fieldName, typeof(string), new List<Attribute>());
 
-            model.Fields.Add(field);
-            
-            DynamicFormsFacade.SaveForm(model);
+            definition.Model.Fields.Add(field);
+
+            DynamicFormsFacade.SaveForm(definition);
 
             var fieldToken = new FormFieldEntityToken(folderToken.FormName, fieldName);
             var workflowToken = new WorkflowActionToken(typeof(EditFormFieldWorkflow));

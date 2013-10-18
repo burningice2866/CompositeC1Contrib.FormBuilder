@@ -36,8 +36,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
         public FlowToken Execute(EntityToken entityToken, ActionToken actionToken, FlowControllerServicesContainer flowControllerServicesContainer)
         {
             var entryToken = (StringBasedDataSourceEntryEntityToken)entityToken;
-            var model = DynamicFormsFacade.GetFormByName(entryToken.FormName);
-            var field = model.Fields.Single(f => f.Name == entryToken.FieldName);
+            var definition = DynamicFormsFacade.GetFormByName(entryToken.FormName);
+            var field = definition.Model.Fields.Single(f => f.Name == entryToken.FieldName);
             var datasSource = field.DataSource.ToList();
             var keyToRemove = datasSource.Single(itm => itm.Key == entryToken.Id);
 
@@ -51,7 +51,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 
             field.Attributes.Add(dataSourceAttribute);
 
-            DynamicFormsFacade.SaveForm(model);
+            DynamicFormsFacade.SaveForm(definition);
 
             var treeRefresher = new ParentTreeRefresher(flowControllerServicesContainer);
             treeRefresher.PostRefreshMesseges(entityToken);

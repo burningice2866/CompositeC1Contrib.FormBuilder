@@ -35,9 +35,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
         public FlowToken Execute(EntityToken entityToken, ActionToken actionToken, FlowControllerServicesContainer flowControllerServicesContainer)
         {
             var fieldToken = (FormInstanceEntityToken)entityToken;
-            var model = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
+            var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
 
-            DynamicFormsFacade.DeleteModel(model);
+            DynamicFormsFacade.DeleteModel(definition);
 
             var treeRefresher = new ParentTreeRefresher(flowControllerServicesContainer);
             treeRefresher.PostRefreshMesseges(entityToken);

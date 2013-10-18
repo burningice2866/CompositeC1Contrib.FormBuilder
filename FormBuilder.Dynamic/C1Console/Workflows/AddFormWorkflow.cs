@@ -16,8 +16,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var formName = GetBinding<string>("FormName");
 
-            var model = DynamicFormsFacade.GetFormByName(formName);
-            if (model != null)
+            var definition = DynamicFormsFacade.GetFormByName(formName);
+            if (definition != null)
             {
                 ShowFieldMessage("Form name", "Form name already exists");
 
@@ -40,7 +40,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         private void saveCodeActivity_ExecuteCode(object sender, EventArgs e)
         {
             var formName = GetBinding<string>("FormName");
-            var model = new FormModel(formName);
+            var model = new DynamicFormDefinition(formName);
 
             DynamicFormsFacade.SaveForm(model);
 

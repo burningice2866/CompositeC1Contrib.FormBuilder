@@ -25,6 +25,16 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
             get { return _id; }
         }
 
+        public string FormName
+        {
+            get { return Source; }
+        }
+
+        public string FieldName
+        {
+            get { return Id; }
+        }
+
         public FormFieldEntityToken(string formName, string fieldName)
         {
             _source = formName;

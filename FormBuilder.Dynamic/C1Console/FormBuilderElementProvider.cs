@@ -71,41 +71,46 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
             var fieldToken = entityToken as FormFieldEntityToken;
             if (fieldToken != null)
             {
-                var form = DynamicFormsFacade.GetFormByName(fieldToken.Source);
-                var field = form.Fields.Single(f => f.Name == fieldToken.Id);
-                var datasourceAttribute = field.Attributes.OfType<DataSourceAttribute>().FirstOrDefault();
-
-                if (datasourceAttribute != null)
+                var form = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
+                if (form != null)
                 {
-                    var fieldsElementHandle = _context.CreateElementHandle(new FormFieldDataSourceEntityToken(datasourceAttribute.GetType(), form.Name, field.Name));
-                    var fieldElement = new Element(fieldsElementHandle)
+                    var field = form.Fields.SingleOrDefault(f => f.Name == fieldToken.FieldName);
+                    if (field != null)
                     {
-                        VisualData = new ElementVisualizedData
+                        var datasourceAttribute = field.Attributes.OfType<DataSourceAttribute>().FirstOrDefault();
+                        if (datasourceAttribute != null)
                         {
-                            Label = "Datasource",
-                            ToolTip = "Datasource",
-                            HasChildren = true,
-                            Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                            OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
-                        }
-                    };
-
-                    if (datasourceAttribute.GetType() == typeof(StringBasedDataSourceAttribute))
-                    {
-                        var addActionToken = new WorkflowActionToken(typeof(AddStringBasedDataSourceEntryWorkflow), new PermissionType[] { PermissionType.Administrate });
-                        fieldElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
-                        {
-                            VisualData = new ActionVisualizedData
+                            var fieldsElementHandle = _context.CreateElementHandle(new FormFieldDataSourceEntityToken(datasourceAttribute.GetType(), form.Name, field.Name));
+                            var fieldElement = new Element(fieldsElementHandle)
                             {
-                                Label = "Add",
-                                ToolTip = "Add",
-                                Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
-                                ActionLocation = _actionLocation
-                            }
-                        });
-                    }
+                                VisualData = new ElementVisualizedData
+                                {
+                                    Label = "Datasource",
+                                    ToolTip = "Datasource",
+                                    HasChildren = true,
+                                    Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
+                                    OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                                }
+                            };
 
-                    yield return fieldElement;
+                            if (datasourceAttribute.GetType() == typeof(StringBasedDataSourceAttribute))
+                            {
+                                var addActionToken = new WorkflowActionToken(typeof(AddStringBasedDataSourceEntryWorkflow), new PermissionType[] { PermissionType.Administrate });
+                                fieldElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
+                                {
+                                    VisualData = new ActionVisualizedData
+                                    {
+                                        Label = "Add value",
+                                        ToolTip = "Add value",
+                                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                                        ActionLocation = _actionLocation
+                                    }
+                                });
+                            }
+
+                            yield return fieldElement;
+                        }
+                    }
                 }
             }
 
@@ -116,37 +121,43 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
                 if (type == typeof(StringBasedDataSourceAttribute))
                 {
                     var form = DynamicFormsFacade.GetFormByName(dataSourceToken.FormName);
-                    var field = form.Fields.Single(f => f.Name == dataSourceToken.FieldName);
-                    var dataSource = field.DataSource;
-
-                    foreach (var entry in dataSource)
+                    if (form != null)
                     {
-                        var fieldsElementHandle = _context.CreateElementHandle(new StringBasedDataSourceEntryEntityToken(form.Name, field.Name, entry.Key));
-                        var fieldElement = new Element(fieldsElementHandle)
+                        var field = form.Fields.SingleOrDefault(f => f.Name == dataSourceToken.FieldName);
+                        if (field != null)
                         {
-                            VisualData = new ElementVisualizedData
-                            {
-                                Label = entry.Key,
-                                ToolTip = entry.Key,
-                                HasChildren = false,
-                                Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                                OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
-                            }
-                        };
+                            var dataSource = field.DataSource;
 
-                        var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + entry.Key, typeof(DeleteStringBasedDataSourceEntryActionToken));
-                        fieldElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
-                        {
-                            VisualData = new ActionVisualizedData
+                            foreach (var entry in dataSource)
                             {
-                                Label = "Delete",
-                                ToolTip = "Delete",
-                                Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
-                                ActionLocation = _actionLocation
-                            }
-                        });
+                                var fieldsElementHandle = _context.CreateElementHandle(new StringBasedDataSourceEntryEntityToken(form.Name, field.Name, entry.Key));
+                                var fieldElement = new Element(fieldsElementHandle)
+                                {
+                                    VisualData = new ElementVisualizedData
+                                    {
+                                        Label = entry.Key,
+                                        ToolTip = entry.Key,
+                                        HasChildren = false,
+                                        Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
+                                        OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                                    }
+                                };
 
-                        yield return fieldElement;
+                                var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + entry.Key, typeof(DeleteStringBasedDataSourceEntryActionToken));
+                                fieldElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
+                                {
+                                    VisualData = new ActionVisualizedData
+                                    {
+                                        Label = "Delete",
+                                        ToolTip = "Delete",
+                                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
+                                        ActionLocation = _actionLocation
+                                    }
+                                });
+
+                                yield return fieldElement;
+                            }
+                        }
                     }
                 }
             }
@@ -167,12 +178,24 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
                 }
             };
 
+            var addActionToken = new WorkflowActionToken(typeof(AddFormWorkflow));
+            rootElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
+            {
+                VisualData = new ActionVisualizedData
+                {
+                    Label = "Add form",
+                    ToolTip = "Add form",
+                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                    ActionLocation = _actionLocation
+                }
+            });
+
             return new[] { rootElement };
         }
 
         private IEnumerable<Element> getFormFolders(FormInstanceEntityToken token)
         {
-            var fieldsElementHandle = _context.CreateElementHandle(new FormFolderEntityToken(token.Id, FormFolderType.Fields));
+            var fieldsElementHandle = _context.CreateElementHandle(new FormFolderEntityToken(token.FormName, FormFolderType.Fields));
             var fieldElement = new Element(fieldsElementHandle)
             {
                 VisualData = new ElementVisualizedData
@@ -184,6 +207,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
                     OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
                 }
             };
+
+            var addActionToken = new WorkflowActionToken(typeof(AddFormFieldWorkflow), new PermissionType[] { PermissionType.Administrate });
+            fieldElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
+            {
+                VisualData = new ActionVisualizedData
+                {
+                    Label = "Add",
+                    ToolTip = "Add",
+                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                    ActionLocation = _actionLocation
+                }
+            });
 
             yield return fieldElement;
         }
@@ -226,57 +261,51 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
 
         private IEnumerable<Element> getFormFieldElements(FormFolderEntityToken folder)
         {
-            var form = DynamicFormsFacade.GetFormByName(folder.Id);
-
-            foreach (var field in form.Fields)
+            var form = DynamicFormsFacade.GetFormByName(folder.FormName);
+            if (form != null)
             {
-                var elementHandle = _context.CreateElementHandle(new FormFieldEntityToken(form.Name, field.Name));
-
-                var fieldElement = new Element(elementHandle)
+                foreach (var field in form.Fields)
                 {
-                    VisualData = new ElementVisualizedData
+                    var elementHandle = _context.CreateElementHandle(new FormFieldEntityToken(form.Name, field.Name));
+
+                    var fieldElement = new Element(elementHandle)
                     {
-                        Label = field.Name,
-                        ToolTip = field.Name,
-                        HasChildren = true,
-                        Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                        OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
-                    }
-                };
+                        VisualData = new ElementVisualizedData
+                        {
+                            Label = field.Name,
+                            ToolTip = field.Name,
+                            HasChildren = true,
+                            Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
+                            OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                        }
+                    };
 
-                var payload = new StringBuilder();
-
-                StringConversionServices.SerializeKeyValuePair(payload, "_IconResourceName_", "folder");
-
-                var editActionToken = new WorkflowActionToken(typeof(GenericEditDataWorkflow))
-                {
-                    Payload = payload.ToString()
-                };
-
-                fieldElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
-                {
-                    VisualData = new ActionVisualizedData
+                    var editActionToken = new WorkflowActionToken(typeof(EditFormFieldWorkflow));
+                    fieldElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
                     {
-                        Label = "Edit",
-                        ToolTip = "Edit",
-                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
-                        ActionLocation = _actionLocation
-                    }
-                });
+                        VisualData = new ActionVisualizedData
+                        {
+                            Label = "Edit",
+                            ToolTip = "Edit",
+                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                            ActionLocation = _actionLocation
+                        }
+                    });
 
-                var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + field.Name, typeof(DeleteFormFieldActionToken));
-                fieldElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
-                {
-                    VisualData = new ActionVisualizedData
+                    var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + field.Name, typeof(DeleteFormFieldActionToken));
+                    fieldElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
                     {
-                        Label = "Delete",
-                        ToolTip = "Delete",
-                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
-                        ActionLocation = _actionLocation
-                    }
-                });
+                        VisualData = new ActionVisualizedData
+                        {
+                            Label = "Delete",
+                            ToolTip = "Delete",
+                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
+                            ActionLocation = _actionLocation
+                        }
+                    });
 
-                yield return fieldElement;
+                    yield return fieldElement;
+                }
             }
         }
     }

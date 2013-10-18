@@ -2,7 +2,7 @@ using System.Workflow.Activities;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
-    partial class AddStringBasedDataSourceEntryWorkflow
+    partial class AddFormWorkflow
     {
         #region Designer generated code
 
@@ -92,7 +92,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             // dataDialogFormActivity
             // 
             this.dataDialogFormActivity.ContainerLabel = "";
-            this.dataDialogFormActivity.FormDefinitionFileName = "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddStringBasedDataSourceEntryWorkflow.xml";
+            this.dataDialogFormActivity.FormDefinitionFileName = "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddFormWorkflow.xml";
             this.dataDialogFormActivity.Name = "dataDialogFormActivity";
             // 
             // initCodeActivity
@@ -161,7 +161,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             this.initializationState.Activities.Add(this.stateInitializationActivity);
             this.initializationState.Name = "initializationState";
             // 
-            // AddStringBasedDataSourceEntryWorkflow
+            // AddFormWorkflow
             // 
             this.Activities.Add(this.initializationState);
             this.Activities.Add(this.finalState);
@@ -170,7 +170,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             this.CompletedStateName = "finalState";
             this.DynamicUpdateCondition = null;
             this.InitialStateName = "initializationState";
-            this.Name = "AddStringBasedDataSourceEntryWorkflow";
+            this.Name = "AddFormWorkflow";
             this.CanModifyActivities = false;
 
         }

@@ -30,14 +30,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
             get { return _id; }
         }
 
+        public string FormName
+        {
+            get { return Id; }
+        }
+
         public FormFolderType FolderType
         {
             get { return (FormFolderType)Enum.Parse(typeof(FormFolderType), Source); }
         }
 
-        public FormFolderEntityToken(string id, FormFolderType folderType)
+        public FormFolderEntityToken(string formName, FormFolderType folderType)
         {
-            _id = id;
+            _id = formName;
             _source = folderType.ToString();
         }
 

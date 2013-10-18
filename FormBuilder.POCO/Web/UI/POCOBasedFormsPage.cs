@@ -110,9 +110,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             var formType = typeof(T);
 
-            var model = new FormModel
+            var model = new FormModel(formType.FullName)
             {
-                Name = formType.FullName,
                 Options = options,
                 OnSubmitHandler = instance.Submit
             };

@@ -35,11 +35,16 @@ namespace CompositeC1Contrib.FormBuilder
                 var placeholderAttr = Attributes.OfType<PlaceholderTextAttribute>().SingleOrDefault();
                 if (placeholderAttr != null)
                 {
-                    return placeholderAttr.Text;
-                    
+                    return placeholderAttr.Text;                    
                 }
 
-                return Label.Label;
+                var labelAttribute = Label;
+                if (labelAttribute != null)
+                {
+                    return labelAttribute.Label;
+                }
+
+                return String.Empty;
             }
         }
 

@@ -16,12 +16,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         private void validateSave(object sender, ConditionalEventArgs e)
         {
-            var formName = GetBinding<string>("FormName");
-            var fieldName = GetBinding<string>("FieldName");
+            var dataSourceToken = (FormFieldDataSourceEntityToken)EntityToken;
+
             var entryValue = GetBinding<string>("EntryValue");
 
-            var model = DynamicFormsFacade.GetFormByName(formName);
-            var field = model.Fields.Single(f => f.Name == fieldName);
+            var model = DynamicFormsFacade.GetFormByName(dataSourceToken.FormName);
+            var field = model.Fields.Single(f => f.Name == dataSourceToken.FieldName);
             var datasSource = field.DataSource.Select(itm => itm.Key).ToList();
 
             if (datasSource.Any(itm => itm == entryValue))
@@ -38,24 +38,22 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         private void initCodeActivity_ExecuteCode(object sender, EventArgs e)
         {
-            if (!BindingExist("FormName"))
+            if (!BindingExist("EntryValue"))
             {
                 var dataSourceToken = (FormFieldDataSourceEntityToken)EntityToken;
 
-                Bindings.Add("FormName", dataSourceToken.FormName);
-                Bindings.Add("FieldName", dataSourceToken.FieldName);
                 Bindings.Add("EntryValue", String.Empty);
             }
         }
 
         private void saveCodeActivity_ExecuteCode(object sender, EventArgs e)
         {
-            var formName = GetBinding<string>("FormName");
-            var fieldName = GetBinding<string>("FieldName");
+            var dataSourceToken = (FormFieldDataSourceEntityToken)EntityToken;
+
             var entryValue = GetBinding<string>("EntryValue");
 
-            var model = DynamicFormsFacade.GetFormByName(formName);
-            var field = model.Fields.Single(f => f.Name == fieldName);
+            var model = DynamicFormsFacade.GetFormByName(dataSourceToken.FormName);
+            var field = model.Fields.Single(f => f.Name == dataSourceToken.FieldName);
             var datasSource = field.DataSource.Select(itm => itm.Key).ToList();
 
             datasSource.Add(entryValue);
@@ -71,7 +69,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             DynamicFormsFacade.SaveForm(model);
 
             var addNewTreeRefresher = CreateAddNewTreeRefresher(EntityToken);
-            addNewTreeRefresher.PostRefreshMesseges(new StringBasedDataSourceEntryEntityToken(formName, fieldName, entryValue));
+            addNewTreeRefresher.PostRefreshMesseges(new StringBasedDataSourceEntryEntityToken(dataSourceToken.FormName, dataSourceToken.FieldName, entryValue));
         }
     }
 }

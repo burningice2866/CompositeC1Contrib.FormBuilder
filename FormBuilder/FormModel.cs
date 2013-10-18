@@ -17,7 +17,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public NameValueCollection SubmittedValues { get; private set; }
 
-        public string Name { get; set; }
+        public string Name { get; private set; }
         public IList<FormField> Fields { get; private set; }
         public IList<FormValidationRule> ValidationResult { get; private set; }
         public IList<Attribute> Attributes { get; private set; }
@@ -48,8 +48,10 @@ namespace CompositeC1Contrib.FormBuilder
             }
         }
 
-        public FormModel()
+        public FormModel(string name)
         {
+            Name = name;
+
             Fields = new List<FormField>();
             ValidationResult = new List<FormValidationRule>();
             Attributes = new List<Attribute>();

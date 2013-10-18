@@ -134,21 +134,31 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
         private static FormModel FromBaseForm(string file, string name)
         {
-            var xml = XElement.Load(file);
-
-            var model = new FormModel
+            if (!File.Exists(file))
             {
-                Name = name
-            };
+                return null;
+            }
+
+            var xml = XElement.Load(file);
+            var model = new FormModel(name);
 
             var fields = xml.Element("Fields").Elements("Add");
             foreach (var f in fields)
             {
                 var attrs = new List<Attribute>();
                 var fieldName = f.Attribute("name").Value;
+                
+                var label = f.Attribute("label");
+                if (label != null)
+                {
+                    attrs.Add(new FieldLabelAttribute(label.Value));
+                }
 
-                attrs.Add(new FieldLabelAttribute(f.Attribute("label").Value));
-                attrs.Add(new FieldHelpAttribute(f.Attribute("help").Value));
+                var help = f.Attribute("help");
+                if (help != null)
+                {
+                    attrs.Add(new FieldHelpAttribute(help.Value));
+                }
 
                 foreach (var el in f.Elements())
                 {

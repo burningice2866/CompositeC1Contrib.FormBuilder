@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:f="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0">
+  <cms:bindings>
+    <cms:binding name="FieldName" type="System.String" />
+    <cms:binding name="Label" type="System.String" />
+    <cms:binding name="PlaceholderText" type="System.String" />
+    <cms:binding name="Help" type="System.String" />
+  </cms:bindings>
+
+  <cms:layout>
+    <cms:layout.label>
+      <cms:read source="FieldName" />
+    </cms:layout.label>
+
+    <FieldGroup>
+      <TextBox Label="Field name">
+        <TextBox.Text>
+          <cms:bind source="FieldName" />
+        </TextBox.Text>
+      </TextBox>
+
+      <TextBox Label="Label">
+        <TextBox.Text>
+          <cms:bind source="Label" />
+        </TextBox.Text>
+      </TextBox>
+
+      <TextBox Label="Placeholder text">
+        <TextBox.Text>
+          <cms:bind source="PlaceholderText" />
+        </TextBox.Text>
+      </TextBox>
+
+      <TextBox Label="Help">
+        <TextBox.Text>
+          <cms:bind source="Help" />
+        </TextBox.Text>
+      </TextBox>
+    </FieldGroup>
+  </cms:layout>
+</cms:formdefinition>

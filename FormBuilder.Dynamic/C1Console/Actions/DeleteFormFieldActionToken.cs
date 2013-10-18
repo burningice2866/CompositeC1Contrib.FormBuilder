@@ -35,8 +35,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
         public FlowToken Execute(EntityToken entityToken, ActionToken actionToken, FlowControllerServicesContainer flowControllerServicesContainer)
         {
             var fieldToken = (FormFieldEntityToken)entityToken;
-            var model = DynamicFormsFacade.GetFormByName(fieldToken.Source);
-            var field = model.Fields.Single(f => f.Name == fieldToken.Id);
+            var model = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
+            var field = model.Fields.Single(f => f.Name == fieldToken.FieldName);
 
             model.Fields.Remove(field);
 

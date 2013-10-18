@@ -2,7 +2,7 @@ using System.Workflow.Activities;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
-    partial class AddStringBasedDataSourceEntryWorkflow
+    partial class AddFormFieldWorkflow
     {
         #region Designer generated code
 
@@ -92,7 +92,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             // dataDialogFormActivity
             // 
             this.dataDialogFormActivity.ContainerLabel = "";
-            this.dataDialogFormActivity.FormDefinitionFileName = "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddStringBasedDataSourceEntryWorkflow.xml";
+            this.dataDialogFormActivity.FormDefinitionFileName = "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddFormFieldWorkflow.xm" +
+                "l";
             this.dataDialogFormActivity.Name = "dataDialogFormActivity";
             // 
             // initCodeActivity
@@ -161,7 +162,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             this.initializationState.Activities.Add(this.stateInitializationActivity);
             this.initializationState.Name = "initializationState";
             // 
-            // AddStringBasedDataSourceEntryWorkflow
+            // AddFormFieldWorkflow
             // 
             this.Activities.Add(this.initializationState);
             this.Activities.Add(this.finalState);
@@ -170,7 +171,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             this.CompletedStateName = "finalState";
             this.DynamicUpdateCondition = null;
             this.InitialStateName = "initializationState";
-            this.Name = "AddStringBasedDataSourceEntryWorkflow";
+            this.Name = "AddFormFieldWorkflow";
             this.CanModifyActivities = false;
 
         }
@@ -220,6 +221,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         private StateActivity startState;
 
         private StateActivity initializationState;
+
 
 
 

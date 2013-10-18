@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Composite.C1Console.Security;
-using System.Collections.Generic;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
 {

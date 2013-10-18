@@ -1,6 +1,5 @@
 .*/*.suo
 .*/*.user
-.*/*.layout
 
 .*/Package/Bin/./*
 .vendor/*

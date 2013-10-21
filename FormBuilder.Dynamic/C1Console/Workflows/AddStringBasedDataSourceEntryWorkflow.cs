@@ -68,8 +68,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             DynamicFormsFacade.SaveForm(definition);
 
-            var addNewTreeRefresher = CreateAddNewTreeRefresher(EntityToken);
-            addNewTreeRefresher.PostRefreshMesseges(new StringBasedDataSourceEntryEntityToken(dataSourceToken.FormName, dataSourceToken.FieldName, entryValue));
+            var treeRefresher = CreateAddNewTreeRefresher(EntityToken);
+            treeRefresher.PostRefreshMesseges(new StringBasedDataSourceEntryEntityToken(dataSourceToken.FormName, dataSourceToken.FieldName, entryValue));
         }
     }
 }

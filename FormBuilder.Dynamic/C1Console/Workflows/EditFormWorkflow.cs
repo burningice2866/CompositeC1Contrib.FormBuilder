@@ -52,7 +52,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var formToken = (FormInstanceEntityToken)EntityToken;
             var definition = DynamicFormsFacade.GetFormByName(formToken.FormName);
-            
+
             var formName = GetBinding<string>("FormName");
             var functionExecutor = GetBinding<string>("FunctionExecutor");
 

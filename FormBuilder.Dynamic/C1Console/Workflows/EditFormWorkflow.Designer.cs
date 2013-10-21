@@ -116,7 +116,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             this.initializationState.Activities.Add(this.eventDrivenActivity_Save);
             this.initializationState.Name = "initializationState";
             // 
-            // EditFormFieldWorkflow
+            // EditFormWorkflow
             // 
             this.Activities.Add(this.initializationState);
             this.Activities.Add(this.finalState);
@@ -124,7 +124,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             this.CompletedStateName = "finalState";
             this.DynamicUpdateCondition = null;
             this.InitialStateName = "initializationState";
-            this.Name = "EditFormFieldWorkflow";
+            this.Name = "EditFormWorkflow";
             this.CanModifyActivities = false;
 
         }
@@ -160,6 +160,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         private CodeActivity SaveCodeActivity;
 
         private StateActivity initializationState;
+
 
 
 

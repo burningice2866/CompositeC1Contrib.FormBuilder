@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 using Composite.C1Console.Security;
 
+using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider;
+
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
 {
     [SecurityAncestorProvider(typeof(FormInstanceAncestorProvider))]

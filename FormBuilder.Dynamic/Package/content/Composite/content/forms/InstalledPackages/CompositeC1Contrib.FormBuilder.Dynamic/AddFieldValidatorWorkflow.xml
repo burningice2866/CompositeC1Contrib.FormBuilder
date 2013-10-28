@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:f="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0">
+  <cms:bindings>
+    <cms:binding name="ValidatorType" type="System.String" />
+    <cms:binding name="Message" type="System.String" />
+  </cms:bindings>
+
+  <cms:layout label="Add validator">
+    <FieldGroup>
+      <KeySelector Label="Select validator type" OptionsKeyField="Key" OptionsLabelField="Value" Required="true">
+        <KeySelector.Options>
+          <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows.AddFieldValidatorWorkflow, CompositeC1Contrib.FormBuilder.Dynamic" Method="GetValidatorTypes" />
+        </KeySelector.Options>
+
+        <KeySelector.Selected>
+          <cms:bind source="ValidatorType" />
+        </KeySelector.Selected>
+      </KeySelector>
+
+      <TextBox Label="Validation message">
+        <TextBox.Text>
+          <cms:bind source="Message"/>
+        </TextBox.Text>
+      </TextBox>
+    </FieldGroup>
+  </cms:layout>
+</cms:formdefinition>

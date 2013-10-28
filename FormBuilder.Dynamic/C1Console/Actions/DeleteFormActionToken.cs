@@ -39,8 +39,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 
             DynamicFormsFacade.DeleteModel(definition);
 
-            var treeRefresher = new ParentTreeRefresher(flowControllerServicesContainer);
-            treeRefresher.PostRefreshMesseges(entityToken);
+            new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(entityToken);
 
             return null;
         }

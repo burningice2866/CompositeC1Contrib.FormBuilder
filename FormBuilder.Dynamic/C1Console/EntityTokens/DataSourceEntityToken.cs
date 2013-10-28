@@ -5,8 +5,8 @@ using Composite.C1Console.Security;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
 {
-    [SecurityAncestorProvider(typeof(FormFieldDataSourceAncestorProvider))]
-    public class FormFieldDataSourceEntityToken : EntityToken
+    [SecurityAncestorProvider(typeof(DataSourceAncestorProvider))]
+    public class DataSourceEntityToken : EntityToken
     {
         private string _type;
         public override string Type
@@ -36,7 +36,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
             get { return _id; }
         }
 
-        public FormFieldDataSourceEntityToken(Type type, string formName, string fieldName)
+        public DataSourceEntityToken(Type type, string formName, string fieldName)
         {
             _type = type.AssemblyQualifiedName;
             _source = formName;
@@ -56,18 +56,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
 
             EntityToken.DoDeserialize(serializedEntityToken, out type, out source, out id);
 
-            return new FormFieldDataSourceEntityToken(System.Type.GetType(type), source, id);
+            return new DataSourceEntityToken(System.Type.GetType(type), source, id);
         }
     }
 
-    public class FormFieldDataSourceAncestorProvider : ISecurityAncestorProvider
+    public class DataSourceAncestorProvider : ISecurityAncestorProvider
     {
         public IEnumerable<EntityToken> GetParents(EntityToken entityToken)
         {
-            var dataSourceToken = entityToken as FormFieldDataSourceEntityToken;
-            if (dataSourceToken != null)
+            var token = entityToken as DataSourceEntityToken;
+            if (token != null)
             {
-                yield return new FormFieldEntityToken(dataSourceToken.FormName, dataSourceToken.FieldName);
+                yield return new FormFieldEntityToken(token.FormName, token.FieldName);
             }
         }
     }

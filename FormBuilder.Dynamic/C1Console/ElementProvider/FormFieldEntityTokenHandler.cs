@@ -31,10 +31,37 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 var field = form.Model.Fields.SingleOrDefault(f => f.Name == fieldToken.FieldName);
                 if (field != null)
                 {
+                    var fieldValidatorsElementHandle = context.CreateElementHandle(new FieldValidatorsEntityToken(form.Name, field.Name));
+                    var fieldValidatorsElement = new Element(fieldValidatorsElementHandle)
+                    {
+                        VisualData = new ElementVisualizedData
+                        {
+                            Label = "Validators",
+                            ToolTip = "Validators",
+                            HasChildren = true,
+                            Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
+                            OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                        }
+                    };
+
+                    var addValidatorActionToken = new WorkflowActionToken(typeof(AddFieldValidatorWorkflow), new PermissionType[] { PermissionType.Administrate });
+                    fieldValidatorsElement.AddAction(new ElementAction(new ActionHandle(addValidatorActionToken))
+                    {
+                        VisualData = new ActionVisualizedData
+                        {
+                            Label = "Add validator",
+                            ToolTip = "Add validator",
+                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                            ActionLocation = FormBuilderElementProvider.ActionLocation
+                        }
+                    });
+
+                    yield return fieldValidatorsElement;
+
                     var datasourceAttribute = field.Attributes.OfType<DataSourceAttribute>().FirstOrDefault();
                     if (datasourceAttribute != null)
                     {
-                        var fieldsElementHandle = context.CreateElementHandle(new FormFieldDataSourceEntityToken(datasourceAttribute.GetType(), form.Name, field.Name));
+                        var fieldsElementHandle = context.CreateElementHandle(new DataSourceEntityToken(datasourceAttribute.GetType(), form.Name, field.Name));
                         var fieldElement = new Element(fieldsElementHandle)
                         {
                             VisualData = new ElementVisualizedData

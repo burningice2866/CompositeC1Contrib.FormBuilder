@@ -35,7 +35,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
     {
         public FlowToken Execute(EntityToken entityToken, ActionToken actionToken, FlowControllerServicesContainer flowControllerServicesContainer)
         {
-            var entryToken = (FormFieldDataSourceEntityToken)entityToken;
+            var entryToken = (DataSourceEntityToken)entityToken;
             var definition = DynamicFormsFacade.GetFormByName(entryToken.FormName);
             var field = definition.Model.Fields.Single(f => f.Name == entryToken.FieldName);
             var dataSourceAttribute = field.Attributes.OfType<DataSourceAttribute>().First();
@@ -44,8 +44,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 
             DynamicFormsFacade.SaveForm(definition);
 
-            var treeRefresher = new ParentTreeRefresher(flowControllerServicesContainer);
-            treeRefresher.PostRefreshMesseges(entityToken);
+            new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(entityToken);
 
             return null;
         }

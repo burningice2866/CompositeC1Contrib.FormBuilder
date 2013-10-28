@@ -53,7 +53,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         {
                             Label = handler.Name,
                             ToolTip = handler.Name,
-                            HasChildren = true,
+                            HasChildren = false,
                             Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
                             OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
                         }

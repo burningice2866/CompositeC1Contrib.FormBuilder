@@ -80,18 +80,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="C1Console\Actions\DeleteFieldValidatorActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteSubmitHandlerActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteDataSourceActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteFormActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteStringBasedDataSourceEntryActionToken.cs" />
-    <Compile Include="C1Console\ElementProvider\FormFieldDataSourceEntityTokenHandler.cs" />
+    <Compile Include="C1Console\ElementProvider\FieldValidatorsEntityTokenHandler.cs" />
+    <Compile Include="C1Console\ElementProvider\DataSourceEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormFieldEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormFolderEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormInstanceEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormElementProviderEntityTokenHandler.cs" />
+    <Compile Include="C1Console\EntityTokens\FieldValidatorsEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormSubmitHandlerEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\StringBasedDataSourceEntryEntityToken.cs" />
-    <Compile Include="C1Console\EntityTokens\FormFieldDataSourceEntityToken.cs" />
+    <Compile Include="C1Console\EntityTokens\DataSourceEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormFieldEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormInstanceEntityToken.cs" />
     <Compile Include="C1Console\ElementProvider\IEntityTokenBasedElementProvider.cs" />
@@ -106,6 +109,18 @@
     </Compile>
     <Compile Include="C1Console\Workflows\AddSubmitHandlerWorkflow.designer.cs">
       <DependentUpon>AddSubmitHandlerWorkflow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="C1Console\Workflows\AddFieldValidatorWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="C1Console\Workflows\AddFieldValidatorWorkflow.designer.cs">
+      <DependentUpon>AddFieldValidatorWorkflow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="C1Console\Workflows\EditFieldValidatorWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="C1Console\Workflows\EditFieldValidatorWorkflow.Designer.cs">
+      <DependentUpon>EditFieldValidatorWorkflow.cs</DependentUpon>
     </Compile>
     <Compile Include="C1Console\Workflows\EditEmailSubmitHandlerWorkflow.cs">
       <SubType>Component</SubType>
@@ -180,6 +195,9 @@
     <EmbeddedResource Include="C1Console\Workflows\AddDataSourceWorkflow.layout">
       <DependentUpon>AddDataSourceWorkflow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="C1Console\Workflows\AddFieldValidatorWorkflow.layout">
+      <DependentUpon>AddFieldValidatorWorkflow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="C1Console\Workflows\AddFormFieldWorkflow.layout">
       <DependentUpon>AddFormFieldWorkflow.cs</DependentUpon>
     </EmbeddedResource>
@@ -192,6 +210,9 @@
     <EmbeddedResource Include="C1Console\Workflows\ConfirmWorkflow.layout">
       <DependentUpon>ConfirmWorkflow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="C1Console\Workflows\EditFieldValidatorWorkflow.layout">
+      <DependentUpon>EditFieldValidatorWorkflow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="C1Console\Workflows\EditFormFieldWorkflow.layout">
       <DependentUpon>EditFormFieldWorkflow.cs</DependentUpon>
     </EmbeddedResource>
@@ -199,7 +220,19 @@
       <DependentUpon>EditFormWorkflow.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\AddDataSourceWorkflow.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\AddFieldValidatorWorkflow.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\AddFormFieldWorkflow.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\AddFormWorkflow.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\AddStringBasedDataSourceEntryWorkflow.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\AddSubmitHandlerWorkflow.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\ConfirmMessage.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditEmailSubmitHandlerWorkflow.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditFieldValidatorWorkflow.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditFormFieldWorkflow.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditFormWorkflow.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)Package\Bin\$(TargetFileName)"

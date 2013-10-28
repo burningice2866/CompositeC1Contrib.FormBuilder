@@ -9,8 +9,8 @@ using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 {
-    [ActionExecutor(typeof(DeleteSubmitHandlerActionExecutor))]
-    public class DeleteSubmitHandlerActionToken : ActionToken
+    [ActionExecutor(typeof(DeleteFieldValidatorActionTokenExecutor))]
+    public class DeleteFieldValidatorActionToken : ActionToken
     {
         private static IEnumerable<PermissionType> _permissionTypes = new PermissionType[] { PermissionType.Administrate };
 
@@ -26,19 +26,20 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 
         public static ActionToken Deserialize(string serializedData)
         {
-            return new DeleteDataSourceActionToken();
+            return new DeleteFieldValidatorActionToken();
         }
     }
 
-    public class DeleteSubmitHandlerActionExecutor : IActionExecutor
+    public class DeleteFieldValidatorActionTokenExecutor : IActionExecutor
     {
         public FlowToken Execute(EntityToken entityToken, ActionToken actionToken, FlowControllerServicesContainer flowControllerServicesContainer)
         {
-            var token = (FormSubmitHandlerEntityToken)entityToken;
+            var token = (FieldValidatorsEntityToken)entityToken;
             var definition = DynamicFormsFacade.GetFormByName(token.FormName);
-            var handler = definition.SubmitHandlers.Single(h => h.Name == token.Name);
+            var field = definition.Model.Fields.Single(f => f.Name == token.FieldName);
+            var keyToRemove = field.ValidationAttributes.Single(itm => itm.GetType().AssemblyQualifiedName == token.Type);
 
-            definition.SubmitHandlers.Remove(handler);
+            field.Attributes.Remove(keyToRemove);
 
             DynamicFormsFacade.SaveForm(definition);
 

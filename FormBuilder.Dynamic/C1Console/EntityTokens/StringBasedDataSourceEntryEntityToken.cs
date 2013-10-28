@@ -68,7 +68,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
             var dsEntryToken = entityToken as StringBasedDataSourceEntryEntityToken;
             if (dsEntryToken != null)
             {
-                yield return new FormFieldDataSourceEntityToken(typeof(StringBasedDataSourceAttribute), dsEntryToken.FormName, dsEntryToken.FieldName);
+                yield return new DataSourceEntityToken(typeof(StringBasedDataSourceAttribute), dsEntryToken.FormName, dsEntryToken.FieldName);
             }
         }
     }

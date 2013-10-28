@@ -16,7 +16,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         private void validateSave(object sender, ConditionalEventArgs e)
         {
-            var dataSourceToken = (FormFieldDataSourceEntityToken)EntityToken;
+            var dataSourceToken = (DataSourceEntityToken)EntityToken;
 
             var entryValue = GetBinding<string>("EntryValue");
 
@@ -40,7 +40,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             if (!BindingExist("EntryValue"))
             {
-                var dataSourceToken = (FormFieldDataSourceEntityToken)EntityToken;
+                var dataSourceToken = (DataSourceEntityToken)EntityToken;
 
                 Bindings.Add("EntryValue", String.Empty);
             }
@@ -48,7 +48,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         private void saveCodeActivity_ExecuteCode(object sender, EventArgs e)
         {
-            var dataSourceToken = (FormFieldDataSourceEntityToken)EntityToken;
+            var dataSourceToken = (DataSourceEntityToken)EntityToken;
 
             var entryValue = GetBinding<string>("EntryValue");
 

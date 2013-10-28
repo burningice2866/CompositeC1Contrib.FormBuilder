@@ -13,18 +13,18 @@ using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 {
-    public class FormFieldDataSourceEntityTokenHandler : IEntityTokenBasedElementProvider
+    public class DataSourceEntityTokenHandler : IEntityTokenBasedElementProvider
     {
         public Type EntityTokenType
         {
-            get { return typeof(FormFieldDataSourceEntityToken); }
+            get { return typeof(DataSourceEntityToken); }
         }
 
         public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)
         {
             var returnList = new List<Element>();
 
-            var dataSourceToken = (FormFieldDataSourceEntityToken)token;
+            var dataSourceToken = (DataSourceEntityToken)token;
             var type = Type.GetType(dataSourceToken.Type);
 
             if (type == typeof(StringBasedDataSourceAttribute))

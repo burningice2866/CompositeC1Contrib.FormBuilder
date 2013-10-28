@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -15,6 +14,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
     public abstract class FormsPage : RazorFunction
     {
         protected FormOptions Options { get; private set; }
+        protected abstract FormBuilderRequestContext RenderingContext { get; }
 
         [FunctionParameter(Label = "Intro text", DefaultValue = null)]
         public XhtmlDocument IntroText { get; set; }
@@ -22,20 +22,19 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         [FunctionParameter(Label = "Success response", DefaultValue = null)]
         public XhtmlDocument SuccessResponse { get; set; }
 
-        private FormModel _renderingModel;
         protected FormModel RenderingModel
         {
-            get
-            {
-                if (_renderingModel == null)
-                {
-                    _renderingModel = ResolveFormModel();
+            get { return RenderingContext.RenderingModel; }
+        }
 
-                    FormModel.SetCurrent(RenderingModel.Name, _renderingModel);
-                }
+        protected bool IsOwnSubmit
+        {
+            get { return RenderingContext.IsOwnSubmit; }
+        }
 
-                return _renderingModel;
-            }
+        protected bool IsSuccess
+        {
+            get { return RenderingContext.IsSuccess; }
         }
 
         public FormsPage()
@@ -43,23 +42,13 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             Options = new FormOptions();
         }
 
-        protected bool IsOwnSubmit
-        {
-            get { return IsPost && Request.Form["__type"] == RenderingModel.Name; }
-        }
-
-        protected bool IsSuccess
-        {
-            get { return IsOwnSubmit && !RenderingModel.ValidationResult.Any(); }
-        }
-
         protected string SubmitButtonLabel
         {
             get
             {
-                var label = "Opret";
+                var label = "Indsend";
 
-                var labelAttribute = RenderingModel.Attributes.OfType<SubmitButtonLabelAttribute>().FirstOrDefault();
+                var labelAttribute = RenderingContext.RenderingModel.Attributes.OfType<SubmitButtonLabelAttribute>().FirstOrDefault();
                 if (labelAttribute != null)
                 {
                     label = labelAttribute.Label;
@@ -71,60 +60,26 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public override void ExecutePageHierarchy()
         {
-            if (RenderingModel.ForceHttps && !Request.IsSecureConnection)
+            if (RenderingContext.IsOwnSubmit && RenderingContext.IsSuccess)
             {
-                string redirectUrl = Request.Url.ToString().Replace("http:", "https:");
-
-                Response.Redirect(redirectUrl, true);
-            }
-
-            if (IsOwnSubmit)
-            {
-                var requestFiles = Request.Files;
-                var files = new List<FormFile>();
-
-                for (int i = 0; i < requestFiles.Count; i++)
-                {
-                    var f = requestFiles[i];
-                    if (f.ContentLength > 0)
-                    {
-                        files.Add(new FormFile()
-                        {
-                            Key = requestFiles.AllKeys[i],
-                            ContentLength = f.ContentLength,
-                            ContentType = f.ContentType,
-                            FileName = f.FileName,
-                            InputStream = f.InputStream
-                        });
-                    }
-                }
-
-                RenderingModel.MapValues(Request.Form, files);
-
-                OnMappedValues();
-
-                RenderingModel.Validate();
-
-                if (IsSuccess)
-                {
-                    OnSubmit();
-
-                    RenderingModel.OnSubmitHandler();
-                }
+                HandleSubmit();
             }
 
             base.ExecutePageHierarchy();
         }
 
-        protected abstract FormModel ResolveFormModel();
-        protected virtual void OnMappedValues() { }
-        protected virtual void OnSubmit() { }
+        public override void Execute() { }
+
+        public virtual void HandleSubmit()
+        {
+            RenderingContext.Submit();
+        }
 
         protected IHtmlString WriteErrors()
         {
-            if (IsOwnSubmit)
+            if (RenderingContext.IsOwnSubmit)
             {
-                return FormRenderer.WriteErrors(RenderingModel);
+                return FormRenderer.WriteErrors(RenderingContext.RenderingModel);
             }
             else
             {
@@ -136,7 +91,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             var sb = new StringBuilder();
 
-            foreach (var field in RenderingModel.Fields.Where(f => f.Label != null))
+            foreach (var field in RenderingContext.RenderingModel.Fields.Where(f => f.Label != null))
             {
                 sb.Append(FormRenderer.FieldFor(field).ToString());
             }
@@ -146,7 +101,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected bool HasDependencyChecks()
         {
-            return RenderingModel.Fields.Select(f => f.DependencyAttributes).Any();
+            return RenderingContext.RenderingModel.Fields.Select(f => f.DependencyAttributes).Any();
         }
 
         protected HtmlForm BeginForm()
@@ -156,12 +111,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected HtmlForm BeginForm(object htmlAttributes)
         {
-            return new HtmlForm(this, RenderingModel, htmlAttributes);
+            return new HtmlForm(this, RenderingContext.RenderingModel, htmlAttributes);
         }
 
         protected string WriteErrorClass(string name)
         {
-            var validationResult = RenderingModel.ValidationResult;
+            var validationResult = RenderingContext.RenderingModel.ValidationResult;
 
             return FormRenderer.WriteErrorClass(name, validationResult);
         }

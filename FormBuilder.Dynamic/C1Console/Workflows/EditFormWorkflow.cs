@@ -20,9 +20,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             if (!BindingExist("FormName"))
             {
                 var formToken = (FormInstanceEntityToken)EntityToken;
+                var definition = DynamicFormsFacade.GetFormByName(formToken.FormName);
 
                 Bindings.Add("FormName", formToken.FormName);
-                Bindings.Add("FunctionExecutor", String.Empty);
+                Bindings.Add("FunctionExecutor", definition.FormExecutor ?? String.Empty);
             }
         }
 
@@ -65,10 +66,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             DynamicFormsFacade.SaveForm(definition);
 
-            var treeRefresher = CreateSpecificTreeRefresher();
-            treeRefresher.PostRefreshMesseges(EntityToken);
-
-            this.SetSaveStatus(true);
+            CreateSpecificTreeRefresher().PostRefreshMesseges(EntityToken);
+            SetSaveStatus(true);
         }
     }
 }

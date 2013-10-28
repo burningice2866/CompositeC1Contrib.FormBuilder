@@ -6,7 +6,7 @@ using Composite.Functions;
 namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 {
     [SecurityAncestorProvider(typeof(StandardFunctionSecurityAncestorProvider))]
-    public class POCOFormFunctionEntityToken : EntityToken
+    public class FormBuilderFunctionEntityToken : EntityToken
     {
         private string _id;
         public override string Id
@@ -25,7 +25,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             get { return String.Empty; }
         }
 
-        public POCOFormFunctionEntityToken(string source, string id)
+        public FormBuilderFunctionEntityToken(string source, string id)
         {
             _source = source;
             _id = id;
@@ -44,7 +44,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
             EntityToken.DoDeserialize(serializedEntityToken, out type, out source, out id);
 
-            return new POCOFormFunctionEntityToken(source, id);
+            return new FormBuilderFunctionEntityToken(source, id);
         }
     }
 }

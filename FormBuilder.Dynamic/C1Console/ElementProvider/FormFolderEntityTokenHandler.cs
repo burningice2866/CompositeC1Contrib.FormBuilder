@@ -11,6 +11,7 @@ using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
+using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 {
@@ -27,11 +28,65 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 
             if (formFolderToken.FolderType == FormFolderType.Fields)
             {
-                var elements = getFormFieldElements(context, formFolderToken);
+                return getFormFieldElements(context, formFolderToken);
+            }
 
-                foreach (var el in elements)
+            if (formFolderToken.FolderType == FormFolderType.SubmitHandlers)
+            {
+                return getFormSubmitHandlerElements(context, formFolderToken);
+            }
+
+            return Enumerable.Empty<Element>();
+        }
+
+        private IEnumerable<Element> getFormSubmitHandlerElements(ElementProviderContext context, FormFolderEntityToken folder)
+        {
+            var definition = DynamicFormsFacade.GetFormByName(folder.FormName);
+            if (definition != null)
+            {
+                foreach (var handler in definition.SubmitHandlers)
                 {
-                    yield return el;
+                    var elementHandle = context.CreateElementHandle(new FormSubmitHandlerEntityToken(handler.GetType(), folder.FormName, handler.Name));
+                    var handlerElement = new Element(elementHandle)
+                    {
+                        VisualData = new ElementVisualizedData
+                        {
+                            Label = handler.Name,
+                            ToolTip = handler.Name,
+                            HasChildren = true,
+                            Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
+                            OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                        }
+                    };
+
+                    if (handler is EmailSubmitHandler)
+                    {
+                        var editActionToken = new WorkflowActionToken(typeof(EditEmailSubmitHandlerWorkflow));
+                        handlerElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
+                        {
+                            VisualData = new ActionVisualizedData
+                            {
+                                Label = "Edit",
+                                ToolTip = "Edit",
+                                Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                                ActionLocation = FormBuilderElementProvider.ActionLocation
+                            }
+                        });
+                    }
+
+                    var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + handler.Name, typeof(DeleteSubmitHandlerActionToken));
+                    handlerElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
+                    {
+                        VisualData = new ActionVisualizedData
+                        {
+                            Label = "Delete",
+                            ToolTip = "Delete",
+                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
+                            ActionLocation = FormBuilderElementProvider.ActionLocation
+                        }
+                    });
+
+                    yield return handlerElement;
                 }
             }
         }
@@ -44,7 +99,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 foreach (var field in definition.Model.Fields)
                 {
                     var elementHandle = context.CreateElementHandle(new FormFieldEntityToken(definition.Name, field.Name));
-
                     var fieldElement = new Element(elementHandle)
                     {
                         VisualData = new ElementVisualizedData

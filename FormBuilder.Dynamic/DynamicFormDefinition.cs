@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml.Linq;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
+using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
 using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic
@@ -11,6 +12,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
     public class DynamicFormDefinition
     {
         public FormModel Model { get; private set; }
+        public IList<FormSubmitHandler> SubmitHandlers { get; private set; }
 
         public string FormExecutor { get; set; }
 
@@ -19,14 +21,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             get { return Model.Name; }
         }
 
-        public DynamicFormDefinition(string name)
-        {
-            Model = new FormModel(name);
-        }
+        public DynamicFormDefinition(string name) : this(new FormModel(name)) { }
 
         public DynamicFormDefinition(FormModel model)
         {
             Model = model;
+            SubmitHandlers = new List<FormSubmitHandler>();
         }
 
         public static DynamicFormDefinition Parse(string name, XElement xml)
@@ -67,14 +67,51 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 model.Fields.Add(formField);
             }
 
-            model.OnSubmitHandler = () => { };
-
             var definition = new DynamicFormDefinition(model);
 
             var metaData = xml.Element("MetaData");
             if (metaData != null)
             {
-                definition.FormExecutor = metaData.Element("FormExecutor").Attribute("functionName").Value;
+                var formExecutorElement = metaData.Element("FormExecutor");
+                if (formExecutorElement != null)
+                {
+                    definition.FormExecutor = formExecutorElement.Attribute("functionName").Value;
+                }
+
+                var submitHandlersElement = metaData.Element("SubmitHandlers");
+                if (submitHandlersElement != null)
+                {
+                    foreach (var handler in submitHandlersElement.Elements("Add"))
+                    {
+                        var handlerName = handler.Attribute("Name").Value;
+                        var typeString = handler.Attribute("Type").Value;
+                        var type = Type.GetType(typeString);
+                        var instance = (FormSubmitHandler)Activator.CreateInstance(type);
+
+                        instance.Name = handlerName;
+
+                        foreach (var prop in type.GetProperties())
+                        {
+                            var attr = handler.Attribute(prop.Name);
+                            if (attr != null)
+                            {
+                                prop.SetValue(instance, Convert.ChangeType(attr.Value, prop.PropertyType), null);
+
+                                continue;
+                            }
+
+                            var element = handler.Element(prop.Name);
+                            if (element != null)
+                            {
+                                prop.SetValue(instance, Convert.ChangeType(element.Value, prop.PropertyType), null);
+
+                                continue;
+                            }                            
+                        }
+
+                        definition.SubmitHandlers.Add(instance);
+                    }
+                }
             }
 
             return definition;

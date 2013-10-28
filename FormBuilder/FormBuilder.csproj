@@ -70,6 +70,12 @@
     <Compile Include="Attributes\FormNameAttribute.cs" />
     <Compile Include="Attributes\DataSourceAttribute.cs" />
     <Compile Include="Configuration\ConfigurationSectionHelper.cs" />
+    <Compile Include="Configuration\FormBuilderSection.cs" />
+    <Compile Include="FormBuilderRequestContext.cs" />
+    <Compile Include="FunctionProviders\DumpSubmittedFormValues.cs" />
+    <Compile Include="FunctionProviders\StandardFormFunction.cs" />
+    <Compile Include="FunctionProviders\FormBuilderFunctionProvider.cs" />
+    <Compile Include="FunctionProviders\FormBuilderFunctionEntityToken.cs" />
     <Compile Include="Validation\CredentialsValidatorAttribute.cs" />
     <Compile Include="Validation\DaysFromNowValidatorAttribute.cs" />
     <Compile Include="Validation\EmailExistsValidatorAttribute.cs" />
@@ -90,6 +96,7 @@
     <Compile Include="Validation\RegexValidatorAttribute.cs" />
     <Compile Include="Validation\UpdatePasswordValidatorAttribute.cs" />
     <Compile Include="Web\UI\CheckboxInputElement.cs" />
+    <Compile Include="Web\UI\StandardFormsPage.cs" />
     <Compile Include="Web\UI\FunctionbasedInputElement.cs" />
     <Compile Include="Web\UI\PasswordInputElement.cs" />
     <Compile Include="Web\UI\DropdownInputElement.cs" />
@@ -126,21 +133,6 @@
     <Compile Include="Web\UI\HtmlForm.cs" />
     <Compile Include="Web\UI\IInputElementHandler.cs" />
     <Compile Include="Web\UI\TextboxInputElement.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Package\content\App_Data\Composite\DynamicTypeForms\CompositeC1Contrib\FormBuilder\Data\Types\IDefaultFormField.xml" />
-    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\ConfirmMessage.xml" />
-    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\CreateForm.xml" />
-    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\CreateFormField.xml" />
-    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\EditForm.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Package\content\Composite\InstalledPackages\localization\CompositeC1Contrib.FormBuilder.en-us.xml" />
-    <Content Include="Package\content\Composite\InstalledPackages\localization\CompositeC1Contrib.FormBuilder.da-dk.xml" />
-    <Content Include="Package\content\Frontend\js\plugins\jquery.formbuilder.js" />
-    <Content Include="Package\install.xml">
-      <SubType>Designer</SubType>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="Localization.tt">

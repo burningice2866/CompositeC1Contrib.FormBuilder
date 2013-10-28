@@ -1,8 +1,8 @@
-﻿@inherits CompositeC1Contrib.FormBuilder.Web.UI.DynamicBasedFormsPage
+﻿@inherits CompositeC1Contrib.FormBuilder.Web.UI.StandardFormsPage
 
 @if (IsSuccess && (SuccessResponse != null && !SuccessResponse.IsEmpty))
 {
-	@Html.C1().Markup(SuccessResponse)
+    @Html.C1().Markup(SuccessResponse)
 }
 else
 {    

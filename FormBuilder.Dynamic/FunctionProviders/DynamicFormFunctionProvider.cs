@@ -15,11 +15,20 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
         {
             get
             {
-                var forms = DynamicFormsFacade.GetFormDefinitions();
-
-                foreach (var form in forms)
+                var definitions = DynamicFormsFacade.GetFormDefinitions();
+                foreach (var def in definitions)
                 {
-                    yield return new DynamicFormFunction(form);
+                    IFunction function = null;
+                    if (!FunctionFacade.TryGetFunction(out function, def.Name))
+                    {
+                        yield return new StandardFormFunction(def.Model, () =>
+                        {
+                            foreach (var handler in def.SubmitHandlers)
+                            {
+                                handler.Submit(def.Model);
+                            }
+                        }, def.FormExecutor);
+                    }                    
                 }
             }
         }

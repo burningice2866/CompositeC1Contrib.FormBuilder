@@ -31,7 +31,13 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                     IFunction function = null;
                     if (!FunctionFacade.TryGetFunction(out function, functionName))
                     {
-                        yield return new POCOFormFunction(type);
+                        var instance = (IPOCOForm)Activator.CreateInstance(type);
+                        var model = POCOFormsFacade.FromInstance(instance, null);
+
+                        yield return new StandardFormFunction(model, () =>
+                        {
+                            instance.Submit();
+                        }, null);
                     }
                 }
             }

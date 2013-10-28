@@ -5,7 +5,7 @@
 
   <mi:PackageInformation name="Contribution.CompositeC1Contrib.FormBuilder.Dynamic"
                          groupName="Contribution.CompositeC1Contrib"
-                         version="0.7.0" author="@burningice" website="http://compositec1contrib.codeplex.com"
+                         version="0.7.1" author="@burningice" website="http://compositec1contrib.codeplex.com"
                          readMoreUrl="http://compositec1contrib.codeplex.com"
                          id="9fbd6717-a688-4009-803e-7b4da614fd78"
                          canBeUninstalled="true"
@@ -18,7 +18,6 @@
   <mi:PackageFragmentInstallers>
     <mi:Add installerType="Composite.Core.PackageSystem.PackageFragmentInstallers.FilePackageFragmentInstaller, Composite" uninstallerType="Composite.Core.PackageSystem.PackageFragmentInstallers.FilePackageFragmentUninstaller, Composite">
       <Files>
-        <File sourceFilename="~\content\App_Data\Razor\FormBuilder\DynamicFormExecutor.cshtml" targetFilename="~\App_Data\Razor\FormBuilder\DynamicFormExecutor.cshtml" allowOverwrite="true" />
         <File sourceFilename="~\Bin\CompositeC1Contrib.FormBuilder.Dynamic.dll" targetFilename="~\Bin\CompositeC1Contrib.FormBuilder.Dynamic.dll" allowOverwrite="true" />
       </Files>
 

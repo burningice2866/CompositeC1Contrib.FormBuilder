@@ -80,6 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="C1Console\Actions\DeleteSubmitHandlerActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteDataSourceActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteFormActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteStringBasedDataSourceEntryActionToken.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="C1Console\ElementProvider\FormFolderEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormInstanceEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormElementProviderEntityTokenHandler.cs" />
+    <Compile Include="C1Console\EntityTokens\FormSubmitHandlerEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\StringBasedDataSourceEntryEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormFieldDataSourceEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormFieldEntityToken.cs" />
@@ -99,20 +101,27 @@
     <Compile Include="C1Console\Workflows\AddDataSourceWorkflow.designer.cs">
       <DependentUpon>AddDataSourceWorkflow.cs</DependentUpon>
     </Compile>
+    <Compile Include="C1Console\Workflows\AddSubmitHandlerWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="C1Console\Workflows\AddSubmitHandlerWorkflow.designer.cs">
+      <DependentUpon>AddSubmitHandlerWorkflow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="C1Console\Workflows\EditEmailSubmitHandlerWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="C1Console\Workflows\EditEmailSubmitHandlerWorkflow.Designer.cs">
+      <DependentUpon>EditEmailSubmitHandlerWorkflow.cs</DependentUpon>
+    </Compile>
     <Compile Include="C1Console\Workflows\EditFormWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="C1Console\Workflows\EditFormWorkflow.Designer.cs">
       <DependentUpon>EditFormWorkflow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Configuration\DynamicSection.cs" />
     <Compile Include="DynamicFormDefinition.cs" />
-    <Compile Include="FunctionProviders\DynamicFormFunction.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="FunctionProviders\DynamicFormFunctionEntityToken.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="SubmitHandlers\EmailSubmitHandler.cs" />
+    <Compile Include="SubmitHandlers\FormSubmitHandler.cs" />
     <Compile Include="FunctionProviders\DynamicFormFunctionProvider.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -144,7 +153,6 @@
     <Compile Include="C1Console\ElementProvider\FormBuilderElementProvider.cs" />
     <Compile Include="C1Console\FormBuilderActionProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Web\UI\DynamicBasedFormsPage.cs" />
     <Compile Include="C1Console\Workflows\ConfirmWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -191,6 +199,7 @@
       <DependentUpon>EditFormWorkflow.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)Package\Bin\$(TargetFileName)"

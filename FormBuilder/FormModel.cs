@@ -23,7 +23,6 @@ namespace CompositeC1Contrib.FormBuilder
         public IList<Attribute> Attributes { get; private set; }
         public FormOptions Options { get; set; }
 
-        public Action OnSubmitHandler { get; set; }
         public Action<FormValidationEventArgs> OnValidateHandler { get; set; }
 
         public bool ForceHttps
@@ -52,6 +51,7 @@ namespace CompositeC1Contrib.FormBuilder
         {
             Name = name;
 
+            Options = new FormOptions();
             Fields = new List<FormField>();
             ValidationResult = new List<FormValidationRule>();
             Attributes = new List<Attribute>();
@@ -219,7 +219,6 @@ namespace CompositeC1Contrib.FormBuilder
                 if (field.ValueType == typeof(FormFile))
                 {
                     field.Value = files.FirstOrDefault();
-
                 }
                 else if (field.ValueType == typeof(IEnumerable<FormFile>))
                 {

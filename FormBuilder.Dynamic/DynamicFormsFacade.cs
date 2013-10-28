@@ -6,6 +6,7 @@ using System.Web.Hosting;
 using System.Xml.Linq;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
+using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
@@ -58,13 +59,46 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             var root = new XElement("FormBuilder.DynamicForm",
                 new XAttribute("name", definition.Name));
 
+            var metaData = new XElement("MetaData");
+
             if (!String.IsNullOrEmpty(definition.FormExecutor))
             {
-                var metaData = new XElement("MetaData");
-
                 metaData.Add(new XElement("FormExecutor",
                     new XAttribute("functionName", definition.FormExecutor)));
+            }
 
+            if (definition.SubmitHandlers.Any())
+            {
+                var submitHandlers = new XElement("SubmitHandlers");
+
+                foreach (var handler in definition.SubmitHandlers)
+                {
+                    var handlerElement = new XElement("Add",
+                        new XAttribute("Name", handler.Name),
+                        new XAttribute("Type", handler.GetType().AssemblyQualifiedName));
+
+                    if (handler is EmailSubmitHandler)
+                    {
+                        var emailHandler = (EmailSubmitHandler)handler;
+
+                        handlerElement.Add(new XAttribute("IncludeAttachments", emailHandler.IncludeAttachments));
+                        handlerElement.Add(new XAttribute("From", emailHandler.From));
+                        handlerElement.Add(new XAttribute("To", emailHandler.To));
+                        handlerElement.Add(new XAttribute("Cc", emailHandler.Cc));
+                        handlerElement.Add(new XAttribute("Bcc", emailHandler.Bcc));
+
+                        handlerElement.Add(new XElement("Subject", emailHandler.Subject));
+                        handlerElement.Add(new XElement("Body", emailHandler.Body));
+                    }
+
+                    submitHandlers.Add(handlerElement);
+                }
+
+                metaData.Add(submitHandlers);
+            }
+
+            if (metaData.HasElements)
+            {
                 root.Add(metaData);
             }
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:f="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0">
+  <cms:bindings>
+    <cms:binding name="DataSourceType" type="System.String" />
+  </cms:bindings>
+
+  <cms:layout label="Add datasource">
+    <FieldGroup>
+      <KeySelector Label="Select datasource type" OptionsKeyField="Key" OptionsLabelField="Value" Required="true">
+        <KeySelector.Options>
+          <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows.AddDataSourceWorkflow, CompositeC1Contrib.FormBuilder.Dynamic" Method="GetDataSourceTypes" />
+        </KeySelector.Options>
+
+        <KeySelector.Selected>
+          <cms:bind source="DataSourceType" />
+        </KeySelector.Selected>
+      </KeySelector>
+    </FieldGroup>
+  </cms:layout>
+</cms:formdefinition>

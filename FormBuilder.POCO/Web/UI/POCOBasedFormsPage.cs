@@ -1,25 +1,55 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Web;
 
+using Composite.AspNet.Razor;
+using Composite.Functions;
+
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public abstract class POCOBasedFormsPage<T> : FormsPage where T : IPOCOForm
     {
-        protected T Form { get; private set; }
-
-        protected override FormModel ResolveFormModel()
+        protected T _form = Activator.CreateInstance<T>();
+        protected T Form
         {
-            Form = Activator.CreateInstance<T>();
+            get { return _form; }
+        }
 
-            return FromBaseForm<T>(Form, Options);
+        private FormBuilderRequestContext _context;
+        protected override FormBuilderRequestContext RenderingContext
+        {
+            get
+            {
+                if (_context == null)
+                {
+                    var model = POCOFormsFacade.FromType<T>(Form, Options);
+
+                    _context = FormBuilderRequestContext.Setup(model, OnMappedValues, () =>
+                    {
+                        Form.Submit();
+                    });
+                }
+
+                return _context;
+            }
         }
 
         public override void ExecutePageHierarchy()
         {
+            var functionContext = new FunctionContextContainer(FunctionContextContainer, new Dictionary<string, object>
+            {
+                { "RenderingContext", RenderingContext },
+                { "FormModel", RenderingContext.RenderingModel }
+            });
+
+            var functionContext_field = typeof(RazorHelper).GetField("PageContext_FunctionContextContainer", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
+
+            PageData[functionContext_field] = functionContext;
+
             if (!IsOwnSubmit)
             {
                 if (Form is IProvidesDefaultValues)
@@ -37,14 +67,14 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 }
             }
 
-            base.ExecutePageHierarchy();            
+            base.ExecutePageHierarchy();
         }
 
-        protected override void OnMappedValues()
+        private void OnMappedValues(FormModel model)
         {
             foreach (var prop in typeof(T).GetProperties())
             {
-                var field = RenderingModel.Fields.SingleOrDefault(f => f.Name == prop.Name);
+                var field = model.Fields.SingleOrDefault(f => f.Name == prop.Name);
                 if (field != null && field.ValueType == prop.PropertyType)
                 {
                     prop.SetValue(Form, field.Value, null);
@@ -56,7 +86,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             var sb = new StringBuilder();
             var prop = GetProperty(fieldSelector);
-            var field = RenderingModel.Fields.Single(f => f.Name == prop.Name);            
+            var field = RenderingContext.RenderingModel.Fields.Single(f => f.Name == prop.Name);
 
             FormRenderer.DependencyAttributeFor(field, sb);
 
@@ -66,7 +96,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         protected IHtmlString FieldFor(Expression<Func<T, object>> fieldSelector)
         {
             var prop = GetProperty(fieldSelector);
-            var field = RenderingModel.Fields.Single(f => f.Name == prop.Name);
+            var field = RenderingContext.RenderingModel.Fields.Single(f => f.Name == prop.Name);
 
             return FormRenderer.FieldFor(field);
         }
@@ -74,7 +104,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         protected IHtmlString NameFor(Expression<Func<T, object>> fieldSelector)
         {
             var prop = GetProperty(fieldSelector);
-            var field = RenderingModel.Fields.Single(f => f.Name == prop.Name);
+            var field = RenderingContext.RenderingModel.Fields.Single(f => f.Name == prop.Name);
 
             return FormRenderer.NameFor(field);
         }
@@ -104,42 +134,6 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             }
 
             return (PropertyInfo)memberExpression.Member;
-        }
-
-        private FormModel FromBaseForm<T>(T instance, FormOptions options) where T : IPOCOForm
-        {
-            var formType = typeof(T);
-
-            var model = new FormModel(formType.FullName)
-            {
-                Options = options,
-                OnSubmitHandler = instance.Submit
-            };
-
-            if (instance is IValidationHandler)
-            {
-                model.OnValidateHandler = ((IValidationHandler)instance).OnValidate;
-            }
-
-            foreach (var itm in formType.GetCustomAttributes(true).Cast<Attribute>())
-            {
-                model.Attributes.Add(itm);
-            }
-
-            foreach (var prop in formType.GetProperties().Where(p => p.CanRead && p.CanWrite))
-            {
-                var attributes = prop.GetCustomAttributes(true).Cast<Attribute>().ToList();
-                var field = new FormField(model, prop.Name, prop.PropertyType, attributes);
-
-                model.Fields.Add(field);
-            }
-
-            return model;
-        }
-
-        public override void Execute()
-        {
-            
         }
     }
 }

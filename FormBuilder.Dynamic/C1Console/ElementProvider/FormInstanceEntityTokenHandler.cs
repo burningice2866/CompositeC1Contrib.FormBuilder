@@ -56,6 +56,33 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
             });
 
             yield return fieldElement;
+
+            var submitHandlersElementHandle = context.CreateElementHandle(new FormFolderEntityToken(token.FormName, FormFolderType.SubmitHandlers));
+            var submitHandlersElement = new Element(submitHandlersElementHandle)
+            {
+                VisualData = new ElementVisualizedData
+                {
+                    Label = "Submit handlers",
+                    ToolTip = "Submit handlers",
+                    HasChildren = true,
+                    Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
+                    OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                }
+            };
+
+            addActionToken = new WorkflowActionToken(typeof(AddSubmitHandlerWorkflow), new PermissionType[] { PermissionType.Administrate });
+            submitHandlersElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
+            {
+                VisualData = new ActionVisualizedData
+                {
+                    Label = "Add",
+                    ToolTip = "Add",
+                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                    ActionLocation = FormBuilderElementProvider.ActionLocation
+                }
+            });
+
+            yield return submitHandlersElement;
         }
     }
 }

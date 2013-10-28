@@ -5,18 +5,13 @@ using Composite.C1Console.Security;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
 {
-    public enum FormFolderType
+    [SecurityAncestorProvider(typeof(FormSubmitHandlerAncestorProvider))]
+    public class FormSubmitHandlerEntityToken : EntityToken
     {
-        Fields,
-        SubmitHandlers
-    }
-
-    [SecurityAncestorProvider(typeof(FormFolderAncestorProvider))]
-    public class FormFolderEntityToken : EntityToken
-    {
+        private string _type;
         public override string Type
         {
-            get { return String.Empty; }
+            get { return _type; }
         }
 
         private string _source;
@@ -33,18 +28,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
 
         public string FormName
         {
-            get { return Id; }
+            get { return _source; }
         }
 
-        public FormFolderType FolderType
+        public string Name
         {
-            get { return (FormFolderType)Enum.Parse(typeof(FormFolderType), Source); }
+            get { return _id; }
         }
 
-        public FormFolderEntityToken(string formName, FormFolderType folderType)
+        public FormSubmitHandlerEntityToken(Type type, string formName, string name)
         {
-            _id = formName;
-            _source = folderType.ToString();
+            _type = type.AssemblyQualifiedName;
+            _source = formName;
+            _id = name;
         }
 
         public override string Serialize()
@@ -60,18 +56,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
 
             EntityToken.DoDeserialize(serializedEntityToken, out type, out source, out id);
 
-            return new FormFolderEntityToken(id, (FormFolderType)Enum.Parse(typeof(FormFolderType), source));
+            return new FormSubmitHandlerEntityToken(System.Type.GetType(type), source, id);
         }
     }
 
-    public class FormFolderAncestorProvider : ISecurityAncestorProvider
+    public class FormSubmitHandlerAncestorProvider : ISecurityAncestorProvider
     {
         public IEnumerable<EntityToken> GetParents(EntityToken entityToken)
         {
-            var fieldFolderToken = entityToken as FormFolderEntityToken;
-            if (fieldFolderToken != null)
+            var dataSourceToken = entityToken as FormSubmitHandlerEntityToken;
+            if (dataSourceToken != null)
             {
-                yield return new FormInstanceEntityToken(fieldFolderToken.Id);
+                yield return new FormFolderEntityToken(dataSourceToken.FormName, FormFolderType.SubmitHandlers);
             }
         }
     }

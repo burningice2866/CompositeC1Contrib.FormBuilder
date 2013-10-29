@@ -14,8 +14,10 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
     public class StandardFormFunction : IFunction
     {
         private FormModel _model;
-        private Action _onSubmit;
-        private string _overrideFormExecutor;
+        public Action<FormModel> OnMappedValues { get; set; }
+        public Action<FormModel> SetDefaultValues { get; set; }
+        public Action OnSubmit { get; set; }
+        public string OverrideFormExecutor { get; set; }
 
         public string Namespace { get; private set; }
         public string Name { get; private set; }
@@ -48,7 +50,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             }
         }
 
-        public StandardFormFunction(FormModel model, Action onSubmit, string overrideFormExecutor)
+        public StandardFormFunction(FormModel model)
         {
             var parts = model.Name.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -56,13 +58,11 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             Name = parts.Skip(parts.Length - 1).Take(1).Single();
 
             _model = model;
-            _onSubmit = onSubmit;
-            _overrideFormExecutor = overrideFormExecutor;
         }
 
         public object Execute(ParameterList parameters, FunctionContextContainer context)
         {
-            var renderingContext = FormBuilderRequestContext.Setup(_model, null, _onSubmit);
+            var renderingContext = FormBuilderRequestContext.Setup(_model, OnMappedValues, OnSubmit, SetDefaultValues);
 
             var newContext = new FunctionContextContainer(context, new Dictionary<string, object>
             {
@@ -73,9 +73,9 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             typeof(ParameterList).GetField("_functionContextContainer", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(parameters, newContext);
 
             var formExecutorFunction = FormBuilderSection.GetSection().DefaultFunctionExecutor;
-            if (!String.IsNullOrEmpty(_overrideFormExecutor))
+            if (!String.IsNullOrEmpty(OverrideFormExecutor))
             {
-                formExecutorFunction = _overrideFormExecutor;
+                formExecutorFunction = OverrideFormExecutor;
             }
 
             var formExecutor = FunctionFacade.GetFunction(formExecutorFunction);

@@ -28,10 +28,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 {
                     var model = POCOFormsFacade.FromType<T>(Form, Options);
 
-                    _context = FormBuilderRequestContext.Setup(model, OnMappedValues, () =>
-                    {
-                        Form.Submit();
-                    });
+                    _context = FormBuilderRequestContext.Setup(model, 
+                        (m) => POCOFormsFacade.MapValues(Form, m), 
+                        Form.Submit,
+                        (m) => POCOFormsFacade.SetDefaultValues(Form, m)
+                    );
                 }
 
                 return _context;
@@ -50,36 +51,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             PageData[functionContext_field] = functionContext;
 
-            if (!IsOwnSubmit)
-            {
-                if (Form is IProvidesDefaultValues)
-                {
-                    ((IProvidesDefaultValues)Form).SetDefaultValues();
-                }
-
-                foreach (var prop in typeof(T).GetProperties())
-                {
-                    var field = RenderingModel.Fields.SingleOrDefault(f => f.Name == prop.Name);
-                    if (field != null && field.ValueType == prop.PropertyType)
-                    {
-                        field.Value = prop.GetValue(Form, null);
-                    }
-                }
-            }
-
             base.ExecutePageHierarchy();
-        }
-
-        private void OnMappedValues(FormModel model)
-        {
-            foreach (var prop in typeof(T).GetProperties())
-            {
-                var field = model.Fields.SingleOrDefault(f => f.Name == prop.Name);
-                if (field != null && field.ValueType == prop.PropertyType)
-                {
-                    prop.SetValue(Form, field.Value, null);
-                }
-            }
         }
 
         protected IHtmlString DependencyAttributeFor(Expression<Func<T, object>> fieldSelector)

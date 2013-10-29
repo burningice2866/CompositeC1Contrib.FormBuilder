@@ -42,5 +42,34 @@ namespace CompositeC1Contrib.FormBuilder
         {
             return FromInstance(instance, options);
         }
+
+        public static void MapValues(IPOCOForm instance, FormModel model)
+        {
+            foreach (var prop in instance.GetType().GetProperties())
+            {
+                var field = model.Fields.SingleOrDefault(f => f.Name == prop.Name);
+                if (field != null && field.ValueType == prop.PropertyType)
+                {
+                    prop.SetValue(instance, field.Value, null);
+                }
+            }
+        }
+
+        public static void SetDefaultValues(IPOCOForm instance, FormModel model)
+        {
+            if (instance is IProvidesDefaultValues)
+            {
+                ((IProvidesDefaultValues)instance).SetDefaultValues();
+            }
+
+            foreach (var prop in instance.GetType().GetProperties())
+            {
+                var field = model.Fields.SingleOrDefault(f => f.Name == prop.Name);
+                if (field != null && field.ValueType == prop.PropertyType)
+                {
+                    field.Value = prop.GetValue(instance, null);
+                }
+            }
+        }
     }
 }

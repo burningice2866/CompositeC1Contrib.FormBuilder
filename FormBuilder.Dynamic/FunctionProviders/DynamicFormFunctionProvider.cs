@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Xml.Linq;
 
 using Composite.Functions;
 using Composite.Functions.Plugins.FunctionProvider;
@@ -21,14 +22,33 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                     IFunction function = null;
                     if (!FunctionFacade.TryGetFunction(out function, def.Name))
                     {
-                        yield return new StandardFormFunction(def.Model, () =>
+                        yield return new StandardFormFunction(def.Model)
                         {
-                            foreach (var handler in def.SubmitHandlers)
+                            OnSubmit = () =>
                             {
-                                handler.Submit(def.Model);
-                            }
-                        }, def.FormExecutor);
-                    }                    
+                                foreach (var handler in def.SubmitHandlers)
+                                {
+                                    handler.Submit(def.Model);
+                                }
+                            },
+
+                            SetDefaultValues = (m) =>
+                            {
+                                foreach (var field in m.Fields)
+                                {
+                                    XElement defaultValueSetter;
+                                    if (def.DefaultValues.TryGetValue(field.Name, out defaultValueSetter))
+                                    {
+                                        var runtimeTree = FunctionFacade.BuildTree(defaultValueSetter);
+
+                                        field.Value = runtimeTree.GetValue();
+                                    }
+                                }
+                            },
+
+                            OverrideFormExecutor = def.FormExecutor
+                        };
+                    }
                 }
             }
         }

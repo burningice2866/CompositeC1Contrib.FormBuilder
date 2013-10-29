@@ -135,6 +135,9 @@
       <DependentUpon>EditFormWorkflow.cs</DependentUpon>
     </Compile>
     <Compile Include="DynamicFormDefinition.cs" />
+    <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\FunctionSelector.ascx.cs">
+      <DependentUpon>FunctionSelector.ascx</DependentUpon>
+    </Content>
     <Compile Include="SubmitHandlers\EmailSubmitHandler.cs" />
     <Compile Include="SubmitHandlers\FormSubmitHandler.cs" />
     <Compile Include="FunctionProviders\DynamicFormFunctionProvider.cs">
@@ -190,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Package\config\App_Data\Composite\composite.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="C1Console\Workflows\AddDataSourceWorkflow.layout">
@@ -232,6 +236,10 @@
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditFieldValidatorWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditFormFieldWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditFormWorkflow.xml" />
+    <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\FunctionSelector.ascx">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Package\install.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

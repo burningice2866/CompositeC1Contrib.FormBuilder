@@ -8,9 +8,10 @@ namespace CompositeC1Contrib.FormBuilder
     public class FormBuilderRequestContext
     {
         private HttpContextBase ctx;
-        
+
         private Action<FormModel> OnMappedValues;
-        private Action OnSubmit;
+        private Action<FormModel> SetDefaultValues;
+        private Action OnSubmit;        
 
         public bool IsOwnSubmit
         {
@@ -24,7 +25,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public FormModel RenderingModel { get; private set; }
 
-        private FormBuilderRequestContext(FormModel model, Action<FormModel> OnMappedValues, Action OnSubmit)
+        private FormBuilderRequestContext(FormModel model, Action<FormModel> OnMappedValues, Action OnSubmit, Action<FormModel> SetDefaultValues)
         {
             ctx = new HttpContextWrapper(HttpContext.Current);
 
@@ -32,12 +33,13 @@ namespace CompositeC1Contrib.FormBuilder
             FormModel.SetCurrent(RenderingModel.Name, RenderingModel);
 
             this.OnMappedValues = OnMappedValues;
+            this.SetDefaultValues = SetDefaultValues;
             this.OnSubmit = OnSubmit;
         }
 
-        public static FormBuilderRequestContext Setup(FormModel model, Action<FormModel> OnMappedValues, Action OnSubmit)
+        public static FormBuilderRequestContext Setup(FormModel model, Action<FormModel> OnMappedValues, Action OnSubmit, Action<FormModel> SetDefaultValues)
         {
-            var requestContext = new FormBuilderRequestContext(model, OnMappedValues, OnSubmit);
+            var requestContext = new FormBuilderRequestContext(model, OnMappedValues, OnSubmit, SetDefaultValues);
 
             var Request = requestContext.ctx.Request;
             var Response = requestContext.ctx.Response;
@@ -78,6 +80,13 @@ namespace CompositeC1Contrib.FormBuilder
                 }
 
                 requestContext.RenderingModel.Validate();
+            }
+            else
+            {
+                if (SetDefaultValues != null)
+                {
+                    SetDefaultValues(model);
+                }
             }
 
             return requestContext;

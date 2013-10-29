@@ -26,7 +26,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                     if (formName != null)
                     {
                         functionName = formName.FullName;
-                    }                    
+                    }
 
                     IFunction function = null;
                     if (!FunctionFacade.TryGetFunction(out function, functionName))
@@ -34,10 +34,12 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                         var instance = (IPOCOForm)Activator.CreateInstance(type);
                         var model = POCOFormsFacade.FromInstance(instance, null);
 
-                        yield return new StandardFormFunction(model, () =>
+                        yield return new StandardFormFunction(model)
                         {
-                            instance.Submit();
-                        }, null);
+                            OnSubmit = instance.Submit,
+                            OnMappedValues = (m) => POCOFormsFacade.SetDefaultValues(instance, m),
+                            SetDefaultValues = (m) => POCOFormsFacade.SetDefaultValues(instance, m)
+                        };
                     }
                 }
             }

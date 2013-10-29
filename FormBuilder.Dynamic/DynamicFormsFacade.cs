@@ -67,6 +67,22 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     new XAttribute("functionName", definition.FormExecutor)));
             }
 
+            if (definition.DefaultValues.Any()) 
+            {
+                var defaultValues = new XElement("DefaultValues");
+
+                foreach (var kvp in definition.DefaultValues)
+                {
+                    var defaultValueElement = new XElement("Add",
+                        new XAttribute("field", kvp.Key),
+                        new XAttribute("functionMarkup", kvp.Value.ToString()));
+
+                    defaultValues.Add(defaultValueElement);
+                }
+
+                metaData.Add(defaultValues);
+            }
+
             if (definition.SubmitHandlers.Any())
             {
                 var submitHandlers = new XElement("SubmitHandlers");

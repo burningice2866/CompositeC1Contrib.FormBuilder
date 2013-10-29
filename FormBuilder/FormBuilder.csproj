@@ -139,9 +139,26 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Localization.cs</LastGenOutput>
     </None>
+    <None Include="Package\config\App_Data\Composite\composite.config" />
+    <None Include="Package\config\web.config" />
+    <None Include="Package\content\App_Data\Razor\FormBuilder\StandardFormExecutor.cshtml">
+      <SubType>Code</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Package\content\Composite\InstalledPackages\localization\CompositeC1Contrib.FormBuilder.da-dk.xml" />
+    <Content Include="Package\content\Composite\InstalledPackages\localization\CompositeC1Contrib.FormBuilder.en-us.xml" />
+    <Content Include="Package\content\Frontend\js\plugins\jquery.formbuilder.js" />
+    <Content Include="Package\install.xml">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Package\content\App_Data\Composite\DynamicTypeForms\CompositeC1Contrib\FormBuilder\Data\Types\" />
+    <Folder Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

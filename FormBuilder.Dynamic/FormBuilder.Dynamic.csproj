@@ -211,6 +211,9 @@
     <EmbeddedResource Include="C1Console\Workflows\AddStringBasedDataSourceEntryWorkflow.layout">
       <DependentUpon>AddStringBasedDataSourceEntryWorkflow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="C1Console\Workflows\AddSubmitHandlerWorkflow.layout">
+      <DependentUpon>AddSubmitHandlerWorkflow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="C1Console\Workflows\ConfirmWorkflow.layout">
       <DependentUpon>ConfirmWorkflow.cs</DependentUpon>
     </EmbeddedResource>

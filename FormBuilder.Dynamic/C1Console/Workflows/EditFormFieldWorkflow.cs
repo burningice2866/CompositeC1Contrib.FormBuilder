@@ -39,6 +39,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 Bindings.Add("PlaceholderText", field.PlaceholderText);
                 Bindings.Add("Help", field.Help);
                 Bindings.Add("DefaultValue", defaultValue);
+                Bindings.Add("InputElementType", field.InputTypeHandler.GetType().AssemblyQualifiedName);
             }
         }
 
@@ -75,6 +76,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var placeholderText = GetBinding<string>("PlaceholderText");
             var help = GetBinding<string>("Help");
             var defaultValue = GetBinding<string>("DefaultValue");
+
+            var inputElementType = Type.GetType(GetBinding<string>("InputElementType"));
 
             var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
             var field = definition.Model.Fields.Single(f => f.Name == fieldToken.FieldName);
@@ -122,6 +125,15 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             {
                 definition.DefaultValues.Add(field.Name, XElement.Parse(defaultValue));
             }
+
+            var inputTypeAttribute = field.Attributes.OfType<InputElementProviderAttribute>().FirstOrDefault();
+            if (inputTypeAttribute != null)
+            {
+                field.Attributes.Remove(inputTypeAttribute);
+            }
+
+            inputTypeAttribute = new TypeBasedInputElementProviderAttribute(inputElementType);
+            field.Attributes.Add(inputTypeAttribute);
 
             DynamicFormsFacade.SaveForm(definition);
 

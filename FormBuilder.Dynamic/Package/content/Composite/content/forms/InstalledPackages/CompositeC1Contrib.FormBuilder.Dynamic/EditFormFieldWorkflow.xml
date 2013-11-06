@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0" xmlns:formbuilder="https://bitbucket.org/burningice/compositec1contrib.formbuilder/1.0">
+<cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0" xmlns:f="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:formbuilder="https://bitbucket.org/burningice/compositec1contrib.formbuilder/1.0">
   <cms:bindings>
     <cms:binding name="FieldName" type="System.String" />
     <cms:binding name="Label" type="System.String" />
     <cms:binding name="PlaceholderText" type="System.String" />
     <cms:binding name="Help" type="System.String" />
     <cms:binding name="DefaultValue" type="System.String" optional="true" />
+    <cms:binding name="InputElementType" type="System.String" />
   </cms:bindings>
 
   <cms:layout>
@@ -43,6 +44,16 @@
           <cms:bind source="DefaultValue" />
         </formbuilder:FunctionSelector.FunctionMarkup>
       </formbuilder:FunctionSelector>
+
+      <KeySelector Label="Select field type" OptionsKeyField="Key" OptionsLabelField="Value" Required="true">
+        <KeySelector.Options>
+          <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows.AddFormFieldWorkflow, CompositeC1Contrib.FormBuilder.Dynamic" Method="GetInputElementTypes" />
+        </KeySelector.Options>
+
+        <KeySelector.Selected>
+          <cms:bind source="InputElementType" />
+        </KeySelector.Selected>
+      </KeySelector>
     </FieldGroup>
   </cms:layout>
 </cms:formdefinition>

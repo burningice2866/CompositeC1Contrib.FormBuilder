@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
 using CompositeC1Contrib.FormBuilder.Validation;
+using CompositeC1Contrib.FormBuilder.Web.UI;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
@@ -38,6 +39,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             var fields = xml.Element("Fields").Elements("Add");
             foreach (var f in fields)
             {
+                var fieldValueType = typeof(string);
                 var attrs = new List<Attribute>();
                 var fieldName = f.Attribute("name").Value;
 
@@ -53,18 +55,35 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     attrs.Add(new FieldHelpAttribute(help.Value));
                 }
 
+                var inputElementType = f.Attribute("inputElementType");
+                if (inputElementType != null)
+                {
+                    var type = Type.GetType(inputElementType.Value);
+
+                    attrs.Add(new TypeBasedInputElementProviderAttribute(type));
+
+                    if (type == typeof(CheckboxInputElement))
+                    {
+                        fieldValueType = typeof(bool);
+                    }
+                }
+
                 foreach (var el in f.Elements())
                 {
                     switch (el.Name.LocalName)
                     {
-                        case "InputElement": parseElementType(el, attrs); break;
                         case "ValidationRules": parseValidationRules(el, attrs); break;
                         case "DataSource": parseDataSource(el, attrs); break;
                         case "Dependencies": parseDependencies(el, attrs); break;
                     }
                 }
 
-                var formField = new FormField(model, fieldName, typeof(string), attrs);
+                var formField = new FormField(model, fieldName, fieldValueType, attrs);
+
+                if (formField.InputTypeHandler.GetType() == typeof(CheckboxInputElement) && formField.DataSource != null)
+                {
+                    formField.ValueType = typeof(IEnumerable<string>);
+                }
 
                 model.Fields.Add(formField);
             }
@@ -205,14 +224,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
                 attrs.Add(ruleAttribute);
             }
-        }
-
-        private static void parseElementType(XElement el, List<Attribute> attrs)
-        {
-            var typeString = el.Element("Type").Value;
-            var type = Type.GetType(typeString);
-
-            attrs.Add(new TypeBasedInputElementProviderAttribute(type));
         }
     }
 }

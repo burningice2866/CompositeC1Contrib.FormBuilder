@@ -161,7 +161,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             this.initializationState.Activities.Add(this.stateInitializationActivity);
             this.initializationState.Name = "initializationState";
             // 
-            // AddDataSourceWorkflow
+            // AddSubmitHandlerWorkflow
             // 
             this.Activities.Add(this.initializationState);
             this.Activities.Add(this.finalState);
@@ -170,7 +170,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             this.CompletedStateName = "finalState";
             this.DynamicUpdateCondition = null;
             this.InitialStateName = "initializationState";
-            this.Name = "AddDataSourceWorkflow";
+            this.Name = "AddSubmitHandlerWorkflow";
             this.CanModifyActivities = false;
 
         }
@@ -220,6 +220,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         private StateActivity startState;
 
         private StateActivity initializationState;
+
 
 
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -19,12 +20,19 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             if (field.ValueType == typeof(bool))
             {
+                var bValue = false;
+                try
+                {
+                    bValue = Convert.ToBoolean(value);
+                }
+                catch { }
+
                 sb.AppendFormat("<input type=\"{0}\" name=\"{1}\" id=\"{2}\" value=\"on\" title=\"{3}\" {4}",
                     ElementName,
                     HttpUtility.HtmlAttributeEncode(field.Name),
                     HttpUtility.HtmlAttributeEncode(field.Id),
                     HttpUtility.HtmlAttributeEncode(field.Label.Label),
-                    FormRenderer.WriteChecked((bool)value, "checked"));
+                    FormRenderer.WriteChecked(bValue, "checked"));
 
                 FormRenderer.RenderExtraHtmlTags(sb, field, htmlAttributes);
 
@@ -36,7 +44,20 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 if (checkboxListOptions != null)
                 {
                     var ix = 0;
-                    var list = value == null ? Enumerable.Empty<string>() : (IEnumerable<string>)value;
+                    IEnumerable<string> list;
+
+                    if (value == null)
+                    {
+                        list = Enumerable.Empty<string>();
+                    }
+                    else if (value is string)
+                    {
+                        list = new[] { (string)value };
+                    }
+                    else
+                    {
+                        list = (IEnumerable<string>)value;
+                    }
 
                     foreach (var item in checkboxListOptions)
                     {

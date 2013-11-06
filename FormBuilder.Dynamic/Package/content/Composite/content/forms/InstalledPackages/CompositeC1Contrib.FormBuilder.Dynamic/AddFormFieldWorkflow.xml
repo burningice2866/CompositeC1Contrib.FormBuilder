@@ -2,6 +2,7 @@
 <cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:f="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0">
   <cms:bindings>
     <cms:binding name="FieldName" type="System.String" />
+    <cms:binding name="InputElementType" type="System.String" />
   </cms:bindings>
 
   <cms:layout label="Add a new form field">
@@ -11,6 +12,16 @@
           <cms:bind source="FieldName" />
         </TextBox.Text>
       </TextBox>
+
+      <KeySelector Label="Select field type" OptionsKeyField="Key" OptionsLabelField="Value" Required="true">
+        <KeySelector.Options>
+          <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows.AddFormFieldWorkflow, CompositeC1Contrib.FormBuilder.Dynamic" Method="GetInputElementTypes" />
+        </KeySelector.Options>
+
+        <KeySelector.Selected>
+          <cms:bind source="InputElementType" />
+        </KeySelector.Selected>
+      </KeySelector>
     </FieldGroup>
   </cms:layout>
 </cms:formdefinition>

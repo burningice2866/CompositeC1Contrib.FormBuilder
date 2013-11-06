@@ -16,7 +16,7 @@ namespace CompositeC1Contrib.FormBuilder
         public string Name { get; set; }
         public IList<Attribute> Attributes { get; private set; }
         public object Value { get; set; }
-        public Type ValueType { get; private set; }
+        public Type ValueType { get; set; }
 
         public string Id
         {

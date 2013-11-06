@@ -98,13 +98,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                         var emailHandler = (EmailSubmitHandler)handler;
 
                         handlerElement.Add(new XAttribute("IncludeAttachments", emailHandler.IncludeAttachments));
-                        handlerElement.Add(new XAttribute("From", emailHandler.From));
-                        handlerElement.Add(new XAttribute("To", emailHandler.To));
-                        handlerElement.Add(new XAttribute("Cc", emailHandler.Cc));
-                        handlerElement.Add(new XAttribute("Bcc", emailHandler.Bcc));
+                        handlerElement.Add(new XAttribute("From", emailHandler.From ?? String.Empty));
+                        handlerElement.Add(new XAttribute("To", emailHandler.To ?? String.Empty));
+                        handlerElement.Add(new XAttribute("Cc", emailHandler.Cc ?? String.Empty));
+                        handlerElement.Add(new XAttribute("Bcc", emailHandler.Bcc ?? String.Empty));
 
-                        handlerElement.Add(new XElement("Subject", emailHandler.Subject));
-                        handlerElement.Add(new XElement("Body", emailHandler.Body));
+                        handlerElement.Add(new XElement("Subject", emailHandler.Subject ?? String.Empty));
+                        handlerElement.Add(new XElement("Body", emailHandler.Body ?? String.Empty));
                     }
 
                     submitHandlers.Add(handlerElement);
@@ -136,8 +136,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
                 if (field.InputTypeHandler != null)
                 {
-                    add.Add(new XElement("InputElement",
-                        new XElement("Type", field.InputTypeHandler.GetType().AssemblyQualifiedName)));
+                    add.Add(new XAttribute("inputElementType", field.InputTypeHandler.GetType().AssemblyQualifiedName));
                 }
 
                 if (field.ValidationAttributes.Any())

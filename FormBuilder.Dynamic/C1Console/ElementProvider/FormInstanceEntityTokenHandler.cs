@@ -5,7 +5,9 @@ using Composite.C1Console.Elements;
 using Composite.C1Console.Security;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
+using Composite.Core.WebClient;
 
+using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
@@ -51,6 +53,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     Label = "Add",
                     ToolTip = "Add",
                     Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                    ActionLocation = FormBuilderElementProvider.ActionLocation
+                }
+            });
+
+            var url = String.Format("InstalledPackages/CompositeC1Contrib.FormBuilder.Dynamic/SortFormFields.aspx?formName={0}", token.FormName);
+            var sortActionToken = new UrlActionToken("Sort fields", UrlUtils.ResolveAdminUrl(url), new PermissionType[] { PermissionType.Administrate });
+            fieldElement.AddAction(new ElementAction(new ActionHandle(sortActionToken))
+            {
+                VisualData = new ActionVisualizedData
+                {
+                    Label = "Sort fields",
+                    ToolTip = "Sort fields",
+                    Icon = new ResourceHandle("Composite.Icons", "cut"),
                     ActionLocation = FormBuilderElementProvider.ActionLocation
                 }
             });

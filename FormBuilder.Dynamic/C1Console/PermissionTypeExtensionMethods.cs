@@ -4,15 +4,15 @@ using System.Text;
 
 using Composite.C1Console.Security;
 
-namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
+namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
 {
-    internal static class PermissionTypeExtensionMethods
+    public static class PermissionTypeExtensionMethods
     {
         public static IEnumerable<PermissionType> FromListOfStrings(this IEnumerable<string> permissionTypeNames)
         {
             if (permissionTypeNames == null) throw new ArgumentNullException("permissionTypeNames");
 
-            foreach (string permissionTypeName in permissionTypeNames)
+            foreach (var permissionTypeName in permissionTypeNames)
             {
                 PermissionType permissionType = (PermissionType)Enum.Parse(typeof(PermissionType), permissionTypeName);
 
@@ -24,9 +24,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
         {
             if (permissionTypes == null) throw new ArgumentNullException("permissionType");
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             bool first = true;
-            foreach (PermissionType permissionType in permissionTypes)
+            foreach (var permissionType in permissionTypes)
             {
                 if (first == false) sb.Append("�");
                 else first = false;
@@ -41,9 +41,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
         {
             if (serializedPermissionTypes == null) throw new ArgumentNullException("serializedPermissionTypes");
 
-            string[] split = serializedPermissionTypes.Split(new[] { '�' }, StringSplitOptions.RemoveEmptyEntries);
+            var split = serializedPermissionTypes.Split(new[] { '�' }, StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (string s in split)
+            foreach (var s in split)
             {
                 yield return (PermissionType)Enum.Parse(typeof(PermissionType), s);
             }

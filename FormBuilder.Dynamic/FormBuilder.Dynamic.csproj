@@ -60,6 +60,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.30506.0\lib\net40\System.Web.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.dll</HintPath>
@@ -135,9 +136,13 @@
       <DependentUpon>EditFormWorkflow.cs</DependentUpon>
     </Compile>
     <Compile Include="DynamicFormDefinition.cs" />
-    <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\FunctionSelector.ascx.cs">
-      <DependentUpon>FunctionSelector.ascx</DependentUpon>
-    </Content>
+    <Compile Include="Web\UI\FunctionSelector.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Web\UI\SortFormFieldsPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\arrow.png" />
     <Compile Include="SubmitHandlers\EmailSubmitHandler.cs" />
     <Compile Include="SubmitHandlers\FormSubmitHandler.cs" />
     <Compile Include="FunctionProviders\DynamicFormFunctionProvider.cs">
@@ -165,9 +170,8 @@
     <Compile Include="C1Console\Actions\DeleteFormFieldActionToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormElementProviderEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormFolderEntityToken.cs" />
-    <Compile Include="C1Console\EntityTokens\PermissionTypeExtensionMethods.cs" />
-    <Compile Include="C1Console\EntityTokens\UrlActionToken.cs" />
-    <Compile Include="C1Console\EntityTokens\UrlActionTokenActionExecutor.cs" />
+    <Compile Include="C1Console\PermissionTypeExtensionMethods.cs" />
+    <Compile Include="C1Console\Actions\UrlActionToken.cs" />
     <Compile Include="C1Console\ElementProvider\FormBuilderElementProvider.cs" />
     <Compile Include="C1Console\FormBuilderActionProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -241,6 +245,9 @@
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditFormWorkflow.xml" />
     <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\FunctionSelector.ascx">
       <SubType>Code</SubType>
+    </Content>
+    <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\SortFormFields.aspx">
+      <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="Package\install.xml" />
   </ItemGroup>

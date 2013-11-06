@@ -22,7 +22,8 @@
       </Files>
 
       <Directories>
-        <Directory sourceDirectory="~\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic" targetDirectory="~\Composite\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic" allowOverwrite="true" deleteTargetDirectory="true" />
+        <Directory sourceDirectory="~\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic" targetDirectory="~\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic" allowOverwrite="true" deleteTargetDirectory="true" />
+        <Directory sourceDirectory="~\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic" targetDirectory="~\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic" allowOverwrite="true" deleteTargetDirectory="true" />
       </Directories>
     </mi:Add>
 

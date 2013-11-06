@@ -1,3 +1,3 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="FunctionSelector.ascx.cs" Inherits="Composite_InstalledPackages_CompositeC1Contrib_Dynamic_FunctionSelector" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="CompositeC1Contrib.FormBuilder.Dynamic.Web.UI.FunctionSelector" %>
 
 <aspui:PostBackDialog runat="server" ID="btnDefaultValueFunctionMarkup" EncodeValue="True" />

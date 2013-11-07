@@ -1,0 +1,41 @@
+using System;
+
+using Composite.C1Console.Workflow;
+using Composite.Core.Xml;
+
+using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
+using CompositeC1Contrib.Workflows;
+
+namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
+{
+    [AllowPersistingWorkflow(WorkflowPersistingType.Idle)]
+    public class EditFormRenderingLayoutWorkflow : Basic1StepEditPageWorkflow
+    {
+        public override string FormDefinitionFileName
+        {
+            get { return "\\InstalledPackages\\CompositeC1Contrib.FormBuilder\\EditFormRenderingLayoutWorkflow.xml"; }
+        }
+
+        public override void OnInitialize(object sender, EventArgs e)
+        {
+            if (!BindingExist("Title"))
+            {
+                var formToken = (FormInstanceEntityToken)EntityToken;
+                var renderingMarkup = FormModelsFacade.GetRenderingLayout(formToken.FormName);
+
+                Bindings.Add("Title", formToken.FormName +" rendering layout");
+                Bindings.Add("RenderingMarkup", renderingMarkup.ToString());
+            }
+        }
+
+        public override void OnSave(object sender, EventArgs e)
+        {
+            var formToken = (FormInstanceEntityToken)EntityToken;
+            var renderingMarkup = GetBinding<string>("RenderingMarkup");
+
+            FormModelsFacade.SaveRenderingLayout(formToken.FormName, XhtmlDocument.Parse(renderingMarkup));
+
+            SetSaveStatus(true);
+        }
+    }
+}

@@ -1,6 +1,7 @@
 using System;
 using System.Workflow.Activities;
 
+using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.Workflows;
 
@@ -29,7 +30,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             DynamicFormsFacade.SaveForm(model);
 
             var treeRefresher = CreateAddNewTreeRefresher(EntityToken);
-            treeRefresher.PostRefreshMesseges(new FormInstanceEntityToken(formName));
+            treeRefresher.PostRefreshMesseges(new FormInstanceEntityToken(typeof(FormBuilderElementProvider).Name, formName));
         }
 
         public override void OnValidate(object sender, ConditionalEventArgs e)

@@ -25,6 +25,7 @@
 
       <Directories>
         <Directory sourceDirectory="~\content\Composite\InstalledPackages\localization\" targetDirectory="~\Composite\InstalledPackages\localization\" allowOverwrite="true" />
+        <Directory sourceDirectory="~\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder" targetDirectory="~\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder" allowOverwrite="true" deleteTargetDirectory="true" />
       </Directories>
     </mi:Add>
 

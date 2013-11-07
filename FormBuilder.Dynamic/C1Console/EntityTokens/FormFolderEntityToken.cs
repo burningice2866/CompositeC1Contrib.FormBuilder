@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 using Composite.C1Console.Security;
 
+using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider;
+
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
 {
     public enum FormFolderType
@@ -71,7 +73,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
             var fieldFolderToken = entityToken as FormFolderEntityToken;
             if (fieldFolderToken != null)
             {
-                yield return new FormInstanceEntityToken(fieldFolderToken.Id);
+                yield return new FormInstanceEntityToken(typeof(FormBuilderElementProvider).Name, fieldFolderToken.Id);
             }
         }
     }

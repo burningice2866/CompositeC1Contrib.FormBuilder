@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:f="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0">
+  <cms:bindings>
+    <cms:binding name="Title" type="System.String" />
+    <cms:binding name="RenderingMarkup" type="System.String" />
+  </cms:bindings>
+
+  <cms:layout>
+    <cms:layout.label>
+      <cms:read source="Title" />
+    </cms:layout.label>
+
+    <XhtmlEditor Label="Rendering layout">
+      <XhtmlEditor.Xhtml>
+        <cms:bind source="RenderingMarkup"/>
+      </XhtmlEditor.Xhtml>
+    </XhtmlEditor>
+  </cms:layout>
+</cms:formdefinition>

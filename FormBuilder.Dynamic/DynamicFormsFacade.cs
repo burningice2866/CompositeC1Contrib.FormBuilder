@@ -15,6 +15,14 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         private static IList<Action> _formChangeNotifications = new List<Action>();
         private static string _basePath = HostingEnvironment.MapPath("~/App_Data/FormBuilder/FormDefinitions");
 
+        static DynamicFormsFacade()
+        {
+            if (!Directory.Exists(_basePath))
+            {
+                Directory.CreateDirectory(_basePath);
+            }
+        }
+
         public static void SubscribeToFormChanges(Action notify)
         {
             _formChangeNotifications.Add(notify);

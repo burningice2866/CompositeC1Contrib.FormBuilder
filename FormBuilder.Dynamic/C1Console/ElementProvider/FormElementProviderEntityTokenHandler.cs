@@ -6,6 +6,7 @@ using Composite.C1Console.Security;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 
+using CompositeC1Contrib.FormBuilder.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
@@ -36,7 +37,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
             {
                 var label = definition.Name;
 
-                var elementHandle = context.CreateElementHandle(new FormInstanceEntityToken(label));
+                var elementHandle = context.CreateElementHandle(new FormInstanceEntityToken(typeof(FormBuilderElementProvider).Name, label));
                 var formElement = new Element(elementHandle)
                 {
                     VisualData = new ElementVisualizedData
@@ -69,6 +70,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         Label = "Delete",
                         ToolTip = "Delete",
                         Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
+                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                    }
+                });
+
+                var editRenderingLayoutActionToken = new WorkflowActionToken(typeof(EditFormRenderingLayoutWorkflow));
+                formElement.AddAction(new ElementAction(new ActionHandle(editRenderingLayoutActionToken))
+                {
+                    VisualData = new ActionVisualizedData
+                    {
+                        Label = "Edit rendering layout",
+                        ToolTip = "Edit rendering layout",
+                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
                         ActionLocation = FormBuilderElementProvider.ActionLocation
                     }
                 });

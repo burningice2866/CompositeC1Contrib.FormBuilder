@@ -23,6 +23,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,6 +37,10 @@
   <ItemGroup>
     <Reference Include="Composite">
       <HintPath>..\.vendor\Composite.dll</HintPath>
+    </Reference>
+    <Reference Include="CompositeC1Contrib.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\.vendor\CompositeC1Contrib.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -57,6 +63,8 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Workflow.Activities" />
+    <Reference Include="System.Workflow.ComponentModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -69,13 +77,17 @@
     <Compile Include="Attributes\ForceHttpsConnectionAttribute.cs" />
     <Compile Include="Attributes\FormNameAttribute.cs" />
     <Compile Include="Attributes\DataSourceAttribute.cs" />
+    <Compile Include="C1Console\EntityTokens\FormElementProviderEntityToken.cs" />
+    <Compile Include="C1Console\EntityTokens\FormInstanceEntityToken.cs" />
     <Compile Include="Configuration\ConfigurationSectionHelper.cs" />
     <Compile Include="Configuration\FormBuilderSection.cs" />
     <Compile Include="FormBuilderRequestContext.cs" />
+    <Compile Include="FormModelsFacade.cs" />
     <Compile Include="FunctionProviders\DumpSubmittedFormValues.cs" />
     <Compile Include="FunctionProviders\StandardFormFunction.cs" />
     <Compile Include="FunctionProviders\FormBuilderFunctionProvider.cs" />
     <Compile Include="FunctionProviders\FormBuilderFunctionEntityToken.cs" />
+    <Compile Include="IFormModelsProvider.cs" />
     <Compile Include="Validation\CredentialsValidatorAttribute.cs" />
     <Compile Include="Validation\DaysFromNowValidatorAttribute.cs" />
     <Compile Include="Validation\EmailExistsValidatorAttribute.cs" />
@@ -133,6 +145,9 @@
     <Compile Include="Web\UI\HtmlForm.cs" />
     <Compile Include="Web\UI\IInputElementHandler.cs" />
     <Compile Include="Web\UI\TextboxInputElement.cs" />
+    <Compile Include="C1Console\Workflows\EditFormRenderingLayoutWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Localization.tt">
@@ -149,6 +164,7 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\EditFormRenderingLayoutWorkflow.xml" />
     <Content Include="Package\content\Composite\InstalledPackages\localization\CompositeC1Contrib.FormBuilder.da-dk.xml" />
     <Content Include="Package\content\Composite\InstalledPackages\localization\CompositeC1Contrib.FormBuilder.en-us.xml" />
     <Content Include="Package\content\Frontend\js\plugins\jquery.formbuilder.js" />
@@ -158,7 +174,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Package\content\App_Data\Composite\DynamicTypeForms\CompositeC1Contrib\FormBuilder\Data\Types\" />
-    <Folder Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Composite.C1Console.Security;
 
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider;
+using CompositeC1Contrib.FormBuilder.C1Console.Tokens;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
 {
@@ -15,9 +15,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
             get { return String.Empty; }
         }
 
+        private string _source;
         public override string Source
         {
-            get { return typeof(FormBuilderElementProvider).Name; }
+            get { return _source; }
         }
 
         private string _id;
@@ -31,8 +32,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
             get { return _id; }
         }
 
-        public FormInstanceEntityToken(string formName)
+        public FormInstanceEntityToken(string source, string formName)
         {
+            _source = source;
             _id = formName;
         }
 
@@ -49,7 +51,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
 
             EntityToken.DoDeserialize(serializedEntityToken, out type, out source, out id);
 
-            return new FormInstanceEntityToken(id);
+            return new FormInstanceEntityToken(source, id);
         }
     }
 

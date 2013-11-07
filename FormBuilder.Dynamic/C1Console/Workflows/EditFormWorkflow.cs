@@ -4,18 +4,19 @@ using System.Workflow.Activities;
 using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
+using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
     [AllowPersistingWorkflow(WorkflowPersistingType.Idle)]
-    public sealed partial class EditFormWorkflow : Composite.C1Console.Workflow.Activities.FormsWorkflow
+    public class EditFormWorkflow : Basic1StepEditPageWorkflow
     {
-        public EditFormWorkflow()
+        public override string FormDefinitionFileName
         {
-            InitializeComponent();
+            get { return "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditFormWorkflow.xml"; }
         }
 
-        private void initCodeActivity_ExecuteCode(object sender, EventArgs e)
+        public override void OnInitialize(object sender, EventArgs e)
         {
             if (!BindingExist("FormName"))
             {
@@ -27,7 +28,28 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        private void validateSave(object sender, ConditionalEventArgs e)
+        public override void OnSave(object sender, EventArgs e)
+        {
+            var formToken = (FormInstanceEntityToken)EntityToken;
+            var definition = DynamicFormsFacade.GetFormByName(formToken.FormName);
+
+            var formName = GetBinding<string>("FormName");
+            var functionExecutor = GetBinding<string>("FunctionExecutor");
+
+            if (formName != formToken.FormName)
+            {
+                DynamicFormsFacade.DeleteModel(definition);
+            }
+
+            definition.FormExecutor = functionExecutor;
+
+            DynamicFormsFacade.SaveForm(definition);
+
+            CreateSpecificTreeRefresher().PostRefreshMesseges(EntityToken);
+            SetSaveStatus(true);
+        }
+
+        public override void OnValidate(object sender, ConditionalEventArgs e)
         {
             var formToken = (FormInstanceEntityToken)EntityToken;
             var formName = GetBinding<string>("FormName");
@@ -47,27 +69,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
 
             e.Result = true;
-        }
-
-        private void saveCodeActivity_ExecuteCode(object sender, EventArgs e)
-        {
-            var formToken = (FormInstanceEntityToken)EntityToken;
-            var definition = DynamicFormsFacade.GetFormByName(formToken.FormName);
-
-            var formName = GetBinding<string>("FormName");
-            var functionExecutor = GetBinding<string>("FunctionExecutor");
-
-            if (formName != formToken.FormName)
-            {
-                DynamicFormsFacade.DeleteModel(definition);
-            }
-
-            definition.FormExecutor = functionExecutor;
-
-            DynamicFormsFacade.SaveForm(definition);
-
-            CreateSpecificTreeRefresher().PostRefreshMesseges(EntityToken);
-            SetSaveStatus(true);
         }
     }
 }

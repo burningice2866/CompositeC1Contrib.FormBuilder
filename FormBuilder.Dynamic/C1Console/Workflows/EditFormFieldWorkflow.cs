@@ -7,18 +7,19 @@ using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
+using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
     [AllowPersistingWorkflow(WorkflowPersistingType.Idle)]
-    public sealed partial class EditFormFieldWorkflow : Composite.C1Console.Workflow.Activities.FormsWorkflow
+    public class EditFormFieldWorkflow : Basic1StepEditPageWorkflow
     {
-        public EditFormFieldWorkflow()
+        public override string FormDefinitionFileName
         {
-            InitializeComponent();
+            get { return "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditFormFieldWorkflow.xml"; }
         }
 
-        private void initCodeActivity_ExecuteCode(object sender, EventArgs e)
+        public override void OnInitialize(object sender, EventArgs e)
         {
             if (!BindingExist("FieldName"))
             {
@@ -43,31 +44,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        private void validateSave(object sender, ConditionalEventArgs e)
-        {
-            var fieldToken = (FormFieldEntityToken)EntityToken;
-            var fieldName = GetBinding<string>("FieldName");
-
-            if (fieldName != fieldToken.FieldName)
-            {
-                var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
-                var field = definition.Model.Fields.SingleOrDefault(f => f.Name == fieldName);
-
-                if (field != null)
-                {
-                    ShowFieldMessage("Field name", "Field name already exists");
-
-                    e.Result = false;
-
-                    return;
-                }
-
-            }
-
-            e.Result = true;
-        }
-
-        private void saveCodeActivity_ExecuteCode(object sender, EventArgs e)
+        public override void OnSave(object sender, EventArgs e)
         {
             var fieldToken = (FormFieldEntityToken)EntityToken;
 
@@ -112,7 +89,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             if (helpAttribute != null)
             {
                 field.Attributes.Remove(helpAttribute);
-            }            
+            }
 
             if (!String.IsNullOrEmpty(help))
             {
@@ -139,6 +116,30 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             CreateSpecificTreeRefresher().PostRefreshMesseges(EntityToken);
             SetSaveStatus(true);
+        }
+
+        public override void OnValidate(object sender, ConditionalEventArgs e)
+        {
+            var fieldToken = (FormFieldEntityToken)EntityToken;
+            var fieldName = GetBinding<string>("FieldName");
+
+            if (fieldName != fieldToken.FieldName)
+            {
+                var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
+                var field = definition.Model.Fields.SingleOrDefault(f => f.Name == fieldName);
+
+                if (field != null)
+                {
+                    ShowFieldMessage("Field name", "Field name already exists");
+
+                    e.Result = false;
+
+                    return;
+                }
+
+            }
+
+            e.Result = true;
         }
     }
 }

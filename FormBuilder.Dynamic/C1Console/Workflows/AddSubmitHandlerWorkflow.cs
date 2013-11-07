@@ -6,14 +6,15 @@ using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
+using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
-    public sealed partial class AddSubmitHandlerWorkflow : Composite.C1Console.Workflow.Activities.FormsWorkflow
+    public class AddSubmitHandlerWorkflow : Basic1StepAddDialogWorkflow
     {
-        public AddSubmitHandlerWorkflow()
+        public override string FormDefinitionFileName
         {
-            InitializeComponent();
+            get { return "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddSubmitHandlerWorkflow.xml"; }
         }
 
         public static Dictionary<string, string> GetSubmitHandlerTypes()
@@ -24,12 +25,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             };
         }
 
-        private void validateSave(object sender, ConditionalEventArgs e)
-        {
-            e.Result = true;
-        }
-
-        private void initCodeActivity_ExecuteCode(object sender, EventArgs e)
+        public override void OnInitialize(object sender, EventArgs e)
         {
             if (!BindingExist("SubmitHandlerType"))
             {
@@ -38,7 +34,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        private void saveCodeActivity_ExecuteCode(object sender, EventArgs e)
+        public override void OnSave(object sender, EventArgs e)
         {
             var token = (FormFolderEntityToken)EntityToken;
 

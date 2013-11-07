@@ -8,10 +8,11 @@ using Composite.C1Console.Workflow;
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Web.UI;
+using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
-    public sealed partial class AddFormFieldWorkflow : Composite.C1Console.Workflow.Activities.FormsWorkflow
+    public class AddFormFieldWorkflow : Basic1StepAddDialogWorkflow
     {
         private static Dictionary<string, string> _inputElementTypes = new Dictionary<string, string>();
 
@@ -34,38 +35,17 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        public AddFormFieldWorkflow()
-        {
-            InitializeComponent();
-        }
-
         public static Dictionary<string, string> GetInputElementTypes()
         {
             return _inputElementTypes;
         }
 
-        private void validateSave(object sender, ConditionalEventArgs e)
+        public override string FormDefinitionFileName
         {
-            var folderToken = (FormFolderEntityToken)EntityToken;
-
-            var fieldName = GetBinding<string>("FieldName");
-            var definition = DynamicFormsFacade.GetFormByName(folderToken.FormName);
-            var field = definition.Model.Fields.SingleOrDefault(f => f.Name == fieldName);
-
-            if (field != null)
-            {
-                ShowFieldMessage("Field name", "Field name already exists");
-
-                e.Result = false;
-
-                return;
-            }
-
-
-            e.Result = true;
+            get { return "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddFormFieldWorkflow.xml"; }
         }
 
-        private void initCodeActivity_ExecuteCode(object sender, EventArgs e)
+        public override void OnInitialize(object sender, EventArgs e)
         {
             if (!BindingExist("FieldName"))
             {
@@ -74,7 +54,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        private void saveCodeActivity_ExecuteCode(object sender, EventArgs e)
+        public override void OnSave(object sender, EventArgs e)
         {
             var folderToken = (FormFolderEntityToken)EntityToken;
 
@@ -95,6 +75,26 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             CreateAddNewTreeRefresher(EntityToken).PostRefreshMesseges(fieldToken);
             ExecuteAction(fieldToken, workflowToken);
+        }
+
+        public override void OnValidate(object sender, ConditionalEventArgs e)
+        {
+            var folderToken = (FormFolderEntityToken)EntityToken;
+
+            var fieldName = GetBinding<string>("FieldName");
+            var definition = DynamicFormsFacade.GetFormByName(folderToken.FormName);
+            var field = definition.Model.Fields.SingleOrDefault(f => f.Name == fieldName);
+
+            if (field != null)
+            {
+                ShowFieldMessage("Field name", "Field name already exists");
+
+                e.Result = false;
+
+                return;
+            }
+
+            e.Result = true;
         }
     }
 }

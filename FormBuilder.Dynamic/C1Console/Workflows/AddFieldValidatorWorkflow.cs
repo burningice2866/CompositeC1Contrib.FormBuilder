@@ -7,14 +7,15 @@ using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Validation;
+using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
-    public sealed partial class AddFieldValidatorWorkflow : Composite.C1Console.Workflow.Activities.FormsWorkflow
+    public class AddFieldValidatorWorkflow : Basic1StepAddDialogWorkflow
     {
-        public AddFieldValidatorWorkflow()
+        public override string FormDefinitionFileName
         {
-            InitializeComponent();
+            get { return "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddFieldValidatorWorkflow.xml"; }
         }
 
         public static Dictionary<string, string> GetValidatorTypes()
@@ -31,7 +32,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                         .Where(t => t != formAttributeType)
                         .Where(t => formAttributeType.IsAssignableFrom(t))
                         .Where(t => t.GetConstructor(new[] { typeof(string) }) != null);
-                        ;
+                    ;
 
                     returnList.AddRange(types);
                 }
@@ -41,12 +42,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             return returnList.ToDictionary(t => t.AssemblyQualifiedName, t => t.Name); ;
         }
 
-        private void validateSave(object sender, ConditionalEventArgs e)
-        {
-            e.Result = true;
-        }
-
-        private void initCodeActivity_ExecuteCode(object sender, EventArgs e)
+        public override void OnInitialize(object sender, EventArgs e)
         {
             if (!BindingExist("ValidatorType"))
             {
@@ -55,7 +51,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        private void saveCodeActivity_ExecuteCode(object sender, EventArgs e)
+        public override void OnSave(object sender, EventArgs e)
         {
             var token = (FieldValidatorsEntityToken)EntityToken;
             var definition = DynamicFormsFacade.GetFormByName(token.FormName);
@@ -63,7 +59,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             var validatorType = Type.GetType(GetBinding<string>("ValidatorType"));
             var message = GetBinding<string>("Message");
-            var attribute = (FormValidationAttribute)Activator.CreateInstance(validatorType, new [] { message });
+            var attribute = (FormValidationAttribute)Activator.CreateInstance(validatorType, new[] { message });
 
             field.Attributes.Add(attribute);
 

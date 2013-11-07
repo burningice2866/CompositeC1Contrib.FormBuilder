@@ -4,39 +4,18 @@ using System.Workflow.Activities;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
+using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
-    public sealed partial class AddStringBasedDataSourceEntryWorkflow : Composite.C1Console.Workflow.Activities.FormsWorkflow
+    public class AddStringBasedDataSourceEntryWorkflow : Basic1StepAddDialogWorkflow
     {
-        public AddStringBasedDataSourceEntryWorkflow()
+        public override string FormDefinitionFileName
         {
-            InitializeComponent();
+            get { return "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddStringBasedDataSourceEntryWorkflow.xml"; }
         }
 
-        private void validateSave(object sender, ConditionalEventArgs e)
-        {
-            var dataSourceToken = (DataSourceEntityToken)EntityToken;
-
-            var entryValue = GetBinding<string>("EntryValue");
-
-            var definition = DynamicFormsFacade.GetFormByName(dataSourceToken.FormName);
-            var field = definition.Model.Fields.Single(f => f.Name == dataSourceToken.FieldName);
-            var datasSource = field.DataSource.Select(itm => itm.Key).ToList();
-
-            if (datasSource.Any(itm => itm == entryValue))
-            {
-                ShowFieldMessage("Entry value", "Entry value is not unique");
-
-                e.Result = false;
-
-                return;
-            }
-
-            e.Result = true;
-        }
-
-        private void initCodeActivity_ExecuteCode(object sender, EventArgs e)
+        public override void OnInitialize(object sender, EventArgs e)
         {
             if (!BindingExist("EntryValue"))
             {
@@ -46,7 +25,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        private void saveCodeActivity_ExecuteCode(object sender, EventArgs e)
+        public override void OnSave(object sender, EventArgs e)
         {
             var dataSourceToken = (DataSourceEntityToken)EntityToken;
 
@@ -70,6 +49,28 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             var treeRefresher = CreateAddNewTreeRefresher(EntityToken);
             treeRefresher.PostRefreshMesseges(new StringBasedDataSourceEntryEntityToken(dataSourceToken.FormName, dataSourceToken.FieldName, entryValue));
+        }
+
+        public override void OnValidate(object sender, ConditionalEventArgs e)
+        {
+            var dataSourceToken = (DataSourceEntityToken)EntityToken;
+
+            var entryValue = GetBinding<string>("EntryValue");
+
+            var definition = DynamicFormsFacade.GetFormByName(dataSourceToken.FormName);
+            var field = definition.Model.Fields.Single(f => f.Name == dataSourceToken.FieldName);
+            var datasSource = field.DataSource.Select(itm => itm.Key).ToList();
+
+            if (datasSource.Any(itm => itm == entryValue))
+            {
+                ShowFieldMessage("Entry value", "Entry value is not unique");
+
+                e.Result = false;
+
+                return;
+            }
+
+            e.Result = true;
         }
     }
 }

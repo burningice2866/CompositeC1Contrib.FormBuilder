@@ -54,7 +54,7 @@ namespace CompositeC1Contrib.FormBuilder
                 var doc = new XhtmlDocument();
                 var model = FormModelsFacade.GetModels().Single(m => m.Name == formName);
 
-                foreach (var field in model.Fields)
+                foreach (var field in model.Fields.Where(f => f.Label != null))
                 {
                     doc.Body.Add(new XElement(Namespaces.Xhtml + "p", String.Format("%{0}%", field.Name)));
                 }

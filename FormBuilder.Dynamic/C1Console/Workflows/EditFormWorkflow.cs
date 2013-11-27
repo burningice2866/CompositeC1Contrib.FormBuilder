@@ -1,8 +1,7 @@
 using System;
 using System.Workflow.Activities;
-
 using Composite.C1Console.Workflow;
-
+using CompositeC1Contrib.FormBuilder.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.Workflows;
 
@@ -36,16 +35,22 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var formName = GetBinding<string>("FormName");
             var functionExecutor = GetBinding<string>("FunctionExecutor");
 
-            if (formName != formToken.FormName)
-            {
-                DynamicFormsFacade.DeleteModel(definition);
-            }
-
             definition.FormExecutor = functionExecutor;
 
-            DynamicFormsFacade.SaveForm(definition);
+            if (formName != formToken.FormName)
+            {
+                var newDefinition = DynamicFormsFacade.CopyFormByName(formToken.FormName, formName);
 
-            CreateSpecificTreeRefresher().PostRefreshMesseges(EntityToken);
+                DynamicFormsFacade.SaveForm(newDefinition);
+
+                DynamicFormsFacade.DeleteModel(definition);
+            }
+            else
+            {
+                DynamicFormsFacade.SaveForm(definition);
+            }
+
+            CreateSpecificTreeRefresher().PostRefreshMesseges(new FormElementProviderEntityToken());
             SetSaveStatus(true);
         }
 
@@ -56,7 +61,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             if (formName != formToken.FormName)
             {
-                var definition = DynamicFormsFacade.GetFormByName(formToken.FormName);
+                var definition = DynamicFormsFacade.GetFormByName(formName);
                 if (definition != null)
                 {
                     ShowFieldMessage("Form name", "Form name already exists");

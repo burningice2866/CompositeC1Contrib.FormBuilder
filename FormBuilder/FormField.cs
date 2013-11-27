@@ -38,12 +38,6 @@ namespace CompositeC1Contrib.FormBuilder
                     return placeholderAttr.Text;                    
                 }
 
-                var labelAttribute = Label;
-                if (labelAttribute != null)
-                {
-                    return labelAttribute.Label;
-                }
-
                 return String.Empty;
             }
         }

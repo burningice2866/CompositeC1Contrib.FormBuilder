@@ -25,7 +25,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
 
         public override void Submit(FormModel model)
         {
-            var mailMessage = new MailMessage(From, To)
+            var mailMessage = new MailMessage(ResolveText(From, model), ResolveText(To, model))
             {
                 Subject = ResolveText(Subject, model),
                 Body = ResolveHtml(Body, model),
@@ -34,12 +34,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
 
             if (!String.IsNullOrEmpty(Cc))
             {
-                mailMessage.CC.Add(Cc);
+                mailMessage.CC.Add(ResolveText(Cc, model));
             }
 
             if (!String.IsNullOrEmpty(Bcc))
             {
-                mailMessage.Bcc.Add(Cc);
+                mailMessage.Bcc.Add(ResolveText(Bcc, model));
             }
 
             if (IncludeAttachments && model.HasFileUpload)

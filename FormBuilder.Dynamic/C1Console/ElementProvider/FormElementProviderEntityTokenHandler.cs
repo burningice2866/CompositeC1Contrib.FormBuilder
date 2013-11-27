@@ -86,6 +86,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     }
                 });
 
+                var copyActionToken = new WorkflowActionToken(typeof(CopyFormWorkflow));
+                formElement.AddAction(new ElementAction(new ActionHandle(copyActionToken))
+                {
+                    VisualData = new ActionVisualizedData
+                    {
+                        Label = "Copy",
+                        ToolTip = "Copy",
+                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                    }
+                });
+
+
                 yield return formElement;
             }
         }

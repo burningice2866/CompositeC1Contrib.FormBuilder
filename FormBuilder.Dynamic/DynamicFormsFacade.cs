@@ -35,6 +35,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             return FromBaseForm(file, name);
         }
 
+        public static DynamicFormDefinition CopyFormByName(string name, string newName)
+        {
+            var file = Path.Combine(_basePath, name + ".xml");
+
+            return FromBaseForm(file, newName);
+        }
+
         public static DynamicFormDefinition FromBaseForm(string file, string name)
         {
             if (!File.Exists(file))

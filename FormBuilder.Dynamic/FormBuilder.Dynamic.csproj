@@ -111,6 +111,9 @@
     <Compile Include="C1Console\Workflows\AddFieldValidatorWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="C1Console\Workflows\CopyFormWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="C1Console\Workflows\EditFieldValidatorWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>

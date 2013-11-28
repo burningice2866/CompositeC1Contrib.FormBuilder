@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
+
+using Composite;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Validation;
@@ -30,12 +33,8 @@ namespace CompositeC1Contrib.FormBuilder
             get
             {
                 var forceHttpsAttr = Attributes.OfType<ForceHttpsConnectionAttribute>().SingleOrDefault();
-                if (forceHttpsAttr != null)
-                {
-                    return forceHttpsAttr.ForceHttps;
-                }
 
-                return false;
+                return forceHttpsAttr != null && forceHttpsAttr.ForceHttps;
             }
         }
 
@@ -49,6 +48,8 @@ namespace CompositeC1Contrib.FormBuilder
 
         public FormModel(string name)
         {
+            Verify.That(IsValidName(name), "Invalid form name, only a-z and 0-9 is allowed");
+
             Name = name;
 
             Options = new FormOptions();
@@ -59,12 +60,12 @@ namespace CompositeC1Contrib.FormBuilder
 
         public bool IsValid(string[] fieldNames)
         {
-            ensureRulesList();
+            EnsureRulesList();
 
             foreach (var fieldName in fieldNames)
             {
                 var field = Fields.Single(f => f.Name == fieldName);
-                var result = getFormValidationResult(_ruleList[field], true);
+                var result = GetFormValidationResult(_ruleList[field], true);
 
                 if (result.Any(r => r.AffectedFormIds.Contains(fieldName)))
                 {
@@ -94,12 +95,12 @@ namespace CompositeC1Contrib.FormBuilder
                 }
             }
 
-            ensureRulesList();
+            EnsureRulesList();
 
             var validationList = new List<FormValidationRule>();
             foreach (var list in _ruleList.Values)
             {
-                var result = getFormValidationResult(list, false);
+                var result = GetFormValidationResult(list, false);
 
                 validationList.AddRange(result);
             }
@@ -110,16 +111,17 @@ namespace CompositeC1Contrib.FormBuilder
         public void MapValues(NameValueCollection values, IEnumerable<FormFile> files)
         {
             SubmittedValues = values;
-
-            if (values != null)
+            if (SubmittedValues == null)
             {
-                foreach (var field in Fields)
-                {
-                    var val = (values[field.Name] ?? String.Empty).Trim();
+                return;
+            }
 
-                    MapValueToField(field, val);
-                    MapFilesToField(field, files);
-                }
+            foreach (var field in Fields)
+            {
+                var val = (values[field.Name] ?? String.Empty).Trim();
+
+                MapValueToField(field, val);
+                MapFilesToField(field, files);
             }
         }
 
@@ -133,7 +135,14 @@ namespace CompositeC1Contrib.FormBuilder
             HttpContext.Current.Items["__FormModel__" + name] = value;
         }
 
-        private IList<FormValidationRule> getFormValidationResult(IList<FormValidationRule> rules, bool skipMultipleFieldsRules)
+        public static bool IsValidName(string name)
+        {
+            var parts = name.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+
+            return parts.Length >= 2 && parts.All(p => Regex.IsMatch(p, @"^[a-zA-Z0-9]+$"));
+        }
+
+        private static IEnumerable<FormValidationRule> GetFormValidationResult(IEnumerable<FormValidationRule> rules, bool skipMultipleFieldsRules)
         {
             return rules.Where(r =>
             {
@@ -148,7 +157,7 @@ namespace CompositeC1Contrib.FormBuilder
             .ToList();
         }
 
-        private void ensureRulesList()
+        private void EnsureRulesList()
         {
             _ruleList = new Dictionary<FormField, IList<FormValidationRule>>();
 
@@ -163,36 +172,37 @@ namespace CompositeC1Contrib.FormBuilder
                 var attributes = field.ValidationAttributes;
 
                 var validateField = IsDependencyMetRecursive(field);
-                if (validateField)
+                if (!validateField)
                 {
-                    foreach (var attr in attributes)
-                    {
-                        var validationAttribute = attr as FormValidationAttribute;
-                        if (validationAttribute != null)
-                        {
-                            var rule = validationAttribute.CreateRule(field);
+                    continue;
+                }
 
-                            list.Add(rule);
-                        }
+                foreach (var attr in attributes)
+                {
+                    var validationAttribute = attr;
+                    if (validationAttribute == null)
+                    {
+                        continue;
                     }
+
+                    var rule = validationAttribute.CreateRule(field);
+
+                    list.Add(rule);
                 }
             }
         }
 
         private bool IsDependencyMetRecursive(FormField field)
         {
-            var isValid = true;
-
-            var attributes = field.DependencyAttributes;
+            var attributes = field.DependencyAttributes.ToList();
             if (!attributes.Any())
             {
                 return true;
             }
-            
+
             foreach (var dependencyAttribute in attributes)
             {
-                isValid = dependencyAttribute.DependencyMet(this);
-
+                var isValid = dependencyAttribute.DependencyMet(this);
                 if (!isValid)
                 {
                     return false;
@@ -207,40 +217,43 @@ namespace CompositeC1Contrib.FormBuilder
                 }
             }
 
-            return isValid;
+            return true;
         }
 
-        private void MapFilesToField(FormField field, IEnumerable<FormFile> files)
+        private static void MapFilesToField(FormField field, IEnumerable<FormFile> files)
         {
-            if (files != null && files.Any())
+            var formFiles = files as IList<FormFile> ?? files.ToList();
+            if (files == null || !formFiles.Any())
             {
-                files = files.Where(f => f.Key == field.Name);
+                return;
+            }
 
-                if (field.ValueType == typeof(FormFile))
-                {
-                    field.Value = files.FirstOrDefault();
-                }
-                else if (field.ValueType == typeof(IEnumerable<FormFile>))
-                {
-                    field.Value = files;
-                }
+            files = formFiles.Where(f => f.Key == field.Name);
+
+            if (field.ValueType == typeof(FormFile))
+            {
+                field.Value = files.FirstOrDefault();
+            }
+            else if (field.ValueType == typeof(IEnumerable<FormFile>))
+            {
+                field.Value = files;
             }
         }
 
-        private void MapValueToField(FormField field, string val)
+        private static void MapValueToField(FormField field, string val)
         {
             var formatAttr = field.Attributes.OfType<DisplayFormatAttribute>().SingleOrDefault();
 
             if (field.ValueType == typeof(int))
             {
-                var i = 0;
+                int i;
                 int.TryParse(val, out i);
 
                 field.Value = i;
             }
             else if (field.ValueType == typeof(int?))
             {
-                var i = 0;
+                int i;
                 if (int.TryParse(val, out i))
                 {
                     field.Value = i;
@@ -253,14 +266,14 @@ namespace CompositeC1Contrib.FormBuilder
 
             else if (field.ValueType == typeof(decimal))
             {
-                var d = 0m;
+                decimal d;
                 decimal.TryParse(val, out d);
 
                 field.Value = d;
             }
             else if (field.ValueType == typeof(decimal?))
             {
-                var d = 0m;
+                decimal d;
                 if (decimal.TryParse(val, out d))
                 {
                     field.Value = d;
@@ -273,7 +286,7 @@ namespace CompositeC1Contrib.FormBuilder
 
             else if (field.ValueType == typeof(bool))
             {
-                var b = false;
+                bool b;
 
                 if (val == "on")
                 {
@@ -298,7 +311,7 @@ namespace CompositeC1Contrib.FormBuilder
 
             else if (field.ValueType == typeof(DateTime))
             {
-                var dt = DateTime.Now;
+                DateTime dt;
 
                 if (formatAttr != null)
                 {
@@ -313,7 +326,7 @@ namespace CompositeC1Contrib.FormBuilder
             }
             else if (field.ValueType == typeof(DateTime?))
             {
-                var dt = DateTime.MinValue;
+                DateTime dt;
                 if (formatAttr != null)
                 {
                     if (DateTime.TryParseExact(val, formatAttr.FormatString, CultureInfo.CurrentUICulture, DateTimeStyles.None, out dt))

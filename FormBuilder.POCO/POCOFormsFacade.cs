@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 
+using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Web.UI;
 
 namespace CompositeC1Contrib.FormBuilder
@@ -10,16 +11,25 @@ namespace CompositeC1Contrib.FormBuilder
         public static FormModel FromInstance(IPOCOForm instance, FormOptions options)
         {
             var formType = instance.GetType();
-            var model = new FormModel(formType.FullName);
+            var formName = formType.FullName;
+
+            var formNameAttribte = formType.GetCustomAttributes(typeof(FormNameAttribute), false).FirstOrDefault() as FormNameAttribute;
+            if (formNameAttribte != null)
+            {
+                formName = formNameAttribte.FullName;
+            }
+
+            var model = new FormModel(formName);
 
             if (options != null)
             {
                 model.Options = options;
             }
 
-            if (instance is IValidationHandler)
+            var validationHandler = instance as IValidationHandler;
+            if (validationHandler != null)
             {
-                model.OnValidateHandler = ((IValidationHandler)instance).OnValidate;
+                model.OnValidateHandler = validationHandler.OnValidate;
             }
 
             foreach (var itm in formType.GetCustomAttributes(true).Cast<Attribute>())
@@ -57,9 +67,10 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static void SetDefaultValues(IPOCOForm instance, FormModel model)
         {
-            if (instance is IProvidesDefaultValues)
+            var defaultValuesProvider = instance as IProvidesDefaultValues;
+            if (defaultValuesProvider != null)
             {
-                ((IProvidesDefaultValues)instance).SetDefaultValues();
+                defaultValuesProvider.SetDefaultValues();
             }
 
             foreach (var prop in instance.GetType().GetProperties())

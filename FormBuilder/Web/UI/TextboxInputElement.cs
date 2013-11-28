@@ -10,6 +10,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public class TextboxInputElement : IInputElementHandler
     {
+        private const string _s = "<input type=\"{0}\" name=\"{1}\" id=\"{2}\" value=\"{3}\" title=\"{4}\" placeholder=\"{5}\"";
+
         public string ElementName
         {
             get { return "textbox"; }
@@ -18,17 +20,22 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         public IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
         {
             var sb = new StringBuilder();
+            var placeholderText = field.PlaceholderText;
+            
+            if (String.IsNullOrEmpty(placeholderText) && field.OwningForm.Options.HideLabels)
+            {
+                placeholderText = field.Label.Label;
+            }
 
-            var s = "<input type=\"{0}\" name=\"{1}\" id=\"{2}\" value=\"{3}\" title=\"{4}\" placeholder=\"{5}\"";
-
-            sb.AppendFormat(s,
-                evaluateTextboxType(field),
+            sb.AppendFormat(_s,
+                EvaluateTextboxType(field),
                 HttpUtility.HtmlAttributeEncode(field.Name),
                 HttpUtility.HtmlAttributeEncode(field.Id),
                 field.Value == null ? String.Empty : HttpUtility.HtmlAttributeEncode(FormRenderer.GetValue(field)),
                 HttpUtility.HtmlAttributeEncode(field.Label.Label),
-                HttpUtility.HtmlAttributeEncode(field.PlaceholderText));
+                HttpUtility.HtmlAttributeEncode(placeholderText));
 
+            FormRenderer.RenderMaxLengthAttribute(sb, field);
             FormRenderer.RenderExtraHtmlTags(sb, field, htmlAttributes);
 
             sb.Append(" />");
@@ -36,7 +43,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new HtmlString(sb.ToString());
         }
 
-        private static string evaluateTextboxType(FormField field)
+        private static string EvaluateTextboxType(FormField field)
         {
             var type = Nullable.GetUnderlyingType(field.ValueType) ?? field.ValueType;
 

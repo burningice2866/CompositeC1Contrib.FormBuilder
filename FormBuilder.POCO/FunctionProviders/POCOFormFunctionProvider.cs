@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 using Composite.Functions;
 using Composite.Functions.Plugins.FunctionProvider;
-
-using CompositeC1Contrib.FormBuilder.Attributes;
 
 namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 {
@@ -17,24 +13,15 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
         {
             get
             {
-                var formTypes = GetFormTypes();
-                foreach (var type in formTypes)
+                var models = POCOFormModelsProvider.GetModels();
+                foreach (var entry in models)
                 {
-                    string functionName = "Forms." + type.Name;
-
-                    var formName = type.GetCustomAttributes(typeof(FormNameAttribute), false).FirstOrDefault() as FormNameAttribute;
-                    if (formName != null)
-                    {
-                        functionName = formName.FullName;
-                    }
-
                     IFunction function = null;
-                    if (!FunctionFacade.TryGetFunction(out function, functionName))
+                    if (!FunctionFacade.TryGetFunction(out function, entry.Value.Name))
                     {
-                        var instance = (IPOCOForm)Activator.CreateInstance(type);
-                        var model = POCOFormsFacade.FromInstance(instance, null);
+                        var instance = entry.Key;
 
-                        yield return new StandardFormFunction(model)
+                        yield return new StandardFormFunction(entry.Value)
                         {
                             OnSubmit = instance.Submit,
                             OnMappedValues = (m) => POCOFormsFacade.SetDefaultValues(instance, m),
@@ -45,23 +32,6 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             }
         }
 
-        public static IEnumerable<Type> GetFormTypes()
-        {
-            var returnList = new List<Type>();
-
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var asm in assemblies)
-            {
-                try
-                {
-                    var types = asm.GetTypes().Where(t => t.GetCustomAttributes(true).OfType<FormNameAttribute>().Any());
-
-                    returnList.AddRange(types);
-                }
-                catch { }
-            }
-
-            return returnList;
-        }
+        
     }
 }

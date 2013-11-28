@@ -13,7 +13,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public abstract class POCOBasedFormsPage<T> : FormsPage where T : IPOCOForm
     {
-        protected T _form = Activator.CreateInstance<T>();
+        private readonly T _form = Activator.CreateInstance<T>();
         protected T Form
         {
             get { return _form; }
@@ -47,9 +47,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 { "FormModel", RenderingContext.RenderingModel }
             });
 
-            var functionContext_field = typeof(RazorHelper).GetField("PageContext_FunctionContextContainer", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
+            var functionContextField = typeof(RazorHelper).GetField("PageContext_FunctionContextContainer", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
 
-            PageData[functionContext_field] = functionContext;
+            PageData[functionContextField] = functionContext;
 
             base.ExecutePageHierarchy();
         }

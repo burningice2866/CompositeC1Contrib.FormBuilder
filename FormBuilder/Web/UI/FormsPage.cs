@@ -2,9 +2,11 @@
 using System.Linq;
 using System.Web;
 using System.Xml.Linq;
+
 using Composite.AspNet.Razor;
 using Composite.Core.Xml;
 using Composite.Functions;
+
 using CompositeC1Contrib.FormBuilder.Attributes;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
@@ -79,10 +81,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             {
                 return FormRenderer.WriteErrors(RenderingContext.RenderingModel);
             }
-            else
-            {
-                return new HtmlString(String.Empty);
-            }
+
+            return new HtmlString(String.Empty);
         }
 
         protected IHtmlString WriteAllFields()
@@ -93,12 +93,14 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             foreach (var field in model.Fields.Where(f => f.Label != null))
             {
                 var fieldElement = renderingMarkup.Body.Descendants().SingleOrDefault(el => el.Name == Namespaces.Xhtml + "p" && el.Value.Trim() == "%" + field.Name + "%");
-                if (fieldElement != null)
+                if (fieldElement == null)
                 {
-                    var newValue = XElement.Parse(FormRenderer.FieldFor(field).ToString());
-
-                    fieldElement.ReplaceWith(newValue);
+                    continue;
                 }
+
+                var newValue = XElement.Parse(FormRenderer.FieldFor(field).ToString());
+
+                fieldElement.ReplaceWith(newValue);
             }
 
             return new HtmlString(renderingMarkup.Body.ToString());

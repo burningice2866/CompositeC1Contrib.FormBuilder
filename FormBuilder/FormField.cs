@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
+
+using Composite;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Validation;
@@ -11,6 +14,8 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public class FormField
     {
+        private static readonly IDictionary<Type, IInputElementHandler> DefaultElementType;
+
         public FormModel OwningForm { get; private set; }
 
         public string Name { get; set; }
@@ -20,7 +25,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public string Id
         {
-            get { return (OwningForm.Name +"." + Name).Replace(".", "_"); }
+            get { return (OwningForm.Name +"." + Name).Replace(".", "$"); }
         }
 
         public FieldLabelAttribute Label
@@ -33,12 +38,8 @@ namespace CompositeC1Contrib.FormBuilder
             get
             {
                 var placeholderAttr = Attributes.OfType<PlaceholderTextAttribute>().SingleOrDefault();
-                if (placeholderAttr != null)
-                {
-                    return placeholderAttr.Text;                    
-                }
-
-                return String.Empty;
+                
+                return placeholderAttr != null ? placeholderAttr.Text : String.Empty;
             }
         }
 
@@ -106,7 +107,7 @@ namespace CompositeC1Contrib.FormBuilder
                 var list = ds as IEnumerable<string>;
                 if (list != null)
                 {
-                    return list.Select(str => FormRenderer.GetLocalized(str)).Select(str => new KeyValuePair<string, string>(str, str));
+                    return list.Select(FormRenderer.GetLocalized).Select(str => new KeyValuePair<string, string>(str, str));
                 }
 
                 throw new InvalidOperationException("Unsupported data source type: " + ds.GetType().FullName);
@@ -123,20 +124,36 @@ namespace CompositeC1Contrib.FormBuilder
             get { return Attributes.OfType<FormDependencyAttribute>(); }
         }
 
+        static FormField()
+        {
+            DefaultElementType = new Dictionary<Type, IInputElementHandler>() 
+            {
+                { typeof(bool), new CheckboxInputElement() },
+                { typeof(IEnumerable<string>), new CheckboxInputElement() },
+
+                { typeof(FormFile), new FileuploadInputElement() },
+                { typeof(IEnumerable<FormFile>), new FileuploadInputElement() },
+            };
+        }
+
         public FormField(FormModel owningForm, string name, Type valueType, IList<Attribute> attributes)
         {
+            Verify.That(IsValidName(name), "Invalid field name, only a-z and 0-9 is allowed");
+
             OwningForm = owningForm;
             Name = name;
             Attributes = attributes;
             ValueType = valueType;
         }
 
+        public static bool IsValidName(string name)
+        {
+            return Regex.IsMatch(name, @"^[a-zA-Z0-9]+$");
+        }
+
         private IInputElementHandler GetDefaultInputType()
         {
-            if (ValueType == typeof(bool)) return new CheckboxInputElement();
-            if (ValueType == typeof(FormFile) || ValueType == typeof(IEnumerable<FormFile>)) return new FileuploadInputElement();
-
-            return new TextboxInputElement();
+            return DefaultElementType.ContainsKey(ValueType) ? DefaultElementType[ValueType] : new TextboxInputElement();
         }
     }
 }

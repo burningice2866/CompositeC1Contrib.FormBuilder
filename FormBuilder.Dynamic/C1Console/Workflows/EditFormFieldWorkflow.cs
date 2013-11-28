@@ -125,21 +125,27 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             if (fieldName != fieldToken.FieldName)
             {
+                if (!FormField.IsValidName(fieldName))
+                {
+                    ShowFieldMessage("FieldName", "Field name is invalid, only a-z and 0-9 is allowed");
+
+                    e.Result = false;
+                    return;
+                }
+
                 var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
                 var field = definition.Model.Fields.SingleOrDefault(f => f.Name == fieldName);
 
                 if (field != null)
                 {
-                    ShowFieldMessage("Field name", "Field name already exists");
+                    ShowFieldMessage("FieldName", "Field name already exists");
 
                     e.Result = false;
-
                     return;
                 }
-
             }
 
-            e.Result = true;
+            base.OnValidate(sender, e);
         }
     }
 }

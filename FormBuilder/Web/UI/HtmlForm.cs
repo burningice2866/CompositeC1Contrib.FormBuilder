@@ -11,23 +11,23 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public class HtmlForm : IDisposable
     {
-        private FormsPage _page;
-        private FormModel _model;
+        private readonly FormsPage _page;
         private bool _disposed;
 
         public HtmlForm(FormsPage page, FormModel model, object htmlAttributes)
         {
             _page = page;
-            _model = model;
 
-            var htmlAttributesDictionary = new Dictionary<string, IList<string>>();
-
-            htmlAttributesDictionary.Add("class", new List<string>());
+            var model1 = model;
+            var htmlAttributesDictionary = new Dictionary<string, IList<string>> 
+            {
+                {"class", new List<string>()}
+            };
 
             htmlAttributesDictionary["class"].Add("form");
-            htmlAttributesDictionary["class"].Add("formbuilder-" + _model.Name.ToLowerInvariant());
+            htmlAttributesDictionary["class"].Add("formbuilder-" + model1.Name.ToLowerInvariant());
 
-            var htmlElementAttributes = _model.Attributes.OfType<HtmlTagAttribute>();
+            var htmlElementAttributes = model1.Attributes.OfType<HtmlTagAttribute>();
             var action = String.Empty;
 
             var dictionary = Functions.ObjectToDictionary(htmlAttributes);
@@ -55,7 +55,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 htmlAttributesDictionary[attr.Attribute].Add(attr.Value);
             }
 
-            page.WriteLiteral(String.Format("<form method=\"post\" action=\"{1}\"", _model.Name, action));
+            page.WriteLiteral(String.Format("<form method=\"post\" action=\"{0}\"", action));
 
             foreach (var kvp in htmlAttributesDictionary)
             {
@@ -68,16 +68,16 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 page.WriteLiteral("\"");
             }
 
-            if (_model.HasFileUpload)
+            if (model1.HasFileUpload)
             {
                 page.WriteLiteral(" enctype=\"multipart/form-data\"");
             }
 
             page.WriteLiteral(">");
 
-            page.WriteLiteral("<input type=\"hidden\" name=\"__type\" value=\"" + HttpUtility.HtmlAttributeEncode(_model.Name) + "\" />");
+            page.WriteLiteral("<input type=\"hidden\" name=\"__type\" value=\"" + HttpUtility.HtmlAttributeEncode(model1.Name) + "\" />");
 
-            foreach (var field in _model.Fields.Where(f => f.Label == null))
+            foreach (var field in model1.Fields.Where(f => f.Label == null))
             {
                 var s = String.Format("<input type=\"hidden\" name=\"{0}\" id=\"{1}\" value=\"{2}\" />",
                     HttpUtility.HtmlAttributeEncode(field.Name),

@@ -11,14 +11,14 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public static class FormModelsFacade
     {
-        private static IList<IFormModelsProvider> _modelProviders = new List<IFormModelsProvider>();
-        private static string _basePath = HostingEnvironment.MapPath("~/App_Data/FormBuilder/FormRenderingLayouts");
+        private static readonly IList<IFormModelsProvider> ModelProviders = new List<IFormModelsProvider>();
+        private static readonly string BasePath = HostingEnvironment.MapPath("~/App_Data/FormBuilder/FormRenderingLayouts");
 
         static FormModelsFacade()
         {            
-            if (!Directory.Exists(_basePath))
+            if (!Directory.Exists(BasePath))
             {
-                Directory.CreateDirectory(_basePath);
+                Directory.CreateDirectory(BasePath);
             }
 
             var asms = AppDomain.CurrentDomain.GetAssemblies();
@@ -29,11 +29,9 @@ namespace CompositeC1Contrib.FormBuilder
                     var types = asm.GetTypes()
                         .Where(t => typeof(IFormModelsProvider).IsAssignableFrom(t) && !t.IsInterface);
 
-                    foreach (var t in types)
+                    foreach (var instance in types.Select(t => (IFormModelsProvider)Activator.CreateInstance(t)))
                     {
-                        var instance = (IFormModelsProvider)Activator.CreateInstance(t);
-
-                        _modelProviders.Add(instance);
+                        ModelProviders.Add(instance);
                     }
                 }
                 catch { }
@@ -42,30 +40,28 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static XhtmlDocument GetRenderingLayout(string formName)
         {
-            var file = Path.Combine(_basePath, formName + ".xml");
+            var file = Path.Combine(BasePath, formName + ".xml");
             if (File.Exists(file))
             {
                 var fileContent = File.ReadAllText(file);
 
                 return XhtmlDocument.Parse(fileContent);
             }
-            else
+
+            var doc = new XhtmlDocument();
+            var model = GetModels().Single(m => m.Name == formName);
+
+            foreach (var field in model.Fields.Where(f => f.Label != null))
             {
-                var doc = new XhtmlDocument();
-                var model = FormModelsFacade.GetModels().Single(m => m.Name == formName);
-
-                foreach (var field in model.Fields.Where(f => f.Label != null))
-                {
-                    doc.Body.Add(new XElement(Namespaces.Xhtml + "p", String.Format("%{0}%", field.Name)));
-                }
-
-                return doc;
+                doc.Body.Add(new XElement(Namespaces.Xhtml + "p", String.Format("%{0}%", field.Name)));
             }
+
+            return doc;
         }
 
         public static void SaveRenderingLayout(string formName, XhtmlDocument markup)
         {
-            var file = Path.Combine(_basePath, formName + ".xml");
+            var file = Path.Combine(BasePath, formName + ".xml");
 
             if (markup.IsEmpty)
             {
@@ -77,15 +73,9 @@ namespace CompositeC1Contrib.FormBuilder
             }
         }
 
-        public static IEnumerable<FormModel> GetModels() 
+        public static IEnumerable<FormModel> GetModels()
         {
-            foreach (var provider in _modelProviders)
-            {
-                foreach (var model in provider.GetModels())
-                {
-                    yield return model;
-                }
-            }
+            return ModelProviders.SelectMany(provider => provider.GetModels());
         }
     }
 }

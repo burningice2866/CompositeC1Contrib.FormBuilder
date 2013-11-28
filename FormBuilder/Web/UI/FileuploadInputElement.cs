@@ -34,7 +34,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             {
                 htmlAttributesDictionary.Add("accept", fileMimeTypeValidatorAttr.MimeTypes);
             }
-            
+
+            FormRenderer.RenderMaxLengthAttribute(sb, field);
             FormRenderer.RenderExtraHtmlTags(sb, htmlAttributesDictionary);
 
             sb.Append(" />");

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Workflow.Activities;
 
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider;
@@ -37,17 +38,24 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var formName = GetBinding<string>("FormName");
 
-            var definition = DynamicFormsFacade.GetFormByName(formName);
-            if (definition != null)
+            if (!FormModel.IsValidName(formName))
             {
-                ShowFieldMessage("Form name", "Form name already exists");
+                ShowFieldMessage("FormName", "Form name is invalid, only a-z and 0-9 is allowed");
 
                 e.Result = false;
-
                 return;
             }
 
-            e.Result = true;
+            var isNameInUse = FormModelsFacade.GetModels().Any(m => m.Name == formName);
+            if (isNameInUse)
+            {
+                ShowFieldMessage("FormName", "Form name already exists");
+
+                e.Result = false;
+                return;
+            }
+
+            base.OnValidate(sender, e);
         }
     }
 }

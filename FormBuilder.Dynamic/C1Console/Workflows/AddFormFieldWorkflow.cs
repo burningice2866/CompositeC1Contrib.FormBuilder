@@ -14,7 +14,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
     public class AddFormFieldWorkflow : Basic1StepAddDialogWorkflow
     {
-        private static Dictionary<string, string> _inputElementTypes = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> InputElementTypes = new Dictionary<string, string>();
 
         static AddFormFieldWorkflow()
         {
@@ -28,7 +28,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
                     foreach (var t in types)
                     {
-                        _inputElementTypes.Add(t.AssemblyQualifiedName, t.Name);
+                        InputElementTypes.Add(t.AssemblyQualifiedName, t.Name);
                     }
                 }
                 catch { }
@@ -37,7 +37,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public static Dictionary<string, string> GetInputElementTypes()
         {
-            return _inputElementTypes;
+            return InputElementTypes;
         }
 
         public override string FormDefinitionFileName
@@ -80,21 +80,28 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         public override void OnValidate(object sender, ConditionalEventArgs e)
         {
             var folderToken = (FormFolderEntityToken)EntityToken;
-
             var fieldName = GetBinding<string>("FieldName");
+
+            if (!FormField.IsValidName(fieldName))
+            {
+                ShowFieldMessage("FieldName", "Field name is invalid, only a-z and 0-9 is allowed");
+
+                e.Result = false;
+                return;
+            }
+
             var definition = DynamicFormsFacade.GetFormByName(folderToken.FormName);
             var field = definition.Model.Fields.SingleOrDefault(f => f.Name == fieldName);
 
             if (field != null)
             {
-                ShowFieldMessage("Field name", "Field name already exists");
+                ShowFieldMessage("FieldName", "Field name already exists");
 
                 e.Result = false;
-
                 return;
             }
 
-            e.Result = true;
+            base.OnValidate(sender, e);
         }
     }
 }

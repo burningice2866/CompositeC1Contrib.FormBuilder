@@ -2,7 +2,7 @@
 
 namespace CompositeC1Contrib.FormBuilder.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class FormNameAttribute : Attribute
     {
         public string Namespace { get; private set; }

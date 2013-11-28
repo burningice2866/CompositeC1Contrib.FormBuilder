@@ -44,19 +44,23 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 if (checkboxListOptions != null)
                 {
                     var ix = 0;
-                    IEnumerable<string> list;
+                    IList<string> list;
 
                     if (value == null)
                     {
-                        list = Enumerable.Empty<string>();
-                    }
-                    else if (value is string)
-                    {
-                        list = new[] { (string)value };
+                        list = Enumerable.Empty<string>().ToList();
                     }
                     else
                     {
-                        list = (IEnumerable<string>)value;
+                        var str = value as string;
+                        if (str != null)
+                        {
+                            list = new[] { str };
+                        }
+                        else
+                        {
+                            list = ((IEnumerable<string>)value).ToList();
+                        }
                     }
 
                     foreach (var item in checkboxListOptions)
@@ -70,7 +74,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                             HttpUtility.HtmlAttributeEncode(item.Key),
                             FormRenderer.WriteChecked(list.Contains(item.Key), "checked"));
 
-                        FormRenderer.RenderExtraHtmlTags(sb, field);
+                        FormRenderer.RenderMaxLengthAttribute(sb, field);
+                        FormRenderer.RenderExtraHtmlTags(sb, field, htmlAttributes);
 
                         sb.AppendFormat("/> {0}</label>", HttpUtility.HtmlEncode(item.Value));
                     }

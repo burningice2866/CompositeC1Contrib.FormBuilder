@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Web;
 
@@ -6,6 +7,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public class PasswordInputElement : IInputElementHandler
     {
+        private const string _s = "<input type=\"{0}\" name=\"{1}\" id=\"{2}\" title=\"{3}\" placeholder=\"{4}\"";
+
         public string ElementName
         {
             get { return "textbox"; }
@@ -14,16 +17,21 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         public IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
         {
             var sb = new StringBuilder();
+            var placeholderText = field.PlaceholderText;
 
-            var value = field.Value;
-            var s = "<input type=\"{0}\" name=\"{1}\" id=\"{2}\" title=\"{3}\" placeholder=\"{3}\"";
+            if (String.IsNullOrEmpty(placeholderText) && field.OwningForm.Options.HideLabels)
+            {
+                placeholderText = field.Label.Label;
+            }
 
-            sb.AppendFormat(s,
+            sb.AppendFormat(_s,
                 "password",
                 HttpUtility.HtmlAttributeEncode(field.Name),
                 HttpUtility.HtmlAttributeEncode(field.Id),
-                HttpUtility.HtmlAttributeEncode(field.PlaceholderText));
+                HttpUtility.HtmlAttributeEncode(field.Label.Label),
+                HttpUtility.HtmlAttributeEncode(placeholderText));
 
+            FormRenderer.RenderMaxLengthAttribute(sb, field);
             FormRenderer.RenderExtraHtmlTags(sb, field, htmlAttributes);
 
             sb.Append(" />");

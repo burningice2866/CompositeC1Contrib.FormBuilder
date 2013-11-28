@@ -15,7 +15,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
     {
         public static IHtmlString FieldFor(FormField field)
         {
-            return writeRow(field, new Dictionary<string, object>());
+            return WriteRow(field, new Dictionary<string, object>());
         }
 
         public static IHtmlString NameFor(FormField field)
@@ -57,10 +57,10 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new HtmlString(sb.ToString());
         }
 
-        private static IHtmlString writeRow(FormField field, IDictionary<string, object> htmlAttributes)
+        private static IHtmlString WriteRow(FormField field, IDictionary<string, object> htmlAttributes)
         {
             var sb = new StringBuilder();
-            var includeLabel = showLabel(field);
+            var includeLabel = ShowLabel(field);
             var validationResult = field.OwningForm.ValidationResult;
 
             sb.AppendFormat("<div id=\"form-field-{0}\" class=\"control-group control-{1} {2} {3} \"", field.Name, field.InputTypeHandler.ElementName, WriteErrorClass(field.Name, validationResult), field.IsRequired ? "required" : String.Empty);
@@ -73,11 +73,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             {
                 if (includeLabel)
                 {
-                    writeLabel(field, sb);
+                    WriteLabel(field, sb);
                 }
                 else
                 {
-                    writePropertyHeading(field, sb);
+                    WritePropertyHeading(field, sb);
                 }
             }
 
@@ -88,11 +88,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 sb.Append("<label class=\"checkbox\">");
             }
 
-            writeField(field, sb, htmlAttributes);
+            WriteField(field, sb, htmlAttributes);
 
             if (field.InputTypeHandler is CheckboxInputElement && field.ValueType == typeof(bool))
             {
-                writeLabelContent(field, sb);
+                WriteLabelContent(field, sb);
 
                 sb.Append("</label>");
             }
@@ -102,7 +102,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new HtmlString(sb.ToString());
         }
 
-        private static bool showLabel(FormField field)
+        private static bool ShowLabel(FormField field)
         {
             if (field.ValueType == typeof(bool))
             {
@@ -117,7 +117,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return true;
         }
 
-        private static void writeField(FormField field, StringBuilder sb, IDictionary<string, object> htmlAttributes)
+        private static void WriteField(FormField field, StringBuilder sb, IDictionary<string, object> htmlAttributes)
         {
             var str = field.InputTypeHandler.GetHtmlString(field, htmlAttributes);
 
@@ -202,7 +202,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return obj.ToString() == value;
         }
 
-        private static void writeLabel(FormField field, StringBuilder sb)
+        private static void WriteLabel(FormField field, StringBuilder sb)
         {
             var hide = field.OwningForm.Options.HideLabels;
             if (field.InputTypeHandler is FileuploadInputElement)
@@ -212,21 +212,21 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             sb.AppendFormat("<label class=\"control-label {0}\" for=\"{1}\">", hide ? "hide-text " : String.Empty, field.Id);
 
-            writeLabelContent(field, sb);
+            WriteLabelContent(field, sb);
 
             sb.Append("</label>");
         }
 
-        private static void writePropertyHeading(FormField field, StringBuilder sb)
+        private static void WritePropertyHeading(FormField field, StringBuilder sb)
         {
             sb.Append("<p class=\"control-label\">");
 
-            writeLabelContent(field, sb);
+            WriteLabelContent(field, sb);
 
             sb.Append("</p>");
         }
 
-        private static void writeLabelContent(FormField field, StringBuilder sb)
+        private static void WriteLabelContent(FormField field, StringBuilder sb)
         {
             if (field.IsRequired)
             {
@@ -249,12 +249,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public static string WriteErrorClass(string name, IEnumerable<FormValidationRule> validationResult)
         {
-            if (validationResult.Any(el => el.AffectedFormIds.Contains(name)))
-            {
-                return "error";
-            }
-
-            return String.Empty;
+            return validationResult.Any(el => el.AffectedFormIds.Contains(name)) ? "error" : String.Empty;
         }
 
         public static string GetValue(FormField field)
@@ -272,10 +267,10 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 var hasValue = (bool)field.ValueType.GetProperty("HasValue").GetValue(field.Value, null);
                 if (hasValue)
                 {
-                    var value = field.ValueType.GetProperty("Value").GetValue(field.Value, null);
-                    if (value is IFormattable)
+                    var value = field.ValueType.GetProperty("Value").GetValue(field.Value, null) as IFormattable;
+                    if (value != null)
                     {
-                        return ((IFormattable)value).ToString(formatAttr.FormatString, CultureInfo.CurrentUICulture);
+                        return value.ToString(formatAttr.FormatString, CultureInfo.CurrentUICulture);
                     }
                 }
             }
@@ -332,14 +327,20 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return htmlAttributesDictionary;
         }
 
-        public static void RenderExtraHtmlTags(StringBuilder sb, FormField field)
+        public static void RenderMaxLengthAttribute(StringBuilder sb, FormField field)
         {
-            RenderExtraHtmlTags(sb, field, null);
+            var maxLengthAttribute = field.ValidationAttributes.OfType<MaxFieldLengthAttribute>().FirstOrDefault();
+            if (maxLengthAttribute == null)
+            {
+                return;
+            }
+
+            sb.AppendFormat(" maxlength=\"{0}\"", maxLengthAttribute.Length);
         }
 
         public static void RenderExtraHtmlTags(StringBuilder sb, FormField field, IDictionary<string, object> htmlAttributes)
         {
-            var htmlAttributesDictionary = FormRenderer.MapHtmlTagAttributes(field, htmlAttributes);
+            var htmlAttributesDictionary = MapHtmlTagAttributes(field, htmlAttributes);
 
             RenderExtraHtmlTags(sb, htmlAttributesDictionary);
         }

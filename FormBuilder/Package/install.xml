@@ -25,14 +25,14 @@
 
       <Directories>
         <Directory sourceDirectory="~\content\Composite\InstalledPackages\localization\" targetDirectory="~\Composite\InstalledPackages\localization\" allowOverwrite="true" />
-        <Directory sourceDirectory="~\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder" targetDirectory="~\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder" allowOverwrite="true" deleteTargetDirectory="true" />
+        <Directory sourceDirectory="~\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\" targetDirectory="~\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\" allowOverwrite="true" deleteTargetDirectory="true" />
       </Directories>
     </mi:Add>
 
     <mi:Add installerType="Composite.Core.PackageSystem.PackageFragmentInstallers.XmlFileMergePackageFragmentInstaller, Composite" uninstallerType="Composite.Core.PackageSystem.PackageFragmentInstallers.XmlFileMergePackageFragmentUninstaller, Composite">
       <XmlFileMerges>
-        <XmlFileMerge source="~\config\web.config" target="~\web.config" />
-        <XmlFileMerge source="~\config\App_Data\Composite\composite.config" target="~\App_Data\Composite\composite.config" />
+        <XmlFileMerge changeDefinitionPath="~\config\web.config" targetFilePath="~\web.config" />
+        <XmlFileMerge changeDefinitionPath="~\config\App_Data\Composite\composite.config" targetFilePath="~\App_Data\Composite\composite.config" />
       </XmlFileMerges>
     </mi:Add>
   </mi:PackageFragmentInstallers>

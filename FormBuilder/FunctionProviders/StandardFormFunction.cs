@@ -72,7 +72,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
             typeof(ParameterList).GetField("_functionContextContainer", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(parameters, newContext);
 
-            var formExecutorFunction = FormBuilderSection.GetSection().DefaultFunctionExecutor;
+            var formExecutorFunction = FormBuilderConfiguration.GetSection().DefaultFunctionExecutor;
             if (!String.IsNullOrEmpty(OverrideFormExecutor))
             {
                 formExecutorFunction = OverrideFormExecutor;

@@ -14,46 +14,51 @@
       <cms:read source="FieldName" />
     </cms:layout.label>
 
-    <FieldGroup>
-      <TextBox Label="Field name">
-        <TextBox.Text>
-          <cms:bind source="FieldName" />
-        </TextBox.Text>
-      </TextBox>
+    <TabPanels>
+      <PlaceHolder Label="Settings">
 
-      <TextBox Label="Label">
-        <TextBox.Text>
-          <cms:bind source="Label" />
-        </TextBox.Text>
-      </TextBox>
+        <FieldGroup>
+          <TextBox Label="Field name">
+            <TextBox.Text>
+              <cms:bind source="FieldName" />
+            </TextBox.Text>
+          </TextBox>
 
-      <TextBox Label="Placeholder text">
-        <TextBox.Text>
-          <cms:bind source="PlaceholderText" />
-        </TextBox.Text>
-      </TextBox>
+          <TextBox Label="Label">
+            <TextBox.Text>
+              <cms:bind source="Label" />
+            </TextBox.Text>
+          </TextBox>
 
-      <TextBox Label="Help">
-        <TextBox.Text>
-          <cms:bind source="Help" />
-        </TextBox.Text>
-      </TextBox>
+          <TextBox Label="Placeholder text">
+            <TextBox.Text>
+              <cms:bind source="PlaceholderText" />
+            </TextBox.Text>
+          </TextBox>
 
-      <formbuilder:FunctionSelector Label="Default value">
-        <formbuilder:FunctionSelector.FunctionMarkup>
-          <cms:bind source="DefaultValue" />
-        </formbuilder:FunctionSelector.FunctionMarkup>
-      </formbuilder:FunctionSelector>
+          <TextBox Label="Help">
+            <TextBox.Text>
+              <cms:bind source="Help" />
+            </TextBox.Text>
+          </TextBox>
 
-      <KeySelector Label="Select field type" OptionsKeyField="Key" OptionsLabelField="Value" Required="true">
-        <KeySelector.Options>
-          <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows.AddFormFieldWorkflow, CompositeC1Contrib.FormBuilder.Dynamic" Method="GetInputElementTypes" />
-        </KeySelector.Options>
+          <formbuilder:FunctionSelector Label="Default value">
+            <formbuilder:FunctionSelector.FunctionMarkup>
+              <cms:bind source="DefaultValue" />
+            </formbuilder:FunctionSelector.FunctionMarkup>
+          </formbuilder:FunctionSelector>
 
-        <KeySelector.Selected>
-          <cms:bind source="InputElementType" />
-        </KeySelector.Selected>
-      </KeySelector>
-    </FieldGroup>
+          <KeySelector Label="Select field type" OptionsKeyField="Key" OptionsLabelField="Value" Required="true">
+            <KeySelector.Options>
+              <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows.AddFormFieldWorkflow, CompositeC1Contrib.FormBuilder.Dynamic" Method="GetInputElementTypes" />
+            </KeySelector.Options>
+
+            <KeySelector.Selected>
+              <cms:bind source="InputElementType" />
+            </KeySelector.Selected>
+          </KeySelector>
+        </FieldGroup>
+      </PlaceHolder>
+    </TabPanels>
   </cms:layout>
 </cms:formdefinition>

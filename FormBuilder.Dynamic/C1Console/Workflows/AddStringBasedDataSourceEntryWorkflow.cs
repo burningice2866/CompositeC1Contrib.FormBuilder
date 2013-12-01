@@ -1,31 +1,27 @@
 using System;
 using System.Linq;
-using System.Workflow.Activities;
-
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
-    public class AddStringBasedDataSourceEntryWorkflow : Basic1StepAddDialogWorkflow
+    public class AddStringBasedDataSourceEntryWorkflow : Basic1StepDialogWorkflow
     {
-        public override string FormDefinitionFileName
+        public AddStringBasedDataSourceEntryWorkflow()
+            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddStringBasedDataSourceEntryWorkflow.xml")
         {
-            get { return "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddStringBasedDataSourceEntryWorkflow.xml"; }
         }
 
         public override void OnInitialize(object sender, EventArgs e)
         {
             if (!BindingExist("EntryValue"))
             {
-                var dataSourceToken = (DataSourceEntityToken)EntityToken;
-
                 Bindings.Add("EntryValue", String.Empty);
             }
         }
 
-        public override void OnSave(object sender, EventArgs e)
+        public override void OnFinish(object sender, EventArgs e)
         {
             var dataSourceToken = (DataSourceEntityToken)EntityToken;
 
@@ -51,7 +47,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             treeRefresher.PostRefreshMesseges(new StringBasedDataSourceEntryEntityToken(dataSourceToken.FormName, dataSourceToken.FieldName, entryValue));
         }
 
-        public override void OnValidate(object sender, ConditionalEventArgs e)
+        public override bool Validate()
         {
             var dataSourceToken = (DataSourceEntityToken)EntityToken;
 
@@ -65,12 +61,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             {
                 ShowFieldMessage("Entry value", "Entry value is not unique");
 
-                e.Result = false;
-
-                return;
+                return false;
             }
 
-            e.Result = true;
+            return true;
         }
     }
 }

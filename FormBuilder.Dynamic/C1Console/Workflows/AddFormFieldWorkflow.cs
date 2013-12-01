@@ -1,48 +1,38 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Workflow.Activities;
 
 using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
+using CompositeC1Contrib.FormBuilder.Configuration;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
+using CompositeC1Contrib.FormBuilder.Dynamic.Configuration;
 using CompositeC1Contrib.FormBuilder.Web.UI;
 using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
-    public class AddFormFieldWorkflow : Basic1StepAddDialogWorkflow
+    public class AddFormFieldWorkflow : Basic1StepDialogWorkflow
     {
         private static readonly Dictionary<string, string> InputElementTypes = new Dictionary<string, string>();
 
         static AddFormFieldWorkflow()
         {
-            var asms = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var asm in asms)
-            {
-                try
-                {
-                    var types = asm.GetTypes()
-                        .Where(t => typeof(IInputElementHandler).IsAssignableFrom(t) && !t.IsInterface);
+            var config = FormBuilderConfiguration.GetSection();
+            var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
+            
+            InputElementTypes = plugin.InputElementHandlers.ToDictionary(e => e.Type.AssemblyQualifiedName, e => e.Name);
+        }
 
-                    foreach (var t in types)
-                    {
-                        InputElementTypes.Add(t.AssemblyQualifiedName, t.Name);
-                    }
-                }
-                catch { }
-            }
+        public AddFormFieldWorkflow()
+            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddFormFieldWorkflow.xml")
+        {
         }
 
         public static Dictionary<string, string> GetInputElementTypes()
         {
             return InputElementTypes;
-        }
-
-        public override string FormDefinitionFileName
-        {
-            get { return "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddFormFieldWorkflow.xml"; }
         }
 
         public override void OnInitialize(object sender, EventArgs e)
@@ -54,7 +44,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        public override void OnSave(object sender, EventArgs e)
+        public override void OnFinish(object sender, EventArgs e)
         {
             var folderToken = (FormFolderEntityToken)EntityToken;
 
@@ -77,7 +67,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             ExecuteAction(fieldToken, workflowToken);
         }
 
-        public override void OnValidate(object sender, ConditionalEventArgs e)
+        public override bool Validate()
         {
             var folderToken = (FormFolderEntityToken)EntityToken;
             var fieldName = GetBinding<string>("FieldName");
@@ -86,8 +76,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             {
                 ShowFieldMessage("FieldName", "Field name is invalid, only a-z and 0-9 is allowed");
 
-                e.Result = false;
-                return;
+                return false;
             }
 
             var definition = DynamicFormsFacade.GetFormByName(folderToken.FormName);
@@ -97,11 +86,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             {
                 ShowFieldMessage("FieldName", "Field name already exists");
 
-                e.Result = false;
-                return;
+                return false;
             }
 
-            base.OnValidate(sender, e);
+            return true;
         }
     }
 }

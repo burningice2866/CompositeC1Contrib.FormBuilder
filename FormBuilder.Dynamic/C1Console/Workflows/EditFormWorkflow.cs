@@ -1,7 +1,5 @@
 using System;
 using System.Linq;
-using System.Workflow.Activities;
-
 using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.FormBuilder.C1Console.Tokens;
@@ -11,11 +9,11 @@ using CompositeC1Contrib.Workflows;
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
     [AllowPersistingWorkflow(WorkflowPersistingType.Idle)]
-    public class EditFormWorkflow : Basic1StepEditPageWorkflow
+    public class EditFormWorkflow : Basic1StepDocumentWorkflow
     {
-        public override string FormDefinitionFileName
+        public EditFormWorkflow()
+            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditFormWorkflow.xml")
         {
-            get { return "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditFormWorkflow.xml"; }
         }
 
         public override void OnInitialize(object sender, EventArgs e)
@@ -30,7 +28,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        public override void OnSave(object sender, EventArgs e)
+        public override void OnFinish(object sender, EventArgs e)
         {
             var formToken = (FormInstanceEntityToken)EntityToken;
             var definition = DynamicFormsFacade.GetFormByName(formToken.FormName);
@@ -57,7 +55,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             SetSaveStatus(true);
         }
 
-        public override void OnValidate(object sender, ConditionalEventArgs e)
+        public override bool Validate()
         {
             var formToken = (FormInstanceEntityToken)EntityToken;
             var formName = GetBinding<string>("FormName");
@@ -68,8 +66,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 {
                     ShowFieldMessage("FormName", "Form name is invalid, only a-z and 0-9 is allowed");
 
-                    e.Result = false;
-                    return;
+                    return false;
                 }
 
                 var isNameInUse = FormModelsFacade.GetModels().Any(m => m.Name == formName);
@@ -77,12 +74,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 {
                     ShowFieldMessage("FormName", "Form name already exists");
 
-                    e.Result = false;
-                    return;
+                    return false;
                 }
             }
 
-            base.OnValidate(sender, e);
+            return true;
         }
     }
 }

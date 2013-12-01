@@ -1,19 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Workflow.Activities;
-
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
-    public class AddDataSourceWorkflow : Basic1StepAddDialogWorkflow
+    public class AddDataSourceWorkflow : Basic1StepDialogWorkflow
     {
-        public override string FormDefinitionFileName
+        public AddDataSourceWorkflow()
+            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddDataSourceWorkflow.xml")
         {
-            get { return "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddDataSourceWorkflow.xml"; }
         }
 
         public static Dictionary<string, string> GetDataSourceTypes()
@@ -32,7 +30,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        public override void OnSave(object sender, EventArgs e)
+        public override void OnFinish(object sender, EventArgs e)
         {
             var token = (FormFieldEntityToken)EntityToken;
             var definition = DynamicFormsFacade.GetFormByName(token.FormName);

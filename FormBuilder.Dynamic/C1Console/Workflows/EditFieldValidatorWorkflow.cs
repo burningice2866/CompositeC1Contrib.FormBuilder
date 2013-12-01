@@ -1,7 +1,5 @@
 using System;
 using System.Linq;
-using System.Workflow.Activities;
-
 using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
@@ -10,11 +8,11 @@ using CompositeC1Contrib.Workflows;
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
     [AllowPersistingWorkflow(WorkflowPersistingType.Idle)]
-    public sealed partial class EditFieldValidatorWorkflow : Basic1StepEditPageWorkflow
+    public sealed class EditFieldValidatorWorkflow : Basic1StepDocumentWorkflow
     {
-        public override string FormDefinitionFileName
+        public EditFieldValidatorWorkflow()
+            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditFieldValidatorWorkflow.xml")
         {
-            get { return "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditFieldValidatorWorkflow.xml"; }
         }
 
         public override void OnInitialize(object sender, EventArgs e)
@@ -32,7 +30,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        public override void OnSave(object sender, EventArgs e)
+        public override void OnFinish(object sender, EventArgs e)
         {
             var token = (FieldValidatorsEntityToken)EntityToken;
 

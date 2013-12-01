@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Workflow.Activities;
-
 using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
@@ -11,11 +9,11 @@ using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
-    public class AddFieldValidatorWorkflow : Basic1StepAddDialogWorkflow
+    public class AddFieldValidatorWorkflow : Basic1StepDialogWorkflow
     {
-        public override string FormDefinitionFileName
+        public AddFieldValidatorWorkflow()
+            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddFieldValidatorWorkflow.xml")
         {
-            get { return "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddFieldValidatorWorkflow.xml"; }
         }
 
         public static Dictionary<string, string> GetValidatorTypes()
@@ -51,7 +49,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        public override void OnSave(object sender, EventArgs e)
+        public override void OnFinish(object sender, EventArgs e)
         {
             var token = (FieldValidatorsEntityToken)EntityToken;
             var definition = DynamicFormsFacade.GetFormByName(token.FormName);

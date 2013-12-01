@@ -9,11 +9,11 @@ using CompositeC1Contrib.Workflows;
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
     [AllowPersistingWorkflow(WorkflowPersistingType.Idle)]
-    public class EditFormRenderingLayoutWorkflow : Basic1StepEditPageWorkflow
+    public class EditFormRenderingLayoutWorkflow : Basic1StepDocumentWorkflow
     {
-        public override string FormDefinitionFileName
+        public EditFormRenderingLayoutWorkflow()
+            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder\\EditFormRenderingLayoutWorkflow.xml")
         {
-            get { return "\\InstalledPackages\\CompositeC1Contrib.FormBuilder\\EditFormRenderingLayoutWorkflow.xml"; }
         }
 
         public override void OnInitialize(object sender, EventArgs e)
@@ -28,7 +28,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        public override void OnSave(object sender, EventArgs e)
+        public override void OnFinish(object sender, EventArgs e)
         {
             var formToken = (FormInstanceEntityToken)EntityToken;
             var renderingMarkup = GetBinding<string>("RenderingMarkup");

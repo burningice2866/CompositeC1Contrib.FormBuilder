@@ -1,7 +1,5 @@
 using System;
 using System.Linq;
-using System.Workflow.Activities;
-
 using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
@@ -11,11 +9,11 @@ using CompositeC1Contrib.Workflows;
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
     [AllowPersistingWorkflow(WorkflowPersistingType.Idle)]
-    public class EditEmailSubmitHandlerWorkflow : Basic1StepEditPageWorkflow
+    public class EditEmailSubmitHandlerWorkflow : Basic1StepDocumentWorkflow
     {
-        public override string FormDefinitionFileName
+        public EditEmailSubmitHandlerWorkflow()
+            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditEmailSubmitHandlerWorkflow.xml")
         {
-            get { return "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditEmailSubmitHandlerWorkflow.xml"; }
         }
 
         public override void OnInitialize(object sender, EventArgs e)
@@ -30,7 +28,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        public override void OnSave(object sender, EventArgs e)
+        public override void OnFinish(object sender, EventArgs e)
         {
             var token = (FormSubmitHandlerEntityToken)EntityToken;
 
@@ -48,7 +46,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             SetSaveStatus(true);
         }
 
-        public override void OnValidate(object sender, ConditionalEventArgs e)
+        public override bool Validate()
         {
             var token = (FormSubmitHandlerEntityToken)EntityToken;
             var handler = GetBinding<EmailSubmitHandler>("Handler");
@@ -61,13 +59,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 {
                     ShowFieldMessage("Name", "Handler name already exists");
 
-                    e.Result = false;
-
-                    return;
+                    return false;
                 }
             }
 
-            e.Result = true;
+            return true;
         }
     }
 }

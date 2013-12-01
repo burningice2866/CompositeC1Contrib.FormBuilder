@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Workflow.Activities;
-
 using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
@@ -10,11 +8,11 @@ using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
-    public class AddSubmitHandlerWorkflow : Basic1StepAddDialogWorkflow
+    public class AddSubmitHandlerWorkflow : Basic1StepDialogWorkflow
     {
-        public override string FormDefinitionFileName
+        public AddSubmitHandlerWorkflow()
+            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddSubmitHandlerWorkflow.xml")
         {
-            get { return "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddSubmitHandlerWorkflow.xml"; }
         }
 
         public static Dictionary<string, string> GetSubmitHandlerTypes()
@@ -34,7 +32,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        public override void OnSave(object sender, EventArgs e)
+        public override void OnFinish(object sender, EventArgs e)
         {
             var token = (FormFolderEntityToken)EntityToken;
 

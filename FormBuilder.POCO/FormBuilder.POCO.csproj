@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Composite">
-      <HintPath>..\References\Composite.dll</HintPath>
+      <HintPath>..\.vendor\Composite.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -66,12 +66,6 @@
     <Compile Include="Web\UI\POCOBasedFormsPage.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FormBuilder\FormBuilder.csproj">
-      <Project>{09196DDC-350F-4E16-BA0F-312C67224559}</Project>
-      <Name>FormBuilder</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
     <None Include="Package\config\App_Data\Composite\composite.config">
       <SubType>Designer</SubType>
@@ -81,6 +75,12 @@
     <Content Include="Package\install.xml">
       <SubType>Designer</SubType>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FormBuilder\FormBuilder.csproj">
+      <Project>{09196ddc-350f-4e16-ba0f-312c67224559}</Project>
+      <Name>FormBuilder</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

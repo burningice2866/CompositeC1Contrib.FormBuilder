@@ -6,6 +6,7 @@ using System.Text;
 using System.Web;
 
 using Composite.Core.ResourceSystem;
+
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Validation;
 
@@ -63,13 +64,13 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var includeLabel = ShowLabel(field);
             var validationResult = field.OwningForm.ValidationResult;
 
-            sb.AppendFormat("<div id=\"form-field-{0}\" class=\"control-group control-{1} {2} {3} \"", field.Name, field.InputTypeHandler.ElementName, WriteErrorClass(field.Name, validationResult), field.IsRequired ? "required" : String.Empty);
+            sb.AppendFormat("<div id=\"form-field-{0}\" class=\"control-group control-{1} {2} {3} \"", field.Name, field.InputElementType.ElementName, WriteErrorClass(field.Name, validationResult), field.IsRequired ? "required" : String.Empty);
 
             DependencyAttributeFor(field, sb);
 
             sb.Append(">");
 
-            if (!(field.InputTypeHandler is CheckboxInputElement && field.ValueType == typeof(bool)))
+            if (!(field.InputElementType is CheckboxInputElementAttribute && field.ValueType == typeof(bool)))
             {
                 if (includeLabel)
                 {
@@ -83,14 +84,14 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             sb.Append("<div class=\"controls\">");
 
-            if (field.InputTypeHandler is CheckboxInputElement && field.ValueType == typeof(bool))
+            if (field.InputElementType is CheckboxInputElementAttribute && field.ValueType == typeof(bool))
             {
                 sb.Append("<label class=\"checkbox\">");
             }
 
             WriteField(field, sb, htmlAttributes);
 
-            if (field.InputTypeHandler is CheckboxInputElement && field.ValueType == typeof(bool))
+            if (field.InputElementType is CheckboxInputElementAttribute && field.ValueType == typeof(bool))
             {
                 WriteLabelContent(field, sb);
 
@@ -109,7 +110,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 return true;
             }
 
-            if (field.InputTypeHandler is CheckboxInputElement || field.InputTypeHandler is RadioButtonInputElement)
+            if (field.InputElementType is CheckboxInputElementAttribute || field.InputElementType is RadioButtonInputElementAttribute)
             {
                 return false;
             }
@@ -119,7 +120,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         private static void WriteField(FormField field, StringBuilder sb, IDictionary<string, object> htmlAttributes)
         {
-            var str = field.InputTypeHandler.GetHtmlString(field, htmlAttributes);
+            var str = field.InputElementType.GetHtmlString(field, htmlAttributes);
 
             if (!String.IsNullOrWhiteSpace(field.Help))
             {
@@ -205,7 +206,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         private static void WriteLabel(FormField field, StringBuilder sb)
         {
             var hide = field.OwningForm.Options.HideLabels;
-            if (field.InputTypeHandler is FileuploadInputElement)
+            if (field.InputElementType is FileuploadInputElementAttribute)
             {
                 hide = false;
             }

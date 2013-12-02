@@ -22,7 +22,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var config = FormBuilderConfiguration.GetSection();
             var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
             
-            InputElementTypes = plugin.InputElementHandlers.ToDictionary(e => e.Type.AssemblyQualifiedName, e => e.Name);
+            InputElementTypes = plugin.InputElementHandlers.ToDictionary(e => e.ElementType.GetType().AssemblyQualifiedName, e => e.Name);
         }
 
         public AddFormFieldWorkflow()
@@ -40,7 +40,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             if (!BindingExist("FieldName"))
             {
                 Bindings.Add("FieldName", String.Empty);
-                Bindings.Add("InputElementType", typeof(TextboxInputElement).AssemblyQualifiedName);
+                Bindings.Add("InputElementType", typeof(TextboxInputElementAttribute).AssemblyQualifiedName);
             }
         }
 
@@ -53,7 +53,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var field = new FormField(definition.Model, fieldName, typeof(string), new List<Attribute>());
 
             var elementType = Type.GetType(GetBinding<string>("InputElementType"));
-            var inputTypeAttribute = new TypeBasedInputElementProviderAttribute(elementType);
+            var inputTypeAttribute = (InputElementTypeAttribute)Activator.CreateInstance(elementType);
 
             field.Attributes.Add(inputTypeAttribute);
             definition.Model.Fields.Add(field);

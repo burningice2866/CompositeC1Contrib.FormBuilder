@@ -54,7 +54,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             foreach (var field in formModel.Fields.Where(f => f.Value != null))
             {
                 var value = HttpUtility.HtmlEncode(field.Value.ToString());
-                if (field.InputTypeHandler is TextAreaInputElement)
+                if (field.InputElementType is TextAreaInputElementAttribute)
                 {
                     value = value.Replace("\r", String.Empty).Replace("\n", "<br />");
                 }

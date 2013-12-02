@@ -7,14 +7,14 @@ using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
-    public class FileuploadInputElement : IInputElementHandler
+    public class FileuploadInputElementAttribute : InputElementTypeAttribute
     {
-        public string ElementName
+        public override string ElementName
         {
             get { return "file"; }
         }
 
-        public virtual IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
         {
             var sb = new StringBuilder();
             var htmlAttributesDictionary = FormRenderer.MapHtmlTagAttributes(field, htmlAttributes);

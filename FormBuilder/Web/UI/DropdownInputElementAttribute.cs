@@ -6,14 +6,14 @@ using System.Web;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
-    public class DropdownInputElement : IInputElementHandler
+    public class DropdownInputElementAttribute : InputElementTypeAttribute
     {
-        public string ElementName
+        public override string ElementName
         {
             get { return "selectbox"; }
         }
 
-        public IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
         {
             var sb = new StringBuilder();
             var htmlAttributesDictionary = FormRenderer.MapHtmlTagAttributes(field, htmlAttributes);

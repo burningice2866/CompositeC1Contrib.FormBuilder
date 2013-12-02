@@ -14,7 +14,7 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public class FormField
     {
-        private static readonly IDictionary<Type, IInputElementHandler> DefaultElementType;
+        private static readonly IDictionary<Type, InputElementTypeAttribute> DefaultElementType;
 
         public FormModel OwningForm { get; private set; }
 
@@ -63,14 +63,14 @@ namespace CompositeC1Contrib.FormBuilder
             }
         }
 
-        public IInputElementHandler InputTypeHandler
+        public InputElementTypeAttribute InputElementType
         {
             get
             {
-                var inputTypeAttribute = Attributes.OfType<InputElementProviderAttribute>().FirstOrDefault();
+                var inputTypeAttribute = Attributes.OfType<InputElementTypeAttribute>().FirstOrDefault();
                 if (inputTypeAttribute != null)
                 {
-                    return inputTypeAttribute.GetInputFieldTypeHandler();
+                    return inputTypeAttribute;
                 }
 
                 return GetDefaultInputType();
@@ -126,13 +126,13 @@ namespace CompositeC1Contrib.FormBuilder
 
         static FormField()
         {
-            DefaultElementType = new Dictionary<Type, IInputElementHandler>() 
+            DefaultElementType = new Dictionary<Type, InputElementTypeAttribute>() 
             {
-                { typeof(bool), new CheckboxInputElement() },
-                { typeof(IEnumerable<string>), new CheckboxInputElement() },
+                { typeof(bool), new CheckboxInputElementAttribute() },
+                { typeof(IEnumerable<string>), new CheckboxInputElementAttribute() },
 
-                { typeof(FormFile), new FileuploadInputElement() },
-                { typeof(IEnumerable<FormFile>), new FileuploadInputElement() },
+                { typeof(FormFile), new FileuploadInputElementAttribute() },
+                { typeof(IEnumerable<FormFile>), new FileuploadInputElementAttribute() }
             };
         }
 
@@ -151,9 +151,9 @@ namespace CompositeC1Contrib.FormBuilder
             return Regex.IsMatch(name, @"^[a-zA-Z0-9]+$");
         }
 
-        private IInputElementHandler GetDefaultInputType()
+        private InputElementTypeAttribute GetDefaultInputType()
         {
-            return DefaultElementType.ContainsKey(ValueType) ? DefaultElementType[ValueType] : new TextboxInputElement();
+            return DefaultElementType.ContainsKey(ValueType) ? DefaultElementType[ValueType] : new TextboxInputElementAttribute();
         }
     }
 }

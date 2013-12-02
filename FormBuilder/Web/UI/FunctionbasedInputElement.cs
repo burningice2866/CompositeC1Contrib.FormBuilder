@@ -9,21 +9,16 @@ using CompositeC1Contrib.FormBuilder.Attributes;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
-    public class FunctionbasedInputElement : IInputElementHandler
+    public abstract class FunctionbasedInputElementAttribute : InputElementTypeAttribute
     {
         private string _c1FunctionName;
 
-        public string ElementName
-        {
-            get { return String.Empty; }
-        }
-
-        public FunctionbasedInputElement(string functionName)
+        protected FunctionbasedInputElementAttribute(string functionName)
         {
             _c1FunctionName = functionName;
         }
 
-        public IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
         {
             var function = FunctionFacade.GetFunction(_c1FunctionName);
             if (function == null)

@@ -8,16 +8,16 @@ using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
-    public class TextboxInputElement : IInputElementHandler
+    public class TextboxInputElementAttribute : InputElementTypeAttribute
     {
         private const string _s = "<input type=\"{0}\" name=\"{1}\" id=\"{2}\" value=\"{3}\" title=\"{4}\" placeholder=\"{5}\"";
 
-        public string ElementName
+        public override string ElementName
         {
             get { return "textbox"; }
         }
 
-        public IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
         {
             var sb = new StringBuilder();
             var placeholderText = field.PlaceholderText;

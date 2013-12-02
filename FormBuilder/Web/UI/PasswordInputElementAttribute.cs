@@ -5,16 +5,16 @@ using System.Web;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
-    public class PasswordInputElement : IInputElementHandler
+    public class PasswordInputElementAttribute : InputElementTypeAttribute
     {
         private const string _s = "<input type=\"{0}\" name=\"{1}\" id=\"{2}\" title=\"{3}\" placeholder=\"{4}\"";
 
-        public string ElementName
+        public override string ElementName
         {
             get { return "textbox"; }
         }
 
-        public IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
         {
             var sb = new StringBuilder();
             var placeholderText = field.PlaceholderText;

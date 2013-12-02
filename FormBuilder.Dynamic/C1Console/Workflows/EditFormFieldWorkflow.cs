@@ -1,17 +1,19 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+
 using Composite.C1Console.Actions;
 using Composite.C1Console.Forms;
 using Composite.C1Console.Forms.DataServices;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 using Composite.Core.Xml;
+
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Configuration;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.Configuration;
+using CompositeC1Contrib.FormBuilder.Web.UI;
 using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
@@ -40,7 +42,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 Bindings.Add("PlaceholderText", field.PlaceholderText);
                 Bindings.Add("Help", field.Help);
                 Bindings.Add("DefaultValue", defaultValue);
-                Bindings.Add("InputElementType", field.InputTypeHandler.GetType().AssemblyQualifiedName);
+                Bindings.Add("InputElementType", field.InputElementType.GetType().AssemblyQualifiedName);
 
                 Bindings.Add("FieldTypeChangedHandler", new EventHandler(FieldTypeChangedHandler));
 
@@ -72,7 +74,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var config = FormBuilderConfiguration.GetSection();
             var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
-            var inputElement = plugin.InputElementHandlers.Single(el => el.Type == field.InputTypeHandler.GetType());
+            var inputElement = plugin.InputElementHandlers.Single(el => el.ElementType.GetType() == field.InputElementType.GetType());
             var settingsHandler = inputElement.SettingsHandler;
 
             if (settingsHandler != null)
@@ -91,12 +93,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
                 lastTabElement.AddAfterSelf(settingsTab);
 
-                var settingsInstance = (InputTypeSettingsHandler)Activator.CreateInstance(settingsHandler);
-                settingsInstance.Load(field);
+                settingsHandler.Load(field);
 
-                foreach (var prop in settingsInstance.GetType().GetProperties())
+                foreach (var prop in settingsHandler.GetType().GetProperties())
                 {
-                    var value = prop.GetValue(settingsInstance, null);
+                    var value = prop.GetValue(settingsHandler, null);
 
                     Bindings.Add(prop.Name, value);
                 }
@@ -162,13 +163,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 definition.DefaultValues.Add(field.Name, XElement.Parse(defaultValue));
             }
 
-            var inputTypeAttribute = field.Attributes.OfType<InputElementProviderAttribute>().FirstOrDefault();
+            var inputTypeAttribute = field.Attributes.OfType<InputElementTypeAttribute>().FirstOrDefault();
             if (inputTypeAttribute != null)
             {
                 field.Attributes.Remove(inputTypeAttribute);
             }
 
-            inputTypeAttribute = new TypeBasedInputElementProviderAttribute(inputElementType);
+            inputTypeAttribute = (InputElementTypeAttribute)Activator.CreateInstance(inputElementType);
             field.Attributes.Add(inputTypeAttribute);
 
             SaveExtraSettings(field);
@@ -183,20 +184,22 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var config = FormBuilderConfiguration.GetSection();
             var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
-            var inputElement = plugin.InputElementHandlers.Single(el => el.Type == field.InputTypeHandler.GetType());
+            var inputElement = plugin.InputElementHandlers.Single(el => el.ElementType.GetType() == field.InputElementType.GetType());
             var settingsHandler = inputElement.SettingsHandler;
 
             if (settingsHandler != null)
             {
-                var settingsInstance = (InputTypeSettingsHandler)Activator.CreateInstance(settingsHandler);
-                foreach (var prop in settingsInstance.GetType().GetProperties())
+                foreach (var prop in settingsHandler.GetType().GetProperties())
                 {
-                    var value = GetBinding<object>(prop.Name);
+                    if (BindingExist(prop.Name))
+                    {
+                        var value = GetBinding<object>(prop.Name);
 
-                    prop.SetValue(settingsInstance, value, null);
+                        prop.SetValue(settingsHandler, value, null);
+                    }
                 }
 
-                settingsInstance.Save(field);
+                settingsHandler.Save(field);
             }
         }
 

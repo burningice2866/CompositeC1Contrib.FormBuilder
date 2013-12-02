@@ -149,9 +149,16 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     add.Add(new XAttribute("help", field.Help));
                 }
 
-                if (field.InputTypeHandler != null)
+                if (field.InputElementType != null)
                 {
-                    add.Add(new XAttribute("inputElementType", field.InputTypeHandler.GetType().AssemblyQualifiedName));
+                    var inputElement = new XElement("InputElement");
+                    var inputElementType = field.InputElementType.GetType();
+
+                    inputElement.Add(new XAttribute("type", inputElementType.AssemblyQualifiedName));
+
+                    SerializeInstanceWithArgument(field.InputElementType, inputElement);
+
+                    add.Add(inputElement);
                 }
 
                 if (field.ValidationAttributes.Any())
@@ -163,12 +170,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                         var ruleType = rule.GetType();
                         var ruleElement = new XElement("Add", new XAttribute("type", ruleType.AssemblyQualifiedName));
 
-                        foreach (var prop in ruleType.GetProperties())
-                        {
-                            var value = prop.GetValue(rule, null).ToString();
-
-                            ruleElement.Add(new XAttribute(prop.Name.ToLowerInvariant(), value));
-                        }
+                        SerializeInstanceWithArgument(rule, ruleElement);
 
                         validationRules.Add(ruleElement);
                     }
@@ -220,6 +222,71 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             root.Save(file);
 
             NotifyFormChanges();
+        }
+
+        public static void SerializeInstanceWithArgument(object instance, XElement element)
+        {
+            var type = instance.GetType();
+
+            foreach (var prop in type.GetProperties())
+            {
+                var value = prop.GetValue(instance, null).ToString();
+
+                element.Add(new XAttribute(prop.Name.ToLowerInvariant(), value));
+            }
+        }
+
+        public static object DeserializeInstanceWithArgument(Type type, XElement element)
+        {
+            var ctors = type.GetConstructors().ToDictionary(ctor => ctor, ctor => ctor.GetParameters()).OrderByDescending(o => o.Value.Count());
+
+            foreach (var kvp in ctors)
+            {
+                var parameters = kvp.Value;
+                var ctorParams = new Dictionary<string, object>();
+
+                foreach (var param in parameters)
+                {
+                    var attr = element.Attributes().SingleOrDefault(o => o.Name.LocalName.Equals(param.Name, StringComparison.OrdinalIgnoreCase));
+                    if (attr == null)
+                    {
+                        break;
+                    }
+
+                    var name = param.Name;
+                    object value = Convert.ChangeType(attr.Value, param.ParameterType);
+
+                    ctorParams.Add(name, value);
+                }
+
+                if (ctorParams.Count == parameters.Length)
+                {
+                    return kvp.Key.Invoke(ctorParams.Values.ToArray());
+                }
+            }
+
+            var instance = Activator.CreateInstance(type);
+
+            foreach (var prop in type.GetProperties())
+            {
+                var attr = element.Attributes().SingleOrDefault(o => o.Name.LocalName.Equals(prop.Name, StringComparison.OrdinalIgnoreCase));
+                if (attr != null)
+                {
+                    prop.SetValue(instance, Convert.ChangeType(attr.Value, prop.PropertyType), null);
+
+                    continue;
+                }
+
+                var node = element.Elements().SingleOrDefault(o => o.Name.LocalName.Equals(prop.Name, StringComparison.OrdinalIgnoreCase));
+                if (node != null)
+                {
+                    prop.SetValue(instance, Convert.ChangeType(element.Value, prop.PropertyType), null);
+
+                    continue;
+                }
+            }
+
+            return instance;
         }
 
         public static void DeleteModel(DynamicFormDefinition definition)

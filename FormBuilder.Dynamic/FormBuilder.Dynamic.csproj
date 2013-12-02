@@ -127,7 +127,7 @@
     <Compile Include="Configuration\DynamicFormBuilderConfiguration.cs" />
     <Compile Include="DynamicFormDefinition.cs" />
     <Compile Include="DynamicFormModelsProvider.cs" />
-    <Compile Include="C1Console\InputTypeSettingsHandler.cs" />
+    <Compile Include="C1Console\IInputTypeSettingsHandler.cs" />
     <Compile Include="C1Console\TextAreaSettings.cs" />
     <Compile Include="Web\UI\FunctionSelector.cs">
       <SubType>ASPXCodeBehind</SubType>

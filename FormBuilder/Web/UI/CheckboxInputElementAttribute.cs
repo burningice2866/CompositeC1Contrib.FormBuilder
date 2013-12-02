@@ -6,14 +6,14 @@ using System.Web;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
-    public class CheckboxInputElement : IInputElementHandler
+    public class CheckboxInputElementAttribute : InputElementTypeAttribute
     {
-        public string ElementName
+        public override string ElementName
         {
             get { return "checkbox"; }
         }
 
-        public IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
         {
             var sb = new StringBuilder();
             var value = field.Value;

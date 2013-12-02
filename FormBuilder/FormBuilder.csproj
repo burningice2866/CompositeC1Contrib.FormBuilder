@@ -71,8 +71,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\DisplayFormatAttribute.cs" />
-    <Compile Include="Attributes\FunctionBasedInputElementProviderAttribute.cs" />
-    <Compile Include="Attributes\TypeBasedInputElementProviderAttribute.cs" />
     <Compile Include="Attributes\PlaceholderTextAttribute.cs" />
     <Compile Include="Attributes\ForceHttpsConnectionAttribute.cs" />
     <Compile Include="Attributes\FormNameAttribute.cs" />
@@ -97,7 +95,7 @@
     <Compile Include="Attributes\FieldLabelAttribute.cs" />
     <Compile Include="Attributes\HtmlTagAttribute.cs" />
     <Compile Include="Attributes\FunctionBasedDataSourceAttribute.cs" />
-    <Compile Include="Attributes\InputElementProviderAttribute.cs" />
+    <Compile Include="Web\UI\InputElementTypeAttribute.cs" />
     <Compile Include="Attributes\MethodBasedDataSourceAttribute.cs" />
     <Compile Include="Attributes\StringBasedDataSourceAttribute.cs" />
     <Compile Include="Attributes\SubmitButtonLabelAttribute.cs" />
@@ -108,14 +106,14 @@
     <Compile Include="FormFile.cs" />
     <Compile Include="Validation\RegexValidatorAttribute.cs" />
     <Compile Include="Validation\UpdatePasswordValidatorAttribute.cs" />
-    <Compile Include="Web\UI\CheckboxInputElement.cs" />
+    <Compile Include="Web\UI\CheckboxInputElementAttribute.cs" />
     <Compile Include="Web\UI\StandardFormsPage.cs" />
     <Compile Include="Web\UI\FunctionbasedInputElement.cs" />
-    <Compile Include="Web\UI\PasswordInputElement.cs" />
-    <Compile Include="Web\UI\DropdownInputElement.cs" />
-    <Compile Include="Web\UI\TextAreaInputElement.cs" />
-    <Compile Include="Web\UI\RadioButtonInputElement.cs" />
-    <Compile Include="Web\UI\FileuploadInputElement.cs" />
+    <Compile Include="Web\UI\PasswordInputElementAttribute.cs" />
+    <Compile Include="Web\UI\DropdownInputElementAttribute.cs" />
+    <Compile Include="Web\UI\TextAreaInputElementAttribute.cs" />
+    <Compile Include="Web\UI\RadioButtonInputElementAttribute.cs" />
+    <Compile Include="Web\UI\FileuploadInputElementAttribute.cs" />
     <Compile Include="Web\UI\FormsPage.cs" />
     <Compile Include="FormModel.cs" />
     <Compile Include="FormValidationEventArgs.cs" />
@@ -144,8 +142,7 @@
     </Compile>
     <Compile Include="Web\UI\FormOptions.cs" />
     <Compile Include="Web\UI\HtmlForm.cs" />
-    <Compile Include="Web\UI\IInputElementHandler.cs" />
-    <Compile Include="Web\UI\TextboxInputElement.cs" />
+    <Compile Include="Web\UI\TextboxInputElementAttribute.cs" />
     <Compile Include="C1Console\Workflows\EditFormRenderingLayoutWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>

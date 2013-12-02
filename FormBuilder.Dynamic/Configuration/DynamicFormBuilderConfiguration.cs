@@ -7,6 +7,7 @@ using Composite;
 
 using CompositeC1Contrib.FormBuilder.Configuration;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console;
+using CompositeC1Contrib.FormBuilder.Web.UI;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.Configuration
 {
@@ -34,7 +35,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Configuration
                 var inputElementHandler = new InputElementHandler
                 {
                     Name = name,
-                    Type = type
+                    ElementType = (InputElementTypeAttribute)Activator.CreateInstance(type)
                 };
 
                 if (attributes.ContainsKey("settingsHandler"))
@@ -43,7 +44,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Configuration
 
                     Verify.IsNotNull(settingsHandler, "Unrecognized settingshandler");
 
-                    inputElementHandler.SettingsHandler = settingsHandler;
+                    inputElementHandler.SettingsHandler = (IInputTypeSettingsHandler)Activator.CreateInstance(settingsHandler);
                 }
 
                 InputElementHandlers.Add(inputElementHandler);

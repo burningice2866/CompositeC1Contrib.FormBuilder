@@ -46,6 +46,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 Rows,
                 Cols);
 
+            FormRenderer.RenderReadOnlyAttribute(sb, field);
             FormRenderer.RenderMaxLengthAttribute(sb, field);
             FormRenderer.RenderExtraHtmlTags(sb, field, htmlAttributes);
 

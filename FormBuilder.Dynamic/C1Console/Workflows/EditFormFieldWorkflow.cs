@@ -43,8 +43,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 Bindings.Add("Help", field.Help);
                 Bindings.Add("DefaultValue", defaultValue);
                 Bindings.Add("InputElementType", field.InputElementType.GetType().AssemblyQualifiedName);
-
-                Bindings.Add("FieldTypeChangedHandler", new EventHandler(FieldTypeChangedHandler));
+                Bindings.Add("IsReadOnly", field.IsReadOnly);
 
                 SetupFormData(field);
             }
@@ -113,13 +112,14 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var placeholderText = GetBinding<string>("PlaceholderText");
             var help = GetBinding<string>("Help");
             var defaultValue = GetBinding<string>("DefaultValue");
-
             var inputElementType = Type.GetType(GetBinding<string>("InputElementType"));
+            var isReadOnly = GetBinding<bool>("IsReadOnly");            
 
             var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
             var field = definition.Model.Fields.Single(f => f.Name == fieldToken.FieldName);
 
             field.Name = fieldName;
+            field.IsReadOnly = isReadOnly;
 
             var labelAttr = field.Attributes.OfType<FieldLabelAttribute>().SingleOrDefault();
             if (labelAttr != null)

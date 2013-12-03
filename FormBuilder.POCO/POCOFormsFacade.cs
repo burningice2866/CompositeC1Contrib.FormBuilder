@@ -37,10 +37,13 @@ namespace CompositeC1Contrib.FormBuilder
                 model.Attributes.Add(itm);
             }
 
-            foreach (var prop in formType.GetProperties().Where(p => p.CanRead && p.CanWrite))
+            foreach (var prop in formType.GetProperties().Where(p => p.CanRead))
             {
                 var attributes = prop.GetCustomAttributes(true).Cast<Attribute>().ToList();
-                var field = new FormField(model, prop.Name, prop.PropertyType, attributes);
+                var field = new FormField(model, prop.Name, prop.PropertyType, attributes)
+                {
+                    IsReadOnly = !prop.CanWrite
+                };
 
                 model.Fields.Add(field);
             }

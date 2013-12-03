@@ -67,11 +67,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
                 var formField = new FormField(model, fieldName, typeof(string), attrs);
 
+                var isReadOnly = f.Attribute("isReadOnly");
+                if (isReadOnly != null)
+                {
+                    formField.IsReadOnly = bool.Parse(isReadOnly.Value);
+                }
+
                 if (formField.InputElementType is CheckboxInputElementAttribute)
                 {
                     formField.ValueType = typeof(bool);
                 }
-                else if (formField.InputElementType is CheckboxInputElementAttribute && formField.DataSource != null)
+                
+                if (formField.InputElementType is CheckboxInputElementAttribute && formField.DataSource != null)
                 {
                     formField.ValueType = typeof(IEnumerable<string>);
                 }

@@ -19,13 +19,14 @@ namespace CompositeC1Contrib.FormBuilder
         public FormModel OwningForm { get; private set; }
 
         public string Name { get; set; }
+        public bool IsReadOnly { get; set; }
         public IList<Attribute> Attributes { get; private set; }
         public object Value { get; set; }
         public Type ValueType { get; set; }
 
         public string Id
         {
-            get { return (OwningForm.Name +"." + Name).Replace(".", "$"); }
+            get { return (OwningForm.Name + "." + Name).Replace(".", "$"); }
         }
 
         public FieldLabelAttribute Label
@@ -38,7 +39,7 @@ namespace CompositeC1Contrib.FormBuilder
             get
             {
                 var placeholderAttr = Attributes.OfType<PlaceholderTextAttribute>().SingleOrDefault();
-                
+
                 return placeholderAttr != null ? placeholderAttr.Text : String.Empty;
             }
         }

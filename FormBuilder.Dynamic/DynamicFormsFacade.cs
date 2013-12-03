@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Web.Hosting;
 using System.Xml.Linq;
 
@@ -149,6 +150,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     add.Add(new XAttribute("help", field.Help));
                 }
 
+                if (field.IsReadOnly)
+                {
+                    add.Add(new XAttribute("isReadOnly", true));
+                }
+
                 if (field.InputElementType != null)
                 {
                     var inputElement = new XElement("InputElement");
@@ -228,7 +234,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         {
             var type = instance.GetType();
 
-            foreach (var prop in type.GetProperties())
+            foreach (var prop in type.GetProperties().Where(p => p.CanRead && p.CanWrite))
             {
                 var value = prop.GetValue(instance, null).ToString();
 
@@ -238,7 +244,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
         public static object DeserializeInstanceWithArgument(Type type, XElement element)
         {
-            var ctors = type.GetConstructors().ToDictionary(ctor => ctor, ctor => ctor.GetParameters()).OrderByDescending(o => o.Value.Count());
+            var ctors = type.GetConstructors().ToDictionary(ctor => ctor, ctor => ctor.GetParameters()).Where(o => o.Value.Count() > 0).OrderByDescending(o => o.Value.Count());
 
             foreach (var kvp in ctors)
             {
@@ -267,7 +273,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
             var instance = Activator.CreateInstance(type);
 
-            foreach (var prop in type.GetProperties())
+            foreach (var prop in type.GetProperties().Where(p => p.CanWrite))
             {
                 var attr = element.Attributes().SingleOrDefault(o => o.Name.LocalName.Equals(prop.Name, StringComparison.OrdinalIgnoreCase));
                 if (attr != null)
@@ -280,7 +286,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 var node = element.Elements().SingleOrDefault(o => o.Name.LocalName.Equals(prop.Name, StringComparison.OrdinalIgnoreCase));
                 if (node != null)
                 {
-                    prop.SetValue(instance, Convert.ChangeType(element.Value, prop.PropertyType), null);
+                    prop.SetValue(instance, Convert.ChangeType(node.Value, prop.PropertyType), null);
 
                     continue;
                 }

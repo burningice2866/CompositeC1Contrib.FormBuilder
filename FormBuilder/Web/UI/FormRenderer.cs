@@ -328,6 +328,14 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return htmlAttributesDictionary;
         }
 
+        public static void RenderReadOnlyAttribute(StringBuilder sb, FormField field)
+        {
+            if (field.IsReadOnly)
+            {
+                sb.Append(" readonly=\"readonly\"");
+            }
+        }
+
         public static void RenderMaxLengthAttribute(StringBuilder sb, FormField field)
         {
             var maxLengthAttribute = field.ValidationAttributes.OfType<MaxFieldLengthAttribute>().FirstOrDefault();

@@ -7,6 +7,7 @@
     <cms:binding name="Help" type="System.String" />
     <cms:binding name="DefaultValue" type="System.String" optional="true" />
     <cms:binding name="InputElementType" type="System.String" />
+    <cms:binding name="IsReadOnly" type="System.Boolean" />
   </cms:bindings>
 
   <cms:layout>
@@ -57,6 +58,10 @@
               <cms:bind source="InputElementType" />
             </KeySelector.Selected>
           </KeySelector>
+
+          <CheckBox Label="Read only">
+            <cms:bind source="IsReadOnly" />
+          </CheckBox>
         </FieldGroup>
       </PlaceHolder>
     </TabPanels>

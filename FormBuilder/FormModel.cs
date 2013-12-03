@@ -116,7 +116,7 @@ namespace CompositeC1Contrib.FormBuilder
                 return;
             }
 
-            foreach (var field in Fields)
+            foreach (var field in Fields.Where(f => !f.IsReadOnly))
             {
                 var val = (values[field.Name] ?? String.Empty).Trim();
 

@@ -35,6 +35,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                         HttpUtility.HtmlAttributeEncode(item.Key),
                         (value == null ? String.Empty : FormRenderer.WriteChecked(FormRenderer.IsEqual(value, item.Key), "checked")));
 
+                    FormRenderer.RenderReadOnlyAttribute(sb, field);
                     FormRenderer.RenderExtraHtmlTags(sb, htmlAttributesDictionary);
 
                     sb.AppendFormat(" /> {0}</label>", HttpUtility.HtmlEncode(item.Value));

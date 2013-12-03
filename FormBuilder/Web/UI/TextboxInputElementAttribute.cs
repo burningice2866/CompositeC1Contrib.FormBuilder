@@ -35,6 +35,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 HttpUtility.HtmlAttributeEncode(field.Label.Label),
                 HttpUtility.HtmlAttributeEncode(placeholderText));
 
+            FormRenderer.RenderReadOnlyAttribute(sb, field);
             FormRenderer.RenderMaxLengthAttribute(sb, field);
             FormRenderer.RenderExtraHtmlTags(sb, field, htmlAttributes);
 

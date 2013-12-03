@@ -58,10 +58,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 {
                     switch (el.Name.LocalName)
                     {
-                        case "InputElement": parseInputElement(el, attrs); break;
-                        case "ValidationRules": parseValidationRules(el, attrs); break;
-                        case "DataSource": parseDataSource(el, attrs); break;
-                        case "Dependencies": parseDependencies(el, attrs); break;
+                        case "InputElement": ParseInputElement(el, attrs); break;
+                        case "ValidationRules": ParseValidationRules(el, attrs); break;
+                        case "DataSource": ParseDataSource(el, attrs); break;
+                        case "Dependencies": ParseDependencies(el, attrs); break;
                     }
                 }
 
@@ -73,27 +73,37 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     formField.IsReadOnly = bool.Parse(isReadOnly.Value);
                 }
 
-                if (formField.InputElementType is CheckboxInputElementAttribute)
-                {
-                    formField.ValueType = typeof(bool);
-                }
-                
-                if (formField.InputElementType is CheckboxInputElementAttribute && formField.DataSource != null)
-                {
-                    formField.ValueType = typeof(IEnumerable<string>);
-                }
+                SetFieldValueType(formField);
 
                 model.Fields.Add(formField);
             }
 
             var definition = new DynamicFormDefinition(model);
 
-            parseMetaData(xml, definition);
+            ParseMetaData(xml, definition);
 
             return definition;
         }
 
-        private static void parseInputElement(XElement xml, List<Attribute> attrs)
+        private static void SetFieldValueType(FormField formField)
+        {
+            if (formField.InputElementType is CheckboxInputElementAttribute)
+            {
+                formField.ValueType = typeof(bool);
+            }
+
+            if (formField.InputElementType is CheckboxInputElementAttribute && formField.DataSource != null)
+            {
+                formField.ValueType = typeof(IEnumerable<string>);
+            }
+
+            if (formField.InputElementType is FileuploadInputElementAttribute)
+            {
+                formField.ValueType = typeof(FormFile);
+            }
+        }
+
+        private static void ParseInputElement(XElement xml, IList<Attribute> attrs)
         {
             var type = Type.GetType(xml.Attribute("type").Value);
             var inputElementAttr = (InputElementTypeAttribute)DynamicFormsFacade.DeserializeInstanceWithArgument(type, xml);
@@ -101,23 +111,25 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             attrs.Add(inputElementAttr);
         }
 
-        private static void parseMetaData(XElement xml, DynamicFormDefinition definition)
+        private static void ParseMetaData(XElement xml, DynamicFormDefinition definition)
         {
             var metaData = xml.Element("MetaData");
-            if (metaData != null)
+            if (metaData == null)
             {
-                var formExecutorElement = metaData.Element("FormExecutor");
-                if (formExecutorElement != null)
-                {
-                    definition.FormExecutor = formExecutorElement.Attribute("functionName").Value;
-                }
-
-                parseMetaDataDefaultValues(metaData, definition);
-                parseMetaDataSubmitHandlers(metaData, definition);
+                return;
             }
+
+            var formExecutorElement = metaData.Element("FormExecutor");
+            if (formExecutorElement != null)
+            {
+                definition.FormExecutor = formExecutorElement.Attribute("functionName").Value;
+            }
+
+            ParseMetaDataDefaultValues(metaData, definition);
+            ParseMetaDataSubmitHandlers(metaData, definition);
         }
 
-        private static void parseMetaDataDefaultValues(XElement metaData, DynamicFormDefinition definition)
+        private static void ParseMetaDataDefaultValues(XElement metaData, DynamicFormDefinition definition)
         {
             var defaultValuesElement = metaData.Element("DefaultValues");
             if (defaultValuesElement != null)
@@ -132,7 +144,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
         }
 
-        private static void parseMetaDataSubmitHandlers(XElement metaData, DynamicFormDefinition definition)
+        private static void ParseMetaDataSubmitHandlers(XElement metaData, DynamicFormDefinition definition)
         {
             var submitHandlersElement = metaData.Element("SubmitHandlers");
             if (submitHandlersElement != null)
@@ -151,7 +163,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
         }
 
-        private static void parseDependencies(XElement el, List<Attribute> attrs)
+        private static void ParseDependencies(XElement el, List<Attribute> attrs)
         {
             var dependencies = el.Elements("Add");
             foreach (var dep in dependencies)
@@ -164,21 +176,23 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
         }
 
-        private static void parseDataSource(XElement el, List<Attribute> attrs)
+        private static void ParseDataSource(XElement el, List<Attribute> attrs)
         {
             var typeString = el.Attribute("type").Value;
             var type = Type.GetType(typeString);
 
-            if ((typeof(StringBasedDataSourceAttribute).IsAssignableFrom(type)))
+            if (!typeof(StringBasedDataSourceAttribute).IsAssignableFrom(type))
             {
-                var values = el.Element("values").Elements("item").Select(itm => itm.Attribute("value").Value).ToArray();
-                var attribute = (Attribute)Activator.CreateInstance(type, new[] { values });
-
-                attrs.Add(attribute);
+                return;
             }
+
+            var values = el.Element("values").Elements("item").Select(itm => itm.Attribute("value").Value).ToArray();
+            var attribute = (Attribute)Activator.CreateInstance(type, new object[] { values });
+
+            attrs.Add(attribute);
         }
 
-        private static void parseValidationRules(XElement el, List<Attribute> attrs)
+        private static void ParseValidationRules(XElement el, List<Attribute> attrs)
         {
             var rules = el.Elements("Add");
             foreach (var rule in rules)

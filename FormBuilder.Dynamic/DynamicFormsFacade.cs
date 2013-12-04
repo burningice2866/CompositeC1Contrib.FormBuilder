@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Web.Hosting;
 using System.Xml.Linq;
 
@@ -13,32 +12,32 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
     public class DynamicFormsFacade
     {
-        private static IList<Action> _formChangeNotifications = new List<Action>();
-        private static string _basePath = HostingEnvironment.MapPath("~/App_Data/FormBuilder/FormDefinitions");
+        private static readonly IList<Action> FormChangeNotifications = new List<Action>();
+        private static readonly string BasePath = HostingEnvironment.MapPath("~/App_Data/FormBuilder/FormDefinitions");
 
         static DynamicFormsFacade()
         {
-            if (!Directory.Exists(_basePath))
+            if (!Directory.Exists(BasePath))
             {
-                Directory.CreateDirectory(_basePath);
+                Directory.CreateDirectory(BasePath);
             }
         }
 
         public static void SubscribeToFormChanges(Action notify)
         {
-            _formChangeNotifications.Add(notify);
+            FormChangeNotifications.Add(notify);
         }
 
         public static DynamicFormDefinition GetFormByName(string name)
         {
-            var file = Path.Combine(_basePath, name + ".xml");
+            var file = Path.Combine(BasePath, name + ".xml");
 
             return FromBaseForm(file, name);
         }
 
         public static DynamicFormDefinition CopyFormByName(string name, string newName)
         {
-            var file = Path.Combine(_basePath, name + ".xml");
+            var file = Path.Combine(BasePath, name + ".xml");
 
             return FromBaseForm(file, newName);
         }
@@ -57,7 +56,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
         public static IEnumerable<DynamicFormDefinition> GetFormDefinitions()
         {
-            var files = Directory.GetFiles(_basePath);
+            var files = Directory.GetFiles(BasePath);
 
             foreach (var file in files)
             {
@@ -70,7 +69,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         public static void SaveForm(DynamicFormDefinition definition)
         {
             var model = definition.Model;
-            var file = Path.Combine(_basePath, definition.Name + ".xml");
+            var file = Path.Combine(BasePath, definition.Name + ".xml");
 
             var root = new XElement("FormBuilder.DynamicForm",
                 new XAttribute("name", definition.Name));
@@ -82,6 +81,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 metaData.Add(new XElement("FormExecutor",
                     new XAttribute("functionName", definition.FormExecutor)));
             }
+
+            metaData.Add(new XElement("Layout",
+                    new XAttribute("submitButtonLabel", definition.Model.SubmitButtonLabel)));
 
             if (definition.DefaultValues.Any()) 
             {
@@ -109,18 +111,17 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                         new XAttribute("Name", handler.Name),
                         new XAttribute("Type", handler.GetType().AssemblyQualifiedName));
 
-                    if (handler is EmailSubmitHandler)
+                    var emailSubmitHandler = handler as EmailSubmitHandler;
+                    if (emailSubmitHandler != null)
                     {
-                        var emailHandler = (EmailSubmitHandler)handler;
+                        handlerElement.Add(new XAttribute("IncludeAttachments", emailSubmitHandler.IncludeAttachments));
+                        handlerElement.Add(new XAttribute("From", emailSubmitHandler.From ?? String.Empty));
+                        handlerElement.Add(new XAttribute("To", emailSubmitHandler.To ?? String.Empty));
+                        handlerElement.Add(new XAttribute("Cc", emailSubmitHandler.Cc ?? String.Empty));
+                        handlerElement.Add(new XAttribute("Bcc", emailSubmitHandler.Bcc ?? String.Empty));
 
-                        handlerElement.Add(new XAttribute("IncludeAttachments", emailHandler.IncludeAttachments));
-                        handlerElement.Add(new XAttribute("From", emailHandler.From ?? String.Empty));
-                        handlerElement.Add(new XAttribute("To", emailHandler.To ?? String.Empty));
-                        handlerElement.Add(new XAttribute("Cc", emailHandler.Cc ?? String.Empty));
-                        handlerElement.Add(new XAttribute("Bcc", emailHandler.Bcc ?? String.Empty));
-
-                        handlerElement.Add(new XElement("Subject", emailHandler.Subject ?? String.Empty));
-                        handlerElement.Add(new XElement("Body", emailHandler.Body ?? String.Empty));
+                        handlerElement.Add(new XElement("Subject", emailSubmitHandler.Subject ?? String.Empty));
+                        handlerElement.Add(new XElement("Body", emailSubmitHandler.Body ?? String.Empty));
                     }
 
                     submitHandlers.Add(handlerElement);
@@ -297,7 +298,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
         public static void DeleteModel(DynamicFormDefinition definition)
         {
-            var file = Path.Combine(_basePath, definition.Name + ".xml");
+            var file = Path.Combine(BasePath, definition.Name + ".xml");
 
             File.Delete(file);
             NotifyFormChanges();
@@ -305,7 +306,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
         private static void NotifyFormChanges()
         {
-            foreach (var action in _formChangeNotifications)
+            foreach (var action in FormChangeNotifications)
             {
                 action();
             }

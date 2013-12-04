@@ -16,7 +16,7 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public sealed class FormModel
     {
-        private IDictionary<FormField, IList<FormValidationRule>> _ruleList = null;
+        private IDictionary<FormField, IList<FormValidationRule>> _ruleList;
 
         public NameValueCollection SubmittedValues { get; private set; }
 
@@ -43,6 +43,22 @@ namespace CompositeC1Contrib.FormBuilder
             get
             {
                 return Fields.Any(f => f.ValueType == typeof(FormFile) || f.ValueType == typeof(IEnumerable<FormFile>));
+            }
+        }
+
+        public string SubmitButtonLabel
+        {
+            get
+            {
+                var label = "Indsend";
+
+                var labelAttribute = Attributes.OfType<SubmitButtonLabelAttribute>().FirstOrDefault();
+                if (labelAttribute != null)
+                {
+                    label = labelAttribute.Label;
+                }
+
+                return label;
             }
         }
 
@@ -222,21 +238,24 @@ namespace CompositeC1Contrib.FormBuilder
 
         private static void MapFilesToField(FormField field, IEnumerable<FormFile> files)
         {
-            var formFiles = files as IList<FormFile> ?? files.ToList();
-            if (files == null || !formFiles.Any())
+            if (files == null)
             {
                 return;
             }
 
-            files = formFiles.Where(f => f.Key == field.Name);
+            var fieldFiles = files.Where(f => f.Key == field.Name).ToList();
+            if (!fieldFiles.Any())
+            {
+                return;
+            }
 
             if (field.ValueType == typeof(FormFile))
             {
-                field.Value = files.FirstOrDefault();
+                field.Value = fieldFiles.First();
             }
             else if (field.ValueType == typeof(IEnumerable<FormFile>))
             {
-                field.Value = files;
+                field.Value = fieldFiles;
             }
         }
 

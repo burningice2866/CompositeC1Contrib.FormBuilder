@@ -125,6 +125,14 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 definition.FormExecutor = formExecutorElement.Attribute("functionName").Value;
             }
 
+            var layoutElement = metaData.Element("Layout");
+            if (layoutElement != null)
+            {
+                var label = layoutElement.Attribute("submitButtonLabel").Value;
+
+                definition.Model.Attributes.Add(new SubmitButtonLabelAttribute(label));
+            }
+
             ParseMetaDataDefaultValues(metaData, definition);
             ParseMetaDataSubmitHandlers(metaData, definition);
         }

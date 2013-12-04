@@ -7,8 +7,6 @@ using Composite.AspNet.Razor;
 using Composite.Core.Xml;
 using Composite.Functions;
 
-using CompositeC1Contrib.FormBuilder.Attributes;
-
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public abstract class FormsPage : RazorFunction
@@ -37,25 +35,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             get { return RenderingContext.IsSuccess; }
         }
 
-        public FormsPage()
+        protected FormsPage()
         {
             Options = new FormOptions();
-        }
-
-        protected string SubmitButtonLabel
-        {
-            get
-            {
-                var label = "Indsend";
-
-                var labelAttribute = RenderingContext.RenderingModel.Attributes.OfType<SubmitButtonLabelAttribute>().FirstOrDefault();
-                if (labelAttribute != null)
-                {
-                    label = labelAttribute.Label;
-                }
-
-                return label;
-            }
         }
 
         public override void ExecutePageHierarchy()

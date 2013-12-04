@@ -1,7 +1,8 @@
 using System;
 using System.Linq;
-using Composite.C1Console.Workflow;
 
+using Composite.C1Console.Workflow;
+using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.Workflows;
@@ -24,6 +25,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 var definition = DynamicFormsFacade.GetFormByName(formToken.FormName);
 
                 Bindings.Add("FormName", formToken.FormName);
+                Bindings.Add("SubmitButtonLabel", definition.Model.SubmitButtonLabel);
                 Bindings.Add("FunctionExecutor", definition.FormExecutor ?? String.Empty);
             }
         }
@@ -34,9 +36,22 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var definition = DynamicFormsFacade.GetFormByName(formToken.FormName);
 
             var formName = GetBinding<string>("FormName");
+            var submitButtonLabel = GetBinding<string>("SubmitButtonLabel");
             var functionExecutor = GetBinding<string>("FunctionExecutor");
 
             definition.FormExecutor = functionExecutor;
+
+            var submitButtonLabelAttr = definition.Model.Attributes.OfType<SubmitButtonLabelAttribute>().SingleOrDefault();
+            if (submitButtonLabel != null)
+            {
+                definition.Model.Attributes.Remove(submitButtonLabelAttr);
+            }
+
+            if (!String.IsNullOrEmpty(submitButtonLabel))
+            {
+                submitButtonLabelAttr = new SubmitButtonLabelAttribute(submitButtonLabel);
+                definition.Model.Attributes.Add(submitButtonLabelAttr);
+            }
 
             if (formName != formToken.FormName)
             {

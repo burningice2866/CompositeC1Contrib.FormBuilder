@@ -48,11 +48,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
 
                 foreach (var field in model.Fields)
                 {
-                    if (field.ValueType == typeof(FormFile))
+                    if (field.ValueType == typeof(FormFile) && field.Value != null)
                     {
                         files.Add((FormFile)field.Value);
                     }
-                    else if (field.ValueType == typeof(IEnumerable<FormFile>))
+                    else if (field.ValueType == typeof(IEnumerable<FormFile>) && field.Value != null)
                     {
                         files.AddRange((IEnumerable<FormFile>)field.Value);
                     }

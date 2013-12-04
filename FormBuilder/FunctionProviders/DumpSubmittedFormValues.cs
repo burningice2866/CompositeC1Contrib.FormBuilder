@@ -51,9 +51,36 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
             html.Append("<table>");
 
-            foreach (var field in formModel.Fields.Where(f => f.Value != null))
+            foreach (var field in formModel.Fields.Where(f => f.Label != null && f.Value != null))
             {
-                var value = HttpUtility.HtmlEncode(field.Value.ToString());
+                var value = String.Empty;
+
+                if (field.Value is IEnumerable<string>)
+                {
+                    value = String.Join(", ", field.Value as IEnumerable<string>);
+                }
+                else if (field.Value is FormFile)
+                {
+                    var file = field.Value as FormFile;
+                    value = String.Format("{0} ({1} KB)", file.FileName, file.ContentLength / 1024);
+                }
+                else if (field.Value is IEnumerable<FormFile>)
+                {
+                    var files = field.Value as IEnumerable<FormFile>;
+                    var values = new List<string>();
+                    foreach (var file in files)
+                    {
+                        values.Add(String.Format("{0} ({1} KB)", file.FileName, file.ContentLength / 1024));
+                    }
+                    value = String.Join(", ", values);
+                }
+                else
+                {
+                    value = field.Value.ToString();
+                }
+                    
+                value = HttpUtility.HtmlEncode(value);
+
                 if (field.InputElementType is TextAreaInputElementAttribute)
                 {
                     value = value.Replace("\r", String.Empty).Replace("\n", "<br />");

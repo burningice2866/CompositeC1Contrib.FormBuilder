@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Composite.C1Console.Workflow;
 
@@ -17,10 +18,28 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public static Dictionary<string, string> GetSubmitHandlerTypes()
         {
-            return new Dictionary<string, string>
+            var handlers = new Dictionary<string, string>
             {
                 { typeof(EmailSubmitHandler).AssemblyQualifiedName, "Send email" }
             };
+
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var asm in assemblies)
+            {
+                try
+                {
+                    var types = asm.GetTypes()
+                        .Where(t => t.IsClass && !t.IsAbstract && t != typeof(EmailSubmitHandler) && typeof(EmailSubmitHandler).IsAssignableFrom(t));
+
+                    foreach (var type in types)
+	                {
+                        handlers.Add(type.AssemblyQualifiedName, type.Name);
+	                }
+                }
+                catch { }
+            }
+
+            return handlers;
         }
 
         public override void OnInitialize(object sender, EventArgs e)
@@ -51,7 +70,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             CreateSpecificTreeRefresher().PostRefreshMesseges(token);
 
-            if (handlerType == typeof(EmailSubmitHandler))
+            if (typeof(EmailSubmitHandler).IsAssignableFrom(handlerType))
             {
                 var workflowToken = new WorkflowActionToken(typeof(EditEmailSubmitHandlerWorkflow));
 

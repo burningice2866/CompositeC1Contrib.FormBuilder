@@ -52,7 +52,12 @@ namespace CompositeC1Contrib.FormBuilder.Validation
                     {
                         return ((IEnumerable<FormFile>)value).Any(f => f.ContentLength > 0);
                     }
-                    
+
+                    else if (value is IEnumerable<string>)
+                    {
+                        return ((IEnumerable<string>)value).Any(f => !String.IsNullOrWhiteSpace(f));
+                    }
+
                     else
                     {
                         return value != null;

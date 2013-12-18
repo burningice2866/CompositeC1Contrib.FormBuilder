@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Linq;
 
 using Composite.C1Console.Security;
 using Composite.Core.Xml;
@@ -13,6 +15,8 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 {
     public class StandardFormFunction<T> : IFunction where T : FormBuilderRequestContext
     {
+        private static readonly Type XElementParameterRuntimeTreeNode = Type.GetType("Composite.Functions.XElementParameterRuntimeTreeNode, Composite");
+
         public string OverrideFormExecutor { get; set; }
 
         public string Namespace { get; private set; }
@@ -73,13 +77,31 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                 formExecutorFunction = OverrideFormExecutor;
             }
 
+            typeof(ParameterList).GetField("_parameters", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(parameters);
+
             var formExecutor = FunctionFacade.GetFunction(formExecutorFunction);
             var functionParameters = new Dictionary<string, object>
             {
-                { "FormName", Namespace +"."+ Name },
-                { "IntroText", parameters.GetParameter("IntroText") },
-                { "SuccessResponse", parameters.GetParameter("SuccessResponse") },
+                { "FormName", Namespace +"."+ Name }
             };
+
+            var internalParameters = (IDictionary)typeof(ParameterList).GetField("_parameters", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(parameters);
+            foreach (DictionaryEntry item in internalParameters)
+            {
+                object value = item.Value.GetType().GetProperty("ValueObject").GetValue(item.Value, null);
+                var type = value.GetType();
+
+                if (type == XElementParameterRuntimeTreeNode)
+                {
+                    value = (XElement)type.GetField("_element", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(value);
+                }
+
+                switch ((string)item.Key)
+                {
+                    case "IntroText": functionParameters.Add("IntroText", value); break;
+                    case "SuccessResponse": functionParameters.Add("SuccessResponse", value); break;
+                }
+            }
 
             return FunctionFacade.Execute<XhtmlDocument>(formExecutor, functionParameters, newContext);
         }

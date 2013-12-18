@@ -28,11 +28,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 {
                     var model = POCOFormsFacade.FromType<T>(Form, Options);
 
-                    _context = FormBuilderRequestContext.Setup(model, 
-                        (m) => POCOFormsFacade.MapValues(Form, m), 
-                        Form.Submit,
-                        (m) => POCOFormsFacade.SetDefaultValues(Form, m)
-                    );
+                    _context = new POCOFormBuilderRequestContext(model.Name);
+                    _context.Execute();
                 }
 
                 return _context;

@@ -19,14 +19,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                     IFunction function = null;
                     if (!FunctionFacade.TryGetFunction(out function, entry.Value.Name))
                     {
-                        var instance = entry.Key;
-
-                        yield return new StandardFormFunction(entry.Value)
-                        {
-                            OnSubmit = instance.Submit,
-                            OnMappedValues = (m) => POCOFormsFacade.SetDefaultValues(instance, m),
-                            SetDefaultValues = (m) => POCOFormsFacade.SetDefaultValues(instance, m)
-                        };
+                        yield return new StandardFormFunction<POCOFormBuilderRequestContext>(entry.Value.Name);
                     }
                 }
             }

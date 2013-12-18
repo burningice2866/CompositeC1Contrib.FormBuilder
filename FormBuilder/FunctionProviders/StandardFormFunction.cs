@@ -11,12 +11,8 @@ using CompositeC1Contrib.FormBuilder.Configuration;
 
 namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 {
-    public class StandardFormFunction : IFunction
+    public class StandardFormFunction<T> : IFunction where T : FormBuilderRequestContext
     {
-        private FormModel _model;
-        public Action<FormModel> OnMappedValues { get; set; }
-        public Action<FormModel> SetDefaultValues { get; set; }
-        public Action OnSubmit { get; set; }
         public string OverrideFormExecutor { get; set; }
 
         public string Namespace { get; private set; }
@@ -24,7 +20,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
         public EntityToken EntityToken
         {
-            get { return new FormBuilderFunctionEntityToken(typeof(FormBuilderFunctionProvider).Name, _model.Name); }
+            get { return new FormBuilderFunctionEntityToken(typeof(FormBuilderFunctionProvider).Name, Namespace + "." + Name); }
         }
 
         public string Description
@@ -50,19 +46,18 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             }
         }
 
-        public StandardFormFunction(FormModel model)
+        public StandardFormFunction(string name)
         {
-            var parts = model.Name.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            var parts = name.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
 
             Namespace = String.Join(".", parts.Take(parts.Length - 1));
             Name = parts.Skip(parts.Length - 1).Take(1).Single();
-
-            _model = model;
         }
 
-        public object Execute(ParameterList parameters, FunctionContextContainer context)
+        public virtual object Execute(ParameterList parameters, FunctionContextContainer context)
         {
-            var renderingContext = FormBuilderRequestContext.Setup(_model, OnMappedValues, OnSubmit, SetDefaultValues);
+            var renderingContext = (FormBuilderRequestContext)Activator.CreateInstance(typeof(T), new[] { Namespace + "." + Name });
+            renderingContext.Execute();
 
             var newContext = new FunctionContextContainer(context, new Dictionary<string, object>
             {
@@ -81,7 +76,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             var formExecutor = FunctionFacade.GetFunction(formExecutorFunction);
             var functionParameters = new Dictionary<string, object>
             {
-                { "FormName", _model.Name },
+                { "FormName", Namespace +"."+ Name },
                 { "IntroText", parameters.GetParameter("IntroText") },
                 { "SuccessResponse", parameters.GetParameter("SuccessResponse") },
             };

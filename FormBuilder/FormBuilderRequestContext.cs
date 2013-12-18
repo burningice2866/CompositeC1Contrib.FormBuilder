@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace CompositeC1Contrib.FormBuilder
 {
-    public class FormBuilderRequestContext
+    public abstract class FormBuilderRequestContext
     {
-        private HttpContextBase ctx;
+        private HttpContextBase ctx = new HttpContextWrapper(HttpContext.Current);
 
-        private Action<FormModel> OnMappedValues;
-        private Action<FormModel> SetDefaultValues;
-        private Action OnSubmit;        
+        protected string FormName { get; private set; }
 
         public bool IsOwnSubmit
         {
@@ -23,35 +20,30 @@ namespace CompositeC1Contrib.FormBuilder
             get { return IsOwnSubmit && !RenderingModel.ValidationResult.Any(); }
         }
 
-        public FormModel RenderingModel { get; private set; }
+        public abstract FormModel RenderingModel { get; }
 
-        private FormBuilderRequestContext(FormModel model, Action<FormModel> OnMappedValues, Action OnSubmit, Action<FormModel> SetDefaultValues)
+        public FormBuilderRequestContext(string name)
         {
-            ctx = new HttpContextWrapper(HttpContext.Current);
-
-            RenderingModel = model;
-            FormModel.SetCurrent(RenderingModel.Name, RenderingModel);
-
-            this.OnMappedValues = OnMappedValues;
-            this.SetDefaultValues = SetDefaultValues;
-            this.OnSubmit = OnSubmit;
+            FormName = name;
         }
 
-        public static FormBuilderRequestContext Setup(FormModel model, Action<FormModel> OnMappedValues, Action OnSubmit, Action<FormModel> SetDefaultValues)
+        public void Execute()
         {
-            var requestContext = new FormBuilderRequestContext(model, OnMappedValues, OnSubmit, SetDefaultValues);
+            FormModel.SetCurrent(RenderingModel.Name, RenderingModel);
 
-            var Request = requestContext.ctx.Request;
-            var Response = requestContext.ctx.Response;
+            var Request = ctx.Request;
+            var Response = ctx.Response;
 
-            if (requestContext.RenderingModel.ForceHttps && !Request.IsSecureConnection)
+            if (RenderingModel.ForceHttps && !Request.IsSecureConnection)
             {
                 string redirectUrl = Request.Url.ToString().Replace("http:", "https:");
 
                 Response.Redirect(redirectUrl, true);
             }
 
-            if (requestContext.IsOwnSubmit)
+            SetDefaultValues();
+
+            if (IsOwnSubmit)
             {
                 var requestFiles = Request.Files;
                 var files = new List<FormFile>();
@@ -72,25 +64,16 @@ namespace CompositeC1Contrib.FormBuilder
                     }
                 }
 
-                requestContext.RenderingModel.MapValues(Request.Form, files);
-
-                if (OnMappedValues != null)
-                {
-                    OnMappedValues(requestContext.RenderingModel);
-                }
-
-                requestContext.RenderingModel.Validate();
+                
+                RenderingModel.MapValues(Request.Form, files);
+                OnMappedValues();
+                RenderingModel.Validate();
             }
-            else
-            {
-                if (SetDefaultValues != null)
-                {
-                    SetDefaultValues(model);
-                }
-            }
-
-            return requestContext;
         }
+
+        public virtual void OnMappedValues() { }
+        public virtual void SetDefaultValues() { }
+        public virtual void OnSubmit() { }
 
         public void Submit()
         {

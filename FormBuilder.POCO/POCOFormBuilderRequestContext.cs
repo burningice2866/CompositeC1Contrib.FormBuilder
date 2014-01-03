@@ -1,21 +1,19 @@
-﻿using System.Linq;
-
-namespace CompositeC1Contrib.FormBuilder
+﻿namespace CompositeC1Contrib.FormBuilder
 {
     public class POCOFormBuilderRequestContext : FormBuilderRequestContext
     {
-        private FormModel _model;
-        private IPOCOForm _instance;
+        private readonly FormModel _model;
+        private readonly IPOCOForm _instance;
 
         public override FormModel RenderingModel
         {
             get { return _model; }
         }
 
-        public POCOFormBuilderRequestContext(string formName)
+        public POCOFormBuilderRequestContext(string formName, IPOCOForm instance)
             : base(formName)
         {
-            _instance = POCOFormModelsProvider.GetInstanceByName(formName);
+            _instance = instance;
             _model = POCOFormsFacade.FromInstance(_instance, null);
         }
 
@@ -26,7 +24,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public override void OnMappedValues()
         {
-            POCOFormsFacade.SetDefaultValues(_instance, _model);
+            POCOFormsFacade.MapValues(_instance, _model);
         }
 
         public override void OnSubmit()

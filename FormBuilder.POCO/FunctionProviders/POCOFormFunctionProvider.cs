@@ -16,7 +16,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                 var models = POCOFormModelsProvider.GetModels();
                 foreach (var entry in models)
                 {
-                    IFunction function = null;
+                    IFunction function;
                     if (!FunctionFacade.TryGetFunction(out function, entry.Value.Name))
                     {
                         yield return new StandardFormFunction<POCOFormBuilderRequestContext>(entry.Value.Name);

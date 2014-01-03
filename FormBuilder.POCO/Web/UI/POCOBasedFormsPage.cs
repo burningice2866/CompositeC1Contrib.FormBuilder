@@ -26,9 +26,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             {
                 if (_context == null)
                 {
-                    var model = POCOFormsFacade.FromType<T>(Form, Options);
+                    var model = POCOFormsFacade.FromType(Form, Options);
 
-                    _context = new POCOFormBuilderRequestContext(model.Name);
+                    _context = new POCOFormBuilderRequestContext(model.Name, Form);
                     _context.Execute();
                 }
 

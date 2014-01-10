@@ -38,6 +38,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public override void ExecutePageHierarchy()
         {
+            RenderingContext.RenderingModel.Options = Options;
+
             var functionContext = new FunctionContextContainer(FunctionContextContainer, new Dictionary<string, object>
             {
                 { "RenderingContext", RenderingContext },

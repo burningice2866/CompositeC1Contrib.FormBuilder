@@ -5,7 +5,9 @@ using System.Xml.Linq;
 
 using Composite.AspNet.Razor;
 using Composite.Core.Xml;
+using Composite.Data.Types;
 using Composite.Functions;
+using CompositeC1Contrib.FormBuilder.Attributes;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
@@ -78,6 +80,18 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 if (fieldElement == null)
                 {
                     continue;
+                }
+
+                var textBefore = field.Attributes.OfType<TextBeforeAttribute>().SingleOrDefault();
+                if (textBefore != null)
+                {
+                    var text = textBefore.Text;
+                    if (!text.StartsWith("<"))
+                    {
+                        text = "<p>" + text + "</p>";
+                    }
+
+                    fieldElement.AddBeforeSelf(XElement.Parse(text));
                 }
 
                 var newValue = XElement.Parse(FormRenderer.FieldFor(field).ToString());

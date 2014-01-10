@@ -6,7 +6,7 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public abstract class FormBuilderRequestContext
     {
-        private HttpContextBase ctx = new HttpContextWrapper(HttpContext.Current);
+        private readonly HttpContextBase _ctx = new HttpContextWrapper(HttpContext.Current);
 
         protected string FormName { get; private set; }
 

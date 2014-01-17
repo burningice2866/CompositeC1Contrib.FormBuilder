@@ -4,9 +4,10 @@ using System.Web;
 using System.Xml.Linq;
 
 using Composite.AspNet.Razor;
+using Composite.Core.WebClient.Renderings.Page;
 using Composite.Core.Xml;
-using Composite.Data.Types;
 using Composite.Functions;
+
 using CompositeC1Contrib.FormBuilder.Attributes;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
@@ -40,6 +41,20 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         protected FormsPage()
         {
             Options = new FormOptions();
+        }
+
+        public IHtmlString EvaluateMarkup(XElement element)
+        {
+            if (element == null)
+            {
+                return null;
+            }
+
+            var doc = new XElement(element);
+
+            PageRenderer.ExecuteEmbeddedFunctions(doc, FunctionContextContainer);
+
+            return new HtmlString(doc.ToString());
         }
 
         public override void ExecutePageHierarchy()

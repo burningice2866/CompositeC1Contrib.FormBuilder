@@ -2,22 +2,22 @@
 
 @if (IsSuccess && (SuccessResponse != null && !SuccessResponse.IsEmpty))
 {
-    @Html.C1().Markup(SuccessResponse)
+    @EvaluateMarkup(SuccessResponse.Root)
 }
 else
-{    
-    @Html.C1().Markup(IntroText)
+{
+    @EvaluateMarkup(IntroText.Root)
 
     using (BeginForm(new { @class = "form-horizontal" }))
     {
         @WriteErrors()
 
         @WriteAllFields()
-    
+
         <div class="control-group submit-buttons">
-		    <div class="controls">
-			    <input type="submit" name="SubmitForm" class="btn btn-primary" value="@RenderingModel.SubmitButtonLabel" />
-		    </div>
-	    </div>
+            <div class="controls">
+                <input type="submit" name="SubmitForm" class="btn btn-primary" value="@RenderingModel.SubmitButtonLabel" />
+            </div>
+        </div>
     }
 }

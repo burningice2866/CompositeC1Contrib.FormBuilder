@@ -25,7 +25,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
         public string Description
         {
-            get { return ""; }
+            get { return String.Empty; }
         }
 
         public Type ReturnType
@@ -44,6 +44,36 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             Name = "DumpSubmittedFormValues";
         }
 
+        public static string FormatFieldValue(FormField field)
+        {
+            if (field.Value is IEnumerable<string>)
+            {
+                return String.Join(", ", field.Value as IEnumerable<string>);
+            }
+
+            if (field.Value is FormFile)
+            {
+                var file = field.Value as FormFile;
+
+                return String.Format("{0} ({1} KB)", file.FileName, file.ContentLength / 1024);
+            }
+
+            if (field.Value is IEnumerable<FormFile>)
+            {
+                var files = field.Value as IEnumerable<FormFile>;
+                var values = new List<string>();
+
+                foreach (var file in files)
+                {
+                    values.Add(String.Format("{0} ({1} KB)", file.FileName, file.ContentLength / 1024));
+                }
+
+                return String.Join(", ", values);
+            }
+
+            return field.Value.ToString();
+        }
+
         public object Execute(ParameterList parameters, FunctionContextContainer context)
         {
             var formModel = (FormModel)context.GetParameterValue("FormModel", typeof(FormModel));
@@ -53,31 +83,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
             foreach (var field in formModel.Fields.Where(f => f.Label != null && f.Value != null))
             {
-                var value = String.Empty;
-
-                if (field.Value is IEnumerable<string>)
-                {
-                    value = String.Join(", ", field.Value as IEnumerable<string>);
-                }
-                else if (field.Value is FormFile)
-                {
-                    var file = field.Value as FormFile;
-                    value = String.Format("{0} ({1} KB)", file.FileName, file.ContentLength / 1024);
-                }
-                else if (field.Value is IEnumerable<FormFile>)
-                {
-                    var files = field.Value as IEnumerable<FormFile>;
-                    var values = new List<string>();
-                    foreach (var file in files)
-                    {
-                        values.Add(String.Format("{0} ({1} KB)", file.FileName, file.ContentLength / 1024));
-                    }
-                    value = String.Join(", ", values);
-                }
-                else
-                {
-                    value = field.Value.ToString();
-                }
+                var value = FormatFieldValue(field);
                     
                 value = HttpUtility.HtmlEncode(value);
 

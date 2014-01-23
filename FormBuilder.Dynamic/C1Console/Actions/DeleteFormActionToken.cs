@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using Composite.C1Console.Actions;
 using Composite.C1Console.Security;
@@ -12,7 +11,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
     [ActionExecutor(typeof(DeleteFormActionExecutor))]
     public class DeleteFormActionToken : ActionToken
     {
-        private static IEnumerable<PermissionType> _permissionTypes = new PermissionType[] { PermissionType.Administrate };
+        private static readonly IEnumerable<PermissionType> _permissionTypes = new[] { PermissionType.Administrate };
 
         public override IEnumerable<PermissionType> PermissionTypes
         {

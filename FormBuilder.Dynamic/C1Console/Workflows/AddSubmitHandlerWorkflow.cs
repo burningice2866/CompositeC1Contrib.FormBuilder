@@ -1,9 +1,12 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+
 using Composite.C1Console.Workflow;
 
+using CompositeC1Contrib.FormBuilder.Configuration;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
+using CompositeC1Contrib.FormBuilder.Dynamic.Configuration;
 using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
 using CompositeC1Contrib.Workflows;
 
@@ -11,35 +14,21 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
     public class AddSubmitHandlerWorkflow : Basic1StepDialogWorkflow
     {
-        public AddSubmitHandlerWorkflow()
-            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddSubmitHandlerWorkflow.xml")
+        private static readonly IList<SubmitHandlerElement> Handlers;
+
+        public AddSubmitHandlerWorkflow() : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddSubmitHandlerWorkflow.xml") { }
+
+        static AddSubmitHandlerWorkflow()
         {
+            var config = FormBuilderConfiguration.GetSection();
+            var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
+
+            Handlers = plugin.SubmitHandlers;
         }
 
         public static Dictionary<string, string> GetSubmitHandlerTypes()
         {
-            var handlers = new Dictionary<string, string>
-            {
-                { typeof(EmailSubmitHandler).AssemblyQualifiedName, "Send email" }
-            };
-
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var asm in assemblies)
-            {
-                try
-                {
-                    var types = asm.GetTypes()
-                        .Where(t => t.IsClass && !t.IsAbstract && t != typeof(EmailSubmitHandler) && typeof(EmailSubmitHandler).IsAssignableFrom(t));
-
-                    foreach (var type in types)
-	                {
-                        handlers.Add(type.AssemblyQualifiedName, type.Name);
-	                }
-                }
-                catch { }
-            }
-
-            return handlers;
+            return Handlers.ToDictionary(o => o.Type.AssemblyQualifiedName, o => o.Name);
         }
 
         public override void OnInitialize(object sender, EventArgs e)
@@ -49,6 +38,30 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 Bindings.Add("SubmitHandlerType", String.Empty);
                 Bindings.Add("Name", String.Empty);
             }
+        }
+
+        public override bool Validate()
+        {
+            var type = GetBinding<string>("SubmitHandlerType");
+            var handlerType = Type.GetType(type);
+            var element = Handlers.Single(e => e.Type == handlerType);
+
+            if (element.AllowMultiple)
+            {
+                return true;
+            }
+
+            var token = (FormFolderEntityToken)EntityToken;
+            var definition = DynamicFormsFacade.GetFormByName(token.FormName);
+
+            if (definition.SubmitHandlers.Any(handler => handler.GetType() == handlerType))
+            {
+                ShowFieldMessage("SubmitHandlerType", "The chosen handler is only allowed once");
+
+                return false;
+            }
+
+            return true;
         }
 
         public override void OnFinish(object sender, EventArgs e)

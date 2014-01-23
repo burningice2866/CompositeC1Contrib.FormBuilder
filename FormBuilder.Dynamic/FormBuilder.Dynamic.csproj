@@ -125,11 +125,14 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Configuration\DynamicFormBuilderConfiguration.cs" />
+    <Compile Include="Configuration\SubmitHandlerElement.cs" />
     <Compile Include="DynamicFormDefinition.cs" />
     <Compile Include="DynamicFormModelsProvider.cs" />
     <Compile Include="C1Console\IInputTypeSettingsHandler.cs" />
     <Compile Include="C1Console\TextAreaSettings.cs" />
     <Compile Include="DynamicFormBuilderRequestContext.cs" />
+    <Compile Include="SubmitHandlers\SaveFormSubmitHandler.cs" />
+    <Compile Include="Web\StartupHandler.cs" />
     <Compile Include="Web\UI\FunctionSelector.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -187,7 +190,7 @@
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditFormFieldWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditFormWorkflow.xml" />
     <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\FunctionSelector.ascx">
-      <SubType>Code</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\SortFormFields.aspx">
       <SubType>ASPXCodeBehind</SubType>

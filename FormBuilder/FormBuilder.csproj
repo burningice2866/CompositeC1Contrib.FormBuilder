@@ -87,6 +87,7 @@
     <Compile Include="FunctionProviders\FormBuilderFunctionProvider.cs" />
     <Compile Include="FunctionProviders\FormBuilderFunctionEntityToken.cs" />
     <Compile Include="IFormModelsProvider.cs" />
+    <Compile Include="SaveFormSubmitFacade.cs" />
     <Compile Include="Validation\CredentialsValidatorAttribute.cs" />
     <Compile Include="Validation\DaysFromNowValidatorAttribute.cs" />
     <Compile Include="Validation\EmailExistsValidatorAttribute.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Attributes\FieldLabelAttribute.cs" />
     <Compile Include="Attributes\HtmlTagAttribute.cs" />
     <Compile Include="Attributes\FunctionBasedDataSourceAttribute.cs" />
+    <Compile Include="Web\StartupHandler.cs" />
     <Compile Include="Web\UI\InputElementTypeAttribute.cs" />
     <Compile Include="Attributes\MethodBasedDataSourceAttribute.cs" />
     <Compile Include="Attributes\StringBasedDataSourceAttribute.cs" />

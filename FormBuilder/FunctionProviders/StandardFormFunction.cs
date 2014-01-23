@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Xml.Linq;
 
 using Composite.C1Console.Security;
 using Composite.Core.Xml;
@@ -16,6 +15,9 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
     public class StandardFormFunction<T> : IFunction where T : FormBuilderRequestContext
     {
         private static readonly Type XElementParameterRuntimeTreeNode = Type.GetType("Composite.Functions.XElementParameterRuntimeTreeNode, Composite");
+
+        private readonly XhtmlDocument _intoText;
+        private readonly XhtmlDocument _successResponse;
 
         public string OverrideFormExecutor { get; set; }
 
@@ -41,21 +43,34 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
         {
             get
             {
-                var list = new List<ParameterProfile>();
+                var list = new List<ParameterProfile>
+                {
+                    new ParameterProfile("IntroText", typeof (XhtmlDocument), false,
+                        new ConstantValueProvider(_intoText ?? new XhtmlDocument()),
+                        StandardWidgetFunctions.GetDefaultWidgetFunctionProviderByType(typeof (XhtmlDocument)),
+                        "Intro text", new HelpDefinition("Intro text")),
 
-                list.Add(new ParameterProfile("IntroText", typeof(XhtmlDocument), false, new ConstantValueProvider(String.Empty), StandardWidgetFunctions.GetDefaultWidgetFunctionProviderByType(typeof(XhtmlDocument)), "Intro text", new HelpDefinition("Intro text")));
-                list.Add(new ParameterProfile("SuccessResponse", typeof(XhtmlDocument), false, new ConstantValueProvider(String.Empty), StandardWidgetFunctions.GetDefaultWidgetFunctionProviderByType(typeof(XhtmlDocument)), "Success response", new HelpDefinition("Success response")));
+                    new ParameterProfile("SuccessResponse", typeof (XhtmlDocument), false,
+                        new ConstantValueProvider(_successResponse ?? new XhtmlDocument()),
+                        StandardWidgetFunctions.GetDefaultWidgetFunctionProviderByType(typeof (XhtmlDocument)),
+                        "Success response", new HelpDefinition("Success response"))
+                };
 
                 return list;
             }
         }
 
-        public StandardFormFunction(string name)
+        public StandardFormFunction(string name) : this(name, null, null) { }
+
+        public StandardFormFunction(string name, XhtmlDocument introText, XhtmlDocument successResponse)
         {
             var parts = name.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
 
             Namespace = String.Join(".", parts.Take(parts.Length - 1));
             Name = parts.Skip(parts.Length - 1).Take(1).Single();
+
+            _intoText = introText;
+            _successResponse = successResponse;
         }
 
         public virtual object Execute(ParameterList parameters, FunctionContextContainer context)
@@ -93,7 +108,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
                 if (type == XElementParameterRuntimeTreeNode)
                 {
-                    value = (XElement)type.GetField("_element", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(value);
+                    value = type.GetField("_element", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(value);
                 }
 
                 switch ((string)item.Key)

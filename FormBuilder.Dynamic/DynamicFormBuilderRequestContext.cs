@@ -8,7 +8,7 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public class DynamicFormBuilderRequestContext : FormBuilderRequestContext
     {
-        private FormModel _model;
+        private readonly FormModel _model;
 
         public override FormModel RenderingModel
         {
@@ -28,12 +28,14 @@ namespace CompositeC1Contrib.FormBuilder
             foreach (var field in _model.Fields)
             {
                 XElement defaultValueSetter;
-                if (def.DefaultValues.TryGetValue(field.Name, out defaultValueSetter))
+                if (!def.DefaultValues.TryGetValue(field.Name, out defaultValueSetter))
                 {
-                    var runtimeTree = FunctionFacade.BuildTree(defaultValueSetter);
-
-                    field.Value = runtimeTree.GetValue();
+                    continue;
                 }
+
+                var runtimeTree = FunctionFacade.BuildTree(defaultValueSetter);
+
+                field.Value = runtimeTree.GetValue();
             }
         }
 

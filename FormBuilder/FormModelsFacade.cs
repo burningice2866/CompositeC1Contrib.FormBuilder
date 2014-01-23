@@ -12,13 +12,13 @@ namespace CompositeC1Contrib.FormBuilder
     public static class FormModelsFacade
     {
         private static readonly IList<IFormModelsProvider> ModelProviders = new List<IFormModelsProvider>();
-        private static readonly string BasePath = HostingEnvironment.MapPath("~/App_Data/FormBuilder/FormRenderingLayouts");
+        public static readonly string FormsPath = HostingEnvironment.MapPath("~/App_Data/FormBuilder");
 
         static FormModelsFacade()
-        {            
-            if (!Directory.Exists(BasePath))
+        {
+            if (!Directory.Exists(FormsPath))
             {
-                Directory.CreateDirectory(BasePath);
+                Directory.CreateDirectory(FormsPath);
             }
 
             var asms = AppDomain.CurrentDomain.GetAssemblies();
@@ -40,7 +40,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static XhtmlDocument GetRenderingLayout(string formName)
         {
-            var file = Path.Combine(BasePath, formName + ".xml");
+            var file = Path.Combine(FormsPath, formName, "RenderingLayout.xml");
             if (File.Exists(file))
             {
                 var fileContent = File.ReadAllText(file);
@@ -61,7 +61,13 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static void SaveRenderingLayout(string formName, XhtmlDocument markup)
         {
-            var file = Path.Combine(BasePath, formName + ".xml");
+            var dir = Path.Combine(FormsPath, formName);
+            var file = Path.Combine(dir, "RenderingLayout.xml");
+
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
 
             if (markup.IsEmpty)
             {

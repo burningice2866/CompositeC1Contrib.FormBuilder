@@ -12,7 +12,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public bool IsOwnSubmit
         {
-            get { return ctx.Request.RequestType == "POST" && ctx.Request.Form["__type"] == RenderingModel.Name; }
+            get { return _ctx.Request.RequestType == "POST" && _ctx.Request.Form["__type"] == RenderingModel.Name; }
         }
 
         public bool IsSuccess
@@ -22,7 +22,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public abstract FormModel RenderingModel { get; }
 
-        public FormBuilderRequestContext(string name)
+        protected FormBuilderRequestContext(string name)
         {
             FormName = name;
         }
@@ -31,44 +31,45 @@ namespace CompositeC1Contrib.FormBuilder
         {
             FormModel.SetCurrent(RenderingModel.Name, RenderingModel);
 
-            var Request = ctx.Request;
-            var Response = ctx.Response;
+            var request = _ctx.Request;
+            var response = _ctx.Response;
 
-            if (RenderingModel.ForceHttps && !Request.IsSecureConnection)
+            if (!request.IsLocal && RenderingModel.ForceHttps && !request.IsSecureConnection)
             {
-                string redirectUrl = Request.Url.ToString().Replace("http:", "https:");
+                string redirectUrl = request.Url.ToString().Replace("http:", "https:");
 
-                Response.Redirect(redirectUrl, true);
+                response.Redirect(redirectUrl, true);
             }
 
             SetDefaultValues();
 
-            if (IsOwnSubmit)
+            if (!IsOwnSubmit)
             {
-                var requestFiles = Request.Files;
-                var files = new List<FormFile>();
-
-                for (int i = 0; i < requestFiles.Count; i++)
-                {
-                    var f = requestFiles[i];
-                    if (f.ContentLength > 0)
-                    {
-                        files.Add(new FormFile()
-                        {
-                            Key = requestFiles.AllKeys[i],
-                            ContentLength = f.ContentLength,
-                            ContentType = f.ContentType,
-                            FileName = f.FileName,
-                            InputStream = f.InputStream
-                        });
-                    }
-                }
-
-                
-                RenderingModel.MapValues(Request.Form, files);
-                OnMappedValues();
-                RenderingModel.Validate();
+                return;
             }
+
+            var requestFiles = request.Files;
+            var files = new List<FormFile>();
+
+            for (int i = 0; i < requestFiles.Count; i++)
+            {
+                var f = requestFiles[i];
+                if (f.ContentLength > 0)
+                {
+                    files.Add(new FormFile()
+                    {
+                        Key = requestFiles.AllKeys[i],
+                        ContentLength = f.ContentLength,
+                        ContentType = f.ContentType,
+                        FileName = f.FileName,
+                        InputStream = f.InputStream
+                    });
+                }
+            }
+                
+            RenderingModel.MapValues(request.Form, files);
+            OnMappedValues();
+            RenderingModel.Validate();
         }
 
         public virtual void OnMappedValues() { }
@@ -78,6 +79,11 @@ namespace CompositeC1Contrib.FormBuilder
         public void Submit()
         {
             OnSubmit();
+
+            if (_ctx.IsDebuggingEnabled)
+            {
+                SaveFormSubmitFacade.SaveSubmitDebug(RenderingModel);
+            }
         }
     }
 }

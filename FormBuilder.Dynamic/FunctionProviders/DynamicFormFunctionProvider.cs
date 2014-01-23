@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Linq;
+﻿using System.Collections.Generic;
 
 using Composite.Functions;
 using Composite.Functions.Plugins.FunctionProvider;
+
 using CompositeC1Contrib.FormBuilder.Dynamic;
 
 namespace CompositeC1Contrib.FormBuilder.FunctionProviders
@@ -19,13 +18,15 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                 var definitions = DynamicFormsFacade.GetFormDefinitions();
                 foreach (var def in definitions)
                 {
-                    IFunction function = null;
+                    IFunction function;
                     if (!FunctionFacade.TryGetFunction(out function, def.Name))
                     {
-                        yield return new StandardFormFunction<DynamicFormBuilderRequestContext>(def.Name)
+                        function = new StandardFormFunction<DynamicFormBuilderRequestContext>(def.Name, def.IntroText, def.SuccessResponse)
                         {
                             OverrideFormExecutor = def.FormExecutor
                         };
+
+                        yield return function;
                     }
                 }
             }

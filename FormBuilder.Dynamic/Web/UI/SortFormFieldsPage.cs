@@ -45,24 +45,25 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Web.UI
             var entityToken = EntityTokenSerializer.Deserialize(seralizedEntityToken);
             var graph = new RelationshipGraph(entityToken, RelationshipGraphSearchOption.Both);
 
-            if (graph.Levels.Count<RelationshipGraphLevel>() > 1)
+            if (graph.Levels.Count() <= 1)
             {
-                var level = graph.Levels.ElementAt<RelationshipGraphLevel>(1);
-                foreach (var token in level.AllEntities)
-                {
-                    var consoleMessageQueueItem = new RefreshTreeMessageQueueItem
-                    {
-                        EntityToken = token
-                    };
+                return;
+            }
 
-                    ConsoleMessageQueueFacade.Enqueue(consoleMessageQueueItem, consoleId);
-                }
+            var level = graph.Levels.ElementAt(1);
+            foreach (var token in level.AllEntities)
+            {
+                var consoleMessageQueueItem = new RefreshTreeMessageQueueItem
+                {
+                    EntityToken = token
+                };
+
+                ConsoleMessageQueueFacade.Enqueue(consoleMessageQueueItem, consoleId);
             }
         }
 
         private static void UpdateOrder(DynamicFormDefinition formDefinition, string serializedOrder)
         {
-            var fields = formDefinition.Model.Fields.ToList();
             var newOrder = new Dictionary<FormField, int>();
 
             serializedOrder = serializedOrder.Replace("instance[]=", ",").Replace("&", "");

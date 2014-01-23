@@ -185,12 +185,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public static string WriteChecked(bool write, string attr)
         {
-            if (write)
-            {
-                return String.Format("{0}=\"{0}\"", attr);
-            }
-
-            return String.Empty;
+            return write ? String.Format("{0}=\"{0}\"", attr) : String.Empty;
         }
 
         public static bool IsEqual(object obj, string value)

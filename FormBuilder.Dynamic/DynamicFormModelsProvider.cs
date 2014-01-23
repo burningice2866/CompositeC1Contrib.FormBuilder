@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
@@ -7,10 +8,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         public IEnumerable<FormModel> GetModels()
         {
             var definitions = DynamicFormsFacade.GetFormDefinitions();
-            foreach (var def in definitions)
-            {
-                yield return def.Model;
-            }
+            
+            return definitions.Select(def => def.Model);
         }
     }
 }

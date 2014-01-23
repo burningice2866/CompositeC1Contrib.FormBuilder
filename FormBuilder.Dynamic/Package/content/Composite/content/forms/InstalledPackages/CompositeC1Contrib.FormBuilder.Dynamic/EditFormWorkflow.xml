@@ -3,6 +3,8 @@
   <cms:bindings>
     <cms:binding name="FormName" type="System.String" />
     <cms:binding name="SubmitButtonLabel" type="System.String" />
+    <cms:binding name="IntroText" type="System.String" />
+    <cms:binding name="SuccessResponse" type="System.String" />
     <cms:binding name="FunctionExecutor" type="System.String" />
   </cms:bindings>
 
@@ -25,6 +27,18 @@
               <cms:bind source="SubmitButtonLabel" />
             </TextBox.Text>
           </TextBox>
+        </FieldGroup>
+      </PlaceHolder>
+
+      <PlaceHolder Label="Layout">
+        <FieldGroup>
+          <InlineXhtmlEditor Label="Intro text">
+            <cms:bind source="IntroText"/>
+          </InlineXhtmlEditor>
+
+          <InlineXhtmlEditor Label="Success response">
+            <cms:bind source="SuccessResponse"/>
+          </InlineXhtmlEditor>
         </FieldGroup>
       </PlaceHolder>
 

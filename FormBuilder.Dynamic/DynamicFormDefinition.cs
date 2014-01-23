@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
+using Composite.Core.Xml;
+
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
 using CompositeC1Contrib.FormBuilder.Validation;
@@ -15,6 +17,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         public FormModel Model { get; private set; }
         public IDictionary<string, XElement> DefaultValues { get; private set; }
         public IList<FormSubmitHandler> SubmitHandlers { get; private set; }
+        public XhtmlDocument IntroText { get; set; }
+        public XhtmlDocument SuccessResponse { get; set; }
 
         public string FormExecutor { get; set; }
 
@@ -129,8 +133,20 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             if (layoutElement != null)
             {
                 var label = layoutElement.Attribute("submitButtonLabel").Value;
+                var introText = layoutElement.Element("introText");
+                var successResponse = layoutElement.Element("successResponse");
 
                 definition.Model.Attributes.Add(new SubmitButtonLabelAttribute(label));
+
+                if (introText != null)
+                {
+                    definition.IntroText = XhtmlDocument.Parse(introText.Value);
+                }
+
+                if (successResponse != null)
+                {
+                    definition.SuccessResponse = XhtmlDocument.Parse(successResponse.Value);
+                }
             }
 
             ParseMetaDataDefaultValues(metaData, definition);

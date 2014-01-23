@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 
 using Composite.C1Console.Workflow;
+using Composite.Core.Xml;
+
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
@@ -12,10 +14,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
     [AllowPersistingWorkflow(WorkflowPersistingType.Idle)]
     public class EditFormWorkflow : Basic1StepDocumentWorkflow
     {
-        public EditFormWorkflow()
-            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditFormWorkflow.xml")
-        {
-        }
+        public EditFormWorkflow() : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditFormWorkflow.xml") { }
 
         public override void OnInitialize(object sender, EventArgs e)
         {
@@ -26,6 +25,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
                 Bindings.Add("FormName", formToken.FormName);
                 Bindings.Add("SubmitButtonLabel", definition.Model.SubmitButtonLabel);
+                Bindings.Add("IntroText", definition.IntroText.ToString());
+                Bindings.Add("SuccessResponse", definition.SuccessResponse.ToString());
                 Bindings.Add("FunctionExecutor", definition.FormExecutor ?? String.Empty);
             }
         }
@@ -37,8 +38,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             var formName = GetBinding<string>("FormName");
             var submitButtonLabel = GetBinding<string>("SubmitButtonLabel");
+            var introText = GetBinding<string>("IntroText");
+            var successResponse = GetBinding<string>("SuccessResponse");
             var functionExecutor = GetBinding<string>("FunctionExecutor");
 
+            definition.IntroText = XhtmlDocument.Parse(introText);
+            definition.SuccessResponse = XhtmlDocument.Parse(successResponse);
             definition.FormExecutor = functionExecutor;
 
             var submitButtonLabelAttr = definition.Model.Attributes.OfType<SubmitButtonLabelAttribute>().SingleOrDefault();

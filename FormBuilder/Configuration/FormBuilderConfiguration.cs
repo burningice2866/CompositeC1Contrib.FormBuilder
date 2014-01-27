@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 
 namespace CompositeC1Contrib.FormBuilder.Configuration
@@ -8,6 +9,7 @@ namespace CompositeC1Contrib.FormBuilder.Configuration
         private const string ConfigPath = "compositeC1Contrib/formBuilder";
 
         public string DefaultFunctionExecutor { get; set; }
+        public Type RendererImplementation { get; set; }
 
         public IDictionary<string, IPluginConfiguration> Plugins { get; private set; }
 

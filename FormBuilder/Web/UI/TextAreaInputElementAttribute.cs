@@ -7,7 +7,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public class TextAreaInputElementAttribute : InputElementTypeAttribute
     {
-        private const string _s = "<textarea name=\"{0}\" id=\"{1}\" title=\"{2}\" placeholder=\"{2}\" rows=\"{3}\" cols=\"{4}\"";
+        private const string Markup = "<textarea name=\"{0}\" id=\"{1}\" title=\"{2}\" placeholder=\"{2}\" rows=\"{3}\" cols=\"{4}\"";
 
         public int Cols { get; set; }
         public int Rows { get; set; }
@@ -29,7 +29,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             Rows = rows;
         }
 
-        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
             var placeholderText = field.PlaceholderText;
@@ -39,16 +39,18 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 placeholderText = field.Label.Label;
             }
 
-            sb.AppendFormat(_s,
+            sb.AppendFormat(Markup,
                 HttpUtility.HtmlAttributeEncode(field.Name),
                 HttpUtility.HtmlAttributeEncode(field.Id),
                 HttpUtility.HtmlAttributeEncode(placeholderText),
                 Rows,
                 Cols);
 
-            FormRenderer.RenderReadOnlyAttribute(sb, field);
-            FormRenderer.RenderMaxLengthAttribute(sb, field);
-            FormRenderer.RenderExtraHtmlTags(sb, field, htmlAttributes);
+            AddHtmlAttribute("class", FormRenderer.RendererImplementation.FormControlClass, htmlAttributes);
+
+            RenderReadOnlyAttribute(sb, field);
+            RenderMaxLengthAttribute(sb, field);
+            RenderExtraHtmlTags(sb, field, htmlAttributes);
 
             sb.AppendFormat(">{0}</textarea>", HttpUtility.HtmlEncode(FormRenderer.GetValue(field)));
 

@@ -13,7 +13,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             get { return "checkbox"; }
         }
 
-        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
             var value = field.Value;
@@ -34,8 +34,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     HttpUtility.HtmlAttributeEncode(field.Label.Label),
                     FormRenderer.WriteChecked(bValue, "checked"));
 
-                FormRenderer.RenderReadOnlyAttribute(sb, field);
-                FormRenderer.RenderExtraHtmlTags(sb, field, htmlAttributes);
+                RenderReadOnlyAttribute(sb, field);
+                RenderExtraHtmlTags(sb, field, htmlAttributes);
 
                 sb.Append(" />");
             }
@@ -66,7 +66,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
                     foreach (var item in checkboxListOptions)
                     {
-                        sb.Append("<label class=\"checkbox\">");
+                        sb.AppendFormat("<label class=\"{0}\">", FormRenderer.RendererImplementation.FormControlLabelClass(this));
 
                         sb.AppendFormat("<input type=\"checkbox\" name=\"{1}\" id=\"{2}\" value=\"{3}\" title=\"{0}\" {4}",
                             HttpUtility.HtmlAttributeEncode(item.Value),
@@ -75,9 +75,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                             HttpUtility.HtmlAttributeEncode(item.Key),
                             FormRenderer.WriteChecked(list.Contains(item.Key), "checked"));
 
-                        FormRenderer.RenderReadOnlyAttribute(sb, field);
-                        FormRenderer.RenderMaxLengthAttribute(sb, field);
-                        FormRenderer.RenderExtraHtmlTags(sb, field, htmlAttributes);
+                        RenderReadOnlyAttribute(sb, field);
+                        RenderMaxLengthAttribute(sb, field);
+                        RenderExtraHtmlTags(sb, field, htmlAttributes);
 
                         sb.AppendFormat("/> {0}</label>", HttpUtility.HtmlEncode(item.Value));
                     }

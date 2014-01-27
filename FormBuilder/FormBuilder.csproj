@@ -97,6 +97,9 @@
     <Compile Include="Attributes\HtmlTagAttribute.cs" />
     <Compile Include="Attributes\FunctionBasedDataSourceAttribute.cs" />
     <Compile Include="Web\StartupHandler.cs" />
+    <Compile Include="Web\UI\FormRenderers\Bootstrap3FormRenderer.cs" />
+    <Compile Include="Web\UI\FormRenderers\Bootstrap2FormRenderer.cs" />
+    <Compile Include="Web\UI\IFormFormRenderer.cs" />
     <Compile Include="Web\UI\InputElementTypeAttribute.cs" />
     <Compile Include="Attributes\MethodBasedDataSourceAttribute.cs" />
     <Compile Include="Attributes\StringBasedDataSourceAttribute.cs" />

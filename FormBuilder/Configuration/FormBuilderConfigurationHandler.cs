@@ -3,24 +3,24 @@ using System.Configuration;
 using System.Linq;
 using System.Xml;
 
+using CompositeC1Contrib.FormBuilder.Web.UI.FormRenderers;
+
 namespace CompositeC1Contrib.FormBuilder.Configuration
 {
     public class FormBuilderConfigurationHandler : IConfigurationSectionHandler
     {
         public object Create(object parent, object configContext, XmlNode section)
         {
-            var config = new FormBuilderConfiguration();
+            var sectionAttibutes = section.Attributes.Cast<XmlAttribute>().ToList();
 
-            var defaultFunctionExecutor = section.Attributes.Cast<XmlAttribute>().SingleOrDefault(attr => attr.Name == "defaultFunctionExecutor");
-            if (defaultFunctionExecutor != null)
-            {
-                config.DefaultFunctionExecutor = defaultFunctionExecutor.Value;
-            }
-            else
-            {
+            var defaultFunctionExecutor = sectionAttibutes.SingleOrDefault(attr => attr.Name == "defaultFunctionExecutor");
+            var rendererImplementation = sectionAttibutes.SingleOrDefault(attr => attr.Name == "rendererImplementation");
 
-                config.DefaultFunctionExecutor = "FormBuilder.StandardFormExecutor";
-            }
+            var config = new FormBuilderConfiguration
+            {
+                DefaultFunctionExecutor = defaultFunctionExecutor != null ? defaultFunctionExecutor.Value : "FormBuilder.StandardFormExecutor",
+                RendererImplementation = rendererImplementation != null ? Type.GetType(rendererImplementation.Value) : typeof(Bootstrap2FormRenderer)
+            };
 
             foreach (XmlNode element in section.ChildNodes)
             {

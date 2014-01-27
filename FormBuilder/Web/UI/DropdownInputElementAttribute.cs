@@ -13,21 +13,22 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             get { return "selectbox"; }
         }
 
-        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
-            var htmlAttributesDictionary = FormRenderer.MapHtmlTagAttributes(field, htmlAttributes);
+            var htmlAttributesDictionary = MapHtmlTagAttributes(field, htmlAttributes);
 
-            sb.AppendFormat("<select name=\"{0}\" id=\"{1}\"",
+            sb.AppendFormat("<select name=\"{0}\" id=\"{1}\" class=\"{2}\"",
                         HttpUtility.HtmlAttributeEncode(field.Name),
-                        HttpUtility.HtmlAttributeEncode(field.Id));
+                        HttpUtility.HtmlAttributeEncode(field.Id),
+                        FormRenderer.RendererImplementation.FormControlClass);
 
             if (field.ValueType == typeof(IEnumerable<string>))
             {
                 htmlAttributesDictionary.Add("multiple", new List<string>() { "multiple" });
             }
 
-            FormRenderer.RenderExtraHtmlTags(sb, htmlAttributesDictionary);
+            RenderExtraHtmlTags(sb, htmlAttributesDictionary);
 
             sb.Append(">");
 

@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 
 using Composite.Core.Xml;
 using Composite.Functions;
-using CompositeC1Contrib.FormBuilder.Attributes;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public abstract class FunctionbasedInputElementAttribute : InputElementTypeAttribute
     {
-        private string _c1FunctionName;
+        private readonly string _c1FunctionName;
 
         protected FunctionbasedInputElementAttribute(string functionName)
         {
             _c1FunctionName = functionName;
         }
 
-        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, string> htmlAttributes)
         {
             var function = FunctionFacade.GetFunction(_c1FunctionName);
             if (function == null)

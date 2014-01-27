@@ -7,14 +7,14 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public class PasswordInputElementAttribute : InputElementTypeAttribute
     {
-        private const string _s = "<input type=\"{0}\" name=\"{1}\" id=\"{2}\" title=\"{3}\" placeholder=\"{4}\"";
+        private const string Markup = "<input type=\"{0}\" name=\"{1}\" id=\"{2}\" title=\"{3}\" placeholder=\"{4}\"";
 
         public override string ElementName
         {
             get { return "textbox"; }
         }
 
-        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
             var placeholderText = field.PlaceholderText;
@@ -24,16 +24,18 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 placeholderText = field.Label.Label;
             }
 
-            sb.AppendFormat(_s,
+            sb.AppendFormat(Markup,
                 "password",
                 HttpUtility.HtmlAttributeEncode(field.Name),
                 HttpUtility.HtmlAttributeEncode(field.Id),
                 HttpUtility.HtmlAttributeEncode(field.Label.Label),
                 HttpUtility.HtmlAttributeEncode(placeholderText));
 
-            FormRenderer.RenderReadOnlyAttribute(sb, field);
-            FormRenderer.RenderMaxLengthAttribute(sb, field);
-            FormRenderer.RenderExtraHtmlTags(sb, field, htmlAttributes);
+            AddHtmlAttribute("class", FormRenderer.RendererImplementation.FormControlClass, htmlAttributes);
+
+            RenderReadOnlyAttribute(sb, field);
+            RenderMaxLengthAttribute(sb, field);
+            RenderExtraHtmlTags(sb, field, htmlAttributes);
 
             sb.Append(" />");
 

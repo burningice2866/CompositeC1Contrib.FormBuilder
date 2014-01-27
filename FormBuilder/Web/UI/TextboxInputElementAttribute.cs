@@ -10,24 +10,24 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public class TextboxInputElementAttribute : InputElementTypeAttribute
     {
-        private const string _s = "<input type=\"{0}\" name=\"{1}\" id=\"{2}\" value=\"{3}\" title=\"{4}\" placeholder=\"{5}\"";
+        private const string Markup = "<input type=\"{0}\" name=\"{1}\" id=\"{2}\" value=\"{3}\" title=\"{4}\" placeholder=\"{5}\"";
 
         public override string ElementName
         {
             get { return "textbox"; }
         }
 
-        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
             var placeholderText = field.PlaceholderText;
-            
+
             if (String.IsNullOrEmpty(placeholderText) && field.OwningForm.Options.HideLabels)
             {
                 placeholderText = field.Label.Label;
             }
 
-            sb.AppendFormat(_s,
+            sb.AppendFormat(Markup,
                 EvaluateTextboxType(field),
                 HttpUtility.HtmlAttributeEncode(field.Name),
                 HttpUtility.HtmlAttributeEncode(field.Id),
@@ -35,9 +35,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 HttpUtility.HtmlAttributeEncode(field.Label.Label),
                 HttpUtility.HtmlAttributeEncode(placeholderText));
 
-            FormRenderer.RenderReadOnlyAttribute(sb, field);
-            FormRenderer.RenderMaxLengthAttribute(sb, field);
-            FormRenderer.RenderExtraHtmlTags(sb, field, htmlAttributes);
+            AddHtmlAttribute("class", FormRenderer.RendererImplementation.FormControlClass, htmlAttributes);
+
+            RenderReadOnlyAttribute(sb, field);
+            RenderMaxLengthAttribute(sb, field);
+            RenderExtraHtmlTags(sb, field, htmlAttributes);
 
             sb.Append(" />");
 

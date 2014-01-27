@@ -8,15 +8,25 @@ using System.Web;
 using Composite.Core.ResourceSystem;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
+using CompositeC1Contrib.FormBuilder.Configuration;
 using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public static class FormRenderer
     {
+        public static readonly IFormFormRenderer RendererImplementation;
+
+        static FormRenderer()
+        {
+            var type = FormBuilderConfiguration.GetSection().RendererImplementation;
+
+            RendererImplementation = (IFormFormRenderer)Activator.CreateInstance(type);
+        }
+
         public static IHtmlString FieldFor(FormField field)
         {
-            return WriteRow(field, new Dictionary<string, object>());
+            return WriteRow(field, new Dictionary<string, string>());
         }
 
         public static IHtmlString NameFor(FormField field)
@@ -31,7 +41,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             if (validationResult.Any())
             {
-                sb.Append("<div class=\"error_notification\">");
+                sb.Append("<div class=\"" + RendererImplementation.ErrorNotificationClass + "\">");
 
                 if (!String.IsNullOrEmpty(Localization.Validation_ErrorNotificationTop))
                 {
@@ -58,13 +68,13 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new HtmlString(sb.ToString());
         }
 
-        private static IHtmlString WriteRow(FormField field, IDictionary<string, object> htmlAttributes)
+        private static IHtmlString WriteRow(FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
             var includeLabel = ShowLabel(field);
             var validationResult = field.OwningForm.ValidationResult;
 
-            sb.AppendFormat("<div id=\"form-field-{0}\" class=\"control-group control-{1} {2} {3} \"", field.Name, field.InputElementType.ElementName, WriteErrorClass(field.Name, validationResult), field.IsRequired ? "required" : String.Empty);
+            sb.AppendFormat("<div id=\"form-field-{0}\" class=\"" + RendererImplementation.ParentGroupClass + "-group control-{1} {2} {3} \"", field.Name, field.InputElementType.ElementName, WriteErrorClass(field.Name, validationResult), field.IsRequired ? "required" : String.Empty);
 
             DependencyAttributeFor(field, sb);
 
@@ -82,7 +92,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 }
             }
 
-            sb.Append("<div class=\"controls\">");
+            sb.Append("<div class=\"" + RendererImplementation.FieldGroupClass + "\">");
 
             if (field.InputElementType is CheckboxInputElementAttribute && field.ValueType == typeof(bool))
             {
@@ -118,7 +128,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return true;
         }
 
-        private static void WriteField(FormField field, StringBuilder sb, IDictionary<string, object> htmlAttributes)
+        private static void WriteField(FormField field, StringBuilder sb, IDictionary<string, string> htmlAttributes)
         {
             var str = field.InputElementType.GetHtmlString(field, htmlAttributes);
 
@@ -245,7 +255,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public static string WriteErrorClass(string name, IEnumerable<FormValidationRule> validationResult)
         {
-            return validationResult.Any(el => el.AffectedFormIds.Contains(name)) ? "error" : String.Empty;
+            return validationResult.Any(el => el.AffectedFormIds.Contains(name)) ? RendererImplementation.ErrorClass : String.Empty;
         }
 
         public static string GetValue(FormField field)
@@ -282,95 +292,6 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         public static string GetLocalized(string text)
         {
             return text.Contains("${") ? StringResourceSystemFacade.ParseString(text) : text;
-        }
-
-        public static Dictionary<string, IList<string>> MapHtmlTagAttributes(FormField field)
-        {
-            return MapHtmlTagAttributes(field, null);
-        }
-
-        public static Dictionary<string, IList<string>> MapHtmlTagAttributes(FormField field, IDictionary<string, object> htmlAttributes)
-        {
-            var htmlAttributesDictionary = new Dictionary<string, IList<string>>()
-            {
-                { "class", new List<string>() }
-            };
-
-            var htmlElementAttributes = field.Attributes.OfType<HtmlTagAttribute>();
-
-            foreach (var attr in htmlElementAttributes)
-            {
-                IList<string> list;
-                if (!htmlAttributesDictionary.TryGetValue(attr.Attribute, out list))
-                {
-                    htmlAttributesDictionary.Add(attr.Attribute, new List<string>());
-                }
-
-                htmlAttributesDictionary[attr.Attribute].Add(attr.Value);
-            }
-
-            if (htmlAttributes != null && htmlAttributes.ContainsKey("class"))
-            {
-                var list = htmlAttributesDictionary["class"];
-                var val = ((string)htmlAttributes["class"]).Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (var itm in val)
-                {
-                    list.Add(itm);
-                }
-            }
-
-            return htmlAttributesDictionary;
-        }
-
-        public static void RenderReadOnlyAttribute(StringBuilder sb, FormField field)
-        {
-            if (field.IsReadOnly)
-            {
-                sb.Append(" readonly=\"readonly\"");
-            }
-        }
-
-        public static void RenderMaxLengthAttribute(StringBuilder sb, FormField field)
-        {
-            var maxLengthAttribute = field.ValidationAttributes.OfType<MaxFieldLengthAttribute>().FirstOrDefault();
-            if (maxLengthAttribute == null)
-            {
-                return;
-            }
-
-            sb.AppendFormat(" maxlength=\"{0}\"", maxLengthAttribute.Length);
-        }
-
-        public static void RenderExtraHtmlTags(StringBuilder sb, FormField field, IDictionary<string, object> htmlAttributes)
-        {
-            var htmlAttributesDictionary = MapHtmlTagAttributes(field, htmlAttributes);
-
-            RenderExtraHtmlTags(sb, htmlAttributesDictionary);
-        }
-
-        public static void RenderExtraHtmlTags(StringBuilder sb, Dictionary<string, IList<string>> htmlAttributesDictionary)
-        {
-            foreach (var kvp in htmlAttributesDictionary)
-            {
-                sb.Append(" " + kvp.Key + "=\"");
-
-                for (int i = 0; i < kvp.Value.Count; i++)
-                {
-                    var itm = kvp.Value[i];
-
-                    sb.Append(itm);
-
-                    if ((i + 1) < kvp.Value.Count)
-                    {
-                        var seperator = kvp.Key == "accept" ? "," : " ";
-
-                        sb.Append(seperator);
-                    }
-                }
-
-                sb.Append("\"");
-            }
         }
     }
 }

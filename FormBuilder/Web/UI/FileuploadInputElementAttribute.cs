@@ -14,10 +14,10 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             get { return "file"; }
         }
 
-        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, object> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
-            var htmlAttributesDictionary = FormRenderer.MapHtmlTagAttributes(field, htmlAttributes);
+            var htmlAttributesDictionary = MapHtmlTagAttributes(field, htmlAttributes);
 
             sb.AppendFormat("<input type=\"{0}\" name=\"{1}\" id=\"{2}\"",
                         ElementName,
@@ -35,9 +35,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 htmlAttributesDictionary.Add("accept", fileMimeTypeValidatorAttr.MimeTypes);
             }
 
-            FormRenderer.RenderReadOnlyAttribute(sb, field);
-            FormRenderer.RenderMaxLengthAttribute(sb, field);
-            FormRenderer.RenderExtraHtmlTags(sb, htmlAttributesDictionary);
+            RenderReadOnlyAttribute(sb, field);
+            RenderMaxLengthAttribute(sb, field);
+            RenderExtraHtmlTags(sb, htmlAttributesDictionary);
 
             sb.Append(" />");
 

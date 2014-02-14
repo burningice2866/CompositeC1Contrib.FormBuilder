@@ -87,7 +87,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         protected IHtmlString WriteAllFields()
         {
             var model = RenderingContext.RenderingModel;
-            var renderingMarkup = FormModelsFacade.GetRenderingLayout(model.Name);
+            var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(model.Name);
 
             foreach (var field in model.Fields.Where(f => f.Label != null))
             {

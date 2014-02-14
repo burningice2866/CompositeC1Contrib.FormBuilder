@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:f="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0">
   <cms:bindings>
+    <cms:binding name="HasCustomRenderingLayout" type="System.Boolean" />
     <cms:binding name="FieldName" type="System.String" />
     <cms:binding name="InputElementType" type="System.String" />
+    <cms:binding name="AddFieldToRenderingLayout" type="System.Boolean" />
   </cms:bindings>
 
   <cms:layout label="Add a new form field">
@@ -22,6 +24,18 @@
           <cms:bind source="InputElementType" />
         </KeySelector.Selected>
       </KeySelector>
+
+      <f:BooleanCheck>
+        <f:BooleanCheck.CheckValue>
+          <cms:read source="HasCustomRenderingLayout" />
+        </f:BooleanCheck.CheckValue>
+
+        <f:BooleanCheck.WhenTrue>
+          <CheckBox Label="Add field to rendering layout">
+            <cms:bind source="AddFieldToRenderingLayout" />
+          </CheckBox>
+        </f:BooleanCheck.WhenTrue>
+      </f:BooleanCheck>
     </FieldGroup>
   </cms:layout>
 </cms:formdefinition>

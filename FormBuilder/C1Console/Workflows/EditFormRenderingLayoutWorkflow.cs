@@ -21,7 +21,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             if (!BindingExist("Title"))
             {
                 var formToken = (FormInstanceEntityToken)EntityToken;
-                var renderingMarkup = FormModelsFacade.GetRenderingLayout(formToken.FormName);
+                var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(formToken.FormName);
 
                 Bindings.Add("Title", formToken.FormName +" rendering layout");
                 Bindings.Add("RenderingMarkup", renderingMarkup.ToString());
@@ -33,7 +33,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var formToken = (FormInstanceEntityToken)EntityToken;
             var renderingMarkup = GetBinding<string>("RenderingMarkup");
 
-            FormModelsFacade.SaveRenderingLayout(formToken.FormName, XhtmlDocument.Parse(renderingMarkup));
+            RenderingLayoutFacade.SaveRenderingLayout(formToken.FormName, XhtmlDocument.Parse(renderingMarkup));
 
             SetSaveStatus(true);
         }

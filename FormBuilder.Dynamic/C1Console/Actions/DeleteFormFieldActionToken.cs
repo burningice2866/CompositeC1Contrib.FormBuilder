@@ -4,6 +4,7 @@ using System.Linq;
 
 using Composite.C1Console.Actions;
 using Composite.C1Console.Security;
+using Composite.Core.Xml;
 
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 
@@ -12,7 +13,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
     [ActionExecutor(typeof(DeleteFormFieldActionExecutor))]
     public class DeleteFormFieldActionToken : ActionToken
     {
-        private static IEnumerable<PermissionType> _permissionTypes = new PermissionType[] { PermissionType.Administrate };
+        private static readonly IEnumerable<PermissionType> _permissionTypes = new[] { PermissionType.Administrate };
 
         public override IEnumerable<PermissionType> PermissionTypes
         {
@@ -39,6 +40,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
             var field = definition.Model.Fields.Single(f => f.Name == fieldToken.FieldName);
 
             definition.Model.Fields.Remove(field);
+
+            if (RenderingLayoutFacade.HasCustomRenderingLayout(fieldToken.FormName))
+            {
+                var layout = RenderingLayoutFacade.GetRenderingLayout(fieldToken.FormName);
+                var fieldElement = layout.Body.Descendants().SingleOrDefault(el => el.Name == Namespaces.Xhtml + "p" && el.Value.Trim() == "%" + field.Name + "%");
+
+                if (fieldElement != null)
+                {
+                    fieldElement.Remove();
+                }
+
+                RenderingLayoutFacade.SaveRenderingLayout(fieldToken.FormName, layout);
+            }
 
             DynamicFormsFacade.SaveForm(definition);
 

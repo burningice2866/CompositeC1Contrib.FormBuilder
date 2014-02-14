@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 
 using Composite.C1Console.Workflow;
+using Composite.Core.Xml;
 
 using CompositeC1Contrib.FormBuilder.Configuration;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
@@ -20,14 +22,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var config = FormBuilderConfiguration.GetSection();
             var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
-            
+
             InputElementTypes = plugin.InputElementHandlers.ToDictionary(e => e.ElementType.GetType().AssemblyQualifiedName, e => e.Name);
         }
 
-        public AddFormFieldWorkflow()
-            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddFormFieldWorkflow.xml")
-        {
-        }
+        public AddFormFieldWorkflow() : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddFormFieldWorkflow.xml") { }
 
         public static Dictionary<string, string> GetInputElementTypes()
         {
@@ -38,8 +37,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             if (!BindingExist("FieldName"))
             {
+                var folderToken = (FormFolderEntityToken)EntityToken;
+
+                Bindings.Add("HasCustomRenderingLayout", RenderingLayoutFacade.HasCustomRenderingLayout(folderToken.FormName));
+
                 Bindings.Add("FieldName", String.Empty);
-                Bindings.Add("InputElementType", typeof(TextboxInputElementAttribute).AssemblyQualifiedName);
+                Bindings.Add("InputElementType", InputElementTypes.First().Key);
+                Bindings.Add("AddFieldToRenderingLayout", true);
             }
         }
 
@@ -48,6 +52,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var folderToken = (FormFolderEntityToken)EntityToken;
 
             var fieldName = GetBinding<string>("FieldName");
+            var addFieldToRenderingLayout = GetBinding<bool>("AddFieldToRenderingLayout");
             var definition = DynamicFormsFacade.GetFormByName(folderToken.FormName);
             var field = new FormField(definition.Model, fieldName, typeof(string), new List<Attribute>());
 
@@ -58,6 +63,15 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             definition.Model.Fields.Add(field);
 
             DynamicFormsFacade.SaveForm(definition);
+
+            if (RenderingLayoutFacade.HasCustomRenderingLayout(folderToken.FormName) && addFieldToRenderingLayout)
+            {
+                var layut = RenderingLayoutFacade.GetRenderingLayout(folderToken.FormName);
+
+                layut.Body.Add(new XElement(Namespaces.Xhtml + "p", String.Format("%{0}%", fieldName)));
+
+                RenderingLayoutFacade.SaveRenderingLayout(folderToken.FormName, layut);
+            }
 
             var fieldToken = new FormFieldEntityToken(folderToken.FormName, fieldName);
             var workflowToken = new WorkflowActionToken(typeof(EditFormFieldWorkflow));

@@ -118,6 +118,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
             var field = definition.Model.Fields.Single(f => f.Name == fieldToken.FieldName);
 
+            if (field.Name != fieldName && RenderingLayoutFacade.HasCustomRenderingLayout(fieldToken.FormName))
+            {
+                var layout = RenderingLayoutFacade.GetRenderingLayout(fieldToken.FormName);
+                var fieldElement = layout.Body.Descendants().SingleOrDefault(el => el.Name == Namespaces.Xhtml + "p" && el.Value.Trim() == "%" + field.Name + "%");
+                
+                if (fieldElement != null)
+                {
+                    fieldElement.Value = String.Format("%{0}%", fieldName);
+                }
+
+                RenderingLayoutFacade.SaveRenderingLayout(fieldToken.FormName, layout);
+            }
+
             field.Name = fieldName;
             field.IsReadOnly = isReadOnly;
 

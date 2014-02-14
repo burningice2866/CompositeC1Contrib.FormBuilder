@@ -7,7 +7,6 @@ using System.Text.RegularExpressions;
 using System.Web;
 
 using Composite;
-
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Validation;
 using CompositeC1Contrib.FormBuilder.Web.UI;
@@ -34,7 +33,7 @@ namespace CompositeC1Contrib.FormBuilder
             {
                 var forceHttpsAttr = Attributes.OfType<ForceHttpsConnectionAttribute>().SingleOrDefault();
 
-                return forceHttpsAttr != null && forceHttpsAttr.ForceHttps;
+                return forceHttpsAttr != null;
             }
         }
 
@@ -119,6 +118,20 @@ namespace CompositeC1Contrib.FormBuilder
                 var result = GetFormValidationResult(list, false);
 
                 validationList.AddRange(result);
+            }
+
+            var requiresCaptchaAttr = Attributes.OfType<RequiresCaptchaAttribute>().SingleOrDefault();
+            if (requiresCaptchaAttr != null)
+            {
+                var form = HttpContext.Current.Request.Form;
+                var encrypted = form[RequiresCaptchaAttribute.HiddenFieldName];
+                var postedValue = form[RequiresCaptchaAttribute.InputName];
+
+                var isValid = RequiresCaptchaAttribute.IsValid(encrypted, postedValue);
+                if (!isValid)
+                {
+                    validationList.Add(new FormValidationRule(new[] { RequiresCaptchaAttribute.InputName }, Localization.Captcha_Error));
+                }
             }
 
             ValidationResult = validationList;

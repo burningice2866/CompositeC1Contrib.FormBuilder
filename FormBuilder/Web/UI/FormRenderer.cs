@@ -43,9 +43,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             {
                 sb.Append("<div class=\"" + RendererImplementation.ErrorNotificationClass + "\">");
 
-                if (!String.IsNullOrEmpty(Localization.Validation_ErrorNotificationTop))
+                if (!String.IsNullOrEmpty(Localization.Validation_ErrorNotification_Header))
                 {
-                    sb.Append("<p>" + HttpUtility.HtmlEncode(Localization.Validation_ErrorNotificationTop) + "</p>");
+                    sb.Append("<p>" + HttpUtility.HtmlEncode(Localization.Validation_ErrorNotification_Header) + "</p>");
                 }
 
                 sb.Append("<ul>");
@@ -57,9 +57,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
                 sb.Append("</ul>");
 
-                if (!String.IsNullOrEmpty(Localization.Validation_ErrorNotificationBottom))
+                if (!String.IsNullOrEmpty(Localization.Validation_ErrorNotification_Footer))
                 {
-                    sb.Append("<p>" + HttpUtility.HtmlEncode(Localization.Validation_ErrorNotificationBottom) + "</p>");
+                    sb.Append("<p>" + HttpUtility.HtmlEncode(Localization.Validation_ErrorNotification_Footer) + "</p>");
                 }
 
                 sb.Append("</div>");
@@ -68,17 +68,31 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new HtmlString(sb.ToString());
         }
 
+        public static void WriteRowStart(string name, string elementName, string errorClass, bool isRequired, Action<StringBuilder> extraAttributesRenderer, StringBuilder sb)
+        {
+            sb.AppendFormat("<div id=\"form-field-{0}\" class=\"" + RendererImplementation.ParentGroupClass + "-group control-{1} {2} {3} \"", name, elementName, errorClass, isRequired ? "required" : String.Empty);
+
+            if (extraAttributesRenderer != null)
+            {
+                extraAttributesRenderer(sb);
+            }
+
+            sb.Append(">");
+        }
+
+        public static void WriteRowEnd(StringBuilder sb)
+        {
+            sb.Append("</div>");
+        }
+
         private static IHtmlString WriteRow(FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
             var includeLabel = ShowLabel(field);
             var validationResult = field.OwningForm.ValidationResult;
 
-            sb.AppendFormat("<div id=\"form-field-{0}\" class=\"" + RendererImplementation.ParentGroupClass + "-group control-{1} {2} {3} \"", field.Name, field.InputElementType.ElementName, WriteErrorClass(field.Name, validationResult), field.IsRequired ? "required" : String.Empty);
-
-            DependencyAttributeFor(field, sb);
-
-            sb.Append(">");
+            WriteRowStart(field.Name, field.InputElementType.ElementName, WriteErrorClass(field.Name, validationResult), field.IsRequired,
+                builder => DependencyAttributeFor(field, builder), sb);
 
             if (!(field.InputElementType is CheckboxInputElementAttribute && field.ValueType == typeof(bool)))
             {
@@ -92,7 +106,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 }
             }
 
-            sb.Append("<div class=\"" + RendererImplementation.FieldGroupClass + "\">");
+            WriteFieldGroupStart(sb);
 
             if (field.InputElementType is CheckboxInputElementAttribute && field.ValueType == typeof(bool))
             {
@@ -108,9 +122,20 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 sb.Append("</label>");
             }
 
-            sb.Append("</div></div>");
+            WriteFieldGroupEnd(sb);
+            WriteRowEnd(sb);
 
             return new HtmlString(sb.ToString());
+        }
+
+        public static void WriteFieldGroupStart(StringBuilder sb)
+        {
+            sb.Append("<div class=\"" + RendererImplementation.FieldGroupClass + "\">");
+        }
+
+        public static void WriteFieldGroupEnd(StringBuilder sb)
+        {
+            sb.Append("</div>");
         }
 
         private static bool ShowLabel(FormField field)
@@ -128,24 +153,34 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return true;
         }
 
+        public static void WriteFieldHelpStart(StringBuilder sb)
+        {
+            sb.Append("<div class=\"input-append\">");
+        }
+
+        public static void WriteFieldHelpEnd(string help, StringBuilder sb)
+        {
+            sb.Append("<div class=\"info-block\">");
+            sb.Append("<span class=\"add-on info-icon\">i</span>");
+            sb.AppendFormat("<div class=\"info-msg\">{0}</div>", help);
+            sb.Append("</div>");
+            sb.Append("</div>");
+        }
+
         private static void WriteField(FormField field, StringBuilder sb, IDictionary<string, string> htmlAttributes)
         {
             var str = field.InputElementType.GetHtmlString(field, htmlAttributes);
 
             if (!String.IsNullOrWhiteSpace(field.Help))
             {
-                sb.Append("<div class=\"input-append\">");
+                WriteFieldHelpStart(sb);
             }
 
             sb.Append(str);
 
             if (!String.IsNullOrWhiteSpace(field.Help))
             {
-                sb.Append("<div class=\"info-block\">");
-                sb.Append("<span class=\"add-on info-icon\">i</span>");
-                sb.AppendFormat("<div class=\"info-msg\">{0}</div>", field.Help);
-                sb.Append("</div>");
-                sb.Append("</div>");
+                WriteFieldHelpEnd(field.Help, sb);
             }
         }
 
@@ -208,6 +243,16 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return obj.ToString() == value;
         }
 
+        public static void WriteLabelStart(bool hide, string id, StringBuilder sb)
+        {
+            sb.AppendFormat("<label class=\"control-label {0}\" for=\"{1}\">", hide ? "hide-text " : String.Empty, id);
+        }
+
+        public static void WriteLabelEnd(StringBuilder sb)
+        {
+            sb.Append("</label>");
+        }
+
         private static void WriteLabel(FormField field, StringBuilder sb)
         {
             var hide = field.OwningForm.Options.HideLabels;
@@ -216,11 +261,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 hide = false;
             }
 
-            sb.AppendFormat("<label class=\"control-label {0}\" for=\"{1}\">", hide ? "hide-text " : String.Empty, field.Id);
-
+            WriteLabelStart(hide, field.Id, sb);
             WriteLabelContent(field, sb);
-
-            sb.Append("</label>");
+            WriteLabelEnd(sb);
         }
 
         private static void WritePropertyHeading(FormField field, StringBuilder sb)
@@ -232,25 +275,30 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             sb.Append("</p>");
         }
 
-        private static void WriteLabelContent(FormField field, StringBuilder sb)
+        public static void WriteLabelContent(bool isRequired, string label, string link, bool openLinkInNewWindow, StringBuilder sb)
         {
-            if (field.IsRequired)
+            if (isRequired)
             {
                 sb.Append("<span class=\"required\">*</span>");
             }
 
-            if (!String.IsNullOrEmpty(field.Label.Link))
+            if (!String.IsNullOrEmpty(link))
             {
                 sb.AppendFormat("<a href=\"{0}\" title=\"{1}\" {2}>{3}</a>",
-                    HttpUtility.HtmlAttributeEncode(field.Label.Link),
-                    HttpUtility.HtmlAttributeEncode(field.Label.Label),
-                    field.Label.OpenLinkInNewWindow ? "target=\"_blank\"" : String.Empty,
-                    HttpUtility.HtmlEncode(field.Label.Label));
+                    HttpUtility.HtmlAttributeEncode(link),
+                    HttpUtility.HtmlAttributeEncode(label),
+                    openLinkInNewWindow ? "target=\"_blank\"" : String.Empty,
+                    HttpUtility.HtmlEncode(label));
             }
             else
             {
-                sb.Append(HttpUtility.HtmlEncode(field.Label.Label));
+                sb.Append(HttpUtility.HtmlEncode(label));
             }
+        }
+
+        private static void WriteLabelContent(FormField field, StringBuilder sb)
+        {
+            WriteLabelContent(field.IsRequired, field.Label.Label, field.Label.Link, field.Label.OpenLinkInNewWindow, sb);
         }
 
         public static string WriteErrorClass(string name, IEnumerable<FormValidationRule> validationResult)
@@ -292,6 +340,49 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         public static string GetLocalized(string text)
         {
             return text.Contains("${") ? StringResourceSystemFacade.ParseString(text) : text;
+        }
+
+        public static IHtmlString Captcha(FormModel model)
+        {
+            var requiresCaptchaAttr = model.Attributes.OfType<RequiresCaptchaAttribute>().SingleOrDefault();
+            if (requiresCaptchaAttr == null)
+            {
+                return null;
+            }
+
+            var sb = new StringBuilder();
+
+            WriteRowStart(RequiresCaptchaAttribute.InputName, "captcha", WriteErrorClass(RequiresCaptchaAttribute.InputName, model.ValidationResult), true, null, sb);
+
+            WriteLabelStart(false, RequiresCaptchaAttribute.InputName, sb);
+            WriteLabelContent(true, Localization.Captcha_Label, String.Empty, false, sb);
+            WriteLabelEnd(sb);
+
+            WriteFieldGroupStart(sb);
+
+            if (!String.IsNullOrEmpty(Localization.Captcha_Help))
+            {
+                WriteFieldHelpStart(sb);
+            }
+
+            sb.AppendFormat("<div class=\"captcha-input\">");
+            sb.AppendFormat("<input name=\"{0}\" id=\"{0}\" type=\"text\"  />", RequiresCaptchaAttribute.InputName);
+            sb.AppendFormat("</div>");
+
+            sb.AppendFormat("<div class=\"captcha-img\">");
+            sb.AppendFormat("<img src=\"/Renderers/Captcha.ashx?value={0}\" />", requiresCaptchaAttr.EncryptedValue);
+            sb.AppendFormat("</div>");
+
+
+            if (!String.IsNullOrEmpty(Localization.Captcha_Help))
+            {
+                WriteFieldHelpEnd(Localization.Captcha_Help, sb);
+            }
+
+            WriteFieldGroupEnd(sb);
+            WriteRowEnd(sb);
+
+            return new HtmlString(sb.ToString());
         }
     }
 }

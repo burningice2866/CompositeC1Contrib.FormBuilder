@@ -11,8 +11,8 @@ else
     using (BeginForm(new { @class = "form-horizontal" }))
     {
         @WriteErrors()
-
         @WriteAllFields()
+        @WriteCaptcha()
 
         <div class="control-group submit-buttons">
             <div class="controls">

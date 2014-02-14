@@ -18,16 +18,18 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             _page = page;
 
-            var model1 = model;
             var htmlAttributesDictionary = new Dictionary<string, IList<string>> 
             {
-                {"class", new List<string>()}
+                {
+                    "class", new List<string> 
+                    {
+                        "form",
+                        "formbuilder-" + model.Name.ToLowerInvariant()
+                    }
+                }
             };
 
-            htmlAttributesDictionary["class"].Add("form");
-            htmlAttributesDictionary["class"].Add("formbuilder-" + model1.Name.ToLowerInvariant());
-
-            var htmlElementAttributes = model1.Attributes.OfType<HtmlTagAttribute>();
+            var htmlElementAttributes = model.Attributes.OfType<HtmlTagAttribute>();
             var action = String.Empty;
 
             var dictionary = Functions.ObjectToDictionary(htmlAttributes);
@@ -68,24 +70,35 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 page.WriteLiteral("\"");
             }
 
-            if (model1.HasFileUpload)
+            if (model.HasFileUpload)
             {
                 page.WriteLiteral(" enctype=\"multipart/form-data\"");
             }
 
             page.WriteLiteral(">");
 
-            page.WriteLiteral("<input type=\"hidden\" name=\"__type\" value=\"" + HttpUtility.HtmlAttributeEncode(model1.Name) + "\" />");
+            page.WriteLiteral("<input type=\"hidden\" name=\"__type\" value=\"" + HttpUtility.HtmlAttributeEncode(model.Name) + "\" />");
 
-            foreach (var field in model1.Fields.Where(f => f.Label == null))
+            foreach (var field in model.Fields.Where(f => f.Label == null))
             {
-                var s = String.Format("<input type=\"hidden\" name=\"{0}\" id=\"{1}\" value=\"{2}\" />",
-                    HttpUtility.HtmlAttributeEncode(field.Name),
-                    HttpUtility.HtmlAttributeEncode(field.Id),
-                    field.Value == null ? String.Empty : HttpUtility.HtmlAttributeEncode(FormRenderer.GetValue(field)));
-
-                page.WriteLiteral(s);
+                RenderHiddenField(field.Name, field.Id, field.Value == null ? String.Empty : FormRenderer.GetValue(field));
             }
+
+            var requiresCaptchaAttr = model.Attributes.OfType<RequiresCaptchaAttribute>().SingleOrDefault();
+            if (requiresCaptchaAttr != null)
+            {
+                RenderHiddenField(RequiresCaptchaAttribute.HiddenFieldName, RequiresCaptchaAttribute.HiddenFieldName, requiresCaptchaAttr.EncryptedValue);
+            }
+        }
+
+        private void RenderHiddenField(string name, string id, string value)
+        {
+            var s = String.Format("<input type=\"hidden\" name=\"{0}\" id=\"{1}\" value=\"{2}\" />",
+                    HttpUtility.HtmlAttributeEncode(name),
+                    HttpUtility.HtmlAttributeEncode(id),
+                    HttpUtility.HtmlAttributeEncode(value));
+
+            _page.WriteLiteral(s);
         }
 
         protected virtual void Dispose(bool disposing)

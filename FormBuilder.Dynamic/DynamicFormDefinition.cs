@@ -129,6 +129,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 definition.FormExecutor = formExecutorElement.Attribute("functionName").Value;
             }
 
+            var forceHttpsConnectionElement = metaData.Element("forceHttpsConnection");
+            if (forceHttpsConnectionElement != null)
+            {
+                definition.Model.Attributes.Add(new ForceHttpsConnectionAttribute());
+            }
+
+            var requiresCaptchaElement = metaData.Element("requiresCaptcha");
+            if (requiresCaptchaElement != null)
+            {
+                definition.Model.Attributes.Add(new RequiresCaptchaAttribute());
+            }
+
             var layoutElement = metaData.Element("Layout");
             if (layoutElement != null)
             {

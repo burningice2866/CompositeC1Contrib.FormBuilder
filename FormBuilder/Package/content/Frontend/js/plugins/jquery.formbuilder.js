@@ -26,20 +26,25 @@
         }
 
         return field.val();
-    }
+    };
 
     var dependecyFunction = function () {
-        $('[data-dependency]').each(function (ix, itm) {
-            var $itm = $(itm);
-            var json = $itm.data('dependency');
-            var show = showFunction(json);
+        // We loop this function twice so controls that are depenent on eachother on the same "level" gets 
+        // shown correctly. If we don't do this, we risk a control not showing up because its depentent on 
+        // the next control, which is hidden during the first run.
+        for (var i = 0; i < 2; i++) {
+            $('[data-dependency]').each(function (ix, itm) {
+                var $itm = $(itm);
+                var json = $itm.data('dependency');
+                var show = showFunction(json);
 
-            if (!show) {
-                $itm.hide();
-            } else {
-                $itm.show();
-            }
-        });
+                if (!show) {
+                    $itm.hide();
+                } else {
+                    $itm.show();
+                }
+            });
+        }
     };
 
     var isMatch = function (field, itm) {
@@ -47,18 +52,18 @@
         if (fieldValue) {
             var regexp = new RegExp('^' + itm + '$', 'i');
 
-            return regexp.test(fieldValue)
+            return regexp.test(fieldValue);
         }
 
         return false;
-    }
+    };
 
     var showFunction = function (json) {
         var show = false;
 
         $.each(json, function (ix, itm) {
             var field = itm.field;
-            var fieldValid = false
+            var fieldValid = false;
 
             $.each(itm.value, function (ix, itm) {
                 fieldValid = fieldValid || isMatch(field, itm);

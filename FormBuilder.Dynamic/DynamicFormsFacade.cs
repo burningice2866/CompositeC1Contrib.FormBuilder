@@ -78,6 +78,16 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     new XAttribute("functionName", definition.FormExecutor)));
             }
 
+            if (model.Attributes.OfType<ForceHttpsConnectionAttribute>().Any())
+            {
+                metaData.Add(new XElement("forceHttpsConnection"));
+            }
+
+            if (model.Attributes.OfType<RequiresCaptchaAttribute>().Any())
+            {
+                metaData.Add(new XElement("requiresCaptcha"));
+            }
+
             metaData.Add(new XElement("Layout",
                     new XAttribute("submitButtonLabel", definition.Model.SubmitButtonLabel),
                     new XElement("introText", definition.IntroText.ToString()),

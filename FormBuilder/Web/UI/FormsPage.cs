@@ -117,6 +117,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new HtmlString(renderingMarkup.Body.ToString());
         }
 
+        protected IHtmlString WriteCaptcha()
+        {
+            return FormRenderer.Captcha(RenderingModel);
+        }
+
         protected bool HasDependencyChecks()
         {
             return RenderingContext.RenderingModel.Fields.Select(f => f.DependencyAttributes).Any();

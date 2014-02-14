@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Composite.C1Console.Workflow;
@@ -24,6 +25,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 var definition = DynamicFormsFacade.GetFormByName(formToken.FormName);
 
                 Bindings.Add("FormName", formToken.FormName);
+                Bindings.Add("RequiresCaptcha", definition.Model.Attributes.OfType<RequiresCaptchaAttribute>().Any());
+                Bindings.Add("ForceHttpConnection", definition.Model.Attributes.OfType<ForceHttpsConnectionAttribute>().Any());
                 Bindings.Add("SubmitButtonLabel", definition.Model.SubmitButtonLabel);
                 Bindings.Add("IntroText", definition.IntroText.ToString());
                 Bindings.Add("SuccessResponse", definition.SuccessResponse.ToString());
@@ -52,6 +55,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 definition.Model.Attributes.Remove(submitButtonLabelAttr);
             }
 
+            SwitchAttribute<RequiresCaptchaAttribute>("RequiresCaptcha", definition.Model.Attributes);
+            SwitchAttribute<ForceHttpsConnectionAttribute>("ForceHttpConnection", definition.Model.Attributes);
+
             if (!String.IsNullOrEmpty(submitButtonLabel))
             {
                 submitButtonLabelAttr = new SubmitButtonLabelAttribute(submitButtonLabel);
@@ -63,7 +69,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 var newDefinition = DynamicFormsFacade.CopyFormByName(formToken.FormName, formName);
 
                 DynamicFormsFacade.SaveForm(newDefinition);
-
                 DynamicFormsFacade.DeleteModel(definition);
             }
             else
@@ -99,6 +104,28 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
 
             return true;
+        }
+
+        private void SwitchAttribute<T>(string bindingName, IList<Attribute> attributes) where T : Attribute, new()
+        {
+            var flip = GetBinding<bool>(bindingName);
+            var attribute = attributes.OfType<T>().SingleOrDefault();
+
+            if (flip)
+            {
+                if (attribute == null)
+                {
+                    attribute = new T();
+                    attributes.Add(attribute);
+                }
+            }
+            else
+            {
+                if (attribute != null)
+                {
+                    attributes.Remove(attribute);
+                }
+            }
         }
     }
 }

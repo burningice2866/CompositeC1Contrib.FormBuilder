@@ -1,4 +1,4 @@
-﻿(function ($, document, undefined) {
+﻿(function ($, window, document, undefined) {
     var getFormFieldValue = function (fieldName) {
         var field = $('[name="' + fieldName + '"]');
 
@@ -72,7 +72,7 @@
             if (!fieldValid) {
                 show = false;
 
-                return false;
+                return show;
             }
 
             show = fieldValid;
@@ -85,5 +85,48 @@
         $(':input').change(dependecyFunction);
 
         dependecyFunction();
+
+        var forms = $('form[class^="form formbuilder-"]');
+        var btnSelector = 'input[type=submit]';
+
+        if (window.Ladda) {
+            $.each(forms, function (ix, form) {
+                var submitButtons = $(btnSelector, form);
+
+                $.each(submitButtons, function (ix, btn) {
+                    btn = $(btn);
+                    var val = btn.val();
+                    var html = '<button class="ladda-button btn btn-primary" data-style="expand-right" type="submit" name="SubmitForm" value="' + val + '">' + val + '</button>';
+
+                    btn.replaceWith(html);
+                });
+            });
+
+            btnSelector = 'button[type=submit]';
+        }
+
+        forms.on('click', btnSelector, function () {
+            var btn = $(this);
+            var form = btn.parents('form');
+            var submitButtons = $(btnSelector, form);
+
+            submitButtons.removeAttr('clicked');
+            btn.attr('clicked', true);
+        });
+
+        forms.on('submit', function () {
+            var form = $(this);
+            var clickedButton = $(btnSelector + '[clicked=true]', form);
+
+            clickedButton.attr('disabled', true);
+
+            if (window.Ladda) {
+                setTimeout(function () {
+                    var l = window.Ladda.create(clickedButton[0]);
+
+                    l.start();
+                }, 500);
+            }
+        });
     });
-})(jQuery, document);
+})(jQuery, window, document);

@@ -154,10 +154,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 {
                     definition.IntroText = XhtmlDocument.Parse(introText.Value);
                 }
+                else
+                {
+                    definition.IntroText = new XhtmlDocument();
+                }
 
                 if (successResponse != null)
                 {
                     definition.SuccessResponse = XhtmlDocument.Parse(successResponse.Value);
+                }
+                else
+                {
+                    definition.SuccessResponse = new XhtmlDocument();
                 }
             }
 

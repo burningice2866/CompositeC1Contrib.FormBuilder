@@ -33,19 +33,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 
             return new FormValidationRule(new[] { field.Name }, Message)
             {
-                Rule = () =>
-                {
-                    foreach (var f in value)
-                    {
-                        var mimeType = f.ContentType;
-                        if (!MimeTypes.Contains(mimeType))
-                        {
-                            return false;
-                        }
-                    }
-
-                    return true;
-                }
+                Rule = () => value.Select(f => f.ContentType).All(mimeType => MimeTypes.Contains(mimeType))
             };
         }
     }

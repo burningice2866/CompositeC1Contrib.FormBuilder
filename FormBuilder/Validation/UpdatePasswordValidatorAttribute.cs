@@ -6,8 +6,8 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class UpdatePasswordValidatorAttribute : FormValidationAttribute
     {
-        private string _newPasswordField;
-        private string _repeatNewPasswordField;
+        private readonly string _newPasswordField;
+        private readonly string _repeatNewPasswordField;
 
         public UpdatePasswordValidatorAttribute(string message, string newPasswordField, string repeatNewPasswordField)
             : base(message)
@@ -20,7 +20,6 @@ namespace CompositeC1Contrib.FormBuilder.Validation
         {
             var value = (string)field.Value;
             var newPassword = (string)field.OwningForm.Fields.Single(f => f.Name == _newPasswordField).Value;
-            var repeatNewPassword = (string)field.OwningForm.Fields.Single(f => f.Name == _repeatNewPasswordField).Value;
 
             return new FormValidationRule(new[] { field.Name, _newPasswordField, _repeatNewPasswordField }, Message)
             {
@@ -33,12 +32,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
                         return Membership.ValidateUser(user.UserName, value);
                     }
 
-                    if (!String.IsNullOrEmpty(value))
-                    {
-                        return field.OwningForm.IsValid(new[] { _newPasswordField, _repeatNewPasswordField });
-                    }
-
-                    return true;
+                    return String.IsNullOrEmpty(value) || field.OwningForm.IsValid(new[] { _newPasswordField, _repeatNewPasswordField });
                 }
             };
         }

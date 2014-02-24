@@ -5,7 +5,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class CredentialsValidatorAttribute : FormValidationAttribute
     {
-        private string _passwordField;
+        private readonly string _passwordField;
 
         public CredentialsValidatorAttribute(string message, string passwordField)
             : base(message)
@@ -23,12 +23,8 @@ namespace CompositeC1Contrib.FormBuilder.Validation
                 Rule = () =>
                 {
                     var userName = Membership.GetUserNameByEmail(value);
-                    if (userName != null)
-                    {
-                        return Membership.ValidateUser(userName, password);
-                    }
-
-                    return false;
+                    
+                    return userName != null && Membership.ValidateUser(userName, password);
                 }
             };
         }

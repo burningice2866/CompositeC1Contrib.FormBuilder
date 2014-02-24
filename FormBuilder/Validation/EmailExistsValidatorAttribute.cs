@@ -5,7 +5,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class EmailExistsValidatorAttribute : FormValidationAttribute
     {
-        private bool _onlyApproved = true;
+        private readonly bool _onlyApproved = true;
 
         public EmailExistsValidatorAttribute(string message) : this(message, true) { }
 
@@ -21,18 +21,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 
             return new FormValidationRule(new[] { field.Name }, Message)
             {
-                Rule = () =>
-                {
-                    return Membership.FindUsersByEmail(value).Cast<MembershipUser>().Where(u =>
-                    {
-                        if (_onlyApproved)
-                        {
-                            return u.IsApproved;
-                        }
-
-                        return true;
-                    }).Any();
-                }
+                Rule = () => Membership.FindUsersByEmail(value).Cast<MembershipUser>().Any(u => !_onlyApproved || u.IsApproved)
             };
         }
     }

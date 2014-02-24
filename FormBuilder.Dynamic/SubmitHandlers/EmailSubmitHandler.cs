@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Mail;
 
 using Composite.Core.WebClient;
 using Composite.Core.WebClient.Renderings.Page;
 using Composite.Core.Xml;
+using Composite.Data;
 using Composite.Functions;
+
+using CompositeC1Contrib.Email;
+using CompositeC1Contrib.Email.Data.Types;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
 {
@@ -25,51 +30,65 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
 
         public override void Submit(FormModel model)
         {
-            var mailMessage = new MailMessage(ResolveText(From, model), ResolveText(To, model))
+            using (var data = new DataConnection())
             {
-                Subject = ResolveText(Subject, model),
-                Body = ResolveHtml(Body, model),
-                IsBodyHtml = true
-            };
-
-            if (!String.IsNullOrEmpty(Cc))
-            {
-                mailMessage.CC.Add(ResolveText(Cc, model));
-            }
-
-            if (!String.IsNullOrEmpty(Bcc))
-            {
-                mailMessage.Bcc.Add(ResolveText(Bcc, model));
-            }
-
-            if (IncludeAttachments && model.HasFileUpload)
-            {
-                var files = new List<FormFile>();
-
-                foreach (var field in model.Fields)
+                var mailQueue = data.Get<IMailQueue>().FirstOrDefault();
+                if (mailQueue == null)
                 {
-                    if (field.ValueType == typeof(FormFile) && field.Value != null)
+                    throw new InvalidOperationException("No mail queues are defined, unable to send email");
+                }
+
+                if (String.IsNullOrEmpty(From))
+                {
+                    From = mailQueue.From;
+                }
+
+                From = ResolveText(From, model);
+                To = ResolveText(To, model);
+
+                var mailMessage = new MailMessage(From, To)
+                {
+                    Subject = ResolveText(Subject, model),
+                    Body = ResolveHtml(Body, model),
+                    IsBodyHtml = true
+                };
+
+                if (!String.IsNullOrEmpty(Cc))
+                {
+                    mailMessage.CC.Add(ResolveText(Cc, model));
+                }
+
+                if (!String.IsNullOrEmpty(Bcc))
+                {
+                    mailMessage.Bcc.Add(ResolveText(Bcc, model));
+                }
+
+                if (IncludeAttachments && model.HasFileUpload)
+                {
+                    var files = new List<FormFile>();
+
+                    foreach (var field in model.Fields)
                     {
-                        files.Add((FormFile)field.Value);
+                        if (field.ValueType == typeof(FormFile) && field.Value != null)
+                        {
+                            files.Add((FormFile)field.Value);
+                        }
+                        else if (field.ValueType == typeof(IEnumerable<FormFile>) && field.Value != null)
+                        {
+                            files.AddRange((IEnumerable<FormFile>)field.Value);
+                        }
                     }
-                    else if (field.ValueType == typeof(IEnumerable<FormFile>) && field.Value != null)
+
+                    foreach (var file in files)
                     {
-                        files.AddRange((IEnumerable<FormFile>)field.Value);
+                        var attachment = new Attachment(file.InputStream, file.FileName, file.ContentType);
+
+                        file.InputStream.Seek(0, SeekOrigin.Begin);
+                        mailMessage.Attachments.Add(attachment);
                     }
                 }
 
-                foreach (var file in files)
-                {
-                    var attachment = new Attachment(file.InputStream, file.FileName, file.ContentType);
-
-                    file.InputStream.Seek(0, SeekOrigin.Begin);
-                    mailMessage.Attachments.Add(attachment);
-                }
-            }
-
-            using (var client = new SmtpClient())
-            {
-                client.Send(mailMessage);
+                MailsFacade.EnqueueMessage(mailQueue.Name, mailMessage);
             }
         }
 

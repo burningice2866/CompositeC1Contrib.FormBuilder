@@ -4,8 +4,8 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class DecimalRangeFieldValidatorAttribute : FormValidationAttribute
     {
-        private decimal _minValue;
-        private decimal _maxValue;
+        private readonly decimal _minValue;
+        private readonly decimal _maxValue;
 
         public DecimalRangeFieldValidatorAttribute(string message, string minValue)
             : base(message)
@@ -34,17 +34,15 @@ namespace CompositeC1Contrib.FormBuilder.Validation
                     {
                         return !field.IsRequired;
                     }
-                    else
-                    {
-                        if (i < _minValue)
-                        {
-                            return false;
-                        }
 
-                        if (i > _maxValue)
-                        {
-                            return false;
-                        }
+                    if (i < _minValue)
+                    {
+                        return false;
+                    }
+
+                    if (i > _maxValue)
+                    {
+                        return false;
                     }
 
                     return true;

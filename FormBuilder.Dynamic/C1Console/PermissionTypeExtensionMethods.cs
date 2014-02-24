@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 using Composite.C1Console.Security;
 
@@ -12,29 +12,14 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
         {
             if (permissionTypeNames == null) throw new ArgumentNullException("permissionTypeNames");
 
-            foreach (var permissionTypeName in permissionTypeNames)
-            {
-                PermissionType permissionType = (PermissionType)Enum.Parse(typeof(PermissionType), permissionTypeName);
-
-                yield return permissionType;
-            }
+            return permissionTypeNames.Select(permissionTypeName => (PermissionType)Enum.Parse(typeof(PermissionType), permissionTypeName));
         }
 
         public static string SerializePermissionTypes(this IEnumerable<PermissionType> permissionTypes)
         {
-            if (permissionTypes == null) throw new ArgumentNullException("permissionType");
+            if (permissionTypes == null) throw new ArgumentNullException("permissionTypes");
 
-            var sb = new StringBuilder();
-            bool first = true;
-            foreach (var permissionType in permissionTypes)
-            {
-                if (first == false) sb.Append("�");
-                else first = false;
-
-                sb.Append(permissionType.ToString());
-            }
-
-            return sb.ToString();
+            return String.Join("�", permissionTypes);
         }
 
         public static IEnumerable<PermissionType> DeserializePermissionTypes(this string serializedPermissionTypes)
@@ -43,10 +28,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
 
             var split = serializedPermissionTypes.Split(new[] { '�' }, StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (var s in split)
-            {
-                yield return (PermissionType)Enum.Parse(typeof(PermissionType), s);
-            }
+            return split.Select(s => (PermissionType)Enum.Parse(typeof(PermissionType), s));
         }
     }
 }

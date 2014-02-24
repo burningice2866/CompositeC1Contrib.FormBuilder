@@ -13,10 +13,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 {
     public class FormBuilderElementProvider : IHooklessElementProvider
     {
-        private static readonly ActionGroup _actionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
-        public static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = true, ActionGroup = _actionGroup };
+        private static readonly ActionGroup ActionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
+        public static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = true, ActionGroup = ActionGroup };
 
-        private static IDictionary<Type, IEntityTokenBasedElementProvider> entityTokenHandlers = new Dictionary<Type, IEntityTokenBasedElementProvider>();
+        private static readonly IDictionary<Type, IEntityTokenBasedElementProvider> EntityTokenHandlers = new Dictionary<Type, IEntityTokenBasedElementProvider>();
 
         private ElementProviderContext _context;
         public ElementProviderContext Context
@@ -37,21 +37,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 
                     foreach (var t in types)
                     {
-                        entityTokenHandlers.Add(t.EntityTokenType, t);
+                        EntityTokenHandlers.Add(t.EntityTokenType, t);
                     }
                 }
                 catch { }
             }
         }
 
-        public FormBuilderElementProvider() { }
-
         public IEnumerable<Element> GetChildren(EntityToken entityToken, SearchToken searchToken)
         {
             IEnumerable<Element> elements = Enumerable.Empty<Element>();
 
             IEntityTokenBasedElementProvider handler;
-            if (entityTokenHandlers.TryGetValue(entityToken.GetType(), out handler))
+            if (EntityTokenHandlers.TryGetValue(entityToken.GetType(), out handler))
             {
                 elements = handler.Handle(_context, entityToken);
             }

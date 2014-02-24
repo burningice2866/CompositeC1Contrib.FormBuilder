@@ -4,7 +4,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class DaysFromNowValidatorAttribute : FormValidationAttribute
     {
-        private int _daysFromNow;
+        private readonly int _daysFromNow;
 
         public DaysFromNowValidatorAttribute(string message, int daysFromNow)
             : base(String.Format(message, daysFromNow))

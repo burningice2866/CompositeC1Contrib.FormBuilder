@@ -10,13 +10,13 @@ namespace CompositeC1Contrib.FormBuilder.Validation
         public IEnumerable<string> AffectedFormIds { get; private set; }
         public Func<bool> Rule { get; set; }
 
-        private string _validationMessage;
+        private readonly string _validationMessage;
         public string ValidationMessage
         {
             get { return FormRenderer.GetLocalized(_validationMessage); }
         }
 
-        public FormValidationRule(string[] affectedFormIds, string validationMessage)
+        public FormValidationRule(IEnumerable<string> affectedFormIds, string validationMessage)
         {
             _validationMessage = validationMessage;
             AffectedFormIds = new List<string>(affectedFormIds);            

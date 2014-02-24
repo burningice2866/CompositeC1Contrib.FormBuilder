@@ -6,7 +6,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class EmailInUseValidatorAttribute : FormValidationAttribute
     {
-        private bool _onlyApproved = true;
+        private readonly bool _onlyApproved = true;
 
         public EmailInUseValidatorAttribute(string message) : this(message, true) { }
 
@@ -31,30 +31,18 @@ namespace CompositeC1Contrib.FormBuilder.Validation
                         {
                             return !IsEmailInUse(value, _onlyApproved);
                         }
-                        else
-                        {
-                            return true;
-                        }
+
+                        return true;
                     }
-                    else
-                    {
-                        return !IsEmailInUse(value, _onlyApproved);
-                    }
+
+                    return !IsEmailInUse(value, _onlyApproved);
                 }
             };
         }
 
         public static bool IsEmailInUse(string email, bool onlyApproved)
         {
-            return Membership.FindUsersByEmail(email).Cast<MembershipUser>().Where(u =>
-            {
-                if (onlyApproved)
-                {
-                    return u.IsApproved;
-                }
-
-                return true;
-            }).Any();
+            return Membership.FindUsersByEmail(email).Cast<MembershipUser>().Any(u => !onlyApproved || u.IsApproved);
         }
     }
 }

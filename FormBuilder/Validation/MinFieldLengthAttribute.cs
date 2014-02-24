@@ -24,10 +24,8 @@ namespace CompositeC1Contrib.FormBuilder.Validation
                     {
                         return true;
                     }
-                    else
-                    {
-                        return value.Length >= Length;
-                    }
+
+                    return value.Length >= Length;
                 }
             };
         }

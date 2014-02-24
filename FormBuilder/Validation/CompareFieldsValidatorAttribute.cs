@@ -4,8 +4,8 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class CompareFieldsValidatorAttribute : FormValidationAttribute
     {
-        private string _fieldToCompare;
-        private CompareOperator _op;
+        private readonly string _fieldToCompare;
+        private readonly CompareOperator _op;
 
         public CompareFieldsValidatorAttribute(string message, string fieldToCompare, CompareOperator op)
             : base(message)

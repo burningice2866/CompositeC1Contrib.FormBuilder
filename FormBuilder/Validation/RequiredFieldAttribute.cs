@@ -10,58 +10,57 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 
         public override FormValidationRule CreateRule(FormField field)
         {
+            var valueType = field.ValueType;
             var value = field.Value;
 
             return new FormValidationRule(new[] { field.Name }, Message)
             {
                 Rule = () =>
                 {
-                    if (value is string)
+                    if (valueType == typeof(string))
                     {
                         return !String.IsNullOrWhiteSpace((string)value);
                     }
-                    
-                    else if (value is bool)
+
+                    if (valueType == typeof(bool))
                     {
                         return (bool)value;
                     }
-                    
-                    else if (value is int)
+
+                    if (valueType == typeof(int))
                     {
                         return (int)value > 0;
                     }
-                    else if (value is int?)
+
+                    if (valueType == typeof(int?))
                     {
                         return ((int?)value).HasValue;
                     }
 
-                    else if (value is DateTime)
+                    if (valueType == typeof(DateTime))
                     {
                         return (DateTime)value > DateTime.MinValue;
                     }
-                    else if (value is DateTime?)
+                    if (valueType == typeof(DateTime?))
                     {
                         return ((DateTime?)value).HasValue;
                     }
-                    
-                    else if (value is FormFile)
+
+                    if (valueType == typeof(FormFile))
                     {
                         return ((FormFile)value).ContentLength > 0;
                     }
-                    else if (value is IEnumerable<FormFile>)
+                    if (valueType == typeof(IEnumerable<FormFile>))
                     {
                         return ((IEnumerable<FormFile>)value).Any(f => f.ContentLength > 0);
                     }
 
-                    else if (value is IEnumerable<string>)
+                    if (valueType == typeof(IEnumerable<string>))
                     {
                         return ((IEnumerable<string>)value).Any(f => !String.IsNullOrWhiteSpace(f));
                     }
 
-                    else
-                    {
-                        return value != null;
-                    };
+                    return value != null;
                 }
             };
         }

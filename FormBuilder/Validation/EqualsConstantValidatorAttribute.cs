@@ -2,7 +2,7 @@
 {
     public class EqualsConstantValidatorAttribute : FormValidationAttribute
     {
-        object _constant;
+        readonly object _constant;
 
         public EqualsConstantValidatorAttribute(string message, object constant)
             : base(message)
@@ -16,10 +16,7 @@
 
             return new FormValidationRule(new[] { field.Name }, Message)
             {
-                Rule = () =>
-                {
-                    return (value == _constant);
-                }
+                Rule = () => (value == _constant)
             };
         }
     }

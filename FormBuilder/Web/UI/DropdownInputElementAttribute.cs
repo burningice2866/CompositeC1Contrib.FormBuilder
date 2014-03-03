@@ -18,10 +18,21 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var sb = new StringBuilder();
             var htmlAttributesDictionary = MapHtmlTagAttributes(field, htmlAttributes);
 
-            sb.AppendFormat("<select name=\"{0}\" id=\"{1}\" class=\"{2}\"",
+            if (!String.IsNullOrEmpty(FormRenderer.RendererImplementation.FormControlClass))
+            {
+                IList<string> list;
+
+                if (!htmlAttributesDictionary.TryGetValue("class", out list))
+                {
+                    htmlAttributesDictionary.Add("class", new List<string>());
+                }
+
+                list.Add(FormRenderer.RendererImplementation.FormControlClass);
+            }
+
+            sb.AppendFormat("<select name=\"{0}\" id=\"{1}\"",
                         HttpUtility.HtmlAttributeEncode(field.Name),
-                        HttpUtility.HtmlAttributeEncode(field.Id),
-                        FormRenderer.RendererImplementation.FormControlClass);
+                        HttpUtility.HtmlAttributeEncode(field.Id));
 
             if (field.ValueType == typeof(IEnumerable<string>))
             {

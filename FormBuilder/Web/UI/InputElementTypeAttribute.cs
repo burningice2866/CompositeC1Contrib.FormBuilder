@@ -81,10 +81,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected Dictionary<string, IList<string>> MapHtmlTagAttributes(FormField field, IDictionary<string, string> htmlAttributes)
         {
-            var htmlAttributesDictionary = new Dictionary<string, IList<string>>()
-            {
-                { "class", new List<string>() }
-            };
+            var htmlAttributesDictionary = new Dictionary<string, IList<string>>();
 
             var htmlElementAttributes = field.Attributes.OfType<HtmlTagAttribute>();
 
@@ -101,7 +98,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             if (htmlAttributes != null && htmlAttributes.ContainsKey("class"))
             {
-                var list = htmlAttributesDictionary["class"];
+                IList<string> list;
+                if (!htmlAttributesDictionary.TryGetValue("class", out list))
+                {
+                    htmlAttributesDictionary.Add("class", new List<string>());
+                }
+
                 var val = htmlAttributes["class"].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
                 foreach (var itm in val)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-
+using Composite.Core.Xml;
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
 
@@ -88,10 +88,20 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 metaData.Add(new XElement("requiresCaptcha"));
             }
 
-            metaData.Add(new XElement("Layout",
-                    new XAttribute("submitButtonLabel", definition.Model.SubmitButtonLabel),
-                    new XElement("introText", definition.IntroText.ToString()),
-                    new XElement("successResponse", definition.SuccessResponse.ToString())));
+            var layout = new XElement("Layout",
+                    new XAttribute("submitButtonLabel", definition.Model.SubmitButtonLabel));
+
+            if (definition.IntroText != null)
+            {
+                layout.Add(new XElement("introText", definition.IntroText.ToString()));
+            }
+
+            if (definition.IntroText != null)
+            {
+                layout.Add(new XElement("successResponse", definition.SuccessResponse.ToString()));
+            }
+
+            metaData.Add(layout);
 
             if (definition.DefaultValues.Any())
             {

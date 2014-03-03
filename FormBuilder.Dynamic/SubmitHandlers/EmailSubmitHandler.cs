@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
-
+using System.Reflection;
 using Composite.Core.WebClient;
 using Composite.Core.WebClient.Renderings.Page;
 using Composite.Core.Xml;
 using Composite.Data;
 using Composite.Functions;
-
 using CompositeC1Contrib.Email;
 using CompositeC1Contrib.Email.Data.Types;
 
@@ -32,15 +31,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
         {
             using (var data = new DataConnection())
             {
-                var mailQueue = data.Get<IMailQueue>().FirstOrDefault();
-                if (mailQueue == null)
-                {
-                    throw new InvalidOperationException("No mail queues are defined, unable to send email");
-                }
+                MethodInfo enqueueMessageMethode = null;
 
-                if (String.IsNullOrEmpty(From))
+                var compositeC1ContribEmailAssembly = AppDomain.CurrentDomain.GetAssemblies().Where(f => f.GetName().Name == "CompositeC1Contrib.Email").FirstOrDefault();
+
+                if (compositeC1ContribEmailAssembly != null)
                 {
-                    From = mailQueue.From;
+                    var mailsFacadeType = compositeC1ContribEmailAssembly.GetType("CompositeC1Contrib.Email.MailsFacade", false);
+
+                    if (mailsFacadeType != null)
+                    {
+                        enqueueMessageMethode = mailsFacadeType.GetMethod("EnqueueMessage", new Type[] { typeof(MailMessage) });
+                    }
                 }
 
                 From = ResolveText(From, model);
@@ -88,7 +90,17 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
                     }
                 }
 
-                MailsFacade.EnqueueMessage(mailQueue.Name, mailMessage);
+                if (enqueueMessageMethode != null)
+                {
+                    enqueueMessageMethode.Invoke(null, new[] { mailMessage });
+                }
+                else
+                {
+                    using (var client = new SmtpClient())
+                    {
+                        client.Send(mailMessage);
+                    }
+                }
             }
         }
 

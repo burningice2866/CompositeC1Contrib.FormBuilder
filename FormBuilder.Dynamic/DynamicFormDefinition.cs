@@ -52,6 +52,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     attrs.Add(new FieldLabelAttribute(label.Value));
                 }
 
+                var placeholderText = f.Attribute("placeholderText");
+                if (placeholderText != null)
+                {
+                    attrs.Add(new PlaceholderTextAttribute(placeholderText.Value));
+                }
+
                 var help = f.Attribute("help");
                 if (help != null)
                 {

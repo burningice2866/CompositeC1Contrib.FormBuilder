@@ -170,6 +170,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     add.Add(new XAttribute("label", field.Label.Label));
                 }
 
+                if (field.PlaceholderText != null)
+                {
+                    add.Add(new XAttribute("placeholderText", field.PlaceholderText));
+                }
+
                 if (!String.IsNullOrEmpty(field.Help))
                 {
                     add.Add(new XAttribute("help", field.Help));
@@ -322,9 +327,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
         public static void DeleteModel(DynamicFormDefinition definition)
         {
-            var file = Path.Combine(FormModelsFacade.FormsPath, definition.Name, "DynamicDefinition.xml");
+            var dir = Path.Combine(FormModelsFacade.FormsPath, definition.Name);
 
-            File.Delete(file);
+            Directory.Delete(dir, true);
+
             NotifyFormChanges();
         }
 

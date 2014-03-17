@@ -17,17 +17,24 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Web.UI
 {
     public class FunctionSelector : UserControlBasedUiControl
     {
+        public FunctionSelector()
+        {
+            ReturnType = typeof (string);
+        }
+
         protected PostBackDialog btnDefaultValueFunctionMarkup;
 
         [BindableProperty]
         public string FunctionMarkup { get; set; }
+
+        public Type ReturnType { get; set; }
 
         protected override void Render(HtmlTextWriter writer)
         {
             btnDefaultValueFunctionMarkup.Attributes["label"] = GetCurrentlySelectedDefaultValueText();
             btnDefaultValueFunctionMarkup.Attributes["url"] =
                 "${root}/content/dialogs/functions/editFunctionCall.aspx?zip_type="
-                + UrlUtils.ZipContent(TypeManager.SerializeType(typeof(string)))
+                + UrlUtils.ZipContent(TypeManager.SerializeType(ReturnType))
                 + "&dialoglabel=" + HttpUtility.UrlEncodeUnicode("Select default value")
                 + "&multimode=false&functionmarkup=";
 

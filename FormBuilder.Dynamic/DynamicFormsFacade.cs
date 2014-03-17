@@ -163,7 +163,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
             foreach (var field in model.Fields)
             {
-                var add = new XElement("Add", new XAttribute("name", field.Name));
+                var add = new XElement("Add", 
+                    new XAttribute("name", field.Name), 
+                    new XAttribute("valueType", field.ValueType.AssemblyQualifiedName));
 
                 if (field.Label != null)
                 {

@@ -6,6 +6,7 @@
     <cms:binding name="PlaceholderText" type="System.String" />
     <cms:binding name="Help" type="System.String" />
     <cms:binding name="DefaultValue" type="System.String" />
+    <cms:binding name="ValueType" type="System.Type" />
     <cms:binding name="InputElementType" type="System.String" />
     <cms:binding name="IsReadOnly" type="System.Boolean" />
   </cms:bindings>
@@ -47,6 +48,9 @@
             <formbuilder:FunctionSelector.FunctionMarkup>
               <cms:bind source="DefaultValue" />
             </formbuilder:FunctionSelector.FunctionMarkup>
+            <formbuilder:FunctionSelector.ReturnType>
+              <cms:read source="ValueType" />
+            </formbuilder:FunctionSelector.ReturnType>
           </formbuilder:FunctionSelector>
 
           <KeySelector Label="Select field type" OptionsKeyField="Key" OptionsLabelField="Value" Required="true">

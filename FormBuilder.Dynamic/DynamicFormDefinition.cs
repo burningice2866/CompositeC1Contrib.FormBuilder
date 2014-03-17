@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using Composite.Core.Xml;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
+using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
 using CompositeC1Contrib.FormBuilder.Validation;
 using CompositeC1Contrib.FormBuilder.Web.UI;
@@ -75,15 +76,21 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     }
                 }
 
-                var formField = new FormField(model, fieldName, typeof(string), attrs);
+                var valueTypeAttr = f.Attribute("valueType");
+                var valueType = valueTypeAttr != null ? Type.GetType(valueTypeAttr.Value) : typeof(string);
 
-                var isReadOnly = f.Attribute("isReadOnly");
-                if (isReadOnly != null)
+                var formField = new FormField(model, fieldName, valueType, attrs);
+
+                var isReadOnlyAttr = f.Attribute("isReadOnly");
+                if (isReadOnlyAttr != null)
                 {
-                    formField.IsReadOnly = bool.Parse(isReadOnly.Value);
+                    formField.IsReadOnly = bool.Parse(isReadOnlyAttr.Value);
                 }
 
-                SetFieldValueType(formField);
+                if (valueTypeAttr == null)
+                {
+                    EditFormFieldWorkflow.SetFieldValueType(formField);
+                }
 
                 model.Fields.Add(formField);
             }
@@ -93,24 +100,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             ParseMetaData(xml, definition);
 
             return definition;
-        }
-
-        private static void SetFieldValueType(FormField formField)
-        {
-            if (formField.InputElementType is CheckboxInputElementAttribute)
-            {
-                formField.ValueType = typeof(bool);
-            }
-
-            if (formField.InputElementType is CheckboxInputElementAttribute && formField.DataSource != null)
-            {
-                formField.ValueType = typeof(IEnumerable<string>);
-            }
-
-            if (formField.InputElementType is FileuploadInputElementAttribute)
-            {
-                formField.ValueType = typeof(FormFile);
-            }
         }
 
         private static void ParseInputElement(XElement xml, IList<Attribute> attrs)

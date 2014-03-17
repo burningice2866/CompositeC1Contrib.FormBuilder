@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -42,6 +43,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 Bindings.Add("PlaceholderText", field.PlaceholderText);
                 Bindings.Add("Help", field.Help);
                 Bindings.Add("DefaultValue", defaultValue);
+                Bindings.Add("ValueType", field.ValueType);
                 Bindings.Add("InputElementType", field.InputElementType.GetType().AssemblyQualifiedName);
                 Bindings.Add("IsReadOnly", field.IsReadOnly);
 
@@ -185,6 +187,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             inputTypeAttribute = (InputElementTypeAttribute)Activator.CreateInstance(inputElementType);
             field.Attributes.Add(inputTypeAttribute);
 
+            SetFieldValueType(field);
             SaveExtraSettings(field);
 
             DynamicFormsFacade.SaveForm(definition);
@@ -242,6 +245,24 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
 
             return true;
+        }
+
+        public static void SetFieldValueType(FormField formField)
+        {
+            if (formField.InputElementType is CheckboxInputElementAttribute)
+            {
+                formField.ValueType = typeof(bool);
+            }
+
+            if (formField.InputElementType is CheckboxInputElementAttribute && formField.DataSource != null)
+            {
+                formField.ValueType = typeof(IEnumerable<string>);
+            }
+
+            if (formField.InputElementType is FileuploadInputElementAttribute)
+            {
+                formField.ValueType = typeof(FormFile);
+            }
         }
     }
 }

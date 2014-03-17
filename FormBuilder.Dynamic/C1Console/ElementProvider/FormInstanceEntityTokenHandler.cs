@@ -7,7 +7,6 @@ using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 using Composite.Core.WebClient;
 
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
@@ -24,10 +23,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
         {
             var folders = getFormFolders(context, (FormInstanceEntityToken)token);
 
-            foreach (var el in folders)
-            {
-                yield return el;
-            }
+            return folders;
         }
 
         private IEnumerable<Element> getFormFolders(ElementProviderContext context, FormInstanceEntityToken token)
@@ -45,7 +41,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 }
             };
 
-            var addActionToken = new WorkflowActionToken(typeof(AddFormFieldWorkflow), new PermissionType[] { PermissionType.Administrate });
+            var addActionToken = new WorkflowActionToken(typeof(AddFormFieldWorkflow), new[] { PermissionType.Administrate });
             fieldElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
             {
                 VisualData = new ActionVisualizedData
@@ -58,7 +54,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
             });
 
             var url = String.Format("InstalledPackages/CompositeC1Contrib.FormBuilder.Dynamic/SortFormFields.aspx?formName={0}", token.FormName);
-            var sortActionToken = new UrlActionToken("Sort fields", UrlUtils.ResolveAdminUrl(url), new PermissionType[] { PermissionType.Administrate });
+            var sortActionToken = new UrlActionToken("Sort fields", UrlUtils.ResolveAdminUrl(url), new[] { PermissionType.Administrate });
             fieldElement.AddAction(new ElementAction(new ActionHandle(sortActionToken))
             {
                 VisualData = new ActionVisualizedData
@@ -85,7 +81,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 }
             };
 
-            addActionToken = new WorkflowActionToken(typeof(AddSubmitHandlerWorkflow), new PermissionType[] { PermissionType.Administrate });
+            addActionToken = new WorkflowActionToken(typeof(AddSubmitHandlerWorkflow), new[] { PermissionType.Administrate });
             submitHandlersElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
             {
                 VisualData = new ActionVisualizedData

@@ -66,10 +66,16 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected IHtmlString FieldFor(Expression<Func<T, object>> fieldSelector)
         {
+            return FieldFor(fieldSelector, new {});
+        }
+
+        protected IHtmlString FieldFor(Expression<Func<T, object>> fieldSelector, object htmlAttributes)
+        {
             var prop = GetProperty(fieldSelector);
             var field = RenderingContext.RenderingModel.Fields.Single(f => f.Name == prop.Name);
+            var dictionary = Functions.ObjectToDictionary(htmlAttributes).ToDictionary(t => t.Key, t => t.Value.ToString());
 
-            return FormRenderer.FieldFor(field);
+            return FormRenderer.FieldFor(field, dictionary);
         }
 
         protected IHtmlString NameFor(Expression<Func<T, object>> fieldSelector)

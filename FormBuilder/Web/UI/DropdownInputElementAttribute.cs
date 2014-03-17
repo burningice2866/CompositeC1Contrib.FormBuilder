@@ -21,10 +21,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             if (!String.IsNullOrEmpty(FormRenderer.RendererImplementation.FormControlClass))
             {
                 IList<string> list;
-
                 if (!htmlAttributesDictionary.TryGetValue("class", out list))
                 {
-                    htmlAttributesDictionary.Add("class", new List<string>());
+                    list = new List<string>();
+
+                    htmlAttributesDictionary.Add("class", list);
                 }
 
                 list.Add(FormRenderer.RendererImplementation.FormControlClass);

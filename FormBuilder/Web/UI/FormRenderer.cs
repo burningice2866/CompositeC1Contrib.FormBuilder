@@ -26,7 +26,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public static IHtmlString FieldFor(FormField field)
         {
-            return WriteRow(field, new Dictionary<string, string>());
+            return FieldFor(field, new Dictionary<string, string>());
+        }
+
+        public static IHtmlString FieldFor(FormField field, Dictionary<string, string> htmlAttributes)
+        {
+            return WriteRow(field, htmlAttributes);
         }
 
         public static IHtmlString NameFor(FormField field)

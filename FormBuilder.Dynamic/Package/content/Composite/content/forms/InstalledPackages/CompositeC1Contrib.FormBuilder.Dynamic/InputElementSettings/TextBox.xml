@@ -8,13 +8,13 @@
     <FieldGroup>
       <KeySelector Label="Select input type" OptionsKeyField="Key" OptionsLabelField="Value" Required="true">
         <KeySelector.Options>
-          <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Dynamic.TextBoxSettings, CompositeC1Contrib.FormBuilder.Dynamic" Method="GetInputTypes" />
+          <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Dynamic.C1Console.TextBoxSettings, CompositeC1Contrib.FormBuilder.Dynamic" Method="GetInputTypes" />
         </KeySelector.Options>
 
         <KeySelector.Selected>
           <cms:bind source="InputType" />
         </KeySelector.Selected>
-      </KeySelector>      
+      </KeySelector>
     </FieldGroup>
   </cms:layout>
 </cms:formdefinition>

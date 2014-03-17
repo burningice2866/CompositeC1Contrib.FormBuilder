@@ -59,9 +59,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         }
                     };
 
-                    if (handler is EmailSubmitHandler)
+                    var editWorkflowAttribute = handler.GetType().GetCustomAttributes(true).OfType<EditWorkflowAttribute>().FirstOrDefault();
+                    if (editWorkflowAttribute != null)
                     {
-                        var editActionToken = new WorkflowActionToken(typeof(EditEmailSubmitHandlerWorkflow));
+                        var editActionToken = new WorkflowActionToken(editWorkflowAttribute.EditWorkflowType);
                         handlerElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
                         {
                             VisualData = new ActionVisualizedData
@@ -85,6 +86,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                             ActionLocation = FormBuilderElementProvider.ActionLocation
                         }
                     });
+
+                    var actionProvider = handler as IActionPrivider;
+                    if (actionProvider != null)
+                    {
+                        actionProvider.AddActions(definition, handlerElement);
+                    }
 
                     yield return handlerElement;
                 }

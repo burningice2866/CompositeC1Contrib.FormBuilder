@@ -4,17 +4,19 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Reflection;
+
 using Composite.Core.WebClient;
 using Composite.Core.WebClient.Renderings.Page;
 using Composite.Core.Xml;
 using Composite.Data;
 using Composite.Functions;
-using CompositeC1Contrib.Email;
-using CompositeC1Contrib.Email.Data.Types;
+
+using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
 {
     [Serializable]
+    [EditWorkflow(typeof(EditEmailSubmitHandlerWorkflow))]
     public class EmailSubmitHandler : FormSubmitHandler
     {
         public bool IncludeAttachments { get; set; }
@@ -33,15 +35,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
             {
                 MethodInfo enqueueMessageMethode = null;
 
-                var compositeC1ContribEmailAssembly = AppDomain.CurrentDomain.GetAssemblies().Where(f => f.GetName().Name == "CompositeC1Contrib.Email").FirstOrDefault();
-
+                var compositeC1ContribEmailAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(f => f.GetName().Name == "CompositeC1Contrib.Email");
                 if (compositeC1ContribEmailAssembly != null)
                 {
                     var mailsFacadeType = compositeC1ContribEmailAssembly.GetType("CompositeC1Contrib.Email.MailsFacade", false);
-
                     if (mailsFacadeType != null)
                     {
-                        enqueueMessageMethode = mailsFacadeType.GetMethod("EnqueueMessage", new Type[] { typeof(MailMessage) });
+                        enqueueMessageMethode = mailsFacadeType.GetMethod("EnqueueMessage", new[] { typeof(MailMessage) });
                     }
                 }
 

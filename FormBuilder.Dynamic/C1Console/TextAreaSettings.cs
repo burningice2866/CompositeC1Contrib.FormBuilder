@@ -4,7 +4,7 @@ using System.Linq;
 using CompositeC1Contrib.FormBuilder.Validation;
 using CompositeC1Contrib.FormBuilder.Web.UI;
 
-namespace CompositeC1Contrib.FormBuilder.Dynamic
+namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
 {
     [Serializable]
     public class TextAreaSettings : IInputTypeSettingsHandler

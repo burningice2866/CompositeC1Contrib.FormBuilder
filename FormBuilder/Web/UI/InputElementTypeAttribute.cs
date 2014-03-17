@@ -101,7 +101,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 IList<string> list;
                 if (!htmlAttributesDictionary.TryGetValue("class", out list))
                 {
-                    htmlAttributesDictionary.Add("class", new List<string>());
+                    list = new List<string>();
+
+                    htmlAttributesDictionary.Add("class", list);
                 }
 
                 var val = htmlAttributes["class"].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);

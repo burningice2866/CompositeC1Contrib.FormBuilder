@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 using CompositeC1Contrib.FormBuilder.Validation;
-using CompositeC1Contrib.FormBuilder.Web.UI;
 
-namespace CompositeC1Contrib.FormBuilder.Dynamic
+namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
 {
     [Serializable]
     public class TextBoxSettings : IInputTypeSettingsHandler
@@ -17,7 +15,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         {
             return new Dictionary<string, string>()
             {
-                {"Text", "Text"},
+                {"", "Text"},
                 {"Email", "Email"},
                 {"Date", "Date"}
             };
@@ -25,16 +23,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
         public void Load(FormField field)
         {
-            if (field.ValueType == typeof (DateTime))
-            {
-                InputType = "Date";
-            }
-
-            var existingValidator = field.ValidationAttributes.OfType<EmailFieldValidatorAttribute>().FirstOrDefault();
-            if (existingValidator != null)
-            {
-                InputType = "Email";
-            }
+            InputType = GetInputType(field);
         }
 
         public void Save(FormField field)
@@ -42,23 +31,54 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             switch (InputType)
             {
                 case "Date":
+
+                    RemoveValidatorAttribute<EmailFieldValidatorAttribute>(field);
                     field.ValueType = typeof (DateTime);
 
                     break;
+
                 case "Email":
+
                     field.ValueType = typeof(string);
-                    var existingValidator = field.ValidationAttributes.OfType<EmailFieldValidatorAttribute>().FirstOrDefault();
-                    if (existingValidator != null)
+
+                    if (!field.ValidationAttributes.OfType<EmailFieldValidatorAttribute>().Any())
                     {
-                        field.Attributes.Remove(existingValidator);
+                        field.Attributes.Add(new EmailFieldValidatorAttribute("Email is invalid"));
                     }
-                    field.Attributes.Add(new EmailFieldValidatorAttribute("Email is invalid"));
 
                     break;
+
                 default:
+
+                    RemoveValidatorAttribute<EmailFieldValidatorAttribute>(field);
                     field.ValueType = typeof (string);
 
                     break;
+            }
+        }
+
+        private static string GetInputType(FormField field)
+        {
+            if (field.ValueType == typeof(DateTime))
+            {
+                return "Date";
+            }
+
+            var existingValidator = field.ValidationAttributes.OfType<EmailFieldValidatorAttribute>().FirstOrDefault();
+            if (existingValidator != null)
+            {
+                return "Email";
+            }
+
+            return String.Empty;
+        }
+
+        private static void RemoveValidatorAttribute<T>(FormField field) where T : Attribute
+        {
+            var existingValidator = field.ValidationAttributes.OfType<T>().FirstOrDefault();
+            if (existingValidator != null)
+            {
+                field.Attributes.Remove(existingValidator);
             }
         }
     }

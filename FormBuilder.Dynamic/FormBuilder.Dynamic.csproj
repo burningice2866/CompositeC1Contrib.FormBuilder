@@ -41,9 +41,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\.vendor\CompositeC1Contrib.Core.dll</HintPath>
     </Reference>
-    <Reference Include="CompositeC1Contrib.Email">
-      <HintPath>..\.vendor\CompositeC1Contrib.Email.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common">
       <HintPath>..\.vendor\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
     </Reference>
@@ -98,6 +95,8 @@
     <Compile Include="C1Console\Workflows\EditFormWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="C1Console\Workflows\IActionProvider.cs" />
+    <Compile Include="C1Console\Workflows\EditWorkflowAttribute.cs" />
     <Compile Include="CompositeFormRendererConverter.cs" />
     <Compile Include="Configuration\DynamicFormBuilderConfiguration.cs" />
     <Compile Include="Configuration\SubmitHandlerElement.cs" />
@@ -106,8 +105,10 @@
     <Compile Include="C1Console\IInputTypeSettingsHandler.cs" />
     <Compile Include="C1Console\TextAreaSettings.cs" />
     <Compile Include="DynamicFormBuilderRequestContext.cs" />
+    <Compile Include="SubmitHandlers\DownloadSavedFormsActionToken.cs" />
     <Compile Include="SubmitHandlers\SaveFormSubmitHandler.cs" />
     <Compile Include="Web\StartupHandler.cs" />
+    <Compile Include="Web\UI\DownloadSavedFormsHandler.cs" />
     <Compile Include="Web\UI\FunctionSelector.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -135,7 +136,6 @@
     <Compile Include="C1Console\Actions\DeleteFormFieldActionToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormFolderEntityToken.cs" />
     <Compile Include="C1Console\PermissionTypeExtensionMethods.cs" />
-    <Compile Include="C1Console\Actions\UrlActionToken.cs" />
     <Compile Include="C1Console\ElementProvider\FormBuilderElementProvider.cs" />
     <Compile Include="C1Console\FormBuilderActionProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -153,6 +153,7 @@
     <None Include="packages.config" />
     <None Include="Package\config\App_Data\Composite\composite.config" />
     <None Include="Package\config\web.config" />
+    <None Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\DownloadSavedForms.ashx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\AddDataSourceWorkflow.xml" />

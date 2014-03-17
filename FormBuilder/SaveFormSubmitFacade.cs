@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Xml.Linq;
+
 using CompositeC1Contrib.FormBuilder.FunctionProviders;
 
 namespace CompositeC1Contrib.FormBuilder
@@ -34,6 +35,14 @@ namespace CompositeC1Contrib.FormBuilder
 
             xml.Save(EnsureUniqueFileName(file));
             SaveAttachments(model, dir, timeStamp);
+        }
+
+        public static IEnumerable<XElement> LoadSubmits(FormModel model)
+        {
+            var dir = Path.Combine(FormModelsFacade.FormsPath, model.Name, "Submits");
+            var files = Directory.GetFiles(dir, "*.xml");
+
+            return files.Select(XElement.Load);
         }
 
         public static void SaveSubmit(FormModel model, bool includeAttachments)

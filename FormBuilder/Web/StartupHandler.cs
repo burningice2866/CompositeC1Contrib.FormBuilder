@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Web.Http;
+
 using Composite.Core.Application;
 
 namespace CompositeC1Contrib.FormBuilder.Web
@@ -8,6 +10,10 @@ namespace CompositeC1Contrib.FormBuilder.Web
     {
         public static void OnBeforeInitialize()
         {
+            var config = GlobalConfiguration.Configuration;
+
+            config.Routes.MapHttpRoute("Form validator", "formbuilder/{controller}");
+
             var baseFolder = FormModelsFacade.FormsPath;
             var layoutsFolder = Path.Combine(baseFolder, "FormRenderingLayouts");
 
@@ -33,9 +39,6 @@ namespace CompositeC1Contrib.FormBuilder.Web
             Directory.Delete(layoutsFolder);
         }
 
-        public static void OnInitialized()
-        {
-
-        }
+        public static void OnInitialized() { }
     }
 }

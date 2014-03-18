@@ -1,4 +1,47 @@
 ﻿(function ($, window, document, undefined) {
+    var validation = function (form, callback) {
+        var formSerialized = form.serializeArray();
+
+        form.data('error', false);
+
+        $('.control-group', form).removeClass('error');
+        $('.error_notification', form).remove();
+
+        $.ajax({
+            type: 'POST',
+            url: '/formbuilder/validation',
+            data: formSerialized,
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                var errors = data;
+                if (errors.length > 0) {
+                    form.data('error', true);
+
+                    var errorDiv = '<div class="error_notification"><p>Du mangler at udfylde nogle felter</p><ul>';
+
+                    $.each(errors, function (i, itm) {
+                        var fields = itm.AffectedFields;
+
+                        $.each(fields, function (i, field) {
+                            var el = $('[name="' + field + '"]', form);
+
+                            el.parents('.control-group').addClass('error');
+                        });
+
+                        errorDiv += '<li>' + itm.Message + '</li>';
+                    });
+
+                    errorDiv += '</ul><p>Udfyld venligst felterne og send igen.</p></div>';
+
+                    form.prepend($(errorDiv));
+
+                    callback();
+                }
+            }
+        });
+    };
+
     var getFormFieldValue = function (fieldName) {
         var field = $('[name="' + fieldName + '"]');
 
@@ -114,19 +157,30 @@
             btn.attr('clicked', true);
         });
 
-        forms.on('submit', function () {
+        forms.on('submit', function (e) {
             var form = $(this);
             var clickedButton = $(btnSelector + '[clicked=true]', form);
 
             clickedButton.attr('disabled', true);
 
+            var l = undefined;
             if (window.Ladda) {
                 setTimeout(function () {
-                    var l = window.Ladda.create(clickedButton[0]);
+                    l = window.Ladda.create(clickedButton[0]);
 
                     l.start();
                 }, 500);
             }
+
+            validation(form, function () {
+                clickedButton.attr('disabled', false);
+
+                if (l !== undefined) {
+                    l.stop();
+                }
+
+                e.preventDefault();
+            });
         });
     });
 })(jQuery, window, document);

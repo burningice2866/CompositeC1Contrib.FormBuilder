@@ -1,6 +1,8 @@
 ﻿using System.Web.Security;
 using System.Linq;
 
+using Composite.C1Console.Security;
+
 namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class CredentialsValidatorAttribute : FormValidationAttribute
@@ -22,8 +24,13 @@ namespace CompositeC1Contrib.FormBuilder.Validation
             {
                 Rule = () =>
                 {
+                    if (UserValidationFacade.IsLoggedIn())
+                    {
+                        return true;
+                    }
+
                     var userName = Membership.GetUserNameByEmail(value);
-                    
+
                     return userName != null && Membership.ValidateUser(userName, password);
                 }
             };

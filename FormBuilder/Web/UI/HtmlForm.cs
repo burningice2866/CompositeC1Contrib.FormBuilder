@@ -32,6 +32,29 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var htmlElementAttributes = model.Attributes.OfType<HtmlTagAttribute>();
             var action = String.Empty;
 
+            foreach (var attr in htmlElementAttributes)
+            {
+                if (attr.Attribute == "method")
+                {
+                    continue;
+                }
+
+                if (attr.Attribute == "action")
+                {
+                    action = attr.Value;
+
+                    continue;
+                }
+
+                IList<string> list;
+                if (!htmlAttributesDictionary.TryGetValue(attr.Attribute, out list))
+                {
+                    htmlAttributesDictionary.Add(attr.Attribute, new List<string>());
+                }
+
+                htmlAttributesDictionary[attr.Attribute].Add(attr.Value);
+            }
+
             var dictionary = Functions.ObjectToDictionary(htmlAttributes);
             if (dictionary != null)
             {
@@ -44,17 +67,6 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 {
                     action = (string)dictionary["action"];
                 }
-            }
-
-            foreach (var attr in htmlElementAttributes)
-            {
-                IList<string> list;
-                if (!htmlAttributesDictionary.TryGetValue(attr.Attribute, out list))
-                {
-                    htmlAttributesDictionary.Add(attr.Attribute, new List<string>());
-                }
-
-                htmlAttributesDictionary[attr.Attribute].Add(attr.Value);
             }
 
             page.WriteLiteral(String.Format("<form method=\"post\" action=\"{0}\"", action));

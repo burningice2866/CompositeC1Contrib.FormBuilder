@@ -16,7 +16,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             _c1FunctionName = functionName;
         }
 
-        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, string> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormsPage page, FormField field, IDictionary<string, string> htmlAttributes)
         {
             var function = FunctionFacade.GetFunction(_c1FunctionName);
             if (function == null)

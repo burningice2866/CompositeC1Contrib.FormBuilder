@@ -17,12 +17,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             get { return "textbox"; }
         }
 
-        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, string> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormsPage page, FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
             var placeholderText = field.PlaceholderText;
 
-            if (String.IsNullOrEmpty(placeholderText) && field.OwningForm.Options.HideLabels)
+            if (String.IsNullOrEmpty(placeholderText) && page.RenderingContext.Options.HideLabels)
             {
                 placeholderText = field.Label.Label;
             }

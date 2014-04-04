@@ -14,7 +14,7 @@
             : base(formName)
         {
             _instance = instance;
-            _model = POCOFormsFacade.FromInstance(_instance, null);
+            _model = POCOFormsFacade.FromInstance(_instance);
         }
 
         public override void SetDefaultValues()

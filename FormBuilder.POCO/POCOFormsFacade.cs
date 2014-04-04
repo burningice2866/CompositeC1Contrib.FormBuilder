@@ -8,7 +8,7 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public class POCOFormsFacade
     {
-        public static FormModel FromInstance(IPOCOForm instance, FormOptions options)
+        public static FormModel FromInstance(IPOCOForm instance)
         {
             var formType = instance.GetType();
             var formName = formType.FullName;
@@ -20,11 +20,6 @@ namespace CompositeC1Contrib.FormBuilder
             }
 
             var model = new FormModel(formName);
-
-            if (options != null)
-            {
-                model.Options = options;
-            }
 
             var validationHandler = instance as IValidationHandler;
             if (validationHandler != null)
@@ -51,9 +46,9 @@ namespace CompositeC1Contrib.FormBuilder
             return model;
         }
 
-        public static FormModel FromType<T>(T instance, FormOptions options) where T : IPOCOForm
+        public static FormModel FromType<T>(T instance) where T : IPOCOForm
         {
-            return FromInstance(instance, options);
+            return FromInstance(instance);
         }
 
         public static void MapValues(IPOCOForm instance, FormModel model)

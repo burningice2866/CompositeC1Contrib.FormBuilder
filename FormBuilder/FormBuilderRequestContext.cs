@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Web;
 
+using CompositeC1Contrib.FormBuilder.Web.UI;
+
 namespace CompositeC1Contrib.FormBuilder
 {
     public abstract class FormBuilderRequestContext
@@ -9,6 +11,8 @@ namespace CompositeC1Contrib.FormBuilder
         private readonly HttpContextBase _ctx = new HttpContextWrapper(HttpContext.Current);
 
         protected string FormName { get; private set; }
+
+        public FormOptions Options { get; private set; }
 
         public bool IsOwnSubmit
         {
@@ -25,6 +29,7 @@ namespace CompositeC1Contrib.FormBuilder
         protected FormBuilderRequestContext(string name)
         {
             FormName = name;
+            Options = new FormOptions();
         }
 
         public void Execute()

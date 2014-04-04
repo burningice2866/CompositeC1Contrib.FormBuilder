@@ -8,8 +8,9 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public static class FormModelsFacade
     {
-        private static readonly IList<IFormModelsProvider> ModelProviders = new List<IFormModelsProvider>();
         public static readonly string FormsPath = HostingEnvironment.MapPath("~/App_Data/FormBuilder");
+
+        private static IList<IFormModelsProvider> _modelProviders;
 
         static FormModelsFacade()
         {
@@ -17,27 +18,40 @@ namespace CompositeC1Contrib.FormBuilder
             {
                 Directory.CreateDirectory(FormsPath);
             }
+        }
+
+        public static FormModel GetModel(string name)
+        {
+            return GetModels().SingleOrDefault(m => m.Name == name);
+        }
+
+        public static IEnumerable<FormModel> GetModels()
+        {
+            if (_modelProviders == null)
+            {
+                _modelProviders = LoadFormModelProviders();
+            }
+
+            return _modelProviders.SelectMany(provider => provider.GetModels());
+        }
+
+        private static IList<IFormModelsProvider> LoadFormModelProviders()
+        {
+            var modelProviders = new List<IFormModelsProvider>();
 
             var asms = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var asm in asms)
             {
                 try
                 {
-                    var types = asm.GetTypes()
-                        .Where(t => typeof(IFormModelsProvider).IsAssignableFrom(t) && !t.IsInterface);
+                    var types = asm.GetTypes().Where(t => typeof(IFormModelsProvider).IsAssignableFrom(t) && !t.IsInterface);
 
-                    foreach (var instance in types.Select(t => (IFormModelsProvider)Activator.CreateInstance(t)))
-                    {
-                        ModelProviders.Add(instance);
-                    }
+                    modelProviders.AddRange(types.Select(t => (IFormModelsProvider)Activator.CreateInstance(t)));
                 }
                 catch { }
             }
-        }
 
-        public static IEnumerable<FormModel> GetModels()
-        {
-            return ModelProviders.SelectMany(provider => provider.GetModels());
+            return modelProviders;
         }
     }
 }

@@ -28,8 +28,13 @@ namespace CompositeC1Contrib.FormBuilder
                 return XhtmlDocument.Parse(fileContent);
             }
 
+            var model = FormModelsFacade.GetModel(formName);
+            if (model == null)
+            {
+                throw new ArgumentException(String.Format("Form '{0}' not loaded", formName));
+            }
+
             var doc = new XhtmlDocument();
-            var model = FormModelsFacade.GetModels().Single(m => m.Name == formName);
 
             foreach (var field in model.Fields.Where(f => f.Label != null))
             {

@@ -20,13 +20,13 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         }
 
         private FormBuilderRequestContext _context;
-        protected override FormBuilderRequestContext RenderingContext
+        public override FormBuilderRequestContext RenderingContext
         {
             get
             {
                 if (_context == null)
                 {
-                    var model = POCOFormsFacade.FromType(Form, Options);
+                    var model = POCOFormsFacade.FromType(Form);
 
                     _context = new POCOFormBuilderRequestContext(model.Name, Form);
                     _context.Execute();
@@ -38,8 +38,6 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public override void ExecutePageHierarchy()
         {
-            RenderingContext.RenderingModel.Options = Options;
-
             var functionContext = new FunctionContextContainer(FunctionContextContainer, new Dictionary<string, object>
             {
                 { "RenderingContext", RenderingContext },
@@ -75,7 +73,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var field = RenderingContext.RenderingModel.Fields.Single(f => f.Name == prop.Name);
             var dictionary = Functions.ObjectToDictionary(htmlAttributes).ToDictionary(t => t.Key, t => t.Value.ToString());
 
-            return FormRenderer.FieldFor(field, dictionary);
+            return FormRenderer.FieldFor(this, field, dictionary);
         }
 
         protected IHtmlString NameFor(Expression<Func<T, object>> fieldSelector)
@@ -83,7 +81,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var prop = GetProperty(fieldSelector);
             var field = RenderingContext.RenderingModel.Fields.Single(f => f.Name == prop.Name);
 
-            return FormRenderer.NameFor(field);
+            return FormRenderer.NameFor(this, field);
         }
 
         public PropertyInfo GetProperty(string name)

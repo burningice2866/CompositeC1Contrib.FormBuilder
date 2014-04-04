@@ -14,7 +14,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
     {
         abstract public string ElementName { get; }
 
-        abstract public IHtmlString GetHtmlString(FormField field, IDictionary<string, string> htmlAttributes);
+        abstract public IHtmlString GetHtmlString(FormsPage page, FormField field, IDictionary<string, string> htmlAttributes);
 
         protected void RenderReadOnlyAttribute(StringBuilder sb, FormField field)
         {

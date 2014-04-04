@@ -24,17 +24,17 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             RendererImplementation = (IFormFormRenderer)Activator.CreateInstance(type);
         }
 
-        public static IHtmlString FieldFor(FormField field)
+        public static IHtmlString FieldFor(FormsPage page, FormField field)
         {
-            return FieldFor(field, new Dictionary<string, string>());
+            return FieldFor(page, field, new Dictionary<string, string>());
         }
 
-        public static IHtmlString FieldFor(FormField field, Dictionary<string, string> htmlAttributes)
+        public static IHtmlString FieldFor(FormsPage page, FormField field, Dictionary<string, string> htmlAttributes)
         {
-            return WriteRow(field, htmlAttributes);
+            return WriteRow(page, field, htmlAttributes);
         }
 
-        public static IHtmlString NameFor(FormField field)
+        public static IHtmlString NameFor(FormsPage page, FormField field)
         {
             return new HtmlString(field.Name);
         }
@@ -90,7 +90,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             sb.Append("</div>");
         }
 
-        private static IHtmlString WriteRow(FormField field, IDictionary<string, string> htmlAttributes)
+        private static IHtmlString WriteRow(FormsPage page, FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
             var includeLabel = ShowLabel(field);
@@ -103,7 +103,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             {
                 if (includeLabel)
                 {
-                    WriteLabel(field, sb);
+                    WriteLabel(page, field, sb);
                 }
                 else
                 {
@@ -118,7 +118,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 sb.Append("<label class=\"checkbox\">");
             }
 
-            WriteField(field, sb, htmlAttributes);
+            WriteField(page, field, sb, htmlAttributes);
 
             if (field.InputElementType is CheckboxInputElementAttribute && field.ValueType == typeof(bool))
             {
@@ -172,9 +172,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             sb.Append("</div>");
         }
 
-        private static void WriteField(FormField field, StringBuilder sb, IDictionary<string, string> htmlAttributes)
+        private static void WriteField(FormsPage page, FormField field, StringBuilder sb, IDictionary<string, string> htmlAttributes)
         {
-            var str = field.InputElementType.GetHtmlString(field, htmlAttributes);
+            var str = field.InputElementType.GetHtmlString(page, field, htmlAttributes);
 
             if (!String.IsNullOrWhiteSpace(field.Help))
             {
@@ -258,9 +258,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             sb.Append("</label>");
         }
 
-        private static void WriteLabel(FormField field, StringBuilder sb)
+        private static void WriteLabel(FormsPage page, FormField field, StringBuilder sb)
         {
-            var hide = field.OwningForm.Options.HideLabels;
+            var hide = page.RenderingContext.Options.HideLabels;
             if (field.InputElementType is FileuploadInputElementAttribute)
             {
                 hide = false;

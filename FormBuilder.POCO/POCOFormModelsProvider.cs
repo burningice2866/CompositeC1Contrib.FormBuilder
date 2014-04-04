@@ -6,44 +6,29 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public class POCOFormModelsProvider : IFormModelsProvider
     {
-        private static IDictionary<string, Type> _modelTypes = new Dictionary<string, Type>();
+        private static readonly IDictionary<string, Type> Types = new Dictionary<string, Type>();
+        private static readonly IDictionary<IPOCOForm, FormModel> Models = new Dictionary<IPOCOForm, FormModel>();
 
         static POCOFormModelsProvider()
         {
             var formTypes = GetFormTypes();
+
             foreach (var type in formTypes)
             {
                 var instance = (IPOCOForm)Activator.CreateInstance(type);
-                var model = POCOFormsFacade.FromInstance(instance, null);
+                var model = POCOFormsFacade.FromInstance(instance);
 
-                _modelTypes.Add(model.Name, type);
+                Types.Add(model.Name, type);
+                Models.Add(instance, model);
             }
         }
 
-        public static IDictionary<IPOCOForm, FormModel> GetModels()
+        public static IDictionary<IPOCOForm, FormModel> GetFormsAndModels()
         {
-            var dict = new Dictionary<IPOCOForm, FormModel>();
-
-            foreach (var type in _modelTypes.Values)
-            {
-                var instance = (IPOCOForm)Activator.CreateInstance(type);
-                var model = POCOFormsFacade.FromInstance(instance, null);
-
-                dict.Add(instance, model);
-            }
-
-            return dict;
+            return Models;
         }
 
-        public static IPOCOForm GetInstanceByName(string name)
-        {
-            var type = _modelTypes[name];
-            var instance = (IPOCOForm)Activator.CreateInstance(type);
-
-            return instance;
-        }
-
-        public static IEnumerable<Type> GetFormTypes()
+        private static IEnumerable<Type> GetFormTypes()
         {
             var returnList = new List<Type>();
 
@@ -63,9 +48,9 @@ namespace CompositeC1Contrib.FormBuilder
             return returnList;
         }
 
-        IEnumerable<FormModel> IFormModelsProvider.GetModels()
+        public IEnumerable<FormModel> GetModels()
         {
-            return GetModels().Select(e => e.Value);
+            return Models.Select(e => e.Value);
         }
     }
 }

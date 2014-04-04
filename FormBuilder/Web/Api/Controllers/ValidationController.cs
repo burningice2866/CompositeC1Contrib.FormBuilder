@@ -72,7 +72,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, true);
             }
 
-            var resultList = model.ValidationResult.Select(o => new ValidationError()
+            var resultList = model.ValidationResult.Select(o => new ValidationError
             {
                 AffectedFields = o.AffectedFormIds,
                 Message = o.ValidationMessage

@@ -13,7 +13,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             get { return "selectbox"; }
         }
 
-        public override IHtmlString GetHtmlString(FormField field, IDictionary<string, string> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormsPage page, FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
             var htmlAttributesDictionary = MapHtmlTagAttributes(field, htmlAttributes);
@@ -47,7 +47,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             if (field.DataSource != null && field.DataSource.Any())
             {
                 var value = field.Value;
-                var selectLabel = field.OwningForm.Options.HideLabels ? field.Label.Label : Localization.Widgets_Dropdown_SelectLabel;
+                var selectLabel = page.RenderingContext.Options.HideLabels ? field.Label.Label : Localization.Widgets_Dropdown_SelectLabel;
 
                 sb.AppendFormat("<option value=\"\" selected=\"selected\" disabled=\"disabled\">{0}</option>", HttpUtility.HtmlEncode(selectLabel));
 

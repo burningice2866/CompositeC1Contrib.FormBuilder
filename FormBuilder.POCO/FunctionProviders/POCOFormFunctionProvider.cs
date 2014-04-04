@@ -13,7 +13,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
         {
             get
             {
-                var models = POCOFormModelsProvider.GetModels();
+                var models = POCOFormModelsProvider.GetFormsAndModels();
                 foreach (var entry in models)
                 {
                     IFunction function;

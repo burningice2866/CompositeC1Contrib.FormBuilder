@@ -14,14 +14,18 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public abstract class FormsPage : RazorFunction
     {
-        protected FormOptions Options { get; private set; }
-        protected abstract FormBuilderRequestContext RenderingContext { get; }
+        public abstract FormBuilderRequestContext RenderingContext { get; }
 
         [FunctionParameter(Label = "Intro text", DefaultValue = null)]
         public XhtmlDocument IntroText { get; set; }
 
         [FunctionParameter(Label = "Success response", DefaultValue = null)]
         public XhtmlDocument SuccessResponse { get; set; }
+
+        protected FormOptions Options
+        {
+            get { return RenderingContext.Options; }
+        }
 
         protected FormModel RenderingModel
         {
@@ -36,11 +40,6 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         protected bool IsSuccess
         {
             get { return RenderingContext.IsSuccess; }
-        }
-
-        protected FormsPage()
-        {
-            Options = new FormOptions();
         }
 
         public IHtmlString EvaluateMarkup(XElement element)
@@ -109,7 +108,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     fieldElement.AddBeforeSelf(XElement.Parse(text));
                 }
 
-                var newValue = XElement.Parse(FormRenderer.FieldFor(field).ToString());
+                var newValue = XElement.Parse(FormRenderer.FieldFor(this, field).ToString());
 
                 fieldElement.ReplaceWith(newValue);
             }

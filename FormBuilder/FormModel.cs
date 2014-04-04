@@ -23,7 +23,6 @@ namespace CompositeC1Contrib.FormBuilder
         public IList<FormField> Fields { get; private set; }
         public IList<FormValidationRule> ValidationResult { get; private set; }
         public IList<Attribute> Attributes { get; private set; }
-        public FormOptions Options { get; set; }
 
         public Action<FormValidationEventArgs> OnValidateHandler { get; set; }
 
@@ -67,7 +66,6 @@ namespace CompositeC1Contrib.FormBuilder
 
             Name = name;
 
-            Options = new FormOptions();
             Fields = new List<FormField>();
             ValidationResult = new List<FormValidationRule>();
             Attributes = new List<Attribute>();

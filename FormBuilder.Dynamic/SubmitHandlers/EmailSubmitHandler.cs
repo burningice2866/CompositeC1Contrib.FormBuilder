@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Mail;
-using System.Reflection;
 
 using Composite.Core.WebClient;
 using Composite.Core.WebClient.Renderings.Page;
 using Composite.Core.Xml;
-using Composite.Data;
 using Composite.Functions;
 
+using CompositeC1Contrib.Email;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
@@ -31,20 +29,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
 
         public override void Submit(FormModel model)
         {
-            using (var data = new DataConnection())
-            {
-                MethodInfo enqueueMessageMethode = null;
-
-                var compositeC1ContribEmailAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(f => f.GetName().Name == "CompositeC1Contrib.Email");
-                if (compositeC1ContribEmailAssembly != null)
-                {
-                    var mailsFacadeType = compositeC1ContribEmailAssembly.GetType("CompositeC1Contrib.Email.MailsFacade", false);
-                    if (mailsFacadeType != null)
-                    {
-                        enqueueMessageMethode = mailsFacadeType.GetMethod("EnqueueMessage", new[] { typeof(MailMessage) });
-                    }
-                }
-
                 From = ResolveText(From, model);
                 To = ResolveText(To, model);
 
@@ -90,18 +74,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
                     }
                 }
 
-                if (enqueueMessageMethode != null)
-                {
-                    enqueueMessageMethode.Invoke(null, new[] { mailMessage });
-                }
-                else
-                {
-                    using (var client = new SmtpClient())
-                    {
-                        client.Send(mailMessage);
-                    }
-                }
-            }
+            MailsFacade.EnqueueMessage(mailMessage);
         }
 
         private static string ResolveText(string text, FormModel model)

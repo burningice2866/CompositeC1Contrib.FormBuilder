@@ -52,8 +52,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                         foreach (var formular in forms)
                         {
                             var pageNode = SiteMap.Provider.FindSiteMapNodeFromKey(ph.PageId.ToString());
-
                             var dataTypeName = GetFunctionParamValue(formular, "DataType");
+
                             var dataType = TypeManager.TryGetType(dataTypeName);
                             if (dataType == null)
                             {

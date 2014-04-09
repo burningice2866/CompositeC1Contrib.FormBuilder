@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Hosting;
 using System.Linq;
+using System.Web;
+
 using Composite.C1Console.Elements;
 using Composite.C1Console.Elements.Plugins.ElementProvider;
 using Composite.C1Console.Security;
@@ -26,27 +29,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 
         static FormBuilderElementProvider()
         {
-            var asms = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var asm in asms)
-            {
-                try
-                {
-                    var types = asm.GetTypes()
-                        .Where(t => typeof(IEntityTokenBasedElementProvider).IsAssignableFrom(t) && !t.IsInterface)
-                        .Select(t => (IEntityTokenBasedElementProvider)Activator.CreateInstance(t));
+            var batch = new CompositionBatch();
+            var catalog = new DirectoryCatalog(HttpRuntime.BinDirectory);
+            var container = new CompositionContainer(catalog);
 
-                    foreach (var t in types)
-                    {
-                        EntityTokenHandlers.Add(t.EntityTokenType, t);
-                    }
-                }
-                catch { }
-            }
+            container.Compose(batch);
+
+            EntityTokenHandlers = container.GetExportedValues<IEntityTokenBasedElementProvider>().ToDictionary(o => o.EntityTokenType, o => o);
         }
 
         public IEnumerable<Element> GetChildren(EntityToken entityToken, SearchToken searchToken)
         {
-            IEnumerable<Element> elements = Enumerable.Empty<Element>();
+            var elements = Enumerable.Empty<Element>();
 
             IEntityTokenBasedElementProvider handler;
             if (EntityTokenHandlers.TryGetValue(entityToken.GetType(), out handler))

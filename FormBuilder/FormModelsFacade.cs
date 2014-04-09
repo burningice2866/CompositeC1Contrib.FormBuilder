@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Hosting;
 
 namespace CompositeC1Contrib.FormBuilder
@@ -10,7 +11,7 @@ namespace CompositeC1Contrib.FormBuilder
     {
         public static readonly string FormsPath = HostingEnvironment.MapPath("~/App_Data/FormBuilder");
 
-        private static IList<IFormModelsProvider> _modelProviders;
+        private static readonly IList<IFormModelsProvider> ModelProviders;
 
         static FormModelsFacade()
         {
@@ -18,6 +19,14 @@ namespace CompositeC1Contrib.FormBuilder
             {
                 Directory.CreateDirectory(FormsPath);
             }
+
+            var batch = new CompositionBatch();
+            var catalog = new DirectoryCatalog(HttpRuntime.BinDirectory);
+            var container = new CompositionContainer(catalog);
+
+            container.Compose(batch);
+
+            ModelProviders = container.GetExportedValues<IFormModelsProvider>().ToList();
         }
 
         public static FormModel GetModel(string name)
@@ -27,31 +36,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static IEnumerable<FormModel> GetModels()
         {
-            if (_modelProviders == null)
-            {
-                _modelProviders = LoadFormModelProviders();
-            }
-
-            return _modelProviders.SelectMany(provider => provider.GetModels());
-        }
-
-        private static IList<IFormModelsProvider> LoadFormModelProviders()
-        {
-            var modelProviders = new List<IFormModelsProvider>();
-
-            var asms = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var asm in asms)
-            {
-                try
-                {
-                    var types = asm.GetTypes().Where(t => typeof(IFormModelsProvider).IsAssignableFrom(t) && !t.IsInterface);
-
-                    modelProviders.AddRange(types.Select(t => (IFormModelsProvider)Activator.CreateInstance(t)));
-                }
-                catch { }
-            }
-
-            return modelProviders;
+            return ModelProviders.SelectMany(provider => provider.GetModels());
         }
     }
 }

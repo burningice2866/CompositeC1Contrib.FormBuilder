@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 
 using Composite.C1Console.Elements;
 using Composite.C1Console.Security;
@@ -13,6 +14,7 @@ using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 {
+    [Export(typeof(IEntityTokenBasedElementProvider))]
     public class FormElementProviderEntityTokenHandler : IEntityTokenBasedElementProvider
     {
         public Type EntityTokenType

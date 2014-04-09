@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Registration;
 using System.Linq;
+using System.Web;
+
 using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
@@ -18,36 +22,27 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public static Dictionary<string, string> GetValidatorTypes()
         {
-            var returnList = new List<Type>();
-            var formAttributeType = typeof(FormValidationAttribute);
+            var formValidationAttributeType = typeof(FormValidationAttribute);
 
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var asm in assemblies)
-            {
-                try
-                {
-                    var types = asm.GetTypes()
-                        .Where(t => t != formAttributeType)
-                        .Where(t => formAttributeType.IsAssignableFrom(t))
-                        .Where(t => t.GetConstructor(new[] { typeof(string) }) != null);
-                    ;
+            var registrationBuilder = new RegistrationBuilder();
+            registrationBuilder.ForTypesMatching(t => t != formValidationAttributeType && formValidationAttributeType.IsAssignableFrom(t) && t.GetConstructor(new[] { typeof(string) }) != null).Export<FormValidationAttribute>();
 
-                    returnList.AddRange(types);
-                }
-                catch { }
-            }
+            var catalog = new DirectoryCatalog(HttpRuntime.BinDirectory, registrationBuilder);
+            var types = MefHelper.GetExportedTypes<FormValidationAttribute>(catalog);
 
-            return returnList.ToDictionary(t => t.AssemblyQualifiedName, t => t.Name); ;
+            return types.ToDictionary(t => t.AssemblyQualifiedName, t => t.Name);
         }
 
         public override void OnInitialize(object sender, EventArgs e)
         {
-            if (!BindingExist("ValidatorType"))
+            if (BindingExist("ValidatorType"))
             {
+                return;
+            }
+
                 Bindings.Add("ValidatorType", String.Empty);
                 Bindings.Add("Message", String.Empty);
             }
-        }
 
         public override void OnFinish(object sender, EventArgs e)
         {

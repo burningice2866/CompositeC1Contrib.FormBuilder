@@ -7,7 +7,7 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class FieldLabelAttribute : Attribute
     {
-        private string _label;
+        private readonly string _label;
         public string Label
         {
             get { return FormRenderer.GetLocalized(_label); }

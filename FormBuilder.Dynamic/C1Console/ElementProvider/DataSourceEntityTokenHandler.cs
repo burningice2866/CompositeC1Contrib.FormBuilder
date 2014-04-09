@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 
 using Composite.C1Console.Elements;
@@ -9,10 +10,10 @@ using Composite.Core.ResourceSystem;
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 {
+    [Export(typeof(IEntityTokenBasedElementProvider))]
     public class DataSourceEntityTokenHandler : IEntityTokenBasedElementProvider
     {
         public Type EntityTokenType

@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Registration;
 using System.Linq;
+using System.Web;
 
 namespace CompositeC1Contrib.FormBuilder
 {
+    [Export(typeof(IFormModelsProvider))]
     public class POCOFormModelsProvider : IFormModelsProvider
     {
         private static readonly IDictionary<string, Type> Types = new Dictionary<string, Type>();
@@ -11,14 +16,13 @@ namespace CompositeC1Contrib.FormBuilder
 
         static POCOFormModelsProvider()
         {
-            var formTypes = GetFormTypes();
+            var forms = GetForms();
 
-            foreach (var type in formTypes)
+            foreach (var instance in forms)
             {
-                var instance = (IPOCOForm)Activator.CreateInstance(type);
                 var model = POCOFormsFacade.FromInstance(instance);
 
-                Types.Add(model.Name, type);
+                Types.Add(model.Name, instance.GetType());
                 Models.Add(instance, model);
             }
         }
@@ -28,29 +32,23 @@ namespace CompositeC1Contrib.FormBuilder
             return Models;
         }
 
-        private static IEnumerable<Type> GetFormTypes()
-        {
-            var returnList = new List<Type>();
-
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var asm in assemblies)
-            {
-                try
-                {
-                    var types = asm.GetTypes()
-                        .Where(t => t.IsClass && !t.IsAbstract && typeof(IPOCOForm).IsAssignableFrom(t));
-
-                    returnList.AddRange(types);
-                }
-                catch { }
-            }
-
-            return returnList;
-        }
-
         public IEnumerable<FormModel> GetModels()
         {
             return Models.Select(e => e.Value);
         }
+
+        private static IEnumerable<IPOCOForm> GetForms()
+        {
+            var registrationBuilder = new RegistrationBuilder();
+            registrationBuilder.ForTypesMatching(t => t.IsClass && !t.IsAbstract && typeof(IPOCOForm).IsAssignableFrom(t)).Export<IPOCOForm>();
+
+            var batch = new CompositionBatch();
+            var catalog = new DirectoryCatalog(HttpRuntime.BinDirectory, registrationBuilder);
+            var container = new CompositionContainer(catalog);
+
+            container.Compose(batch);
+
+            return container.GetExportedValues<IPOCOForm>();
     }
+}
 }

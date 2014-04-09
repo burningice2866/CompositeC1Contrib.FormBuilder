@@ -1,5 +1,5 @@
-﻿using System.Web.Security;
-using System.Linq;
+﻿using System.Linq;
+using System.Web.Security;
 
 using Composite.C1Console.Security;
 
@@ -9,10 +9,16 @@ namespace CompositeC1Contrib.FormBuilder.Validation
     {
         private readonly string _passwordField;
 
+        public bool CheckUserName { get; set; }
+        public bool CheckEmail { get; set; }
+
         public CredentialsValidatorAttribute(string message, string passwordField)
             : base(message)
         {
             _passwordField = passwordField;
+
+            CheckUserName = false;
+            CheckEmail = true;
         }
 
         public override FormValidationRule CreateRule(FormField field)
@@ -24,14 +30,31 @@ namespace CompositeC1Contrib.FormBuilder.Validation
             {
                 Rule = () =>
                 {
-                    if (UserValidationFacade.IsLoggedIn())
+                    var isValid = false;
+
+                    if (!isValid && CheckUserName)
                     {
-                        return true;
+                        var user = Membership.GetUser(value);
+
+                        isValid = user != null;
                     }
 
-                    var userName = Membership.GetUserNameByEmail(value);
+                    if (!isValid && CheckEmail)
+                    {
+                        var username = Membership.GetUserNameByEmail(value);
+                        if (username != null)
+                        {
+                            isValid = true;
+                            value = username;
+                        }
+                    }
 
-                    return userName != null && Membership.ValidateUser(userName, password);
+                    if (!isValid)
+                    {
+                        return false;
+                    }
+
+                    return UserValidationFacade.IsLoggedIn() || Membership.ValidateUser(value, password);
                 }
             };
         }

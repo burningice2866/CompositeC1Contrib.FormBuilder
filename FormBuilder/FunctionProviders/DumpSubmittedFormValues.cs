@@ -44,6 +44,13 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             Name = "DumpSubmittedFormValues";
         }
 
+        public object Execute(ParameterList parameters, FunctionContextContainer context)
+        {
+            var formModel = (FormModel)context.GetParameterValue("FormModel", typeof(FormModel));
+
+            return DumpModelValues(formModel);
+        }
+
         public static string FormatFieldValue(FormField field)
         {
             if (field.Value is IEnumerable<string>)
@@ -74,17 +81,16 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             return field.Value.ToString();
         }
 
-        public object Execute(ParameterList parameters, FunctionContextContainer context)
+        public static XhtmlDocument DumpModelValues(FormModel model)
         {
-            var formModel = (FormModel)context.GetParameterValue("FormModel", typeof(FormModel));
             var html = new StringBuilder();
 
             html.Append("<table>");
 
-            foreach (var field in formModel.Fields.Where(f => f.Label != null && f.Value != null))
+            foreach (var field in model.Fields.Where(f => f.Label != null && f.Value != null))
             {
                 var value = FormatFieldValue(field);
-                    
+
                 value = HttpUtility.HtmlEncode(value);
 
                 if (field.InputElementType is TextAreaInputElementAttribute)

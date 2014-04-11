@@ -1,4 +1,5 @@
 ﻿using System.IO;
+
 using Composite.Core.Application;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.Web
@@ -8,9 +9,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Web
     {
         public static void OnBeforeInitialize()
         {
-            var baseFolder = FormModelsFacade.FormsPath;
-            var definitionsFolder = Path.Combine(baseFolder, "FormDefinitions");
+            MoveDefinitionFilesToFolders(FormModelsFacade.RootPath);
+        }
 
+        private static void MoveDefinitionFilesToFolders(string baseFolder)
+        {
+            var definitionsFolder = Path.Combine(baseFolder, "FormDefinitions");
             if (!Directory.Exists(definitionsFolder))
             {
                 return;
@@ -33,9 +37,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Web
             Directory.Delete(definitionsFolder);
         }
 
-        public static void OnInitialized()
-        {
-
-        }
+        public static void OnInitialized() { }
     }
 }

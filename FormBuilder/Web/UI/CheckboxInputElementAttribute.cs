@@ -13,7 +13,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             get { return "checkbox"; }
         }
 
-        public override IHtmlString GetHtmlString(FormsPage page, FormField field, IDictionary<string, string> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormOptions options, FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
             var value = field.Value;

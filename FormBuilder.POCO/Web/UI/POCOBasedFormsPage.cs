@@ -73,7 +73,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var field = RenderingContext.RenderingModel.Fields.Single(f => f.Name == prop.Name);
             var dictionary = Functions.ObjectToDictionary(htmlAttributes).ToDictionary(t => t.Key, t => t.Value.ToString());
 
-            return FormRenderer.FieldFor(this, field, dictionary);
+            return FormRenderer.FieldFor(Options, field, dictionary);
         }
 
         protected IHtmlString NameFor(Expression<Func<T, object>> fieldSelector)

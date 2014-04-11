@@ -86,6 +86,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         protected IHtmlString WriteAllFields()
         {
             var model = RenderingContext.RenderingModel;
+
+            return RenderModelFields(model, Options);
+        }
+
+        public static IHtmlString RenderModelFields(FormModel model, FormOptions options)
+        {
             var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(model.Name);
 
             foreach (var field in model.Fields.Where(f => f.Label != null))
@@ -108,7 +114,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     fieldElement.AddBeforeSelf(XElement.Parse(text));
                 }
 
-                var newValue = XElement.Parse(FormRenderer.FieldFor(this, field).ToString());
+                var newValue = XElement.Parse(FormRenderer.FieldFor(options, field).ToString());
 
                 fieldElement.ReplaceWith(newValue);
             }

@@ -159,7 +159,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="Package\config\App_Data\Composite\composite.config" />
     <None Include="Package\config\web.config" />
     <None Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\DownloadSavedForms.ashx" />

@@ -1,4 +1,5 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -7,6 +8,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormBuilder.POCO", "FormBuilder.POCO\FormBuilder.POCO.csproj", "{0DF78956-95A8-40BD-A826-7698126FBD4A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormBuilder.Dynamic", "FormBuilder.Dynamic\FormBuilder.Dynamic.csproj", "{41758BB5-C39D-48FB-82E9-299A693A8487}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormBuilder.Wizard", "FormBuilder.Wizard\FormBuilder.Wizard.csproj", "{AF0F2F95-DB3E-4E39-A31E-D5FAF551F073}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +29,10 @@ Global
 		{41758BB5-C39D-48FB-82E9-299A693A8487}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41758BB5-C39D-48FB-82E9-299A693A8487}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41758BB5-C39D-48FB-82E9-299A693A8487}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF0F2F95-DB3E-4E39-A31E-D5FAF551F073}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF0F2F95-DB3E-4E39-A31E-D5FAF551F073}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF0F2F95-DB3E-4E39-A31E-D5FAF551F073}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF0F2F95-DB3E-4E39-A31E-D5FAF551F073}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

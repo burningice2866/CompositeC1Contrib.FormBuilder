@@ -1,0 +1,74 @@
+﻿@using Composite.AspNet.Razor
+@using CompositeC1Contrib.FormBuilder.FunctionProviders
+@using CompositeC1Contrib.FormBuilder.Wizard
+
+@inherits CompositeC1Contrib.FormBuilder.Web.UI.StandardFormWizardPage
+
+@{
+    if (IsPost && !IsSuccess)
+    {
+        <div>
+            There was an error in handling the request, try again
+        </div>
+
+        return;
+    }
+
+    if (IsPost && IsSuccess)
+    {
+        <div>
+            Thank you for your submit, this was your submitted values <br /> <br />
+            
+            @foreach (var step in Wizard.Steps)
+            {
+                var model = StepModels[step.Name];
+                
+                <h3>@step.Name</h3>
+                @Html.Raw(DumpSubmittedFormValues.DumpModelValues(model))
+            }
+        </div>
+
+        return;
+    }
+    
+    var steps = Wizard.Steps;
+
+    <form method="POST" class="formwizard">
+        @for (int i = 0; i < steps.Count; i++)
+        {
+            var step = steps[i];
+
+            <input type="hidden" name="step_@(i + 1)" value="@step.FormName" />
+        }
+
+        @for (int i = 0; i < steps.Count; i++)
+        {
+            var step = steps[i];
+            var stepNumber = (i + 1);
+
+            <div data-step="@stepNumber" class="js-formwizard-step step @stepNumber" @if (i > 0) { <text> style="display: none;" </text>     }>
+                Form step @stepNumber
+
+                @RenderFormField(stepNumber, step.FormName)
+
+                @if (i > 0)
+                {
+                    <button data-nextstep="@(stepNumber - 1)">Forrige</button>
+                }
+
+                @if (i < (steps.Count - 1))
+                {
+                    <button data-nextstep="@(stepNumber + 1)">Næste</button>
+                }
+
+                @if (i == (steps.Count - 1))
+                {
+                    <input type="submit" value="Submit" />
+                }
+            </div>
+        }
+    </form>
+}
+
+<script src="/Frontend/js/plugins/jquery.formbuilder.js"></script>
+<script src="/Frontend/js/plugins/jquery.formbuilder.wizard.js"></script>

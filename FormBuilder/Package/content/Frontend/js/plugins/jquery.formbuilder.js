@@ -1,12 +1,7 @@
 ﻿(function ($, window, document, undefined) {
-    var validation = function (form, callback) {
-        var formSerialized = form.serializeArray();
+    window.formbuilder = window.formbuilder || {};
 
-        form.data('error', false);
-
-        $('.control-group', form).removeClass('error');
-        $('.error_notification', form).remove();
-
+    formbuilder.validate = function (form, formSerialized, callback) {
         $.ajax({
             type: 'POST',
             url: '/formbuilder/validation',
@@ -36,10 +31,23 @@
 
                     form.prepend($(errorDiv));
 
-                    callback();
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
                 }
             }
         });
+    };
+
+    formbuilder.clearErrors = function (form) {
+        $('.control-group', form).removeClass('error');
+        $('.error_notification', form).remove();
+        form.data('error', false);
+    };
+
+    var validation = function (form, callback) {
+        formbuilder.clearErrors(form);
+        formbuilder.validate(form, form.serializeArray(), callback);
     };
 
     var getFormFieldValue = function (fieldName) {

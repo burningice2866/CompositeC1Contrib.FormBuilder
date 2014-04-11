@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0" xmlns:f="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:formbuilder="https://bitbucket.org/burningice/compositec1contrib.formbuilder/1.0">
+  <cms:bindings>
+    <cms:binding name="StepName" type="System.String" />
+    <cms:binding name="FormName" type="System.String" />
+  </cms:bindings>
+
+  <cms:layout>
+    <cms:layout.label>
+      <cms:read source="StepName" />
+    </cms:layout.label>
+
+    <FieldGroup>
+      <TextBox Label="Step name">
+        <TextBox.Text>
+          <cms:bind source="StepName" />
+        </TextBox.Text>
+      </TextBox>
+
+      <KeySelector Label="Select field type" OptionsKeyField="Key" OptionsLabelField="Value" Required="true">
+        <KeySelector.Options>
+          <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Wizard.C1Console.Workflows.AddWizardStepWorkflow, CompositeC1Contrib.FormBuilder.Wizard" Method="GetFormNames" />
+        </KeySelector.Options>
+
+        <KeySelector.Selected>
+          <cms:bind source="FormName" />
+        </KeySelector.Selected>
+      </KeySelector>
+    </FieldGroup>
+  </cms:layout>
+</cms:formdefinition>

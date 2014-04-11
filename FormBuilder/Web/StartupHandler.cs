@@ -10,13 +10,21 @@ namespace CompositeC1Contrib.FormBuilder.Web
     {
         public static void OnBeforeInitialize()
         {
-            var config = GlobalConfiguration.Configuration;
+            GlobalConfiguration.Configuration.Routes.MapHttpRoute("Form validator", "formbuilder/{controller}");
 
-            config.Routes.MapHttpRoute("Form validator", "formbuilder/{controller}");
+            var formsFolder = Path.Combine(FormModelsFacade.RootPath, "Forms");
+            if (!Directory.Exists(formsFolder))
+            {
+                Directory.CreateDirectory(formsFolder);
+            }
 
-            var baseFolder = FormModelsFacade.FormsPath;
+            MoveRenderingLayoutToFormsFolder(FormModelsFacade.RootPath);
+            MoveFormDefinitionFoldersToExplcitFormSubFolder(FormModelsFacade.RootPath, formsFolder);
+        }
+
+        private static void MoveRenderingLayoutToFormsFolder(string baseFolder)
+        {
             var layoutsFolder = Path.Combine(baseFolder, "FormRenderingLayouts");
-
             if (!Directory.Exists(layoutsFolder))
             {
                 return;
@@ -37,6 +45,20 @@ namespace CompositeC1Contrib.FormBuilder.Web
             }
 
             Directory.Delete(layoutsFolder);
+        }
+
+        private static void MoveFormDefinitionFoldersToExplcitFormSubFolder(string baseFolder, string formsFolder)
+        {
+            foreach (var directory in Directory.GetDirectories(baseFolder))
+            {
+                var name = new DirectoryInfo(directory).Name;
+                if (!name.Contains("."))
+                {
+                    continue;
+                }
+
+                Directory.Move(directory, Path.Combine(formsFolder, name));
+            }
         }
 
         public static void OnInitialized() { }

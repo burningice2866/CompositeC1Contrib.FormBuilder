@@ -29,12 +29,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             Rows = rows;
         }
 
-        public override IHtmlString GetHtmlString(FormsPage page, FormField field, IDictionary<string, string> htmlAttributes)
+        public override IHtmlString GetHtmlString(FormOptions options, FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
             var placeholderText = field.PlaceholderText;
 
-            if (String.IsNullOrEmpty(placeholderText) && page.RenderingContext.Options.HideLabels)
+            if (String.IsNullOrEmpty(placeholderText) && options.HideLabels)
             {
                 placeholderText = field.Label.Label;
             }

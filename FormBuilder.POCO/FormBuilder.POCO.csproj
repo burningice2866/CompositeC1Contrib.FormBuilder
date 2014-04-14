@@ -51,7 +51,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="POCOFormBuilderRequestContext.cs" />
+    <Compile Include="Web\POCOFormBuilderRequestContext.cs" />
     <Compile Include="POCOFormModelsProvider.cs" />
     <Compile Include="POCOFormsFacade.cs" />
     <Compile Include="FunctionProviders\POCOFormFunctionProvider.cs" />

@@ -1,4 +1,4 @@
-﻿namespace CompositeC1Contrib.FormBuilder
+﻿namespace CompositeC1Contrib.FormBuilder.Web
 {
     public class POCOFormBuilderRequestContext : FormBuilderRequestContext
     {

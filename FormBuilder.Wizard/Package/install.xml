@@ -30,6 +30,7 @@
 
     <mi:Add installerType="Composite.Core.PackageSystem.PackageFragmentInstallers.XmlFileMergePackageFragmentInstaller, Composite" uninstallerType="Composite.Core.PackageSystem.PackageFragmentInstallers.XmlFileMergePackageFragmentUninstaller, Composite">
       <XmlFileMerges>
+        <XmlFileMerge changeDefinitionPath="~\config\web.config" targetFilePath="~\web.config" />
         <XmlFileMerge changeDefinitionPath="~\config\App_Data\Composite\composite.config" targetFilePath="~\App_Data\Composite\composite.config" />
       </XmlFileMerges>
     </mi:Add>

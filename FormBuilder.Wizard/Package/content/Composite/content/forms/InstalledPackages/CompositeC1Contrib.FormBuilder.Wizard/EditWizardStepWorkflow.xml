@@ -3,6 +3,8 @@
   <cms:bindings>
     <cms:binding name="StepName" type="System.String" />
     <cms:binding name="FormName" type="System.String" />
+    <cms:binding name="NextButtonLabel" type="System.String" />
+    <cms:binding name="PreviousButtonLabel" type="System.String" />
   </cms:bindings>
 
   <cms:layout>
@@ -26,6 +28,18 @@
           <cms:bind source="FormName" />
         </KeySelector.Selected>
       </KeySelector>
+
+      <TextBox Label="Next step button label">
+        <TextBox.Text>
+          <cms:bind source="NextButtonLabel" />
+        </TextBox.Text>
+      </TextBox>
+
+      <TextBox Label="Previous step button label">
+        <TextBox.Text>
+          <cms:bind source="PreviousButtonLabel" />
+        </TextBox.Text>
+      </TextBox>
     </FieldGroup>
   </cms:layout>
 </cms:formdefinition>

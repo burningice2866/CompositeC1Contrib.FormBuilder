@@ -16,7 +16,8 @@
                     var errorDiv = '<div class="error_notification"><p>Du mangler at udfylde nogle felter</p><ul>';
 
                     $.each(errors, function (i, itm) {
-                        var fields = itm.AffectedFields;
+                        var fields = itm.AffectedFields || itm.affectedFields;
+                        var message = itm.Message || itm.message;
 
                         $.each(fields, function (i, field) {
                             var el = $('[name="' + field + '"]', form);
@@ -24,7 +25,7 @@
                             el.parents('.control-group').addClass('error');
                         });
 
-                        errorDiv += '<li>' + itm.Message + '</li>';
+                        errorDiv += '<li>' + message + '</li>';
                     });
 
                     errorDiv += '</ul><p>Udfyld venligst felterne og send igen.</p></div>';

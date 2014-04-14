@@ -1,11 +1,10 @@
-﻿@using Composite.AspNet.Razor
-@using CompositeC1Contrib.FormBuilder.FunctionProviders
-@using CompositeC1Contrib.FormBuilder.Wizard
+﻿@using CompositeC1Contrib.FormBuilder.Web.UI
 
-@inherits CompositeC1Contrib.FormBuilder.Web.UI.StandardFormWizardPage
+@inherits StandardFormWizardPage
 
-@{
-    if (IsPost && !IsSuccess)
+@if (IsPost)
+{
+    if (!IsSuccess)
     {
         <div>
             There was an error in handling the request, try again
@@ -14,24 +13,24 @@
         return;
     }
 
-    if (IsPost && IsSuccess)
+    if (IsSuccess)
     {
-        <div>
-            Thank you for your submit, this was your submitted values <br /> <br />
-            
-            @foreach (var step in Wizard.Steps)
-            {
-                var model = StepModels[step.Name];
-                
-                <h3>@step.Name</h3>
-                @Html.Raw(DumpSubmittedFormValues.DumpModelValues(model))
-            }
-        </div>
+        if (Wizard.SuccessResponse != null && !Wizard.SuccessResponse.IsEmpty)
+        {
+            @EvaluateMarkup(Wizard.SuccessResponse.Root)
+        }
 
         return;
     }
-    
+}
+else
+{
     var steps = Wizard.Steps;
+
+    if (Wizard.IntroText != null && !Wizard.IntroText.IsEmpty)
+    {
+        @EvaluateMarkup(Wizard.IntroText.Root)
+    }
 
     <form method="POST" class="formwizard">
         @for (int i = 0; i < steps.Count; i++)
@@ -46,29 +45,41 @@
             var step = steps[i];
             var stepNumber = (i + 1);
 
-            <div data-step="@stepNumber" class="js-formwizard-step step @stepNumber" @if (i > 0) { <text> style="display: none;" </text>     }>
-                Form step @stepNumber
+            var previousButtonLabel = step.PreviousButtonLabel;
+            if (String.IsNullOrEmpty(previousButtonLabel))
+            {
+                previousButtonLabel = "Tilbage";
+            }
 
+            var nextButtonLabel = step.NextButtonLabel;
+            if (String.IsNullOrEmpty(nextButtonLabel))
+            {
+                nextButtonLabel = "Næste";
+
+                if (i == (steps.Count - 1))
+                {
+                    nextButtonLabel = "Indsend";
+                }
+            }
+
+            <div data-step="@stepNumber" class="js-formwizard-step step @stepNumber" @if (i > 0) { <text> style="display: none;" </text>      }>
                 @RenderFormField(stepNumber, step.FormName)
 
                 @if (i > 0)
                 {
-                    <button data-nextstep="@(stepNumber - 1)">Forrige</button>
+                    <button data-nextstep="@(stepNumber - 1)">@previousButtonLabel</button>
                 }
 
                 @if (i < (steps.Count - 1))
                 {
-                    <button data-nextstep="@(stepNumber + 1)">Næste</button>
+                    <button data-nextstep="@(stepNumber + 1)">@nextButtonLabel</button>
                 }
 
                 @if (i == (steps.Count - 1))
                 {
-                    <input type="submit" value="Submit" />
+                    <input type="submit" value="@nextButtonLabel" />
                 }
             </div>
         }
     </form>
 }
-
-<script src="/Frontend/js/plugins/jquery.formbuilder.js"></script>
-<script src="/Frontend/js/plugins/jquery.formbuilder.wizard.js"></script>

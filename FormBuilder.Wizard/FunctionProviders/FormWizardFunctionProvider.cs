@@ -4,6 +4,7 @@ using Composite.Functions;
 using Composite.Functions.Plugins.FunctionProvider;
 
 using CompositeC1Contrib.FormBuilder.Wizard;
+using CompositeC1Contrib.FormBuilder.Wizard.FunctionProviders;
 
 namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 {
@@ -24,6 +25,8 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                         yield return new FormWizardFunction(wizard.Name);
                     }
                 }
+
+                yield return new DumpSubmittedFormWizardValues();
             }
         }
 

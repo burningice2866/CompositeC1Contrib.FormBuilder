@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:f="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0">
+  <cms:bindings>
+    <cms:binding name="Handler" type="CompositeC1Contrib.FormBuilder.Wizard.SubmitHandlers.EmailSubmitHandler, CompositeC1Contrib.FormBuilder.Wizard" />
+  </cms:bindings>
+
+  <cms:layout>
+    <cms:layout.label>
+      <cms:read source="Handler.Name"/>
+    </cms:layout.label>
+
+    <TabPanels>
+      <PlaceHolder Label="Settings">
+        <FieldGroup>
+          <TextBox Label="Name">
+            <TextBox.Text>
+              <cms:bind source="Handler.Name" />
+            </TextBox.Text>
+          </TextBox>
+
+          <TextBox Label="From">
+            <TextBox.Text>
+              <cms:bind source="Handler.From" />
+            </TextBox.Text>
+          </TextBox>
+
+          <TextBox Label="To">
+            <TextBox.Text>
+              <cms:bind source="Handler.To" />
+            </TextBox.Text>
+          </TextBox>
+
+          <TextBox Label="Cc">
+            <TextBox.Text>
+              <cms:bind source="Handler.Cc" />
+            </TextBox.Text>
+          </TextBox>
+
+          <TextBox Label="Bcc">
+            <TextBox.Text>
+              <cms:bind source="Handler.Bcc" />
+            </TextBox.Text>
+          </TextBox>
+
+          <CheckBox Label="Include attachments">
+            <CheckBox.Checked>
+              <cms:bind source="Handler.IncludeAttachments" />
+            </CheckBox.Checked>
+          </CheckBox>
+
+          <TextBox Label="Subject">
+            <TextBox.Text>
+              <cms:bind source="Handler.Subject" />
+            </TextBox.Text>
+          </TextBox>
+        </FieldGroup>
+      </PlaceHolder>
+
+      <XhtmlEditor Label="Body">
+        <XhtmlEditor.Xhtml>
+          <cms:bind source="Handler.Body" />
+        </XhtmlEditor.Xhtml>
+      </XhtmlEditor>
+    </TabPanels>
+  </cms:layout>
+</cms:formdefinition>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CompositeC1Contrib.FormBuilder.Dynamic.Configuration
+namespace CompositeC1Contrib.FormBuilder.Configuration
 {
     public class SubmitHandlerElement
     {

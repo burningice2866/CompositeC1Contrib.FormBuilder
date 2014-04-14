@@ -9,13 +9,20 @@ using Composite.Core.Xml;
 using Composite.Functions;
 
 using CompositeC1Contrib.FormBuilder.Configuration;
+using CompositeC1Contrib.FormBuilder.Web;
 
 namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 {
-    public class StandardFormFunction<T> : IFunction where T : FormBuilderRequestContext
+    public abstract class StandardFormFunction
     {
-        private static readonly Type XElementParameterRuntimeTreeNode = Type.GetType("Composite.Functions.XElementParameterRuntimeTreeNode, Composite");
+        public static string RenderingContextKey = "RenderingContext";
+        public static string FormModelKey = "FormModel";
 
+        protected static readonly Type XElementParameterRuntimeTreeNode = Type.GetType("Composite.Functions.XElementParameterRuntimeTreeNode, Composite");
+    }
+
+    public class StandardFormFunction<T> : StandardFormFunction, IFunction where T : FormBuilderRequestContext
+    {
         private readonly XhtmlDocument _intoText;
         private readonly XhtmlDocument _successResponse;
 
@@ -80,8 +87,8 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
             var newContext = new FunctionContextContainer(context, new Dictionary<string, object>
             {
-                { "RenderingContext", renderingContext },
-                { "FormModel", renderingContext.RenderingModel }
+                { RenderingContextKey, renderingContext },
+                { FormModelKey, renderingContext.RenderingModel }
             });
 
             typeof(ParameterList).GetField("_functionContextContainer", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(parameters, newContext);
@@ -106,7 +113,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                 object value = item.Value.GetType().GetProperty("ValueObject").GetValue(item.Value, null);
                 var type = value.GetType();
 
-                if (type == XElementParameterRuntimeTreeNode)
+                if (type == StandardFormFunction.XElementParameterRuntimeTreeNode)
                 {
                     value = type.GetField("_element", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(value);
                 }

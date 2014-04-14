@@ -3,6 +3,8 @@
 using Composite.Functions;
 using Composite.Functions.Plugins.FunctionProvider;
 
+using CompositeC1Contrib.FormBuilder.Web;
+
 namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 {
     public class POCOFormFunctionProvider : IFunctionProvider

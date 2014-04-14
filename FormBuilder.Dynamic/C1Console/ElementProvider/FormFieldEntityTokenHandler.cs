@@ -9,6 +9,7 @@ using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
+using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;

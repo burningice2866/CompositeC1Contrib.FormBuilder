@@ -80,7 +80,6 @@
     <Compile Include="C1Console\EntityTokens\StringBasedDataSourceEntryEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\DataSourceEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormFieldEntityToken.cs" />
-    <Compile Include="C1Console\ElementProvider\IEntityTokenBasedElementProvider.cs" />
     <Compile Include="C1Console\InputElementHandler.cs" />
     <Compile Include="C1Console\TextBoxSettings.cs" />
     <Compile Include="C1Console\Workflows\AddDataSourceWorkflow.cs">
@@ -108,12 +107,11 @@
     <Compile Include="C1Console\Workflows\EditWorkflowAttribute.cs" />
     <Compile Include="CompositeFormRendererConverter.cs" />
     <Compile Include="Configuration\DynamicFormBuilderConfiguration.cs" />
-    <Compile Include="Configuration\SubmitHandlerElement.cs" />
     <Compile Include="DynamicFormDefinition.cs" />
     <Compile Include="DynamicFormModelsProvider.cs" />
     <Compile Include="C1Console\IInputTypeSettingsHandler.cs" />
     <Compile Include="C1Console\TextAreaSettings.cs" />
-    <Compile Include="DynamicFormBuilderRequestContext.cs" />
+    <Compile Include="Web\DynamicFormBuilderRequestContext.cs" />
     <Compile Include="SubmitHandlers\DownloadSavedFormsActionToken.cs" />
     <Compile Include="SubmitHandlers\SaveFormSubmitHandler.cs" />
     <Compile Include="Web\StartupHandler.cs" />

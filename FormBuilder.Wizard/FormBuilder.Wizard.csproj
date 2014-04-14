@@ -41,7 +41,11 @@
     <Reference Include="CompositeC1Contrib.Core">
       <HintPath>..\.vendor\CompositeC1Contrib.Core.dll</HintPath>
     </Reference>
+    <Reference Include="CompositeC1Contrib.Email">
+      <HintPath>..\.vendor\CompositeC1Contrib.Email.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -56,10 +60,22 @@
   <ItemGroup>
     <Compile Include="C1Console\Actions\DeleteFormWizardStepActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteFormWizardActionToken.cs" />
+    <Compile Include="C1Console\Actions\DeleteSubmitHandlerActionToken.cs" />
+    <Compile Include="C1Console\ElementProvider\FormWizardFolderEntityTokenHandler.cs" />
+    <Compile Include="C1Console\ElementProvider\FormWizardsElementProviderEntityTokenHandler.cs" />
+    <Compile Include="C1Console\ElementProvider\FormWizardEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\WizardsElementProvider.cs" />
+    <Compile Include="C1Console\EntityTokens\FormWizardFolderEntityToken.cs" />
+    <Compile Include="C1Console\EntityTokens\FormSubmitHandlerEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormWizardStepEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormWizardEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormWizardsElementProviderEntityToken.cs" />
+    <Compile Include="C1Console\Workflows\AddSubmitHandlerWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="C1Console\Workflows\EditEmailSubmitHandlerWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="C1Console\Workflows\EditFormWizardWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -72,13 +88,19 @@
     <Compile Include="C1Console\Workflows\AddFormWizardWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="C1Console\Workflows\EditWorkflowAttribute.cs" />
+    <Compile Include="Configuration\WizardFormBuilderConfiguration.cs" />
     <Compile Include="FormWizardStep.cs" />
     <Compile Include="FormWizard.cs" />
     <Compile Include="FormWizardsFacade.cs" />
+    <Compile Include="FunctionProviders\DumpSubmittedFormWizardValues.cs" />
     <Compile Include="FunctionProviders\FormWizardFunctionEntityToken.cs" />
     <Compile Include="FunctionProviders\FormWizardFunctionProvider.cs" />
     <Compile Include="FunctionProviders\FormWizardFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SubmitHandlers\EmailSubmitHandler.cs" />
+    <Compile Include="SubmitHandlers\FormSubmitHandler.cs" />
+    <Compile Include="Web\FormWizardRequestContext.cs" />
     <Compile Include="Web\StartupHandler.cs" />
     <Compile Include="Web\UI\FormsWizardPage.cs" />
   </ItemGroup>

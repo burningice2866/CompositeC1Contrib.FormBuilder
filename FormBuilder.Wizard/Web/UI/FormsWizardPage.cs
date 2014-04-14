@@ -1,67 +1,55 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
 using System.Web;
 using System.Xml.Linq;
 
 using Composite.AspNet.Razor;
+using Composite.Core.WebClient.Renderings.Page;
 
+using CompositeC1Contrib.FormBuilder.FunctionProviders;
 using CompositeC1Contrib.FormBuilder.Wizard;
+using CompositeC1Contrib.FormBuilder.Wizard.Web;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public abstract class StandardFormWizardPage : RazorFunction
     {
-        public string WizardName { get; set; }
-
-        protected IDictionary<string, FormModel> StepModels = new Dictionary<string, FormModel>();
-
-        protected bool IsSuccess { get; private set; }
-
         protected FormWizard Wizard
         {
-            get
-            {
-                var wizard = FormWizardsFacade.GetWizard(WizardName);
+            get { return RenderingContext.Wizard; }
+        }
 
-                return wizard;
-            }
+        protected bool IsSuccess
+        {
+            get { return RenderingContext.IsSuccess; }
+        }
+
+        public FormWizardRequestContext RenderingContext
+        {
+            get { return (FormWizardRequestContext)FunctionContextContainer.GetParameterValue(FormWizardFunction.RenderingContextKey, typeof(FormWizardRequestContext)); }
         }
 
         public override void ExecutePageHierarchy()
         {
-            if (IsPost)
+            if (RenderingContext.IsOwnSubmit && RenderingContext.IsSuccess)
             {
-                var steps = Wizard.Steps;
-                for (int i = 0; i < steps.Count; i++)
-                {
-                    var step = steps[i];
-                    var model = FormModelsFacade.GetModel(step.FormName);
-                    var stepPrepend = "step-" + (i + 1) + "-";
-                    var keys = Request.Form.AllKeys.Where(k => k.StartsWith(stepPrepend)).ToArray();
-                    var nmc = new NameValueCollection();
-                    foreach (var key in keys)
-                    {
-                        var name = key.Remove(0, stepPrepend.Length);
-                        var value = Request.Form[key];
-
-                        nmc.Add(name, value);
-                    }
-
-                    model.MapValues(nmc, Enumerable.Empty<FormFile>());
-
-                    IsSuccess = !model.ValidationResult.Any();
-                    if (!IsSuccess)
-                    {
-                        break;
-                    }
-
-                    StepModels.Add(step.Name, model);
-                }
+                RenderingContext.Submit();
             }
 
             base.ExecutePageHierarchy();
+        }
+
+        public IHtmlString EvaluateMarkup(XElement element)
+        {
+            if (element == null)
+            {
+                return null;
+            }
+
+            var doc = new XElement(element);
+
+            PageRenderer.ExecuteEmbeddedFunctions(doc, FunctionContextContainer);
+
+            return new HtmlString(doc.ToString());
         }
 
         protected IHtmlString RenderFormField(int step, string formName)

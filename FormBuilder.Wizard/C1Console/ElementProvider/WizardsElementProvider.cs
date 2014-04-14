@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition.Hosting;
 using System.Linq;
+using System.Web;
 
 using Composite.C1Console.Elements;
 using Composite.C1Console.Elements.Plugins.ElementProvider;
@@ -7,7 +10,7 @@ using Composite.C1Console.Security;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 
-using CompositeC1Contrib.FormBuilder.Wizard.C1Console.Actions;
+using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
 using CompositeC1Contrib.FormBuilder.Wizard.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Wizard.C1Console.Workflows;
 
@@ -18,122 +21,36 @@ namespace CompositeC1Contrib.FormBuilder.Wizard.C1Console.ElementProvider
         private static readonly ActionGroup ActionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
         public static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = true, ActionGroup = ActionGroup };
 
+        private static readonly IDictionary<Type, IEntityTokenBasedElementProvider> EntityTokenHandlers = new Dictionary<Type, IEntityTokenBasedElementProvider>();
+
         private ElementProviderContext _context;
         public ElementProviderContext Context
         {
             set { _context = value; }
         }
 
+        static WizardsElementProvider()
+        {
+            var batch = new CompositionBatch();
+            var catalog = new DirectoryCatalog(HttpRuntime.BinDirectory);
+            var container = new CompositionContainer(catalog);
+
+            container.Compose(batch);
+
+            EntityTokenHandlers = container.GetExportedValues<IEntityTokenBasedElementProvider>().ToDictionary(o => o.EntityTokenType, o => o);
+        }
+
         public IEnumerable<Element> GetChildren(EntityToken entityToken, SearchToken searchToken)
         {
-            if (entityToken is FormWizardsElementProviderEntityToken)
+            var elements = Enumerable.Empty<Element>();
+
+            IEntityTokenBasedElementProvider handler;
+            if (EntityTokenHandlers.TryGetValue(entityToken.GetType(), out handler))
             {
-                var wizards = FormWizardsFacade.GetWizards();
-                foreach (var wizard in wizards)
-                {
-                    var elementHandle = _context.CreateElementHandle(new FormWizardEntityToken(wizard.Name));
-                    var wizardElement = new Element(elementHandle)
-                    {
-                        VisualData = new ElementVisualizedData
-                        {
-                            Label = wizard.Name,
-                            ToolTip = wizard.Name,
-                            HasChildren = true,
-                            Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                            OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
-                        }
-                    };
-
-                    var editActionToken = new WorkflowActionToken(typeof(EditFormWizardWorkflow));
-                    wizardElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
-                    {
-                        VisualData = new ActionVisualizedData
-                        {
-                            Label = "Edit wizard",
-                            ToolTip = "Edit wizard",
-                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
-                            ActionLocation = ActionLocation
-                        }
-                    });
-
-                    var deleteActionToken = new ConfirmWorkflowActionToken("Delete wizard", typeof(DeleteFormWizardActionToken));
-                    wizardElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
-                    {
-                        VisualData = new ActionVisualizedData
-                        {
-                            Label = "Delete wizard",
-                            ToolTip = "Delete wizard",
-                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
-                            ActionLocation = ActionLocation
-                        }
-                    });
-
-                    var addActionToken = new WorkflowActionToken(typeof(AddWizardStepWorkflow));
-                    wizardElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
-                    {
-                        VisualData = new ActionVisualizedData
-                        {
-                            Label = "Add step",
-                            ToolTip = "Add step",
-                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-add"),
-                            ActionLocation = ActionLocation
-                        }
-                    });
-
-                    yield return wizardElement;
-                }
+                elements = handler.Handle(_context, entityToken);
             }
 
-            var wizardEntityToken = entityToken as FormWizardEntityToken;
-            if (wizardEntityToken != null)
-            {
-                var wizard = FormWizardsFacade.GetWizards().SingleOrDefault(w => w.Name == wizardEntityToken.WizardName);
-                if (wizard != null)
-                {
-                    foreach (var step in wizard.Steps)
-                    {
-                        var elementHandle =
-                            _context.CreateElementHandle(new FormWizardStepEntityToken(wizard.Name, step.Name));
-                        var wizardStepElement = new Element(elementHandle)
-                        {
-                            VisualData = new ElementVisualizedData
-                            {
-                                Label = step.Name,
-                                ToolTip = step.Name,
-                                HasChildren = false,
-                                Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                                OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
-                            }
-                        };
-
-                        var editActionToken = new WorkflowActionToken(typeof(EditWizardStepWorkflow));
-                        wizardStepElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
-                        {
-                            VisualData = new ActionVisualizedData
-                            {
-                                Label = "Edit step",
-                                ToolTip = "Edit step",
-                                Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
-                                ActionLocation = ActionLocation
-                            }
-                        });
-
-                        var deleteActionToken = new ConfirmWorkflowActionToken("Delete step", typeof(DeleteFormWizardStepActionToken));
-                        wizardStepElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
-                        {
-                            VisualData = new ActionVisualizedData
-                            {
-                                Label = "Delete step",
-                                ToolTip = "Delete step",
-                                Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
-                                ActionLocation = ActionLocation
-                            }
-                        });
-
-                        yield return wizardStepElement;
-                    }
-                }
-            }
+            return elements;
         }
 
         public IEnumerable<Element> GetRoots(SearchToken searchToken)

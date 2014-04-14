@@ -46,9 +46,12 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
         public object Execute(ParameterList parameters, FunctionContextContainer context)
         {
+            var doc = new XhtmlDocument();
             var formModel = (FormModel)context.GetParameterValue("FormModel", typeof(FormModel));
 
-            return DumpModelValues(formModel);
+            DumpModelValues(formModel, doc);
+
+            return doc;
         }
 
         public static string FormatFieldValue(FormField field)
@@ -81,7 +84,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             return field.Value.ToString();
         }
 
-        public static XhtmlDocument DumpModelValues(FormModel model)
+        public static void DumpModelValues(FormModel model, XhtmlDocument doc)
         {
             var html = new StringBuilder();
 
@@ -103,10 +106,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
             html.Append("</table>");
 
-            var doc = new XhtmlDocument();
             doc.Body.Add(XElement.Parse(html.ToString()));
-
-            return doc;
         }
     }
 }

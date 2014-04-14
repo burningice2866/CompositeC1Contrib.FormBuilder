@@ -6,12 +6,14 @@ using Composite.C1Console.Security;
 using Composite.Core.Xml;
 using Composite.Functions;
 
-using CompositeC1Contrib.FormBuilder.Configuration;
+using CompositeC1Contrib.FormBuilder.Wizard.Web;
 
 namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 {
     public class FormWizardFunction : IFunction
     {
+        public static string RenderingContextKey = "RenderingContext";
+
         public string Namespace { get; private set; }
         public string Name { get; private set; }
 
@@ -50,13 +52,16 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
         public virtual object Execute(ParameterList parameters, FunctionContextContainer context)
         {
-            var formExecutor = FunctionFacade.GetFunction("FormBuilder.StandardFormWizardExecutor");
-            var functionParameters = new Dictionary<string, object>
+            var renderingContext = new FormWizardRequestContext(Namespace + "." + Name);
+            var newContext = new FunctionContextContainer(context, new Dictionary<string, object>
             {
-                { "WizardName", Namespace +"."+ Name }
-            };
+                { RenderingContextKey, renderingContext }
+            });
 
-            return FunctionFacade.Execute<XhtmlDocument>(formExecutor, functionParameters, context);
+            var formExecutor = FunctionFacade.GetFunction("FormBuilder.StandardFormWizardExecutor");
+            var functionParameters = new Dictionary<string, object>();
+
+            return FunctionFacade.Execute<XhtmlDocument>(formExecutor, functionParameters, newContext);
         }
     }
 }

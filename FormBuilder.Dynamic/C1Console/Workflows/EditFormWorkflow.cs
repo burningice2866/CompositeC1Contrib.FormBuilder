@@ -26,7 +26,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
                 Bindings.Add("FormName", formToken.FormName);
                 Bindings.Add("RequiresCaptcha", definition.Model.Attributes.OfType<RequiresCaptchaAttribute>().Any());
-                Bindings.Add("ForceHttpConnection", definition.Model.Attributes.OfType<ForceHttpsConnectionAttribute>().Any());
+                Bindings.Add("ForceHttpsConnection", definition.Model.Attributes.OfType<ForceHttpsConnectionAttribute>().Any());
                 Bindings.Add("SubmitButtonLabel", definition.Model.SubmitButtonLabel);
                 Bindings.Add("IntroText", definition.IntroText.ToString());
                 Bindings.Add("SuccessResponse", definition.SuccessResponse.ToString());
@@ -56,7 +56,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
 
             SwitchAttribute<RequiresCaptchaAttribute>("RequiresCaptcha", definition.Model.Attributes);
-            SwitchAttribute<ForceHttpsConnectionAttribute>("ForceHttpConnection", definition.Model.Attributes);
+            SwitchAttribute<ForceHttpsConnectionAttribute>("ForceHttpsConnection", definition.Model.Attributes);
 
             if (!String.IsNullOrEmpty(submitButtonLabel))
             {

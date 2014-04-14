@@ -4,7 +4,7 @@ using Composite.Functions;
 
 using CompositeC1Contrib.FormBuilder.Dynamic;
 
-namespace CompositeC1Contrib.FormBuilder
+namespace CompositeC1Contrib.FormBuilder.Web
 {
     public class DynamicFormBuilderRequestContext : FormBuilderRequestContext
     {

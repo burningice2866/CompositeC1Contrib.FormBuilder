@@ -10,6 +10,7 @@ using Composite.Functions;
 
 using CompositeC1Contrib.Email;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
+using CompositeC1Contrib.FormBuilder.FunctionProviders;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
 {
@@ -105,7 +106,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
 
             var functionContextContainer = new FunctionContextContainer(new Dictionary<string, object>
             {
-                { "FormModel", model }
+                { StandardFormFunction.FormModelKey, model }
             });
 
             PageRenderer.ExecuteEmbeddedFunctions(templateMarkup.Root, functionContextContainer);

@@ -80,12 +80,14 @@
     <Compile Include="Attributes\ForceHttpsConnectionAttribute.cs" />
     <Compile Include="Attributes\FormNameAttribute.cs" />
     <Compile Include="Attributes\DataSourceAttribute.cs" />
+    <Compile Include="C1Console\ElementProvider\IEntityTokenBasedElementProvider.cs" />
     <Compile Include="C1Console\EntityTokens\FormElementProviderEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormInstanceEntityToken.cs" />
     <Compile Include="Configuration\FormBuilderConfiguration.cs" />
     <Compile Include="Configuration\FormBuilderConfigurationHandler.cs" />
     <Compile Include="Configuration\IPluginConfiguration.cs" />
-    <Compile Include="FormBuilderRequestContext.cs" />
+    <Compile Include="Configuration\SubmitHandlerElement.cs" />
+    <Compile Include="Web\FormBuilderRequestContext.cs" />
     <Compile Include="FormModelsFacade.cs" />
     <Compile Include="FunctionProviders\DumpSubmittedFormValues.cs" />
     <Compile Include="FunctionProviders\StandardFormFunction.cs" />
@@ -160,6 +162,7 @@
     <Compile Include="C1Console\Workflows\EditFormRenderingLayoutWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="XElementHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Localization.tt">

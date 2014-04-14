@@ -3,7 +3,7 @@
   <cms:bindings>
     <cms:binding name="FormName" type="System.String" />
     <cms:binding name="RequiresCaptcha" type="System.Boolean" />
-    <cms:binding name="ForceHttpConnection" type="System.Boolean" />
+    <cms:binding name="ForceHttpsConnection" type="System.Boolean" />
     <cms:binding name="SubmitButtonLabel" type="System.String" />
     <cms:binding name="IntroText" type="System.String" />
     <cms:binding name="SuccessResponse" type="System.String" />
@@ -29,7 +29,7 @@
           </CheckBox>
 
           <CheckBox Label="Force https connection">
-            <cms:bind source="ForceHttpConnection" />
+            <cms:bind source="ForceHttpsConnection" />
           </CheckBox>
 
           <TextBox Label="Submitbutton label">

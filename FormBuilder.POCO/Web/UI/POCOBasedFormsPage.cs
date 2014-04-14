@@ -8,6 +8,7 @@ using System.Web;
 
 using Composite.AspNet.Razor;
 using Composite.Functions;
+using CompositeC1Contrib.FormBuilder.FunctionProviders;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
@@ -40,8 +41,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             var functionContext = new FunctionContextContainer(FunctionContextContainer, new Dictionary<string, object>
             {
-                { "RenderingContext", RenderingContext },
-                { "FormModel", RenderingContext.RenderingModel }
+                { StandardFormFunction.RenderingContextKey, RenderingContext },
+                { StandardFormFunction.FormModelKey, RenderingContext.RenderingModel }
             });
 
             var functionContextField = typeof(RazorHelper).GetField("PageContext_FunctionContextContainer", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);

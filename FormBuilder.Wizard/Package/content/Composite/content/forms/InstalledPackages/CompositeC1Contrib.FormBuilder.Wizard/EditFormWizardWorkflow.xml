@@ -2,6 +2,9 @@
 <cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:f="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0">
   <cms:bindings>
     <cms:binding name="WizardName" type="System.String" />
+    <cms:binding name="ForceHttpsConnection" type="System.Boolean" />
+    <cms:binding name="IntroText" type="System.String" />
+    <cms:binding name="SuccessResponse" type="System.String" />
   </cms:bindings>
 
   <cms:layout>
@@ -9,12 +12,32 @@
       <cms:read source="WizardName" />
     </cms:layout.label>
 
-    <FieldGroup>
-      <TextBox Label="Wizard name">
-        <TextBox.Text>
-          <cms:bind source="WizardName" />
-        </TextBox.Text>
-      </TextBox>
-    </FieldGroup>
+    <TabPanels>
+      <PlaceHolder Label="Setting">
+        <FieldGroup>
+          <TextBox Label="Wizard name">
+            <TextBox.Text>
+              <cms:bind source="WizardName" />
+            </TextBox.Text>
+          </TextBox>
+
+          <CheckBox Label="Force https connection">
+            <cms:bind source="ForceHttpsConnection" />
+          </CheckBox>
+        </FieldGroup>
+      </PlaceHolder>
+
+      <PlaceHolder Label="Layout">
+        <FieldGroup>
+          <InlineXhtmlEditor Label="Intro text">
+            <cms:bind source="IntroText"/>
+          </InlineXhtmlEditor>
+
+          <InlineXhtmlEditor Label="Success response">
+            <cms:bind source="SuccessResponse"/>
+          </InlineXhtmlEditor>
+        </FieldGroup>
+      </PlaceHolder>
+    </TabPanels>
   </cms:layout>
 </cms:formdefinition>

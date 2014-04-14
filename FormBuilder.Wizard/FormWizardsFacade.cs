@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Linq;
+using CompositeC1Contrib.FormBuilder.Wizard.SubmitHandlers;
 
 namespace CompositeC1Contrib.FormBuilder.Wizard
 {
@@ -53,7 +55,15 @@ namespace CompositeC1Contrib.FormBuilder.Wizard
             }
 
             var root = new XElement("FormBuilder.Wizard",
-                new XAttribute("name", wizard.Name));
+                new XAttribute("name", wizard.Name),
+                new XAttribute("forceHttpsConnection", wizard.ForceHttpSConnection));
+
+            var layout = new XElement("Layout");
+
+            layout.Add(new XElement("introText", wizard.IntroText.ToString()));
+            layout.Add(new XElement("successResponse", wizard.SuccessResponse.ToString()));
+
+            root.Add(layout);
 
             var steps = new XElement("Steps");
 
@@ -64,10 +74,50 @@ namespace CompositeC1Contrib.FormBuilder.Wizard
                     new XAttribute("FormName", step.FormName),
                     new XAttribute("LocalOrdering", step.LocalOrdering));
 
+                if (!String.IsNullOrEmpty(step.NextButtonLabel))
+                {
+                    stepElement.Add(new XAttribute("nextButtonLabel", step.NextButtonLabel));
+                }
+
+                if (!String.IsNullOrEmpty(step.PreviousButtonLabel))
+                {
+                    stepElement.Add(new XAttribute("previousButtonLabel", step.PreviousButtonLabel));
+                }
+
                 steps.Add(stepElement);
             }
-
+            
             root.Add(steps);
+
+            if (wizard.SubmitHandlers.Any())
+            {
+                var submitHandlers = new XElement("SubmitHandlers");
+
+                foreach (var handler in wizard.SubmitHandlers)
+                {
+                    var handlerElement = new XElement("Add",
+                        new XAttribute("Name", handler.Name),
+                        new XAttribute("Type", handler.GetType().AssemblyQualifiedName));
+
+                    var emailSubmitHandler = handler as EmailSubmitHandler;
+                    if (emailSubmitHandler != null)
+                    {
+                        handlerElement.Add(new XAttribute("IncludeAttachments", emailSubmitHandler.IncludeAttachments));
+                        handlerElement.Add(new XAttribute("From", emailSubmitHandler.From ?? String.Empty));
+                        handlerElement.Add(new XAttribute("To", emailSubmitHandler.To ?? String.Empty));
+                        handlerElement.Add(new XAttribute("Cc", emailSubmitHandler.Cc ?? String.Empty));
+                        handlerElement.Add(new XAttribute("Bcc", emailSubmitHandler.Bcc ?? String.Empty));
+
+                        handlerElement.Add(new XElement("Subject", emailSubmitHandler.Subject ?? String.Empty));
+                        handlerElement.Add(new XElement("Body", emailSubmitHandler.Body ?? String.Empty));
+                    }
+
+                    submitHandlers.Add(handlerElement);
+                }
+
+                root.Add(submitHandlers);
+            }
+
             root.Save(file);
 
             NotifyChanges();

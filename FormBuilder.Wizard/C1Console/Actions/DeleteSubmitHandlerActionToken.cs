@@ -5,9 +5,9 @@ using System.Linq;
 using Composite.C1Console.Actions;
 using Composite.C1Console.Security;
 
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
+using CompositeC1Contrib.FormBuilder.Wizard.C1Console.EntityTokens;
 
-namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
+namespace CompositeC1Contrib.FormBuilder.Wizard.C1Console.Actions
 {
     [ActionExecutor(typeof(DeleteSubmitHandlerActionExecutor))]
     public class DeleteSubmitHandlerActionToken : ActionToken
@@ -35,12 +35,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
         public FlowToken Execute(EntityToken entityToken, ActionToken actionToken, FlowControllerServicesContainer flowControllerServicesContainer)
         {
             var token = (FormSubmitHandlerEntityToken)entityToken;
-            var definition = DynamicFormsFacade.GetFormByName(token.FormName);
-            var handler = definition.SubmitHandlers.Single(h => h.Name == token.Name);
+            var wizard = FormWizardsFacade.GetWizard(token.FormName);
+            var handler = wizard.SubmitHandlers.Single(h => h.Name == token.Name);
 
-            definition.SubmitHandlers.Remove(handler);
+            wizard.SubmitHandlers.Remove(handler);
 
-            DynamicFormsFacade.SaveForm(definition);
+            FormWizardsFacade.SaveWizard(wizard);
 
             new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(entityToken);
 

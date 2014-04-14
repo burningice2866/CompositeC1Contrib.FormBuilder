@@ -35,6 +35,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             Model = model;
             DefaultValues = new Dictionary<string, XElement>();
             SubmitHandlers = new List<FormSubmitHandler>();
+            IntroText = new XhtmlDocument();
+            SuccessResponse = new XhtmlDocument();
         }
 
         public static DynamicFormDefinition Parse(string name, XElement xml)
@@ -105,7 +107,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         private static void ParseInputElement(XElement xml, IList<Attribute> attrs)
         {
             var type = Type.GetType(xml.Attribute("type").Value);
-            var inputElementAttr = (InputElementTypeAttribute)DynamicFormsFacade.DeserializeInstanceWithArgument(type, xml);
+            var inputElementAttr = (InputElementTypeAttribute)XElementHelper.DeserializeInstanceWithArgument(type, xml);
 
             attrs.Add(inputElementAttr);
         }
@@ -140,27 +142,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             if (layoutElement != null)
             {
                 var label = layoutElement.Attribute("submitButtonLabel").Value;
-                var introText = layoutElement.Element("introText");
-                var successResponse = layoutElement.Element("successResponse");
 
                 definition.Model.Attributes.Add(new SubmitButtonLabelAttribute(label));
 
+                var introText = layoutElement.Element("introText");
                 if (introText != null)
                 {
                     definition.IntroText = XhtmlDocument.Parse(introText.Value);
                 }
-                else
-                {
-                    definition.IntroText = new XhtmlDocument();
-                }
 
+                var successResponse = layoutElement.Element("successResponse");
                 if (successResponse != null)
                 {
                     definition.SuccessResponse = XhtmlDocument.Parse(successResponse.Value);
-                }
-                else
-                {
-                    definition.SuccessResponse = new XhtmlDocument();
                 }
             }
 
@@ -193,7 +187,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     var handlerName = handler.Attribute("Name").Value;
                     var typeString = handler.Attribute("Type").Value;
                     var type = Type.GetType(typeString);
-                    var instance = (FormSubmitHandler)DynamicFormsFacade.DeserializeInstanceWithArgument(type, handler);
+                    var instance = (FormSubmitHandler)XElementHelper.DeserializeInstanceWithArgument(type, handler);
 
                     instance.Name = handlerName;
 
@@ -239,7 +233,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 var typeString = rule.Attribute("type").Value;
                 var type = Type.GetType(typeString);
 
-                var ruleAttribute = (FormValidationAttribute)DynamicFormsFacade.DeserializeInstanceWithArgument(type, rule);
+                var ruleAttribute = (FormValidationAttribute)XElementHelper.DeserializeInstanceWithArgument(type, rule);
 
                 attrs.Add(ruleAttribute);
             }

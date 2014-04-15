@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 
+using Composite.C1Console.Workflow;
+
 using CompositeC1Contrib.FormBuilder.Wizard.C1Console.EntityTokens;
 using CompositeC1Contrib.Workflows;
 
@@ -34,6 +36,12 @@ namespace CompositeC1Contrib.FormBuilder.Wizard.C1Console.Workflows
 
             var treeRefresher = CreateAddNewTreeRefresher(EntityToken);
             treeRefresher.PostRefreshMesseges(new FormWizardEntityToken(wizardName));
+
+            var wizardToken = new FormWizardEntityToken(wizard.Name);
+            var workflowToken = new WorkflowActionToken(typeof(EditFormWizardWorkflow));
+
+            CreateAddNewTreeRefresher(EntityToken).PostRefreshMesseges(wizardToken);
+            ExecuteAction(wizardToken, workflowToken);
         }
 
         public override bool Validate()

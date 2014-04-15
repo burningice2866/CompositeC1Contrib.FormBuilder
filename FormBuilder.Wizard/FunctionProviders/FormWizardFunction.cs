@@ -12,7 +12,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 {
     public class FormWizardFunction : IFunction
     {
-        public static string RenderingContextKey = "RenderingContext";
+        public const string RenderingContextKey = "RenderingContext";
 
         public string Namespace { get; private set; }
         public string Name { get; private set; }

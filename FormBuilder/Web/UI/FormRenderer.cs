@@ -41,34 +41,43 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public static IHtmlString WriteErrors(FormModel model)
         {
-            var sb = new StringBuilder();
             var validationResult = model.ValidationResult;
 
-            if (validationResult.Any())
+            return WriteErrors(validationResult);
+        }
+
+        public static IHtmlString WriteErrors(IEnumerable<FormValidationRule> validationResult)
+        {
+            var formValidationRules = validationResult as IList<FormValidationRule> ?? validationResult.ToList();
+            if (!formValidationRules.Any())
             {
-                sb.Append("<div class=\"" + RendererImplementation.ErrorNotificationClass + "\">");
-
-                if (!String.IsNullOrEmpty(Localization.Validation_ErrorNotification_Header))
-                {
-                    sb.Append("<p>" + HttpUtility.HtmlEncode(Localization.Validation_ErrorNotification_Header) + "</p>");
-                }
-
-                sb.Append("<ul>");
-
-                foreach (var el in validationResult)
-                {
-                    sb.Append("<li>" + el.ValidationMessage + "</li>");
-                }
-
-                sb.Append("</ul>");
-
-                if (!String.IsNullOrEmpty(Localization.Validation_ErrorNotification_Footer))
-                {
-                    sb.Append("<p>" + HttpUtility.HtmlEncode(Localization.Validation_ErrorNotification_Footer) + "</p>");
-                }
-
-                sb.Append("</div>");
+                return new HtmlString(String.Empty);
             }
+
+            var sb = new StringBuilder();
+
+            sb.Append("<div class=\"" + RendererImplementation.ErrorNotificationClass + "\">");
+
+            if (!String.IsNullOrEmpty(Localization.Validation_ErrorNotification_Header))
+            {
+                sb.Append("<p>" + HttpUtility.HtmlEncode(Localization.Validation_ErrorNotification_Header) + "</p>");
+            }
+
+            sb.Append("<ul>");
+
+            foreach (var el in formValidationRules)
+            {
+                sb.Append("<li>" + el.ValidationMessage + "</li>");
+            }
+
+            sb.Append("</ul>");
+
+            if (!String.IsNullOrEmpty(Localization.Validation_ErrorNotification_Footer))
+            {
+                sb.Append("<p>" + HttpUtility.HtmlEncode(Localization.Validation_ErrorNotification_Footer) + "</p>");
+            }
+
+            sb.Append("</div>");
 
             return new HtmlString(sb.ToString());
         }

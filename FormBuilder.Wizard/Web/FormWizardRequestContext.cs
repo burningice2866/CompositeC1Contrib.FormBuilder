@@ -10,12 +10,12 @@ namespace CompositeC1Contrib.FormBuilder.Wizard.Web
     public class FormWizardRequestContext
     {
         private readonly HttpContextBase _ctx = new HttpContextWrapper(HttpContext.Current);
-        private List<FormValidationRule> _validationResult;
 
         public string WizardName { get; private set; }
         public FormWizard Wizard { get; private set; }
 
         public IDictionary<string, FormModel> StepModels { get; private set; }
+        public List<FormValidationRule> ValidationResult { get; private set; }
 
         public bool IsOwnSubmit
         {
@@ -31,12 +31,12 @@ namespace CompositeC1Contrib.FormBuilder.Wizard.Web
                     return false;
                 }
 
-                if (_validationResult == null)
+                if (ValidationResult == null)
                 {
                     Execute();
                 }
 
-                return !_validationResult.Any();
+                return !ValidationResult.Any();
             }
         }
 
@@ -47,14 +47,9 @@ namespace CompositeC1Contrib.FormBuilder.Wizard.Web
             StepModels = new Dictionary<string, FormModel>();
         }
 
-        public void Execute()
+        private void Execute()
         {
-            if (!IsOwnSubmit)
-            {
-                return;
-            }
-
-            _validationResult = new List<FormValidationRule>();
+            ValidationResult = new List<FormValidationRule>();
 
             var steps = Wizard.Steps;
             for (int i = 0; i < steps.Count; i++)
@@ -73,8 +68,9 @@ namespace CompositeC1Contrib.FormBuilder.Wizard.Web
                 }
 
                 model.MapValues(nmc, Enumerable.Empty<FormFile>());
+                model.Validate();
 
-                _validationResult.AddRange(model.ValidationResult);
+                ValidationResult.AddRange(model.ValidationResult);
 
                 StepModels.Add(step.Name, model);
             }

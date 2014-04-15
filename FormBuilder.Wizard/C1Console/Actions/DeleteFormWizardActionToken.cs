@@ -33,8 +33,10 @@ namespace CompositeC1Contrib.FormBuilder.Wizard.C1Console.Actions
     {
         public FlowToken Execute(EntityToken entityToken, ActionToken actionToken, FlowControllerServicesContainer flowControllerServicesContainer)
         {
-            var fieldToken = (FormWizardEntityToken)entityToken;
-            
+            var wizardToken = (FormWizardEntityToken)entityToken;
+            var wizard = FormWizardsFacade.GetWizard(wizardToken.WizardName);
+
+            FormWizardsFacade.DeleteWizard(wizard);
 
             new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(entityToken);
 

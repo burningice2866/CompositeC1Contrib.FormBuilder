@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Composite.C1Console.Workflow;
+
 using CompositeC1Contrib.FormBuilder.Wizard.C1Console.EntityTokens;
 using CompositeC1Contrib.Workflows;
 
@@ -27,7 +29,7 @@ namespace CompositeC1Contrib.FormBuilder.Wizard.C1Console.Workflows
 
         public override void OnFinish(object sender, EventArgs e)
         {
-            var wizardToken = (FormWizardEntityToken)EntityToken;
+            var wizardToken = (FormWizardFolderEntityToken)EntityToken;
             var stepName = GetBinding<string>("StepName");
             var formName = GetBinding<string>("FormName");
 
@@ -43,13 +45,16 @@ namespace CompositeC1Contrib.FormBuilder.Wizard.C1Console.Workflows
 
             FormWizardsFacade.SaveWizard(wizard);
 
-            CreateSpecificTreeRefresher().PostRefreshMesseges(new FormWizardEntityToken(wizard.Name));
-            SetSaveStatus(true);
+            var wizardStepToken = new FormWizardStepEntityToken(wizard.Name, step.Name);
+            var workflowToken = new WorkflowActionToken(typeof(EditWizardStepWorkflow));
+
+            CreateAddNewTreeRefresher(EntityToken).PostRefreshMesseges(wizardStepToken);
+            ExecuteAction(wizardStepToken, workflowToken);
         }
 
         public override bool Validate()
         {
-            var wizardToken = (FormWizardEntityToken)EntityToken;
+            var wizardToken = (FormWizardFolderEntityToken)EntityToken;
             var stepName = GetBinding<string>("StepName");
 
             if (!FormField.IsValidName(stepName))

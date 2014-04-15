@@ -15,10 +15,11 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 {
     public abstract class StandardFormFunction
     {
-        public static string RenderingContextKey = "RenderingContext";
-        public static string FormModelKey = "FormModel";
+        public const string RenderingContextKey = "RenderingContext";
+        public const string FormModelKey = "FormModel";
 
         protected static readonly Type XElementParameterRuntimeTreeNode = Type.GetType("Composite.Functions.XElementParameterRuntimeTreeNode, Composite");
+        protected static readonly string FormExecutorFunction = FormBuilderConfiguration.GetSection().DefaultFunctionExecutor;
     }
 
     public class StandardFormFunction<T> : StandardFormFunction, IFunction where T : FormBuilderRequestContext
@@ -91,15 +92,11 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                 { FormModelKey, renderingContext.RenderingModel }
             });
 
-            typeof(ParameterList).GetField("_functionContextContainer", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(parameters, newContext);
-
-            var formExecutorFunction = FormBuilderConfiguration.GetSection().DefaultFunctionExecutor;
+            var formExecutorFunction = FormExecutorFunction;
             if (!String.IsNullOrEmpty(OverrideFormExecutor))
             {
                 formExecutorFunction = OverrideFormExecutor;
             }
-
-            typeof(ParameterList).GetField("_parameters", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(parameters);
 
             var formExecutor = FunctionFacade.GetFunction(formExecutorFunction);
             var functionParameters = new Dictionary<string, object>
@@ -107,13 +104,22 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                 { "FormName", Namespace +"."+ Name }
             };
 
+            CopyFunctionParameters(parameters, newContext, functionParameters);
+
+            return FunctionFacade.Execute<XhtmlDocument>(formExecutor, functionParameters, newContext);
+        }
+
+        private static void CopyFunctionParameters(ParameterList parameters, FunctionContextContainer newContext, Dictionary<string, object> functionParameters)
+        {
+            typeof(ParameterList).GetField("_functionContextContainer", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(parameters, newContext);
+
             var internalParameters = (IDictionary)typeof(ParameterList).GetField("_parameters", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(parameters);
             foreach (DictionaryEntry item in internalParameters)
             {
                 object value = item.Value.GetType().GetProperty("ValueObject").GetValue(item.Value, null);
                 var type = value.GetType();
 
-                if (type == StandardFormFunction.XElementParameterRuntimeTreeNode)
+                if (type == XElementParameterRuntimeTreeNode)
                 {
                     value = type.GetField("_element", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(value);
                 }
@@ -124,8 +130,6 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                     case "SuccessResponse": functionParameters.Add("SuccessResponse", value); break;
                 }
             }
-
-            return FunctionFacade.Execute<XhtmlDocument>(formExecutor, functionParameters, newContext);
         }
     }
 }

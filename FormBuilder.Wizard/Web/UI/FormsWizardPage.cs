@@ -23,14 +23,14 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             get { return RenderingContext.IsSuccess; }
         }
 
-        public FormWizardRequestContext RenderingContext
+        protected FormWizardRequestContext RenderingContext
         {
             get { return (FormWizardRequestContext)FunctionContextContainer.GetParameterValue(FormWizardFunction.RenderingContextKey, typeof(FormWizardRequestContext)); }
         }
 
         public override void ExecutePageHierarchy()
         {
-            if (RenderingContext.IsOwnSubmit && RenderingContext.IsSuccess)
+            if (RenderingContext.IsSuccess)
             {
                 RenderingContext.Submit();
             }
@@ -50,6 +50,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             PageRenderer.ExecuteEmbeddedFunctions(doc, FunctionContextContainer);
 
             return new HtmlString(doc.ToString());
+        }
+
+        protected IHtmlString WriteErrors()
+        {
+            return RenderingContext.IsOwnSubmit ? FormRenderer.WriteErrors(RenderingContext.ValidationResult) : new HtmlString(String.Empty);
         }
 
         protected IHtmlString RenderFormField(int step, string formName)

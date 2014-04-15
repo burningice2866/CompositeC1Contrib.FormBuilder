@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Composite.C1Console.Actions;
 using Composite.C1Console.Security;
@@ -33,8 +34,13 @@ namespace CompositeC1Contrib.FormBuilder.Wizard.C1Console.Actions
     {
         public FlowToken Execute(EntityToken entityToken, ActionToken actionToken, FlowControllerServicesContainer flowControllerServicesContainer)
         {
-            var fieldToken = (FormWizardStepEntityToken)entityToken;
-            
+            var token = (FormWizardStepEntityToken)entityToken;
+            var wizard = FormWizardsFacade.GetWizard(token.WizardName);
+            var step = wizard.Steps.Single(h => h.Name == token.StepName);
+
+            wizard.Steps.Remove(step);
+
+            FormWizardsFacade.SaveWizard(wizard);
 
             new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(entityToken);
 

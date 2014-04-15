@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+
 using CompositeC1Contrib.FormBuilder.Wizard.SubmitHandlers;
 
 namespace CompositeC1Contrib.FormBuilder.Wizard
@@ -42,6 +43,15 @@ namespace CompositeC1Contrib.FormBuilder.Wizard
             var xml = XElement.Load(file);
 
             return FormWizard.Parse(wizardName, xml);
+        }
+
+        public static void DeleteWizard(FormWizard wizard)
+        {
+            var dir = Path.Combine(WizardsPath, wizard.Name);
+
+            Directory.Delete(dir, true);
+
+            NotifyChanges();
         }
 
         public static void SaveWizard(FormWizard wizard)

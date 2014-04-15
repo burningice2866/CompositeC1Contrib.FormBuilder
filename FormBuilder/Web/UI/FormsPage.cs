@@ -75,12 +75,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected IHtmlString WriteErrors()
         {
-            if (RenderingContext.IsOwnSubmit)
-            {
-                return FormRenderer.WriteErrors(RenderingContext.RenderingModel);
-            }
-
-            return new HtmlString(String.Empty);
+            return RenderingContext.IsOwnSubmit ? FormRenderer.WriteErrors(RenderingContext.RenderingModel) : new HtmlString(String.Empty);
         }
 
         protected IHtmlString WriteAllFields()

@@ -2,26 +2,9 @@
 
 @inherits StandardFormWizardPage
 
-@if (IsPost)
+@if (IsSuccess && (Wizard.SuccessResponse != null && !Wizard.SuccessResponse.IsEmpty))
 {
-    if (!IsSuccess)
-    {
-        <div>
-            There was an error in handling the request, try again
-        </div>
-
-        return;
-    }
-
-    if (IsSuccess)
-    {
-        if (Wizard.SuccessResponse != null && !Wizard.SuccessResponse.IsEmpty)
-        {
-            @EvaluateMarkup(Wizard.SuccessResponse.Root)
-        }
-
-        return;
-    }
+    @EvaluateMarkup(Wizard.SuccessResponse.Root)
 }
 else
 {
@@ -33,6 +16,8 @@ else
     }
 
     <form method="POST" class="formwizard">
+        @WriteErrors()
+
         @for (int i = 0; i < steps.Count; i++)
         {
             var step = steps[i];
@@ -62,7 +47,7 @@ else
                 }
             }
 
-            <div data-step="@stepNumber" class="js-formwizard-step step @stepNumber" @if (i > 0) { <text> style="display: none;" </text>      }>
+            <div data-step="@stepNumber" class="js-formwizard-step step @stepNumber" @if (i > 0) { <text> style="display: none;" </text> }>
                 @RenderFormField(stepNumber, step.FormName)
 
                 @if (i > 0)

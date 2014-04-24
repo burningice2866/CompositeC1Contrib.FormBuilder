@@ -34,7 +34,16 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return WriteRow(options, field, htmlAttributes);
         }
 
-        public static IHtmlString NameFor(FormsPage page, FormField field)
+        public static IHtmlString InputFor(FormOptions options, FormField field, Dictionary<string, string> htmlAttributes)
+        {
+            var sb = new StringBuilder();
+
+            WriteField(options, field, sb, htmlAttributes);
+
+            return new HtmlString(sb.ToString());
+        }
+
+        public static IHtmlString NameFor(FormField field)
         {
             return new HtmlString(field.Name);
         }
@@ -82,8 +91,68 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new HtmlString(sb.ToString());
         }
 
-        public static void WriteRowStart(string name, string elementName, string errorClass, bool isRequired, Action<StringBuilder> extraAttributesRenderer, StringBuilder sb)
+        private static IHtmlString WriteRow(FormOptions options, FormField field, IDictionary<string, string> htmlAttributes)
         {
+            var fieldsRow = FieldsRow.Current;
+
+            var sb = new StringBuilder();
+            var includeLabel = ShowLabel(field);
+            var validationResult = field.OwningForm.ValidationResult;
+
+            WriteRowStart(field.Name, field.InputElementType.ElementName,
+                WriteErrorClass(field.Name, validationResult), field.IsRequired,
+                builder => DependencyAttributeFor(field, builder), sb);
+
+            if (fieldsRow == null || fieldsRow.IncludeLabels)
+            {
+                if (!(field.InputElementType is CheckboxInputElementAttribute && field.ValueType == typeof(bool)))
+                {
+                    if (includeLabel)
+                    {
+                        WriteLabel(options, field, sb);
+                    }
+                    else
+                    {
+                        WritePropertyHeading(field, sb);
+                    }
+                }
+            }
+
+            using (new ControlsGroup(sb))
+            {
+                if (fieldsRow == null || fieldsRow.IncludeLabels)
+                {
+                    if (field.InputElementType is CheckboxInputElementAttribute && field.ValueType == typeof(bool))
+                    {
+                        sb.Append("<label class=\"checkbox\">");
+                    }
+                }
+
+                WriteField(options, field, sb, htmlAttributes);
+
+                if (fieldsRow == null || fieldsRow.IncludeLabels)
+                {
+                    if (field.InputElementType is CheckboxInputElementAttribute && field.ValueType == typeof(bool))
+                    {
+                        WriteLabelContent(field, sb);
+
+                        sb.Append("</label>");
+                    }
+                }
+            }
+
+            WriteRowEnd(sb);
+
+            return new HtmlString(sb.ToString());
+        }
+
+        private static void WriteRowStart(string name, string elementName, string errorClass, bool isRequired, Action<StringBuilder> extraAttributesRenderer, StringBuilder sb)
+        {
+            if (FieldsRow.Current != null)
+            {
+                return;
+            }
+
             sb.AppendFormat("<div id=\"form-field-{0}\" class=\"" + RendererImplementation.ParentGroupClass + "-group control-{1} {2} {3} \"", name, elementName, errorClass, isRequired ? "required" : String.Empty);
 
             if (extraAttributesRenderer != null)
@@ -94,61 +163,13 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             sb.Append(">");
         }
 
-        public static void WriteRowEnd(StringBuilder sb)
+        private static void WriteRowEnd(StringBuilder sb)
         {
-            sb.Append("</div>");
-        }
-
-        private static IHtmlString WriteRow(FormOptions options, FormField field, IDictionary<string, string> htmlAttributes)
-        {
-            var sb = new StringBuilder();
-            var includeLabel = ShowLabel(field);
-            var validationResult = field.OwningForm.ValidationResult;
-
-            WriteRowStart(field.Name, field.InputElementType.ElementName, WriteErrorClass(field.Name, validationResult), field.IsRequired,
-                builder => DependencyAttributeFor(field, builder), sb);
-
-            if (!(field.InputElementType is CheckboxInputElementAttribute && field.ValueType == typeof(bool)))
+            if (FieldsRow.Current != null)
             {
-                if (includeLabel)
-                {
-                    WriteLabel(options, field, sb);
-                }
-                else
-                {
-                    WritePropertyHeading(field, sb);
-                }
+                return;
             }
 
-            WriteFieldGroupStart(sb);
-
-            if (field.InputElementType is CheckboxInputElementAttribute && field.ValueType == typeof(bool))
-            {
-                sb.Append("<label class=\"checkbox\">");
-            }
-
-            WriteField(options, field, sb, htmlAttributes);
-
-            if (field.InputElementType is CheckboxInputElementAttribute && field.ValueType == typeof(bool))
-            {
-                WriteLabelContent(field, sb);
-
-                sb.Append("</label>");
-            }
-
-            WriteFieldGroupEnd(sb);
-            WriteRowEnd(sb);
-
-            return new HtmlString(sb.ToString());
-        }
-
-        public static void WriteFieldGroupStart(StringBuilder sb)
-        {
-            sb.Append("<div class=\"" + RendererImplementation.FieldGroupClass + "\">");
-        }
-
-        public static void WriteFieldGroupEnd(StringBuilder sb)
-        {
             sb.Append("</div>");
         }
 
@@ -372,28 +393,28 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             WriteLabelContent(true, Localization.Captcha_Label, String.Empty, false, sb);
             WriteLabelEnd(sb);
 
-            WriteFieldGroupStart(sb);
-
-            if (!String.IsNullOrEmpty(Localization.Captcha_Help))
+            using (new ControlsGroup(sb))
             {
-                WriteFieldHelpStart(sb);
+                if (!String.IsNullOrEmpty(Localization.Captcha_Help))
+                {
+                    WriteFieldHelpStart(sb);
+                }
+
+                sb.AppendFormat("<div class=\"captcha-input\">");
+                sb.AppendFormat("<input name=\"{0}\" id=\"{0}\" type=\"text\"  />", RequiresCaptchaAttribute.InputName);
+                sb.AppendFormat("</div>");
+
+                sb.AppendFormat("<div class=\"captcha-img\">");
+                sb.AppendFormat("<img src=\"/Renderers/Captcha.ashx?value={0}\" />", requiresCaptchaAttr.EncryptedValue);
+                sb.AppendFormat("</div>");
+
+
+                if (!String.IsNullOrEmpty(Localization.Captcha_Help))
+                {
+                    WriteFieldHelpEnd(Localization.Captcha_Help, sb);
+                }
             }
 
-            sb.AppendFormat("<div class=\"captcha-input\">");
-            sb.AppendFormat("<input name=\"{0}\" id=\"{0}\" type=\"text\"  />", RequiresCaptchaAttribute.InputName);
-            sb.AppendFormat("</div>");
-
-            sb.AppendFormat("<div class=\"captcha-img\">");
-            sb.AppendFormat("<img src=\"/Renderers/Captcha.ashx?value={0}\" />", requiresCaptchaAttr.EncryptedValue);
-            sb.AppendFormat("</div>");
-
-
-            if (!String.IsNullOrEmpty(Localization.Captcha_Help))
-            {
-                WriteFieldHelpEnd(Localization.Captcha_Help, sb);
-            }
-
-            WriteFieldGroupEnd(sb);
             WriteRowEnd(sb);
 
             return new HtmlString(sb.ToString());

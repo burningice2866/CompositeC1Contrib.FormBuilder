@@ -8,6 +8,7 @@ using System.Web;
 
 using Composite.AspNet.Razor;
 using Composite.Functions;
+
 using CompositeC1Contrib.FormBuilder.FunctionProviders;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
@@ -55,12 +56,24 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         protected IHtmlString DependencyAttributeFor(Expression<Func<T, object>> fieldSelector)
         {
             var sb = new StringBuilder();
-            var prop = GetProperty(fieldSelector);
-            var field = RenderingContext.RenderingModel.Fields.Single(f => f.Name == prop.Name);
+            var field = GetField(fieldSelector);
 
             FormRenderer.DependencyAttributeFor(field, sb);
 
             return new HtmlString(sb.ToString().Trim());
+        }
+
+        protected IHtmlString InputFor(Expression<Func<T, object>> fieldSelector)
+        {
+            return InputFor(fieldSelector, new { });
+        }
+
+        protected IHtmlString InputFor(Expression<Func<T, object>> fieldSelector, object htmlAttributes)
+        {
+            var field = GetField(fieldSelector);
+            var dictionary = Functions.ObjectToDictionary(htmlAttributes).ToDictionary(t => t.Key, t => t.Value.ToString());
+
+            return FormRenderer.InputFor(Options, field, dictionary);
         }
 
         protected IHtmlString FieldFor(Expression<Func<T, object>> fieldSelector)
@@ -70,8 +83,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected IHtmlString FieldFor(Expression<Func<T, object>> fieldSelector, object htmlAttributes)
         {
-            var prop = GetProperty(fieldSelector);
-            var field = RenderingContext.RenderingModel.Fields.Single(f => f.Name == prop.Name);
+            var field = GetField(fieldSelector);
             var dictionary = Functions.ObjectToDictionary(htmlAttributes).ToDictionary(t => t.Key, t => t.Value.ToString());
 
             return FormRenderer.FieldFor(Options, field, dictionary);
@@ -82,7 +94,14 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var prop = GetProperty(fieldSelector);
             var field = RenderingContext.RenderingModel.Fields.Single(f => f.Name == prop.Name);
 
-            return FormRenderer.NameFor(this, field);
+            return FormRenderer.NameFor(field);
+        }
+
+        public FormField GetField(Expression<Func<T, object>> fieldSelector)
+        {
+            var prop = GetProperty(fieldSelector);
+            
+            return RenderingContext.RenderingModel.Fields.Single(f => f.Name == prop.Name);
         }
 
         public PropertyInfo GetProperty(string name)
@@ -90,21 +109,21 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return GetType().GetProperty(name);
         }
 
-        public PropertyInfo GetProperty(Expression<Func<T, object>> field)
+        public PropertyInfo GetProperty(Expression<Func<T, object>> fieldSelector)
         {
             MemberExpression memberExpression;
 
-            switch (field.Body.NodeType)
+            switch (fieldSelector.Body.NodeType)
             {
                 case ExpressionType.Convert:
                 case ExpressionType.ConvertChecked:
-                    var unaryExpression = (UnaryExpression)field.Body;
+                    var unaryExpression = (UnaryExpression)fieldSelector.Body;
                     memberExpression = (MemberExpression)unaryExpression.Operand;
 
                     break;
 
                 default:
-                    memberExpression = (MemberExpression)field.Body;
+                    memberExpression = (MemberExpression)fieldSelector.Body;
 
                     break;
             }

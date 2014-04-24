@@ -108,8 +108,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
                     fieldElement.AddBeforeSelf(XElement.Parse(text));
                 }
-
-                var newValue = XElement.Parse(FormRenderer.FieldFor(options, field).ToString());
+                
+                var html = FormRenderer.FieldFor(options, field).ToString();
+                var newValue = XElement.Parse(html);
 
                 fieldElement.ReplaceWith(newValue);
             }
@@ -135,6 +136,31 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         protected HtmlForm BeginForm(object htmlAttributes)
         {
             return new HtmlForm(this, RenderingContext.RenderingModel, htmlAttributes);
+        }
+
+        protected FieldsGroup BeginGroup()
+        {
+            return BeginGroup(null);
+        }
+
+        protected FieldsGroup BeginGroup(string extraClass)
+        {
+            return new FieldsGroup(this, extraClass);
+        }
+
+        protected ControlsGroup BeginControls()
+        {
+            return new ControlsGroup(this);
+        }
+
+        protected FieldsRow BeginRow()
+        {
+            return BeginRow(false);
+        }
+
+        protected FieldsRow BeginRow(bool includeLabels)
+        {
+            return new FieldsRow(this, includeLabels);
         }
 
         protected string WriteErrorClass(string name)

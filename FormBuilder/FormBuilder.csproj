@@ -108,8 +108,11 @@
     <Compile Include="Web\Api\Controllers\ValidationController.cs" />
     <Compile Include="Web\Api\Models\ValidationError.cs" />
     <Compile Include="Web\StartupHandler.cs" />
+    <Compile Include="Web\UI\ControlsGroup.cs" />
+    <Compile Include="Web\UI\FieldsGroup.cs" />
     <Compile Include="Web\UI\FormRenderers\Bootstrap3FormRenderer.cs" />
     <Compile Include="Web\UI\FormRenderers\Bootstrap2FormRenderer.cs" />
+    <Compile Include="Web\UI\HtmlForm.cs" />
     <Compile Include="Web\UI\IFormFormRenderer.cs" />
     <Compile Include="Web\UI\InputElementTypeAttribute.cs" />
     <Compile Include="Attributes\MethodBasedDataSourceAttribute.cs" />
@@ -157,7 +160,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Web\UI\FormOptions.cs" />
-    <Compile Include="Web\UI\HtmlForm.cs" />
+    <Compile Include="Web\UI\FieldsRow.cs" />
     <Compile Include="Web\UI\TextboxInputElementAttribute.cs" />
     <Compile Include="C1Console\Workflows\EditFormRenderingLayoutWorkflow.cs">
       <SubType>Component</SubType>

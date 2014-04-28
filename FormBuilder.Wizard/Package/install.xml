@@ -22,15 +22,10 @@
         <File sourceFilename="~\content\App_Data\Razor\FormBuilder\StandardFormWizardExecutor.cshtml" targetFilename="~\App_Data\Razor\FormBuilder\StandardFormWizardExecutor.cshtml" allowOverwrite="true" />
         <File sourceFilename="~\content\Frontend\js\plugins\jquery.formbuilder.wizard.js" targetFilename="~\Frontend\js\plugins\jquery.formbuilder.wizard.js" allowOverwrite="true" />
       </Files>
-
-      <Directories>
-        <Directory sourceDirectory="~\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Wizard\" targetDirectory="~\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Wizard\" allowOverwrite="true" deleteTargetDirectory="true" />
-      </Directories>
     </mi:Add>
 
     <mi:Add installerType="Composite.Core.PackageSystem.PackageFragmentInstallers.XmlFileMergePackageFragmentInstaller, Composite" uninstallerType="Composite.Core.PackageSystem.PackageFragmentInstallers.XmlFileMergePackageFragmentUninstaller, Composite">
       <XmlFileMerges>
-        <XmlFileMerge changeDefinitionPath="~\config\web.config" targetFilePath="~\web.config" />
         <XmlFileMerge changeDefinitionPath="~\config\App_Data\Composite\composite.config" targetFilePath="~\App_Data\Composite\composite.config" />
       </XmlFileMerges>
     </mi:Add>

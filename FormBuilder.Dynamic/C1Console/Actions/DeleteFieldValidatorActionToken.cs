@@ -12,7 +12,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
     [ActionExecutor(typeof(DeleteFieldValidatorActionTokenExecutor))]
     public class DeleteFieldValidatorActionToken : ActionToken
     {
-        private static IEnumerable<PermissionType> _permissionTypes = new PermissionType[] { PermissionType.Administrate };
+        private static readonly IEnumerable<PermissionType> _permissionTypes = new[] { PermissionType.Administrate };
 
         public override IEnumerable<PermissionType> PermissionTypes
         {

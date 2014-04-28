@@ -1,98 +1,90 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Linq;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
 
 using Composite.Core.Xml;
 
-using CompositeC1Contrib.FormBuilder.Wizard.SubmitHandlers;
+using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder.Wizard
 {
-    public class FormWizard
+    public class FormWizard : IFormModel
     {
         public string Name { get; set; }
         public bool ForceHttpSConnection { get; set; }
         public XhtmlDocument IntroText { get; set; }
         public XhtmlDocument SuccessResponse { get; set; }
         public IList<FormWizardStep> Steps { get; private set; }
-        public IList<FormSubmitHandler> SubmitHandlers { get; private set; }
+
+        public IList<FormValidationRule> ValidationResult { get; private set; }
+        public IDictionary<string, FormModel> StepModels { get; private set; }
+
+        public IList<FormField> Fields
+        {
+            get { return StepModels.Values.SelectMany(m => m.Fields).ToList(); }
+        }
+
+        public bool HasFileUpload
+        {
+            get
+            {
+                return Fields.Any(f => f.ValueType == typeof(FormFile) || f.ValueType == typeof(IEnumerable<FormFile>));
+            }
+        }
 
         public FormWizard()
         {
             IntroText = new XhtmlDocument();
             SuccessResponse = new XhtmlDocument();
             Steps = new List<FormWizardStep>();
-            SubmitHandlers = new List<FormSubmitHandler>();
+
+            ValidationResult = new List<FormValidationRule>();
+
+            StepModels = new Dictionary<string, FormModel>();
         }
 
-        public static FormWizard Parse(string name, XElement xml)
+        public bool ForceHttps
         {
-            var wizard = new FormWizard { Name = name };
+            get { return StepModels.Values.Any(m => m.ForceHttps); }
+        }
 
-            var forceHttpsConnectionAttribute = xml.Attribute("forceHttpsConnection");
-            if (forceHttpsConnectionAttribute != null)
+        public virtual void Submit() { }
+
+        public void MapValues(NameValueCollection values, IEnumerable<FormFile> files)
+        {
+            for (int i = 0; i < Steps.Count; i++)
             {
-                wizard.ForceHttpSConnection = bool.Parse(forceHttpsConnectionAttribute.Value);
+                var nmc = new NameValueCollection();
+
+                var step = Steps[i];
+                var model = StepModels[step.Name];
+                var stepPrepend = "step-" + (i + 1) + "-";
+                var keys = values.AllKeys.Where(k => k.StartsWith(stepPrepend)).ToArray();
+
+                foreach (var key in keys)
+                {
+                    var name = key.Remove(0, stepPrepend.Length);
+                    var value = values[key];
+
+                    nmc.Add(name, value);
+                }
+
+                model.MapValues(nmc, Enumerable.Empty<FormFile>());
+                model.Validate();
             }
+        }
 
-            var stepsElement = xml.Element("Steps");
-            foreach (var stepElement in stepsElement.Elements("Step"))
+        public void Validate()
+        {
+            foreach (var model in StepModels.Values)
             {
-                var wizardStep = new FormWizardStep()
-                {
-                    Name = stepElement.Attribute("Name").Value,
-                    FormName = stepElement.Attribute("FormName").Value,
-                    LocalOrdering = int.Parse(stepElement.Attribute("LocalOrdering").Value),
-                };
+                model.Validate();
 
-                var nextButtonLabelAttribute = stepElement.Attribute("nextButtonLabel");
-                if (nextButtonLabelAttribute != null)
+                foreach (var result in model.ValidationResult)
                 {
-                    wizardStep.NextButtonLabel = nextButtonLabelAttribute.Value;
-                }
-
-                var previousButtonLabelAttribute = stepElement.Attribute("previousButtonLabel");
-                if (previousButtonLabelAttribute != null)
-                {
-                    wizardStep.PreviousButtonLabel = previousButtonLabelAttribute.Value;
-                }
-
-                wizard.Steps.Add(wizardStep);
-            }
-
-            var layoutElement = xml.Element("Layout");
-            if (layoutElement != null)
-            {
-                var introText = layoutElement.Element("introText");
-                if (introText != null)
-                {
-                    wizard.IntroText = XhtmlDocument.Parse(introText.Value);
-                }
-
-                var successResponse = layoutElement.Element("successResponse");
-                if (successResponse != null)
-                {
-                    wizard.SuccessResponse = XhtmlDocument.Parse(successResponse.Value);
+                    ValidationResult.Add(result);
                 }
             }
-
-            var submitHandlersElement = xml.Element("SubmitHandlers");
-            if (submitHandlersElement != null)
-            {
-                foreach (var handler in submitHandlersElement.Elements("Add"))
-                {
-                    var handlerName = handler.Attribute("Name").Value;
-                    var typeString = handler.Attribute("Type").Value;
-                    var type = Type.GetType(typeString);
-                    var instance = (FormSubmitHandler)XElementHelper.DeserializeInstanceWithArgument(type, handler);
-
-                    instance.Name = handlerName;
-
-                    wizard.SubmitHandlers.Add(instance);
-                }
-            }
-
-            return wizard;
         }
     }
 }

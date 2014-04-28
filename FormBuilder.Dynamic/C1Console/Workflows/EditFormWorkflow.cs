@@ -19,19 +19,21 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public override void OnInitialize(object sender, EventArgs e)
         {
-            if (!BindingExist("FormName"))
+            if (BindingExist("FormName"))
             {
-                var formToken = (FormInstanceEntityToken)EntityToken;
-                var definition = DynamicFormsFacade.GetFormByName(formToken.FormName);
-
-                Bindings.Add("FormName", formToken.FormName);
-                Bindings.Add("RequiresCaptcha", definition.Model.Attributes.OfType<RequiresCaptchaAttribute>().Any());
-                Bindings.Add("ForceHttpsConnection", definition.Model.Attributes.OfType<ForceHttpsConnectionAttribute>().Any());
-                Bindings.Add("SubmitButtonLabel", definition.Model.SubmitButtonLabel);
-                Bindings.Add("IntroText", definition.IntroText.ToString());
-                Bindings.Add("SuccessResponse", definition.SuccessResponse.ToString());
-                Bindings.Add("FunctionExecutor", definition.FormExecutor ?? String.Empty);
+                return;
             }
+
+            var formToken = (FormInstanceEntityToken)EntityToken;
+            var definition = DynamicFormsFacade.GetFormByName(formToken.FormName);
+
+            Bindings.Add("FormName", formToken.FormName);
+            Bindings.Add("RequiresCaptcha", definition.Model.Attributes.OfType<RequiresCaptchaAttribute>().Any());
+            Bindings.Add("ForceHttpsConnection", definition.Model.Attributes.OfType<ForceHttpsConnectionAttribute>().Any());
+            Bindings.Add("SubmitButtonLabel", definition.Model.SubmitButtonLabel);
+            Bindings.Add("IntroText", definition.IntroText.ToString());
+            Bindings.Add("SuccessResponse", definition.SuccessResponse.ToString());
+            Bindings.Add("FunctionExecutor", definition.FormExecutor ?? String.Empty);
         }
 
         public override void OnFinish(object sender, EventArgs e)
@@ -66,9 +68,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             if (formName != formToken.FormName)
             {
-                var newDefinition = DynamicFormsFacade.CopyFormByName(formToken.FormName, formName);
+                definition.Copy(formName);
 
-                DynamicFormsFacade.SaveForm(newDefinition);
                 DynamicFormsFacade.DeleteModel(definition);
             }
             else

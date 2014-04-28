@@ -4,8 +4,7 @@ using System.Linq;
 
 using Composite.C1Console.Actions;
 using Composite.C1Console.Security;
-
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
+using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 {
@@ -40,6 +39,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 
             definition.SubmitHandlers.Remove(handler);
 
+            handler.Delete(definition);
             DynamicFormsFacade.SaveForm(definition);
 
             new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(entityToken);

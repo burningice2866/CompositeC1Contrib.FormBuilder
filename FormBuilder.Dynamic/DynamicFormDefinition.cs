@@ -13,8 +13,9 @@ using CompositeC1Contrib.FormBuilder.Web.UI;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
-    public class DynamicFormDefinition
+    public class DynamicFormDefinition : IDynamicFormDefinition
     {
+        public string Name { get; private set; }
         public FormModel Model { get; private set; }
         public IDictionary<string, XElement> DefaultValues { get; private set; }
         public IList<FormSubmitHandler> SubmitHandlers { get; private set; }
@@ -23,16 +24,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
         public string FormExecutor { get; set; }
 
-        public string Name
-        {
-            get { return Model.Name; }
-        }
-
         public DynamicFormDefinition(string name) : this(new FormModel(name)) { }
 
         public DynamicFormDefinition(FormModel model)
         {
             Model = model;
+            Name = model.Name;
             DefaultValues = new Dictionary<string, XElement>();
             SubmitHandlers = new List<FormSubmitHandler>();
             IntroText = new XhtmlDocument();
@@ -184,19 +181,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             {
                 foreach (var handler in submitHandlersElement.Elements("Add"))
                 {
-                    var handlerName = handler.Attribute("Name").Value;
                     var typeString = handler.Attribute("Type").Value;
                     var type = Type.GetType(typeString);
+
                     var instance = (FormSubmitHandler)XElementHelper.DeserializeInstanceWithArgument(type, handler);
 
-                    instance.Name = handlerName;
+                    instance.Load(definition, handler);
 
                     definition.SubmitHandlers.Add(instance);
                 }
             }
         }
 
-        private static void ParseDependencies(XElement el, List<Attribute> attrs)
+        private static void ParseDependencies(XElement el, IList<Attribute> attrs)
         {
             var dependencies = el.Elements("Add");
             foreach (var dep in dependencies)
@@ -209,7 +206,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
         }
 
-        private static void ParseDataSource(XElement el, List<Attribute> attrs)
+        private static void ParseDataSource(XElement el, IList<Attribute> attrs)
         {
             var typeString = el.Attribute("type").Value;
             var type = Type.GetType(typeString);
@@ -225,7 +222,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             attrs.Add(attribute);
         }
 
-        private static void ParseValidationRules(XElement el, List<Attribute> attrs)
+        private static void ParseValidationRules(XElement el, IList<Attribute> attrs)
         {
             var rules = el.Elements("Add");
             foreach (var rule in rules)
@@ -237,6 +234,15 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
                 attrs.Add(ruleAttribute);
             }
+        }
+
+        public void Copy(string newName)
+        {
+            var def = DynamicFormsFacade.GetFormByName(Name);
+
+            def.Name = newName;
+
+            DynamicFormsFacade.SaveForm(def);
         }
     }
 }

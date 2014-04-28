@@ -94,6 +94,9 @@
     <Compile Include="C1Console\Workflows\CopyFormWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="C1Console\Workflows\BaseEditEmailSubmitHandlerWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="C1Console\Workflows\EditFieldValidatorWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -111,6 +114,10 @@
     <Compile Include="DynamicFormModelsProvider.cs" />
     <Compile Include="C1Console\IInputTypeSettingsHandler.cs" />
     <Compile Include="C1Console\TextAreaSettings.cs" />
+    <Compile Include="FormModelMailMessageBuilder.cs" />
+    <Compile Include="IDynamicFormDefinition.cs" />
+    <Compile Include="SubmitHandlers\BaseDynamicEmailSubmitHandler.cs" />
+    <Compile Include="SubmitHandlers\FormSubmitHandler.cs" />
     <Compile Include="Web\DynamicFormBuilderRequestContext.cs" />
     <Compile Include="SubmitHandlers\DownloadSavedFormsActionToken.cs" />
     <Compile Include="SubmitHandlers\SaveFormSubmitHandler.cs" />
@@ -126,7 +133,6 @@
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\InputElementSettings\TextArea.xml" />
     <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\arrow.png" />
     <Compile Include="SubmitHandlers\EmailSubmitHandler.cs" />
-    <Compile Include="SubmitHandlers\FormSubmitHandler.cs" />
     <Compile Include="FunctionProviders\DynamicFormFunctionProvider.cs">
       <SubType>Code</SubType>
     </Compile>

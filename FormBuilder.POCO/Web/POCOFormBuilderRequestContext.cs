@@ -27,9 +27,11 @@
             POCOFormsFacade.MapValues(_instance, _model);
         }
 
-        public override void OnSubmit()
+        public override void Submit()
         {
             _instance.Submit();
+
+            base.Submit();
         }
     }
 }

@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.FormBuilder.Configuration;
+using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.Configuration;
 using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
@@ -83,9 +85,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             CreateSpecificTreeRefresher().PostRefreshMesseges(token);
 
-            if (typeof(EmailSubmitHandler).IsAssignableFrom(handlerType))
+            var editWorkFlowAttribute = handlerType.GetCustomAttribute<EditWorkflowAttribute>();
+            if (editWorkFlowAttribute != null)
             {
-                var workflowToken = new WorkflowActionToken(typeof(EditEmailSubmitHandlerWorkflow));
+                var workflowToken = new WorkflowActionToken(editWorkFlowAttribute.EditWorkflowType);
 
                 ExecuteAction(new FormSubmitHandlerEntityToken(handlerType, token.FormName, name), workflowToken);
             }

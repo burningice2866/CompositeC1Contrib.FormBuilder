@@ -1,65 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Web;
 
-using Composite.C1Console.Security;
 using Composite.Core.Xml;
 using Composite.Functions;
 
-using CompositeC1Contrib.FormBuilder.Wizard.Web;
+using CompositeC1Contrib.FormBuilder.Web;
 
 namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 {
-    public class FormWizardFunction : IFunction
+    public class FormWizardFunction<T> : BaseFormFunction where T : FormWizardRequestContext
     {
-        public const string RenderingContextKey = "RenderingContext";
+        public FormWizardFunction(string name) : this(name, null, null) { }
+        public FormWizardFunction(string name, XhtmlDocument introText, XhtmlDocument successResponse) : base(name, introText, successResponse) { }
 
-        public string Namespace { get; private set; }
-        public string Name { get; private set; }
-
-        public EntityToken EntityToken
+        public override object Execute(ParameterList parameters, FunctionContextContainer context)
         {
-            get { return new FormBuilderFunctionEntityToken(typeof(FormBuilderFunctionProvider).Name, Namespace + "." + Name); }
-        }
+            var renderingContext = (FormWizardRequestContext)Activator.CreateInstance(typeof(T), new object[] { Namespace + "." + Name });
+            var httpContext = new HttpContextWrapper(HttpContext.Current);
 
-        public string Description
-        {
-            get { return ""; }
-        }
+            renderingContext.Execute(httpContext);
 
-        public Type ReturnType
-        {
-            get { return typeof(XhtmlDocument); }
-        }
-
-        public IEnumerable<ParameterProfile> ParameterProfiles
-        {
-            get
-            {
-                var list = new List<ParameterProfile>();
-
-                return list;
-            }
-        }
-
-        public FormWizardFunction(string wizardName)
-        {
-            var parts = wizardName.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-
-            Namespace = String.Join(".", parts.Take(parts.Length - 1));
-            Name = parts.Skip(parts.Length - 1).Take(1).Single();
-        }
-
-        public virtual object Execute(ParameterList parameters, FunctionContextContainer context)
-        {
-            var renderingContext = new FormWizardRequestContext(Namespace + "." + Name);
             var newContext = new FunctionContextContainer(context, new Dictionary<string, object>
             {
                 { RenderingContextKey, renderingContext }
             });
 
             var formExecutor = FunctionFacade.GetFunction("FormBuilder.StandardFormWizardExecutor");
-            var functionParameters = new Dictionary<string, object>();
+            var functionParameters = new Dictionary<string, object>()
+            {
+                { "WizardName", Namespace + "." + Name }
+            };
+
+            CopyFunctionParameters(parameters, newContext, functionParameters);
 
             return FunctionFacade.Execute<XhtmlDocument>(formExecutor, functionParameters, newContext);
         }

@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <%@ Page Language="C#" AutoEventWireup="true" Inherits="CompositeC1Contrib.FormBuilder.Dynamic.Web.UI.SortFormFieldsPage" %>
-<%@ Import Namespace="Composite.Data" %>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://www.w3.org/1999/xhtml" xmlns:control="http://www.composite.net/ns/uicontrol">
     <control:httpheaders runat="server" />

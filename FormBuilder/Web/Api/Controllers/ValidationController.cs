@@ -81,9 +81,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, resultList);
         }
 
-        private FormModel CreateFormModel(NameValueCollection form)
+        private static FormModel CreateFormModel(NameValueCollection form)
         {
-            string name = form["__type"];
+            var name = form["__type"];
             var model = FormModelsFacade.GetModels().Single(f => f.Name == name);
 
             return model;

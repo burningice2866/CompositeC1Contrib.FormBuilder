@@ -14,7 +14,7 @@ using Composite.Data;
 using Composite.Data.DynamicTypes;
 using Composite.Data.GeneratedTypes;
 using Composite.Data.Types;
-
+using CompositeC1Contrib.Email.Data.Types;
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
 using CompositeC1Contrib.FormBuilder.Validation;
@@ -166,7 +166,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                                         field.Value = prop.GetValue(instance, null);
                                     }
 
-                                    SaveFormSubmitFacade.SaveSubmit(dfd.Model, false, now.AddSeconds(i));
+                                    SaveFormSubmitFacade.SaveSubmit(FormModelsFacade.FormsPath, dfd.Model, false, now.AddSeconds(i));
                                 }
                             }
 
@@ -499,13 +499,24 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 dfd.SubmitHandlers.Add(new EmailSubmitHandler
                 {
                     Name = "Email" + (i + 1),
-                    From = from,
-                    To = to,
-                    Cc = cc,
-                    Subject = subject,
                     IncludeAttachments = appendFormData,
-                    Body = bodyDocument.ToString()
                 });
+
+                using (var data = new DataConnection())
+                {
+                    var template = data.CreateNew<IMailTemplate>();
+
+                    template.Key = dfd.Name + "." + "Email" + (i + 1);
+                    template.From = from;
+                    template.To = to;
+                    template.Cc = cc;
+                    template.Subject = subject;
+                    template.Body = body.ToString();
+                    template.EncryptMessage = false;
+                    template.EncryptPassword = String.Empty;
+
+                    data.Add(template);
+                }
             }
 
             return fromEmails.Length > 0;

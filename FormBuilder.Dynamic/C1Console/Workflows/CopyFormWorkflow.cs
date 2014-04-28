@@ -11,9 +11,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var formToken = (FormInstanceEntityToken)EntityToken;
             var formName = GetBinding<string>("FormName");
-            var definition = DynamicFormsFacade.CopyFormByName(formToken.FormName, formName);
+            var definition = DynamicFormsFacade.GetFormByName(formToken.FormName);
 
-            DynamicFormsFacade.SaveForm(definition);
+            definition.Copy(formName);
 
             var treeRefresher = CreateAddNewTreeRefresher(EntityToken);
             treeRefresher.PostRefreshMesseges(new FormInstanceEntityToken(typeof(FormBuilderElementProvider).Name, formName));

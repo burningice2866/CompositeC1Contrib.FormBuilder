@@ -39,7 +39,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
             }
         }
 
-        public override void OnSubmit()
+        public override void Submit()
         {
             var def = DynamicFormsFacade.GetFormByName(_model.Name);
 
@@ -47,6 +47,8 @@ namespace CompositeC1Contrib.FormBuilder.Web
             {
                 handler.Submit(_model);
             }
+
+            base.Submit();
         }
     }
 }

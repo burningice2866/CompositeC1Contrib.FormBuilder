@@ -7,13 +7,13 @@ using System.Text.RegularExpressions;
 using System.Web;
 
 using Composite;
+
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Validation;
-using CompositeC1Contrib.FormBuilder.Web.UI;
 
 namespace CompositeC1Contrib.FormBuilder
 {
-    public sealed class FormModel
+    public sealed class FormModel : IFormModel
     {
         private IDictionary<FormField, IList<FormValidationRule>> _ruleList;
 
@@ -150,16 +150,6 @@ namespace CompositeC1Contrib.FormBuilder
                 MapValueToField(field, val);
                 MapFilesToField(field, files);
             }
-        }
-
-        public static FormModel GetCurrent(string name)
-        {
-            return (FormModel)HttpContext.Current.Items["__FormModel__" + name];
-        }
-
-        public static void SetCurrent(string name, FormModel value)
-        {
-            HttpContext.Current.Items["__FormModel__" + name] = value;
         }
 
         public static bool IsValidName(string name)

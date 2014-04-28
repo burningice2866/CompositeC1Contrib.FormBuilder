@@ -14,7 +14,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public abstract class FormsPage : RazorFunction
     {
-        public abstract FormBuilderRequestContext RenderingContext { get; }
+        protected abstract FormBuilderRequestContext RenderingContext { get; }
 
         [FunctionParameter(Label = "Intro text", DefaultValue = null)]
         public XhtmlDocument IntroText { get; set; }

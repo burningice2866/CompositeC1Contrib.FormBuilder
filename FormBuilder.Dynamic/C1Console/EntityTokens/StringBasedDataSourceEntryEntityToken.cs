@@ -1,6 +1,4 @@
-﻿using System;
-
-using Composite.C1Console.Security;
+﻿using Composite.C1Console.Security;
 using System.Collections.Generic;
 using CompositeC1Contrib.FormBuilder.Attributes;
 

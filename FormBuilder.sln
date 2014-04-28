@@ -9,7 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormBuilder.POCO", "FormBui
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormBuilder.Dynamic", "FormBuilder.Dynamic\FormBuilder.Dynamic.csproj", "{41758BB5-C39D-48FB-82E9-299A693A8487}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormBuilder.Wizard", "FormBuilder.Wizard\FormBuilder.Wizard.csproj", "{AF0F2F95-DB3E-4E39-A31E-D5FAF551F073}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormBuilder.Dynamic.Wizard", "FormBuilder.Dynamic.Wizard\FormBuilder.Dynamic.Wizard.csproj", "{AF0F2F95-DB3E-4E39-A31E-D5FAF551F073}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormBuilder.Wizard", "FormBuilder.Wizard\FormBuilder.Wizard.csproj", "{85530D17-3652-4E5E-BB59-7F1ECEE77F92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{AF0F2F95-DB3E-4E39-A31E-D5FAF551F073}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF0F2F95-DB3E-4E39-A31E-D5FAF551F073}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF0F2F95-DB3E-4E39-A31E-D5FAF551F073}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85530D17-3652-4E5E-BB59-7F1ECEE77F92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85530D17-3652-4E5E-BB59-7F1ECEE77F92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85530D17-3652-4E5E-BB59-7F1ECEE77F92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85530D17-3652-4E5E-BB59-7F1ECEE77F92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

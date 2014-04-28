@@ -5,9 +5,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public abstract class StandardFormsPage : FormsPage
     {
-        public override FormBuilderRequestContext RenderingContext
+        protected override FormBuilderRequestContext RenderingContext
         {
-            get { return (FormBuilderRequestContext)FunctionContextContainer.GetParameterValue(StandardFormFunction.RenderingContextKey, typeof(FormBuilderRequestContext)); }
+            get { return (FormBuilderRequestContext)FunctionContextContainer.GetParameterValue(BaseFormFunction.RenderingContextKey, typeof(FormBuilderRequestContext)); }
         }
     }
 }

@@ -3,9 +3,6 @@
 using Composite.Functions;
 using Composite.Functions.Plugins.FunctionProvider;
 
-using CompositeC1Contrib.FormBuilder.Wizard;
-using CompositeC1Contrib.FormBuilder.Wizard.FunctionProviders;
-
 namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 {
     public class FormWizardFunctionProvider : IFunctionProvider
@@ -16,29 +13,8 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
         {
             get
             {
-                var wizards = FormWizardsFacade.GetWizards();
-                foreach (var wizard in wizards)
-                {
-                    IFunction function;
-                    if (!FunctionFacade.TryGetFunction(out function, wizard.Name))
-                    {
-                        yield return new FormWizardFunction(wizard.Name);
-                    }
-                }
-
-                yield return new DumpSubmittedFormWizardValues();
+                yield return new DumpSubmittedWizardValues();
             }
-        }
-
-        public FormWizardFunctionProvider()
-        {
-            FormWizardsFacade.SubscribeToFormWizardChanges(() =>
-            {
-                if (FunctionNotifier != null)
-                {
-                    FunctionNotifier.FunctionsUpdated();
-                }
-            });
         }
     }
 }

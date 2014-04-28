@@ -12,12 +12,12 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public class SaveFormSubmitFacade
     {
-        public static void SaveSubmitDebug(FormModel model)
+        public static void SaveSubmitDebug(string basePath, IFormModel model)
         {
             var ctx = HttpContext.Current;
             var time = DateTime.UtcNow;
             var timeStamp = time.ToString("yyyy-MM-dd HH.mm.ss", CultureInfo.InvariantCulture);
-            var dir = Path.Combine(FormModelsFacade.FormsPath, model.Name, "Debug");
+            var dir = Path.Combine(basePath, model.Name, "Debug");
             var file = Path.Combine(dir, timeStamp + ".xml");
             var xml = GenerateBasicSubmitDocument(model, time);
 
@@ -37,23 +37,23 @@ namespace CompositeC1Contrib.FormBuilder
             SaveAttachments(model, dir, timeStamp);
         }
 
-        public static IEnumerable<XElement> LoadSubmits(FormModel model)
+        public static IEnumerable<XElement> LoadSubmits(string basePath, IFormModel model)
         {
-            var dir = Path.Combine(FormModelsFacade.FormsPath, model.Name, "Submits");
+            var dir = Path.Combine(basePath, model.Name, "Submits");
             var files = Directory.GetFiles(dir, "*.xml");
 
             return files.Select(XElement.Load);
         }
 
-        public static void SaveSubmit(FormModel model, bool includeAttachments)
+        public static void SaveSubmit(string basePath, IFormModel model, bool includeAttachments)
         {
-            SaveSubmit(model, includeAttachments, DateTime.UtcNow);
+            SaveSubmit(basePath, model, includeAttachments, DateTime.UtcNow);
         }
 
-        public static void SaveSubmit(FormModel model, bool includeAttachments, DateTime time)
+        public static void SaveSubmit(string basePath, IFormModel model, bool includeAttachments, DateTime time)
         {
             var timeStamp = time.ToString("yyyy-MM-dd HH.mm.ss", CultureInfo.InvariantCulture);
-            var dir = Path.Combine(FormModelsFacade.FormsPath, model.Name, "Submits");
+            var dir = Path.Combine(basePath, model.Name, "Submits");
             var file = Path.Combine(dir, timeStamp + ".xml");
             var xml = GenerateBasicSubmitDocument(model, time);
 
@@ -72,7 +72,7 @@ namespace CompositeC1Contrib.FormBuilder
             SaveAttachments(model, dir, timeStamp);
         }
 
-        private static XElement GenerateBasicSubmitDocument(FormModel model, DateTime time)
+        private static XElement GenerateBasicSubmitDocument(IFormModel model, DateTime time)
         {
             var xml = new XElement("formSubmit",
                 new XAttribute("time", time.ToString(CultureInfo.InvariantCulture)));
@@ -81,7 +81,7 @@ namespace CompositeC1Contrib.FormBuilder
 
             foreach (var field in model.Fields.Where(f => f.Label != null && f.Value != null))
             {
-                var value = DumpSubmittedFormValues.FormatFieldValue(field);
+                var value = BaseDumpSubmittedFormValuesFunction.FormatFieldValue(field);
 
                 fields.Add(new XElement("field",
                     new XAttribute("name", field.Name),
@@ -94,7 +94,7 @@ namespace CompositeC1Contrib.FormBuilder
             return xml;
         }
 
-        private static void SaveAttachments(FormModel model, string dir, string timeStamp)
+        private static void SaveAttachments(IFormModel model, string dir, string timeStamp)
         {
             var formFiles = new List<FormFile>();
 

@@ -18,7 +18,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Web.UI
             var form = context.Request.QueryString["form"];
             var formDefintion = DynamicFormsFacade.GetFormByName(form);
             var model = formDefintion.Model;
-            var submits = SaveFormSubmitFacade.LoadSubmits(model);
+            var submits = SaveFormSubmitFacade.LoadSubmits(FormModelsFacade.FormsPath, model);
 
             var response = context.Response;
 

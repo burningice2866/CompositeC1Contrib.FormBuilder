@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:f="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0">
   <cms:bindings>
-    <cms:binding name="Handler" type="CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers.EmailSubmitHandler, CompositeC1Contrib.FormBuilder.Dynamic" />
+    <cms:binding name="Name" type="System.String" />
+    <cms:binding name="IncludeAttachments" type="System.Boolean" />
+    
+    <cms:binding name="From" type="System.String" />
+    <cms:binding name="To" type="System.String" />
+    <cms:binding name="Cc" type="System.String" />
+    <cms:binding name="Bcc" type="System.String" />
+    <cms:binding name="Subject" type="System.String" />
+    <cms:binding name="Body" type="System.String" />
+    <cms:binding name="EncryptMessage" type="System.Boolean" />
+    <cms:binding name="EncryptPassword" type="System.String" />
   </cms:bindings>
 
   <cms:layout>
     <cms:layout.label>
-      <cms:read source="Handler.Name"/>
+      <cms:read source="Name"/>
     </cms:layout.label>
 
     <TabPanels>
@@ -14,43 +24,43 @@
         <FieldGroup>
           <TextBox Label="Name">
             <TextBox.Text>
-              <cms:bind source="Handler.Name" />
+              <cms:bind source="Name" />
             </TextBox.Text>
           </TextBox>
 
           <TextBox Label="From">
             <TextBox.Text>
-              <cms:bind source="Handler.From" />
+              <cms:bind source="From" />
             </TextBox.Text>
           </TextBox>
 
           <TextBox Label="To">
             <TextBox.Text>
-              <cms:bind source="Handler.To" />
+              <cms:bind source="To" />
             </TextBox.Text>
           </TextBox>
 
           <TextBox Label="Cc">
             <TextBox.Text>
-              <cms:bind source="Handler.Cc" />
+              <cms:bind source="Cc" />
             </TextBox.Text>
           </TextBox>
 
           <TextBox Label="Bcc">
             <TextBox.Text>
-              <cms:bind source="Handler.Bcc" />
+              <cms:bind source="Bcc" />
             </TextBox.Text>
           </TextBox>
 
           <CheckBox Label="Include attachments">
             <CheckBox.Checked>
-              <cms:bind source="Handler.IncludeAttachments" />
+              <cms:bind source="IncludeAttachments" />
             </CheckBox.Checked>
           </CheckBox>
 
           <TextBox Label="Subject">
             <TextBox.Text>
-              <cms:bind source="Handler.Subject" />
+              <cms:bind source="Subject" />
             </TextBox.Text>
           </TextBox>
         </FieldGroup>
@@ -58,9 +68,25 @@
 
       <XhtmlEditor Label="Body">
         <XhtmlEditor.Xhtml>
-          <cms:bind source="Handler.Body" />
+          <cms:bind source="Body" />
         </XhtmlEditor.Xhtml>
       </XhtmlEditor>
+
+      <PlaceHolder Label="Encryption">
+        <FieldGroup Label="Encryption settings">
+          <CheckBox Label="Encrypt message" Help="">
+            <CheckBox.Checked>
+              <cms:bind source="EncryptMessage" />
+            </CheckBox.Checked>
+          </CheckBox>
+
+          <TextBox Label="Password" Help="" SpellCheck="true">
+            <TextBox.Text>
+              <cms:bind source="EncryptPassword" />
+            </TextBox.Text>
+          </TextBox>
+        </FieldGroup>
+      </PlaceHolder>
     </TabPanels>
   </cms:layout>
 </cms:formdefinition>

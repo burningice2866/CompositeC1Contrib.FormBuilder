@@ -5,7 +5,6 @@ using System.Linq;
 using System.Xml.Linq;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
-using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
@@ -23,13 +22,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             var file = Path.Combine(FormModelsFacade.FormsPath, name, "DynamicDefinition.xml");
 
             return FromBaseForm(file, name);
-        }
-
-        public static DynamicFormDefinition CopyFormByName(string name, string newName)
-        {
-            var file = Path.Combine(FormModelsFacade.FormsPath, name, "DynamicDefinition.xml");
-
-            return FromBaseForm(file, newName);
         }
 
         public static DynamicFormDefinition FromBaseForm(string file, string name)
@@ -129,24 +121,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                         new XAttribute("Name", handler.Name),
                         new XAttribute("Type", handler.GetType().AssemblyQualifiedName));
 
-                    var emailSubmitHandler = handler as EmailSubmitHandler;
-                    if (emailSubmitHandler != null)
-                    {
-                        handlerElement.Add(new XAttribute("IncludeAttachments", emailSubmitHandler.IncludeAttachments));
-                        handlerElement.Add(new XAttribute("From", emailSubmitHandler.From ?? String.Empty));
-                        handlerElement.Add(new XAttribute("To", emailSubmitHandler.To ?? String.Empty));
-                        handlerElement.Add(new XAttribute("Cc", emailSubmitHandler.Cc ?? String.Empty));
-                        handlerElement.Add(new XAttribute("Bcc", emailSubmitHandler.Bcc ?? String.Empty));
-
-                        handlerElement.Add(new XElement("Subject", emailSubmitHandler.Subject ?? String.Empty));
-                        handlerElement.Add(new XElement("Body", emailSubmitHandler.Body ?? String.Empty));
-                    }
-
-                    var saveFormSubmitHandler = handler as SaveFormSubmitHandler;
-                    if (saveFormSubmitHandler != null)
-                    {
-                        handlerElement.Add(new XAttribute("IncludeAttachments", saveFormSubmitHandler.IncludeAttachments));
-                    }
+                    handler.Save(definition, handlerElement);
 
                     submitHandlers.Add(handlerElement);
                 }
@@ -163,8 +138,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
             foreach (var field in model.Fields)
             {
-                var add = new XElement("Add", 
-                    new XAttribute("name", field.Name), 
+                var add = new XElement("Add",
+                    new XAttribute("name", field.Name),
                     new XAttribute("valueType", field.ValueType.AssemblyQualifiedName));
 
                 if (field.Label != null)
@@ -279,6 +254,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             var dir = Path.Combine(FormModelsFacade.FormsPath, definition.Name);
 
             Directory.Delete(dir, true);
+
+            foreach (var submithandler in definition.SubmitHandlers)
+            {
+                submithandler.Delete(definition);
+            }
 
             NotifyFormChanges();
         }

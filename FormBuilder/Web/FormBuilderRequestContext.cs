@@ -1,94 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-using CompositeC1Contrib.FormBuilder.Web.UI;
-
-namespace CompositeC1Contrib.FormBuilder.Web
+﻿namespace CompositeC1Contrib.FormBuilder.Web
 {
-    public abstract class FormBuilderRequestContext
+    public abstract class FormBuilderRequestContext : BaseFormBuilderRequestContext<FormModel>
     {
-        private readonly HttpContextBase _ctx = new HttpContextWrapper(HttpContext.Current);
+        protected FormBuilderRequestContext(string name) : base(name) { }
 
-        protected string FormName { get; private set; }
-
-        public FormOptions Options { get; private set; }
-
-        public bool IsOwnSubmit
+        public override void Submit()
         {
-            get { return _ctx.Request.RequestType == "POST" && _ctx.Request.Form["__type"] == RenderingModel.Name; }
-        }
-
-        public bool IsSuccess
-        {
-            get { return IsOwnSubmit && !RenderingModel.ValidationResult.Any(); }
-        }
-
-        public abstract FormModel RenderingModel { get; }
-
-        protected FormBuilderRequestContext(string name)
-        {
-            FormName = name;
-            Options = new FormOptions();
-        }
-
-        public void Execute()
-        {
-            FormModel.SetCurrent(RenderingModel.Name, RenderingModel);
-
-            var request = _ctx.Request;
-            var response = _ctx.Response;
-
-            if (!request.IsLocal && RenderingModel.ForceHttps && !request.IsSecureConnection)
+            if (HttpContext.IsDebuggingEnabled)
             {
-                string redirectUrl = request.Url.ToString().Replace("http:", "https:");
-
-                response.Redirect(redirectUrl, true);
+                SaveFormSubmitFacade.SaveSubmitDebug(FormModelsFacade.FormsPath, RenderingModel);
             }
 
-            SetDefaultValues();
-
-            if (!IsOwnSubmit)
-            {
-                return;
-            }
-
-            var requestFiles = request.Files;
-            var files = new List<FormFile>();
-
-            for (int i = 0; i < requestFiles.Count; i++)
-            {
-                var f = requestFiles[i];
-                if (f.ContentLength > 0)
-                {
-                    files.Add(new FormFile()
-                    {
-                        Key = requestFiles.AllKeys[i],
-                        ContentLength = f.ContentLength,
-                        ContentType = f.ContentType,
-                        FileName = f.FileName,
-                        InputStream = f.InputStream
-                    });
-                }
-            }
-                
-            RenderingModel.MapValues(request.Form, files);
-            OnMappedValues();
-            RenderingModel.Validate();
-        }
-
-        public virtual void OnMappedValues() { }
-        public virtual void SetDefaultValues() { }
-        public virtual void OnSubmit() { }
-
-        public void Submit()
-        {
-            OnSubmit();
-
-            if (_ctx.IsDebuggingEnabled)
-            {
-                SaveFormSubmitFacade.SaveSubmitDebug(RenderingModel);
-            }
+            base.Submit();
         }
     }
 }

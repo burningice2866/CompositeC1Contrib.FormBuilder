@@ -22,16 +22,18 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         }
 
         private FormBuilderRequestContext _context;
-        public override FormBuilderRequestContext RenderingContext
+        protected override FormBuilderRequestContext RenderingContext
         {
             get
             {
                 if (_context == null)
                 {
                     var model = POCOFormsFacade.FromType(Form);
+                    var httpContext = new HttpContextWrapper(HttpContext.Current);
 
                     _context = new POCOFormBuilderRequestContext(model.Name, Form);
-                    _context.Execute();
+                    
+                    _context.Execute(httpContext);
                 }
 
                 return _context;
@@ -42,8 +44,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             var functionContext = new FunctionContextContainer(FunctionContextContainer, new Dictionary<string, object>
             {
-                { StandardFormFunction.RenderingContextKey, RenderingContext },
-                { StandardFormFunction.FormModelKey, RenderingContext.RenderingModel }
+                { BaseFormFunction.RenderingContextKey, RenderingContext },
+                { BaseFormFunction.FormModelKey, RenderingContext.RenderingModel }
             });
 
             var functionContextField = typeof(RazorHelper).GetField("PageContext_FunctionContextContainer", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);

@@ -16,6 +16,8 @@ else
     }
 
     <form method="POST" class="formwizard">
+        <input type="hidden" name="__type" value="@RenderingContext.RenderingModel.Name" />
+
         @WriteErrors()
 
         @for (int i = 0; i < steps.Count; i++)

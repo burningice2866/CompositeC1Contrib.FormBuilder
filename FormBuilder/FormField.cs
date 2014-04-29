@@ -54,7 +54,7 @@ namespace CompositeC1Contrib.FormBuilder
                     return helpAttribute.Help;
                 }
 
-                var resourceObj = HttpContext.GetGlobalResourceObject("FormBuilderHelp", Id);
+                var resourceObj = HttpContext.GetGlobalResourceObject("FormBuilderHelp", Id.Replace("$", "_"));
                 if (resourceObj != null)
                 {
                     return (string)resourceObj;

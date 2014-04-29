@@ -109,7 +109,6 @@
   <ItemGroup>
     <None Include="Package\config\App_Data\Composite\composite.config" />
     <None Include="Package\config\web.config" />
-    <None Include="Package\content\App_Data\Razor\FormBuilder\StandardFormWizardExecutor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic.Wizard\AddFormWizardWorkflow.xml" />
@@ -118,7 +117,6 @@
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic.Wizard\EditEmailSubmitHandlerWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic.Wizard\EditFormWizardWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic.Wizard\EditWizardStepWorkflow.xml" />
-    <Content Include="Package\content\Frontend\js\plugins\jquery.formbuilder.wizard.js" />
     <Content Include="Package\install.xml">
       <SubType>Designer</SubType>
     </Content>

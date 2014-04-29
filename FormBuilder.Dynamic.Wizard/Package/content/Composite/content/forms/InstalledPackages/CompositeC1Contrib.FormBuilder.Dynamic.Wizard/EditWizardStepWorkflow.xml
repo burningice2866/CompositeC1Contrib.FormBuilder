@@ -21,7 +21,7 @@
 
       <KeySelector Label="Select field type" OptionsKeyField="Key" OptionsLabelField="Value" Required="true">
         <KeySelector.Options>
-          <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Wizard.C1Console.Workflows.AddWizardStepWorkflow, CompositeC1Contrib.FormBuilder.Wizard" Method="GetFormNames" />
+          <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.Workflows.AddWizardStepWorkflow, CompositeC1Contrib.FormBuilder.Dynamic.Wizard" Method="GetFormNames" />
         </KeySelector.Options>
 
         <KeySelector.Selected>

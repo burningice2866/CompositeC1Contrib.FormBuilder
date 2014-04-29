@@ -172,6 +172,15 @@
 
             clickedButton.attr('disabled', true);
 
+            var clickedButtonName = clickedButton.attr('name');
+            var clickedButtonValue = clickedButton.val();
+
+            var hiddenField = $('<input />').attr({
+                type: 'hidden',
+                name: clickedButtonName,
+                value: clickedButtonValue
+            }).appendTo(form);
+
             var l = undefined;
             if (window.Ladda) {
                 setTimeout(function () {
@@ -183,6 +192,7 @@
 
             validation(form, function () {
                 clickedButton.attr('disabled', false);
+                form.remove(hiddenField);
 
                 if (l !== undefined) {
                     l.stop();

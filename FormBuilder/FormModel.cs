@@ -98,7 +98,7 @@ namespace CompositeC1Contrib.FormBuilder
 
             if (OnValidateHandler != null)
             {
-                var e = new FormValidationEventArgs();
+                var e = new FormValidationEventArgs(SubmittedValues);
 
                 OnValidateHandler(e);
 

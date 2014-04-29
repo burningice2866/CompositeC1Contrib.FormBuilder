@@ -58,7 +58,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public override void ExecutePageHierarchy()
         {
-            if (RenderingContext.IsOwnSubmit && RenderingContext.IsSuccess)
+            if (RenderingContext.IsSuccess)
             {
                 HandleSubmit();
             }

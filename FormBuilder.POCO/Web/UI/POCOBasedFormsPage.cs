@@ -15,29 +15,35 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public abstract class POCOBasedFormsPage<T> : FormsPage where T : IPOCOForm
     {
-        private readonly T _form = Activator.CreateInstance<T>();
-        protected T Form
-        {
-            get { return _form; }
-        }
+        protected T Form { get; private set; }
 
-        private FormBuilderRequestContext _context;
+        private readonly FormBuilderRequestContext _context;
         protected override FormBuilderRequestContext RenderingContext
         {
-            get
+            get { return _context; }
+        }
+
+        protected POCOBasedFormsPage()
+        {
+            var ctors = typeof(T).GetConstructors(BindingFlags.Instance | BindingFlags.Public);
+            foreach (var ctor in ctors)
             {
-                if (_context == null)
+                var parameters = ctor.GetParameters();
+
+                if (parameters.Length == 0)
                 {
-                    var model = POCOFormsFacade.FromType(Form);
-                    var httpContext = new HttpContextWrapper(HttpContext.Current);
-
-                    _context = new POCOFormBuilderRequestContext(model.Name, Form);
-                    
-                    _context.Execute(httpContext);
+                    Form = Activator.CreateInstance<T>();
                 }
-
-                return _context;
             }
+
+            if (Form == null)
+            {
+                throw new InvalidOperationException("No parameterless constructor on form");
+            }
+
+            var model = POCOFormsFacade.FromType(Form);
+
+            _context = new POCOFormBuilderRequestContext(model.Name, Form);
         }
 
         public override void ExecutePageHierarchy()
@@ -51,6 +57,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var functionContextField = typeof(RazorHelper).GetField("PageContext_FunctionContextContainer", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
 
             PageData[functionContextField] = functionContext;
+
+            _context.Execute(Context);
 
             base.ExecutePageHierarchy();
         }
@@ -80,7 +88,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected IHtmlString FieldFor(Expression<Func<T, object>> fieldSelector)
         {
-            return FieldFor(fieldSelector, new {});
+            return FieldFor(fieldSelector, new { });
         }
 
         protected IHtmlString FieldFor(Expression<Func<T, object>> fieldSelector, object htmlAttributes)
@@ -102,7 +110,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         public FormField GetField(Expression<Func<T, object>> fieldSelector)
         {
             var prop = GetProperty(fieldSelector);
-            
+
             return RenderingContext.RenderingModel.Fields.Single(f => f.Name == prop.Name);
         }
 

@@ -1,4 +1,9 @@
-﻿namespace CompositeC1Contrib.FormBuilder.Web
+﻿using System.Linq;
+using System.Reflection;
+
+using CompositeC1Contrib.FormBuilder.POCO;
+
+namespace CompositeC1Contrib.FormBuilder.Web
 {
     public class POCOFormBuilderRequestContext : FormBuilderRequestContext
     {
@@ -29,8 +34,26 @@
 
         public override void Submit()
         {
-            _instance.Submit();
+            var importSubmittedValuesProperties = _instance.GetType()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(p => p.CanWrite && p.GetCustomAttribute<ImportSubmittedValuesAttribute>() != null);
 
+            foreach (var prop in importSubmittedValuesProperties)
+            {
+                prop.SetValue(_instance, _model.SubmittedValues);
+            }
+
+            var importSubmittedValuesFields = _instance.GetType()
+                .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(f => f.GetCustomAttribute<ImportSubmittedValuesAttribute>() != null);
+
+            foreach (var field in importSubmittedValuesFields)
+            {
+                field.SetValue(_instance, _model.SubmittedValues);
+            }
+
+            _instance.Submit();
+            
             base.Submit();
         }
     }

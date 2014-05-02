@@ -47,6 +47,11 @@
     };
 
     var validation = function (form, callback) {
+        var fileElements = $('input[type=file]', form);
+        if (fileElements.length > 0) {
+            return;
+        }
+        
         formbuilder.clearErrors(form);
         formbuilder.validate(form, form.serializeArray(), callback);
     };
@@ -192,7 +197,7 @@
 
             validation(form, function () {
                 clickedButton.attr('disabled', false);
-                form.remove(hiddenField);
+                hiddenField.remove();
 
                 if (l !== undefined) {
                     l.stop();

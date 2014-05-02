@@ -52,7 +52,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static void MapValues(IPOCOForm instance, FormModel model)
         {
-            foreach (var prop in instance.GetType().GetProperties())
+            foreach (var prop in instance.GetType().GetProperties().Where(p => p.CanWrite))
             {
                 var field = model.Fields.SingleOrDefault(f => f.Name == prop.Name);
                 if (field != null && field.ValueType == prop.PropertyType)
@@ -70,7 +70,7 @@ namespace CompositeC1Contrib.FormBuilder
                 defaultValuesProvider.SetDefaultValues();
             }
 
-            foreach (var prop in instance.GetType().GetProperties())
+            foreach (var prop in instance.GetType().GetProperties().Where(p => p.CanRead))
             {
                 var field = model.Fields.SingleOrDefault(f => f.Name == prop.Name);
                 if (field != null && field.ValueType == prop.PropertyType)

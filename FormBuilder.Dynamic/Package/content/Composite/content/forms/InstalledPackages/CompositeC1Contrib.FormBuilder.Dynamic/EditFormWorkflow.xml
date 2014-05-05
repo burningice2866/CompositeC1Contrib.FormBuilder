@@ -54,11 +54,15 @@
 
       <PlaceHolder Label="Advanced">
         <FieldGroup>
-          <TextBox Label="Function executor">
-            <TextBox.Text>
+          <KeySelector Label="Function executor" OptionsKeyField="Key" OptionsLabelField="Value" Required="true">
+            <KeySelector.Options>
+              <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows.EditFormWorkflow, CompositeC1Contrib.FormBuilder.Dynamic" Method="GetFunctionExecutors" />
+            </KeySelector.Options>
+
+            <KeySelector.Selected>
               <cms:bind source="FunctionExecutor" />
-            </TextBox.Text>
-          </TextBox>
+            </KeySelector.Selected>
+          </KeySelector>
         </FieldGroup>
       </PlaceHolder>
     </TabPanels>

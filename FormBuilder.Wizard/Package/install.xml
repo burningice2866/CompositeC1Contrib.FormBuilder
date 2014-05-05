@@ -5,7 +5,7 @@
 
   <mi:PackageInformation name="Contribution.CompositeC1Contrib.FormBuilder.Wizard"
                          groupName="Contribution.CompositeC1Contrib"
-                         version="0.8.2" author="@burningice" website="http://compositec1contrib.codeplex.com"
+                         version="0.8.3" author="@burningice" website="http://compositec1contrib.codeplex.com"
                          readMoreUrl="http://compositec1contrib.codeplex.com"
                          id="2fbd60af-23de-4fe9-9e40-f421736fb57a"
                          canBeUninstalled="true"

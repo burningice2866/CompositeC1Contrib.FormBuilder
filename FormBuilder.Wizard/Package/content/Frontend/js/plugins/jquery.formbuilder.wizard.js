@@ -25,18 +25,33 @@
     };
 
     $(document).ready(function () {
-        $('.formwizard').on('click', 'button', function (e) {
-            e.preventDefault();
+        var forms = $('form.formwizard');
 
+        if (window.Ladda) {
+            $.each(forms, function (ix, form) {
+                var submitButtons = $('input[type="submit"]:not([data-nextstep])', form);
+
+                $.each(submitButtons, function (ix, btn) {
+                    btn = $(btn);
+                    var val = btn.val();
+                    var html = '<button class="ladda-button btn btn-primary" data-style="expand-right" type="submit" name="SubmitForm" value="' + val + '">' + val + '</button>';
+
+                    btn.replaceWith(html);
+                });
+            });
+        }
+
+        $('.formwizard').on('click', 'input[type="submit"], button', function (e) {
+            e.preventDefault();
             var button = $(this);
-            var container = button.parent();
-            var form = container.parent();
+            var container = button.closest('[data-step]');
+            var form = container.closest('form');
             var step = container.data('step');
             var nextStep = button.data('nextstep');
 
             formbuilder.clearErrors(form);
 
-            if (nextStep > step) {
+            if (nextStep === undefined || nextStep > step) {
                 validation(form, step);
             }
 
@@ -44,6 +59,18 @@
                 if (nextStep !== undefined) {
                     container.hide();
                     $('.js-formwizard-step[data-step=' + nextStep + ']', form).show();
+                }
+                else
+                {
+                    if (window.Ladda && button.hasClass('ladda-button')) {
+                        setTimeout(function () {
+                            var l = window.Ladda.create(button[0]);
+
+                            l.start();
+                        }, 500);
+                    }
+
+                    form.submit();
                 }
             }
         });

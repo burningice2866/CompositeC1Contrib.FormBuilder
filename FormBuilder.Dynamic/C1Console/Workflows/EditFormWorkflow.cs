@@ -1,13 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 
+using Composite.C1Console.Actions;
+using Composite.C1Console.Forms;
+using Composite.C1Console.Forms.DataServices;
 using Composite.C1Console.Workflow;
 using Composite.Core.Xml;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.C1Console.Tokens;
+using CompositeC1Contrib.FormBuilder.Configuration;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
+using CompositeC1Contrib.FormBuilder.Dynamic.Configuration;
 using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
@@ -15,7 +21,20 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
     [AllowPersistingWorkflow(WorkflowPersistingType.Idle)]
     public class EditFormWorkflow : Basic1StepDocumentWorkflow
     {
-        public EditFormWorkflow() : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditFormWorkflow.xml") { }
+        public static Dictionary<string, string> GetFunctionExecutors()
+        {
+            var config = FormBuilderConfiguration.GetSection();
+            var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
+
+            if (plugin.FunctionExecutors.Any())
+            {
+                return plugin.FunctionExecutors.ToDictionary(e => e.Name, e => e.Name);
+            }
+            else
+            {
+                return new Dictionary<string, string>() { { config.DefaultFunctionExecutor, config.DefaultFunctionExecutor } };
+            }
+        }
 
         public override void OnInitialize(object sender, EventArgs e)
         {
@@ -33,7 +52,64 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             Bindings.Add("SubmitButtonLabel", definition.Model.SubmitButtonLabel);
             Bindings.Add("IntroText", definition.IntroText.ToString());
             Bindings.Add("SuccessResponse", definition.SuccessResponse.ToString());
-            Bindings.Add("FunctionExecutor", definition.FormExecutor ?? String.Empty);
+            Bindings.Add("FunctionExecutor", definition.FormExecutor ?? FormBuilderConfiguration.GetSection().DefaultFunctionExecutor);
+
+            SetupFormData(definition);
+        }
+
+        private void SetupFormData(DynamicFormDefinition definition)
+        {
+            var markupProvider = new FormDefinitionFileMarkupProvider("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditFormWorkflow.xml");
+            var formDocument = XDocument.Load(markupProvider.GetReader());
+
+            var layoutXElement = formDocument.Root.Element(Namespaces.BindingForms10 + FormKeyTagNames.Layout);
+            var bindingsXElement = formDocument.Root.Element(Namespaces.BindingForms10 + FormKeyTagNames.Bindings);
+            var tabPanelElements = layoutXElement.Element(Namespaces.BindingFormsStdUiControls10 + "TabPanels");
+            var lastTabElement = tabPanelElements.Elements().Last();
+
+            LoadExtraSettings(definition, bindingsXElement, lastTabElement);
+
+            DeliverFormData("EditForm", StandardUiContainerTypes.Document, formDocument.ToString(), Bindings, BindingsValidationRules);
+        }
+
+        private void LoadExtraSettings(DynamicFormDefinition definition, XElement bindingsXElement, XElement lastTabElement)
+        {
+            var config = FormBuilderConfiguration.GetSection();
+            var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
+            var SettingsType = plugin.FunctionExecutors.Where(el => el.Name == (definition.FormExecutor ?? FormBuilderConfiguration.GetSection().DefaultFunctionExecutor)).Select(el => el.Type).FirstOrDefault();
+
+            if(SettingsType == null)
+            {
+                return;
+            }
+
+            if(definition.FormExecutorSettings == null || definition.FormExecutorSettings.GetType() != SettingsType)
+            {
+                definition.FormExecutorSettings = (IFormExecutorSettingsHandler)Activator.CreateInstance(SettingsType, null);
+            }
+
+            var settings = definition.FormExecutorSettings;
+
+            var formFile = "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\FunctionExcutorSettings\\" + settings.GetType().FullName + ".xml";
+            var settingsMarkupProvider = new FormDefinitionFileMarkupProvider(formFile);
+            var formDefinitionElement = XElement.Load(settingsMarkupProvider.GetReader());
+
+            var settingsTab = new XElement(Namespaces.BindingFormsStdUiControls10 + "PlaceHolder");
+            var layout = formDefinitionElement.Element(Namespaces.BindingForms10 + FormKeyTagNames.Layout);
+            var bindings = formDefinitionElement.Element(Namespaces.BindingForms10 + FormKeyTagNames.Bindings);
+
+            settingsTab.Add(new XAttribute("Label", "Extra Settings"));
+            settingsTab.Add(layout.Elements());
+            bindingsXElement.Add(bindings.Elements());
+
+            lastTabElement.AddAfterSelf(settingsTab);
+
+            foreach (var prop in settings.GetType().GetProperties())
+            {
+                var value = prop.GetValue(settings, null);
+
+                Bindings.Add(prop.Name, value);
+            }
         }
 
         public override void OnFinish(object sender, EventArgs e)
@@ -66,6 +142,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 definition.Model.Attributes.Add(submitButtonLabelAttr);
             }
 
+            SaveExtraSettings(definition);
+
             if (formName != formToken.FormName)
             {
                 definition.Copy(formName);
@@ -79,6 +157,35 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             CreateSpecificTreeRefresher().PostRefreshMesseges(new FormElementProviderEntityToken());
             SetSaveStatus(true);
+        }
+
+        private void SaveExtraSettings(DynamicFormDefinition definition)
+        {
+            var config = FormBuilderConfiguration.GetSection();
+            var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
+            var SettingsType = plugin.FunctionExecutors.Where(el => el.Name == (definition.FormExecutor ?? FormBuilderConfiguration.GetSection().DefaultFunctionExecutor)).Select(el => el.Type).FirstOrDefault();
+
+            if (SettingsType == null)
+            {
+                definition.FormExecutorSettings = null;
+                return;
+            }
+
+            if (definition.FormExecutorSettings == null || definition.FormExecutorSettings.GetType() != SettingsType)
+            {
+                definition.FormExecutorSettings = (IFormExecutorSettingsHandler)Activator.CreateInstance(SettingsType, null);
+            }
+            var settings = definition.FormExecutorSettings;
+
+            foreach (var prop in settings.GetType().GetProperties())
+            {
+                if (BindingExist(prop.Name))
+                {
+                    var value = GetBinding<object>(prop.Name);
+
+                    prop.SetValue(settings, value, null);
+                }
+            }
         }
 
         public override bool Validate()

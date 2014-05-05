@@ -23,6 +23,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         public XhtmlDocument SuccessResponse { get; set; }
 
         public string FormExecutor { get; set; }
+        public IFormExecutorSettingsHandler FormExecutorSettings { get; set; }
 
         public DynamicFormDefinition(string name) : this(new FormModel(name)) { }
 
@@ -155,8 +156,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 }
             }
 
+            if (definition.IntroText == null)
+            {
+                definition.IntroText = new XhtmlDocument();
+            }
+
+            if (definition.SuccessResponse == null)
+            {
+                definition.SuccessResponse = new XhtmlDocument();
+            }
+
             ParseMetaDataDefaultValues(metaData, definition);
             ParseMetaDataSubmitHandlers(metaData, definition);
+            ParseMetaDataFunctionExecutorSettings(metaData, definition);
         }
 
         private static void ParseMetaDataDefaultValues(XElement metaData, DynamicFormDefinition definition)
@@ -190,6 +202,20 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
                     definition.SubmitHandlers.Add(instance);
                 }
+            }
+        }
+
+        private static void ParseMetaDataFunctionExecutorSettings(XElement metaData, DynamicFormDefinition definition)
+        {
+            var functionExecutorSettingsElement = metaData.Element("FunctionExecutorSettings");
+            if (functionExecutorSettingsElement != null)
+            {
+                var typeString = functionExecutorSettingsElement.Attribute("Type").Value;
+                var type = Type.GetType(typeString);
+
+                var instance = (IFormExecutorSettingsHandler)XElementHelper.DeserializeInstanceWithArgument(type, functionExecutorSettingsElement);
+
+                definition.FormExecutorSettings = instance;
             }
         }
 

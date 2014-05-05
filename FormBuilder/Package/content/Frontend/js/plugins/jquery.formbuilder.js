@@ -189,9 +189,11 @@
             var l = undefined;
             if (window.Ladda) {
                 setTimeout(function () {
-                    l = window.Ladda.create(clickedButton[0]);
+                    if (clickedButton.is(":disabled")) {
+                        l = window.Ladda.create(clickedButton[0]);
 
-                    l.start();
+                        l.start();
+                    }
                 }, 500);
             }
 

@@ -129,6 +129,15 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 metaData.Add(submitHandlers);
             }
 
+            if (definition.FormExecutorSettings != null)
+            {
+                var SettingsElement = new XElement("FunctionExecutorSettings", new XAttribute("Type", definition.FormExecutorSettings.GetType().AssemblyQualifiedName));
+
+                SerializeInstanceWithArgument(definition.FormExecutorSettings, SettingsElement);
+
+                metaData.Add(SettingsElement);
+            }
+
             if (metaData.HasElements)
             {
                 root.Add(metaData);
@@ -243,9 +252,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
             foreach (var prop in type.GetProperties().Where(p => p.CanRead && p.CanWrite))
             {
-                var value = prop.GetValue(instance, null).ToString();
+                var value = prop.GetValue(instance, null);
 
-                element.Add(new XAttribute(prop.Name.ToLowerInvariant(), value));
+                if (value != null)
+                {
+                    element.Add(new XAttribute(prop.Name.ToLowerInvariant(), value));
+                }
             }
         }
 

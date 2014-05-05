@@ -80,6 +80,8 @@
     <Compile Include="C1Console\EntityTokens\StringBasedDataSourceEntryEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\DataSourceEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormFieldEntityToken.cs" />
+    <Compile Include="Configuration\FormExecutorSettingsElement.cs" />
+    <Compile Include="C1Console\IFormExecutorSettingsHandler.cs" />
     <Compile Include="C1Console\InputElementHandler.cs" />
     <Compile Include="C1Console\TextBoxSettings.cs" />
     <Compile Include="C1Console\Workflows\AddDataSourceWorkflow.cs">

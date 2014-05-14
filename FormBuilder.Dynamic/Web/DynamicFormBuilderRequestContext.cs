@@ -21,24 +21,6 @@ namespace CompositeC1Contrib.FormBuilder.Web
             _model = DynamicFormsFacade.GetFormByName(formName).Model;
         }
 
-        public override void SetDefaultValues()
-        {
-            var def = DynamicFormsFacade.GetFormByName(_model.Name);
-
-            foreach (var field in _model.Fields)
-            {
-                XElement defaultValueSetter;
-                if (!def.DefaultValues.TryGetValue(field.Name, out defaultValueSetter))
-                {
-                    continue;
-                }
-
-                var runtimeTree = FunctionFacade.BuildTree(defaultValueSetter);
-
-                field.Value = runtimeTree.GetValue();
-            }
-        }
-
         public override void Submit()
         {
             var def = DynamicFormsFacade.GetFormByName(_model.Name);

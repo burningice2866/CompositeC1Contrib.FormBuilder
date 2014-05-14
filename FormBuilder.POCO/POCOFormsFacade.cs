@@ -26,6 +26,8 @@ namespace CompositeC1Contrib.FormBuilder
                 model.OnValidateHandler = validationHandler.OnValidate;
             }
 
+            model.SetDefaultValuesHandler = m => SetDefaultValues(instance, m);
+
             foreach (var itm in formType.GetCustomAttributes(true).Cast<Attribute>())
             {
                 model.Attributes.Add(itm);

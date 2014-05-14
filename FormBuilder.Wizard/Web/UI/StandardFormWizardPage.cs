@@ -56,11 +56,21 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return RenderingContext.IsOwnSubmit ? FormRenderer.WriteErrors(RenderingContext.ValidationResult) : new HtmlString(String.Empty);
         }
 
-        protected IHtmlString RenderFormField(int step, string formName)
+        protected WizardHtmlForm BeginForm()
         {
-            var model = FormModelsFacade.GetModel(formName);
-            var options = new FormOptions();
+            return BeginForm(null);
+        }
 
+        protected WizardHtmlForm BeginForm(object htmlAttributes)
+        {
+            return new WizardHtmlForm(this, RenderingContext.RenderingModel, htmlAttributes);
+        }
+
+        protected IHtmlString RenderFormField(FormWizardStep step)
+        {
+            var options = new FormOptions();
+            
+            var model = Wizard.StepModels[step.Name];
             var html = FormsPage.RenderModelFields(model, options).ToString();
             var xelement = XElement.Parse(html);
 

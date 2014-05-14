@@ -39,34 +39,70 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
         public IEnumerable<ParameterProfile> ParameterProfiles
         {
-            get { return Enumerable.Empty<ParameterProfile>(); }
+            get
+            {
+                var list = new List<ParameterProfile>
+                {
+                    new ParameterProfile("UseRenderingLayout", typeof (bool), false,
+                        new ConstantValueProvider(false),
+                        StandardWidgetFunctions.GetDefaultWidgetFunctionProviderByType(typeof (bool)),
+                        "Use rendering layout", new HelpDefinition("Use rendering layout"))
+                };
+
+                return list;
+            }
         }
 
         public abstract object Execute(ParameterList parameters, FunctionContextContainer context);
 
         public static void DumpModelValues(IFormModel model, XhtmlDocument doc)
         {
-            var html = new StringBuilder();
+            DumpModelValues(model, doc, false);
+        }
 
-            html.Append("<table>");
-
-            foreach (var field in model.Fields.Where(f => f.Label != null && f.Value != null))
+        public static void DumpModelValues(IFormModel model, XhtmlDocument doc, bool useRenderingLayout)
+        {
+            if (useRenderingLayout)
             {
-                var value = FormatFieldValue(field);
+                var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(model.Name);
 
-                value = HttpUtility.HtmlEncode(value);
+                var elements = new List<XElement>();
+                var fields = new List<FormField>();
 
-                if (field.InputElementType is TextAreaInputElementAttribute)
+                foreach (var el in renderingMarkup.Body.Descendants().ToList())
                 {
-                    value = value.Replace("\r", String.Empty).Replace("\n", "<br />");
+                    var value = el.Value.Trim();
+
+                    if (value.Length > 2 && value.First() == '%' && value.Last() == '%')
+                    {
+                        value = value.Substring(1, value.Length - 2);
+
+                        var field = model.Fields.FirstOrDefault(f => f.Label != null && f.Name == value);
+                        if (field == null || field.Value == null)
+                        {
+                            continue;
+                        }
+
+                        elements.Add(el);
+                        fields.Add(field);
+                    }
+                    else
+                    {
+                        ReplaceElementsWithTable(elements, fields);
+                    }
                 }
 
-                html.AppendFormat("<tr><td>{0}:</td><td>{1}</td></tr>", HttpUtility.HtmlEncode(field.Label.Label), value);
+                ReplaceElementsWithTable(elements, fields);
+
+                doc.Body.Add(renderingMarkup.Body.Elements());
             }
+            else
+            {
+                var fields = model.Fields.Where(f => f.Label != null && f.Value != null);
+                var table = GetFieldsTable(fields);
 
-            html.Append("</table>");
-
-            doc.Body.Add(XElement.Parse(html.ToString()));
+                doc.Body.Add(table);
+            }
         }
 
         public static string FormatFieldValue(FormField field)
@@ -97,6 +133,58 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             }
 
             return field.Value.ToString();
+        }
+
+        private static void ReplaceElementsWithTable(List<XElement> elements, List<FormField> fields)
+        {
+            if (!fields.Any())
+            {
+                return;
+            }
+
+            var table = GetFieldsTable(fields);
+
+            for (int i = 0; i < elements.Count - 1; i++)
+            {
+                elements[i].Remove();
+            }
+
+            elements.Last().ReplaceWith(table);
+
+            elements.Clear();
+            fields.Clear();
+        }
+
+        private static XElement GetFieldsTable(IEnumerable<FormField> fields)
+        {
+            var table = new XElement(Namespaces.Xhtml + "table", new XAttribute("class", "data-table"));
+
+            foreach (var item in fields)
+            {
+                table.Add(GetFieldTableRow(item));
+            }
+
+            return table;
+        }
+
+        private static XElement GetFieldTableRow(FormField field)
+        {
+            var value = FormatFieldValue(field);
+            var row = new XElement(Namespaces.Xhtml + "tr", new XElement(Namespaces.Xhtml + "td", new XElement(Namespaces.Xhtml + "strong", field.Label.Label.TrimEnd(':') + ":")));
+
+            if (field.InputElementType is TextAreaInputElementAttribute)
+            {
+                value = HttpUtility.HtmlEncode(value);
+                value = "<td xmlns=\"" + Namespaces.Xhtml + "\">" + value.Replace("\r", String.Empty).Replace("\n", "<br />") + "</td>";
+
+                row.Add(XElement.Parse(value));
+            }
+            else
+            {
+                row.Add(new XElement(Namespaces.Xhtml + "td", value));
+            }
+
+            return row;
         }
     }
 }

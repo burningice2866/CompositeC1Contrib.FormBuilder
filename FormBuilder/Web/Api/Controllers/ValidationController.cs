@@ -80,7 +80,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
             return Task.Run(async () => await action).Result;
         }
 
-        private static FormModel CreateFormModel(NameValueCollection form)
+        private static IFormModel CreateFormModel(NameValueCollection form)
         {
             var name = form["__type"];
             var model = FormModelsFacade.GetModels().Single(f => f.Name == name);

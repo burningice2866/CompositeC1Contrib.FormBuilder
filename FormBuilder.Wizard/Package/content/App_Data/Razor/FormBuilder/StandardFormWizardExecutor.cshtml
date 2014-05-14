@@ -15,19 +15,11 @@ else
         @EvaluateMarkup(Wizard.IntroText.Root)
     }
 
-    <form method="POST" class="formwizard">
-        <input type="hidden" name="__type" value="@RenderingContext.RenderingModel.Name" />
-
+    using (BeginForm())
+    {
         @WriteErrors()
 
-        @for (int i = 0; i < steps.Count; i++)
-        {
-            var step = steps[i];
-
-            <input type="hidden" name="step_@(i + 1)" value="@step.FormName" />
-        }
-
-        @for (int i = 0; i < steps.Count; i++)
+        for (int i = 0; i < steps.Count; i++)
         {
             var step = steps[i];
             var stepNumber = (i + 1);
@@ -49,8 +41,8 @@ else
                 }
             }
 
-            <div data-step="@stepNumber" class="js-formwizard-step step @stepNumber" @if (i > 0) { <text> style="display: none;" </text> }>
-                @RenderFormField(stepNumber, step.FormName)
+            <div data-step="@stepNumber" class="js-formwizard-step step @stepNumber" @if (i > 0) { <text> style="display: none;" </text>    }>
+                @RenderFormField(step)
 
                 @if (i > 0)
                 {
@@ -68,5 +60,5 @@ else
                 }
             </div>
         }
-    </form>
+    }
 }

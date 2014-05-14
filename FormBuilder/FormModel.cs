@@ -25,6 +25,7 @@ namespace CompositeC1Contrib.FormBuilder
         public IList<Attribute> Attributes { get; private set; }
 
         public Action<FormValidationEventArgs> OnValidateHandler { get; set; }
+        public Action<FormModel> SetDefaultValuesHandler { get; set; }
 
         public bool ForceHttps
         {
@@ -133,6 +134,14 @@ namespace CompositeC1Contrib.FormBuilder
             }
 
             ValidationResult = validationList;
+        }
+
+        public void SetDefaultValues()
+        {
+            if (SetDefaultValuesHandler != null)
+            {
+                SetDefaultValuesHandler(this);
+            }
         }
 
         public void MapValues(NameValueCollection values, IEnumerable<FormFile> files)

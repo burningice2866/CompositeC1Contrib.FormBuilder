@@ -30,12 +30,12 @@ namespace CompositeC1Contrib.FormBuilder
             ModelProviders = container.GetExportedValues<IFormModelsProvider>().ToList();
         }
 
-        public static FormModel GetModel(string name)
+        public static IFormModel GetModel(string name)
         {
             return GetModels().SingleOrDefault(m => m.Name == name);
         }
 
-        public static IEnumerable<FormModel> GetModels()
+        public static IEnumerable<IFormModel> GetModels()
         {
             return ModelProviders.SelectMany(provider => provider.GetModels());
         }

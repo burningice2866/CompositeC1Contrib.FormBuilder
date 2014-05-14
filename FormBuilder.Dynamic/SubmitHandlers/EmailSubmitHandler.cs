@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 using Composite.Data;
@@ -25,9 +24,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
 
                 if (IncludeAttachments && model.HasFileUpload)
                 {
-                    var files = new List<FormFile>();
+                    var files = GetFiles(model);
 
-                    GetFiles(model);
                     AddFilesToMessage(files, builder);
                 }
 

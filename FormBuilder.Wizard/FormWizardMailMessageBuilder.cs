@@ -20,7 +20,19 @@ namespace CompositeC1Contrib.FormBuilder.Wizard
 
         protected override IDictionary<string, object> GetDictionaryFromModel()
         {
-            return _wizard.StepModels.Values.SelectMany(s => s.Fields).Where(f => f.Value != null).ToDictionary(f => f.Name, f => f.Value);
+            var dict = new Dictionary<string, object>();
+
+            foreach (var step in _wizard.StepModels)
+            {
+                var fields = step.Value.Fields.Where(f => f.Value != null);
+
+                foreach (var field in fields)
+                {
+                    dict.Add(step.Key +"_"+ field.Name, field.Value);
+                }
+            }
+
+            return dict;
         }
 
         protected override string ResolveHtml(string body)

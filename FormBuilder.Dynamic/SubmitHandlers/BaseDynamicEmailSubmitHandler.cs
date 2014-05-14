@@ -37,7 +37,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
             return files;
         }
 
-        protected void AddFilesToMessage(List<FormFile> files, MailMessageBuilder builder)
+        protected void AddFilesToMessage(IEnumerable<FormFile> files, MailMessageBuilder builder)
         {
             foreach (var file in files)
             {

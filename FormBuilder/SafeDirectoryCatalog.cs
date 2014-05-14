@@ -26,7 +26,7 @@ namespace CompositeC1Contrib.FormBuilder
             {
                 try
                 {
-                    var catalog = reflectionContext == null ? new AssemblyCatalog(directory) : new AssemblyCatalog(file, reflectionContext);
+                    var catalog = reflectionContext == null ? new AssemblyCatalog(file) : new AssemblyCatalog(file, reflectionContext);
 
                     // Force MEF to load the plugin and figure out if there are any exports
                     // good assemblies will not throw the RTLE exception and can be added to the catalog

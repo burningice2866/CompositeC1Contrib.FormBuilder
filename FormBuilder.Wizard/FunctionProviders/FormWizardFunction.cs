@@ -23,7 +23,8 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
             var newContext = new FunctionContextContainer(context, new Dictionary<string, object>
             {
-                { RenderingContextKey, renderingContext }
+                { RenderingContextKey, renderingContext },
+                { FormModelKey, renderingContext.RenderingModel }
             });
 
             var formExecutor = FunctionFacade.GetFunction("FormBuilder.StandardFormWizardExecutor");

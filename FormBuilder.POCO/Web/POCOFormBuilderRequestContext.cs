@@ -22,11 +22,6 @@ namespace CompositeC1Contrib.FormBuilder.Web
             _model = POCOFormsFacade.FromInstance(_instance);
         }
 
-        public override void SetDefaultValues()
-        {
-            POCOFormsFacade.SetDefaultValues(_instance, _model);
-        }
-
         public override void OnMappedValues()
         {
             POCOFormsFacade.MapValues(_instance, _model);

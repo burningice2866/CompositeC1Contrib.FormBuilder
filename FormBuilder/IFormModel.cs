@@ -14,6 +14,7 @@ namespace CompositeC1Contrib.FormBuilder
         bool ForceHttps { get; }
         bool HasFileUpload { get; }
 
+        void SetDefaultValues();
         void MapValues(NameValueCollection values, IEnumerable<FormFile> files);
         void Validate();
     }

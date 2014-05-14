@@ -13,9 +13,10 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
         public override object Execute(ParameterList parameters, FunctionContextContainer context)
         {
             var doc = new XhtmlDocument();
+            var useRenderingLayout = parameters.GetParameter<bool>("UseRenderingLayout");
             var formModel = (FormModel)context.GetParameterValue(BaseFormFunction.FormModelKey, typeof(FormModel));
 
-            DumpModelValues(formModel, doc);
+            DumpModelValues(formModel, doc, useRenderingLayout);
 
             return doc;
         }

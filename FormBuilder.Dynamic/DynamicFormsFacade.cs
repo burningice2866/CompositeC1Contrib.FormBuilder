@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
+using Composite.Functions;
+
 using CompositeC1Contrib.FormBuilder.Attributes;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic
@@ -45,6 +47,24 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 var name = new DirectoryInfo(folder).Name;
 
                 yield return FromBaseForm(file, name);
+            }
+        }
+
+        public static void SetDefaultValues(IFormModel model)
+        {
+            var def = GetFormByName(model.Name);
+
+            foreach (var field in model.Fields)
+            {
+                XElement defaultValueSetter;
+                if (!def.DefaultValues.TryGetValue(field.Name, out defaultValueSetter))
+                {
+                    continue;
+                }
+
+                var runtimeTree = FunctionFacade.BuildTree(defaultValueSetter);
+
+                field.Value = runtimeTree.GetValue();
             }
         }
 

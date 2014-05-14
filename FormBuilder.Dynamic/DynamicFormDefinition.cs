@@ -41,6 +41,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         {
             var model = new FormModel(name);
 
+            model.SetDefaultValuesHandler = DynamicFormsFacade.SetDefaultValues;
+
             var fields = xml.Element("Fields").Elements("Add");
             foreach (var f in fields)
             {

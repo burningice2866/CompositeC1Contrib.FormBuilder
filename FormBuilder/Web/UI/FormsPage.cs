@@ -85,7 +85,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return RenderModelFields(model, Options);
         }
 
-        public static IHtmlString RenderModelFields(FormModel model, FormOptions options)
+        public static IHtmlString RenderModelFields(IFormModel model, FormOptions options)
         {
             var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(model.Name);
 

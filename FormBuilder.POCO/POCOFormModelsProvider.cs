@@ -32,7 +32,7 @@ namespace CompositeC1Contrib.FormBuilder
             return Models;
         }
 
-        public IEnumerable<FormModel> GetModels()
+        public IEnumerable<IFormModel> GetModels()
         {
             return Models.Select(e => e.Value);
         }

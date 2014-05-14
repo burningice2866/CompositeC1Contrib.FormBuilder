@@ -17,7 +17,7 @@ namespace CompositeC1Contrib.FormBuilder.Wizard
         public IList<FormWizardStep> Steps { get; private set; }
 
         public IList<FormValidationRule> ValidationResult { get; private set; }
-        public IDictionary<string, FormModel> StepModels { get; private set; }
+        public IDictionary<string, IFormModel> StepModels { get; private set; }
 
         public IList<FormField> Fields
         {
@@ -40,7 +40,7 @@ namespace CompositeC1Contrib.FormBuilder.Wizard
 
             ValidationResult = new List<FormValidationRule>();
 
-            StepModels = new Dictionary<string, FormModel>();
+            StepModels = new Dictionary<string, IFormModel>();
         }
 
         public bool ForceHttps
@@ -50,26 +50,26 @@ namespace CompositeC1Contrib.FormBuilder.Wizard
 
         public virtual void Submit() { }
 
+        public void SetDefaultValues()
+        {
+            foreach (var model in StepModels.Values)
+            {
+                model.SetDefaultValues();
+            }
+        }
+
         public void MapValues(NameValueCollection values, IEnumerable<FormFile> files)
         {
             for (int i = 0; i < Steps.Count; i++)
             {
-                var nmc = new NameValueCollection();
-
                 var step = Steps[i];
                 var model = StepModels[step.Name];
                 var stepPrepend = "step-" + (i + 1) + "-";
-                var keys = values.AllKeys.Where(k => k.StartsWith(stepPrepend)).ToArray();
 
-                foreach (var key in keys)
-                {
-                    var name = key.Remove(0, stepPrepend.Length);
-                    var value = values[key];
+                var localValues = MapLocal(values, stepPrepend);
+                var localFiles = MapLocal(files, stepPrepend);
 
-                    nmc.Add(name, value);
-                }
-
-                model.MapValues(nmc, Enumerable.Empty<FormFile>());
+                model.MapValues(localValues, localFiles);
                 model.Validate();
             }
         }
@@ -85,6 +85,46 @@ namespace CompositeC1Contrib.FormBuilder.Wizard
                     ValidationResult.Add(result);
                 }
             }
+        }
+
+        private static NameValueCollection MapLocal(NameValueCollection nvc, string step)
+        {
+            var local = new NameValueCollection();
+
+            var valueKeys = nvc.AllKeys.Where(k => k.StartsWith(step)).ToArray();
+            foreach (var key in valueKeys)
+            {
+                var name = key.Remove(0, step.Length);
+                var value = nvc[key];
+
+                local.Add(name, value);
+            }
+
+            return local;
+        }
+
+        private static IEnumerable<FormFile> MapLocal(IEnumerable<FormFile> files, string step)
+        {
+            var newFiles = new List<FormFile>();
+            var formFiles = files as IList<FormFile> ?? files.ToList();
+            var fileKeys = formFiles.Select(f => f.Key).Where(k => k.StartsWith(step)).ToArray();
+
+            foreach (var key in fileKeys)
+            {
+                var name = key.Remove(0, step.Length);
+                var value = formFiles.Single(f => f.Key == key);
+
+                newFiles.Add(new FormFile
+                {
+                    Key = name,
+                    ContentLength = value.ContentLength,
+                    ContentType = value.ContentType,
+                    FileName = value.FileName,
+                    InputStream = value.InputStream
+                });
+            }
+
+            return newFiles;
         }
     }
 }

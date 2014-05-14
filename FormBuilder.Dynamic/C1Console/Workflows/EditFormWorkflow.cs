@@ -28,12 +28,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             if (plugin.FunctionExecutors.Any())
             {
-                return plugin.FunctionExecutors.ToDictionary(e => e.Name, e => e.Name);
+                return plugin.FunctionExecutors.ToDictionary(e => e.Function, e => e.Name);
             }
-            else
-            {
-                return new Dictionary<string, string>() { { config.DefaultFunctionExecutor, config.DefaultFunctionExecutor } };
-            }
+
+            return new Dictionary<string, string>() { { config.DefaultFunctionExecutor, "Default" } };
         }
 
         public override void OnInitialize(object sender, EventArgs e)
@@ -62,9 +60,25 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var markupProvider = new FormDefinitionFileMarkupProvider("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditFormWorkflow.xml");
             var formDocument = XDocument.Load(markupProvider.GetReader());
 
-            var layoutXElement = formDocument.Root.Element(Namespaces.BindingForms10 + FormKeyTagNames.Layout);
-            var bindingsXElement = formDocument.Root.Element(Namespaces.BindingForms10 + FormKeyTagNames.Bindings);
+            var root = formDocument.Root;
+            if (root == null)
+            {
+                return;
+            }
+
+            var layoutXElement = root.Element(Namespaces.BindingForms10 + FormKeyTagNames.Layout);
+            if (layoutXElement == null)
+            {
+                return;
+            }
+
             var tabPanelElements = layoutXElement.Element(Namespaces.BindingFormsStdUiControls10 + "TabPanels");
+            if (tabPanelElements == null)
+            {
+                return;
+            }
+
+            var bindingsXElement = root.Element(Namespaces.BindingForms10 + FormKeyTagNames.Bindings);
             var lastTabElement = tabPanelElements.Elements().Last();
 
             LoadExtraSettings(definition, bindingsXElement, lastTabElement);
@@ -76,16 +90,16 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var config = FormBuilderConfiguration.GetSection();
             var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
-            var SettingsType = plugin.FunctionExecutors.Where(el => el.Name == (definition.FormExecutor ?? FormBuilderConfiguration.GetSection().DefaultFunctionExecutor)).Select(el => el.Type).FirstOrDefault();
+            var settingsType = plugin.FunctionExecutors.Where(el => el.Name == (definition.FormExecutor ?? FormBuilderConfiguration.GetSection().DefaultFunctionExecutor)).Select(el => el.Type).FirstOrDefault();
 
-            if(SettingsType == null)
+            if (settingsType == null)
             {
                 return;
             }
 
-            if(definition.FormExecutorSettings == null || definition.FormExecutorSettings.GetType() != SettingsType)
+            if (definition.FormExecutorSettings == null || definition.FormExecutorSettings.GetType() != settingsType)
             {
-                definition.FormExecutorSettings = (IFormExecutorSettingsHandler)Activator.CreateInstance(SettingsType, null);
+                definition.FormExecutorSettings = (IFormExecutorSettingsHandler)Activator.CreateInstance(settingsType, null);
             }
 
             var settings = definition.FormExecutorSettings;
@@ -95,11 +109,22 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var formDefinitionElement = XElement.Load(settingsMarkupProvider.GetReader());
 
             var settingsTab = new XElement(Namespaces.BindingFormsStdUiControls10 + "PlaceHolder");
+
             var layout = formDefinitionElement.Element(Namespaces.BindingForms10 + FormKeyTagNames.Layout);
+            if (layout == null)
+            {
+                return;
+            }
+
             var bindings = formDefinitionElement.Element(Namespaces.BindingForms10 + FormKeyTagNames.Bindings);
+            if (bindings == null)
+            {
+                return;
+            }
 
             settingsTab.Add(new XAttribute("Label", "Extra Settings"));
             settingsTab.Add(layout.Elements());
+
             bindingsXElement.Add(bindings.Elements());
 
             lastTabElement.AddAfterSelf(settingsTab);
@@ -163,17 +188,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var config = FormBuilderConfiguration.GetSection();
             var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
-            var SettingsType = plugin.FunctionExecutors.Where(el => el.Name == (definition.FormExecutor ?? FormBuilderConfiguration.GetSection().DefaultFunctionExecutor)).Select(el => el.Type).FirstOrDefault();
+            var settingsType = plugin.FunctionExecutors.Where(el => el.Name == (definition.FormExecutor ?? FormBuilderConfiguration.GetSection().DefaultFunctionExecutor)).Select(el => el.Type).FirstOrDefault();
 
-            if (SettingsType == null)
+            if (settingsType == null)
             {
                 definition.FormExecutorSettings = null;
+
                 return;
             }
 
-            if (definition.FormExecutorSettings == null || definition.FormExecutorSettings.GetType() != SettingsType)
+            if (definition.FormExecutorSettings == null || definition.FormExecutorSettings.GetType() != settingsType)
             {
-                definition.FormExecutorSettings = (IFormExecutorSettingsHandler)Activator.CreateInstance(SettingsType, null);
+                definition.FormExecutorSettings = (IFormExecutorSettingsHandler)Activator.CreateInstance(settingsType, null);
             }
             var settings = definition.FormExecutorSettings;
 

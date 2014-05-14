@@ -87,17 +87,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Configuration
                     var attributes = add.Attributes.Cast<XmlAttribute>().ToDictionary(attr => attr.Name);
 
                     var name = attributes["name"].Value;
+                    var function = attributes["function"].Value;
 
-                    var functionExecutor = new FormExecutorSettingsElement()
+                    var functionExecutor = new FormExecutorSettingsElement
                     {
-                        Name = name
+                        Name = name,
+                        Function = function
                     };
 
                     if (attributes.ContainsKey("settingsHandler"))
                     {
                         var settingsHandlerType = Type.GetType(attributes["settingsHandler"].Value);
 
-                        Verify.IsNotNull(settingsHandlerType, "Unrecognized functionExecutor settingshandler");
+                        Verify.IsNotNull(settingsHandlerType, "Unrecognized FunctionExecutor settingshandler");
 
                         functionExecutor.Type = settingsHandlerType;
                     }

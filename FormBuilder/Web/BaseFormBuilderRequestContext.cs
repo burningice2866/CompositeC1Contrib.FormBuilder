@@ -44,7 +44,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
                 HttpContext.Response.Redirect(redirectUrl, true);
             }
 
-            SetDefaultValues();
+            RenderingModel.SetDefaultValues();
 
             if (!IsOwnSubmit)
             {
@@ -74,14 +74,13 @@ namespace CompositeC1Contrib.FormBuilder.Web
                     });
                 }
             }
-                
+
             RenderingModel.MapValues(request.Form, files);
             OnMappedValues();
             RenderingModel.Validate();
         }
 
         public virtual void OnMappedValues() { }
-        public virtual void SetDefaultValues() { }
         public virtual void Submit() { }
     }
 }

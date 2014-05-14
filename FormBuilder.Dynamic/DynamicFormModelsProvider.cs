@@ -7,7 +7,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
     [Export(typeof(IFormModelsProvider))]
     public class DynamicFormModelsProvider : IFormModelsProvider
     {
-        public IEnumerable<FormModel> GetModels()
+        public IEnumerable<IFormModel> GetModels()
         {
             var definitions = DynamicFormsFacade.GetFormDefinitions();
             

@@ -22,7 +22,7 @@ namespace CompositeC1Contrib.FormBuilder
             }
 
             var batch = new CompositionBatch();
-            var catalog = new DirectoryCatalog(HttpRuntime.BinDirectory);
+            var catalog = new SafeDirectoryCatalog(HttpRuntime.BinDirectory);
             var container = new CompositionContainer(catalog);
 
             container.Compose(batch);

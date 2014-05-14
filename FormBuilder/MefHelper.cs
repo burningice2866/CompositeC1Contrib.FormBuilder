@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.ComponentModel.Composition.ReflectionModel;
 using System.Linq;
@@ -9,7 +8,7 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public static class MefHelper
     {
-        public static IEnumerable<Type> GetExportedTypes<T>(DirectoryCatalog catalog)
+        public static IEnumerable<Type> GetExportedTypes<T>(ComposablePartCatalog catalog)
         {
             return catalog.Parts
                 .Select(part => ComposablePartExportType<T>(part))

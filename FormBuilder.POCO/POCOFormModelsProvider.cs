@@ -43,7 +43,7 @@ namespace CompositeC1Contrib.FormBuilder
             registrationBuilder.ForTypesMatching(t => t.IsClass && !t.IsAbstract && typeof(IPOCOForm).IsAssignableFrom(t)).Export<IPOCOForm>();
 
             var batch = new CompositionBatch();
-            var catalog = new DirectoryCatalog(HttpRuntime.BinDirectory, registrationBuilder);
+            var catalog = new SafeDirectoryCatalog(HttpRuntime.BinDirectory, registrationBuilder);
             var container = new CompositionContainer(catalog);
 
             container.Compose(batch);

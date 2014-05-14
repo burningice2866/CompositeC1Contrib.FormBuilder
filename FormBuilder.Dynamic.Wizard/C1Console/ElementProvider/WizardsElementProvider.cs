@@ -32,7 +32,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.ElementProvide
         static WizardsElementProvider()
         {
             var batch = new CompositionBatch();
-            var catalog = new DirectoryCatalog(HttpRuntime.BinDirectory);
+            var catalog = new SafeDirectoryCatalog(HttpRuntime.BinDirectory);
             var container = new CompositionContainer(catalog);
 
             container.Compose(batch);

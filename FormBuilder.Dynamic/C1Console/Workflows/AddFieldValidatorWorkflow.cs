@@ -27,7 +27,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var registrationBuilder = new RegistrationBuilder();
             registrationBuilder.ForTypesMatching(t => t != formValidationAttributeType && formValidationAttributeType.IsAssignableFrom(t) && t.GetConstructor(new[] { typeof(string) }) != null).Export<FormValidationAttribute>();
 
-            var catalog = new DirectoryCatalog(HttpRuntime.BinDirectory, registrationBuilder);
+            var catalog = new SafeDirectoryCatalog(HttpRuntime.BinDirectory, registrationBuilder);
             var types = MefHelper.GetExportedTypes<FormValidationAttribute>(catalog);
 
             return types.ToDictionary(t => t.AssemblyQualifiedName, t => t.Name);

@@ -8,8 +8,6 @@
 }
 else
 {
-    var steps = Wizard.Steps;
-
     if (Wizard.IntroText != null && !Wizard.IntroText.IsEmpty)
     {
         @EvaluateMarkup(Wizard.IntroText.Root)
@@ -18,47 +16,6 @@ else
     using (BeginForm())
     {
         @WriteErrors()
-
-        for (int i = 0; i < steps.Count; i++)
-        {
-            var step = steps[i];
-            var stepNumber = (i + 1);
-
-            var previousButtonLabel = step.PreviousButtonLabel;
-            if (String.IsNullOrEmpty(previousButtonLabel))
-            {
-                previousButtonLabel = "Tilbage";
-            }
-
-            var nextButtonLabel = step.NextButtonLabel;
-            if (String.IsNullOrEmpty(nextButtonLabel))
-            {
-                nextButtonLabel = "Næste";
-
-                if (i == (steps.Count - 1))
-                {
-                    nextButtonLabel = "Indsend";
-                }
-            }
-
-            <div data-step="@stepNumber" class="js-formwizard-step step @stepNumber" @if (i > 0) { <text> style="display: none;" </text>    }>
-                @RenderFormField(step)
-
-                @if (i > 0)
-                {
-                    <button data-nextstep="@(stepNumber - 1)">@previousButtonLabel</button>
-                }
-
-                @if (i < (steps.Count - 1))
-                {
-                    <button data-nextstep="@(stepNumber + 1)">@nextButtonLabel</button>
-                }
-
-                @if (i == (steps.Count - 1))
-                {
-                    <input type="submit" value="@nextButtonLabel" />
-                }
-            </div>
-        }
+        @WriteSteps()
     }
 }

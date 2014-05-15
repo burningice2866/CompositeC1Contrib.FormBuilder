@@ -43,6 +43,7 @@
 
         $('.formwizard').on('click', 'input[type="submit"], button', function (e) {
             e.preventDefault();
+
             var button = $(this);
             var container = button.closest('[data-step]');
             var form = container.closest('form');
@@ -57,11 +58,14 @@
 
             if (form.data('error') === false) {
                 if (nextStep !== undefined) {
+                    var nextStepContainer = $('.js-formwizard-step[data-step=' + nextStep + ']', form);
+                    var scrollTop = nextStepContainer.scrollTop();
+
                     container.hide();
-                    $('.js-formwizard-step[data-step=' + nextStep + ']', form).show();
+                    nextStepContainer.show();
+                    window.scrollTo(scrollTop);
                 }
-                else
-                {
+                else {
                     if (window.Ladda && button.hasClass('ladda-button')) {
                         setTimeout(function () {
                             var l = window.Ladda.create(button[0]);

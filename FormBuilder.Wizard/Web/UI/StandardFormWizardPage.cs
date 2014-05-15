@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Web;
 using System.Xml.Linq;
 
@@ -56,6 +57,65 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return RenderingContext.IsOwnSubmit ? FormRenderer.WriteErrors(RenderingContext.ValidationResult) : new HtmlString(String.Empty);
         }
 
+        protected IHtmlString WriteSteps()
+        {
+            var steps = Wizard.Steps;
+            var sb = new StringBuilder();
+
+            for (int i = 0; i < steps.Count; i++)
+            {
+                var step = steps[i];
+                var stepNumber = (i + 1);
+
+                var previousButtonLabel = step.PreviousButtonLabel;
+                if (String.IsNullOrEmpty(previousButtonLabel))
+                {
+                    previousButtonLabel = "Tilbage";
+                }
+
+                var nextButtonLabel = step.NextButtonLabel;
+                if (String.IsNullOrEmpty(nextButtonLabel))
+                {
+                    nextButtonLabel = "Næste";
+
+                    if (i == (steps.Count - 1))
+                    {
+                        nextButtonLabel = "Indsend";
+                    }
+                }
+
+                sb.AppendFormat("<div data-step=\"{0}\" class=\"js-formwizard-step step {0}\"", stepNumber);
+
+                if (i > 0)
+                {
+                    sb.Append(" style=\"display: none;\"");
+                }
+
+                sb.Append(">");
+
+                sb.Append(RenderFormField(step));
+
+                if (i > 0)
+                {
+                    sb.AppendFormat("<button data-nextstep=\"{0}\">{1}</button>", stepNumber - 1, previousButtonLabel);
+                }
+
+                if (i < (steps.Count - 1))
+                {
+                    sb.AppendFormat("<button data-nextstep=\"{0}\">{1}</button>", stepNumber + 1, nextButtonLabel);
+                }
+
+                if (i == (steps.Count - 1))
+                {
+                    sb.AppendFormat("<input type=\"submit\" value=\"{0}\" />", nextButtonLabel);
+                }
+
+                sb.Append("</div>");
+            }
+
+            return new HtmlString(sb.ToString());
+        }
+
         protected WizardHtmlForm BeginForm()
         {
             return BeginForm(null);
@@ -69,7 +129,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         protected IHtmlString RenderFormField(FormWizardStep step)
         {
             var options = new FormOptions();
-            
+
             var model = Wizard.StepModels[step.Name];
             var html = FormsPage.RenderModelFields(model, options).ToString();
             var xelement = XElement.Parse(html);
@@ -79,7 +139,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 var nameAttr = element.Attribute("name");
                 if (nameAttr != null)
                 {
-                    nameAttr.Value = String.Format("step-{0}-{1}", step, nameAttr.Value);
+                    var stepIndex = Wizard.Steps.IndexOf(step) + 1;
+
+                    nameAttr.Value = String.Format("step-{0}-{1}", stepIndex, nameAttr.Value);
                 }
             }
 

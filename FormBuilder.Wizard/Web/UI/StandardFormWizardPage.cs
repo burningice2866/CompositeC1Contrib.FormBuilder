@@ -95,22 +95,24 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
                 sb.Append(RenderFormField(step));
 
+                sb.Append("<div class=\"control-group submit-buttons\"><div class=\"controls\">");
+
                 if (i > 0)
                 {
-                    sb.AppendFormat("<button data-nextstep=\"{0}\">{1}</button>", stepNumber - 1, previousButtonLabel);
+                    sb.AppendFormat("<button class=\"btn btn-primary btn-prev\" data-nextstep=\"{0}\">{1}</button>", stepNumber - 1, previousButtonLabel);
                 }
 
                 if (i < (steps.Count - 1))
                 {
-                    sb.AppendFormat("<button data-nextstep=\"{0}\">{1}</button>", stepNumber + 1, nextButtonLabel);
+                    sb.AppendFormat("<button class=\"btn btn-primary btn-next\" data-nextstep=\"{0}\">{1}</button>", stepNumber + 1, nextButtonLabel);
                 }
 
                 if (i == (steps.Count - 1))
                 {
-                    sb.AppendFormat("<input type=\"submit\" value=\"{0}\" />", nextButtonLabel);
+                    sb.AppendFormat("<input class=\"btn btn-primary\" type=\"submit\" value=\"{0}\" />", nextButtonLabel);
                 }
 
-                sb.Append("</div>");
+                sb.Append("</div></div></div>");
             }
 
             return new HtmlString(sb.ToString());

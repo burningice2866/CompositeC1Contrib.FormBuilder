@@ -59,11 +59,12 @@
             if (form.data('error') === false) {
                 if (nextStep !== undefined) {
                     var nextStepContainer = $('.js-formwizard-step[data-step=' + nextStep + ']', form);
-                    var scrollTop = nextStepContainer.scrollTop();
+                    var scrollTop = form.position().top;
 
                     container.hide();
                     nextStepContainer.show();
-                    window.scrollTo(scrollTop);
+
+                    window.scrollTo(0, scrollTop);
                 }
                 else {
                     if (window.Ladda && button.hasClass('ladda-button')) {

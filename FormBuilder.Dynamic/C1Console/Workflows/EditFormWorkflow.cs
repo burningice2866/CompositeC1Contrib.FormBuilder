@@ -90,7 +90,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var config = FormBuilderConfiguration.GetSection();
             var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
-            var settingsType = plugin.FunctionExecutors.Where(el => el.Name == (definition.FormExecutor ?? FormBuilderConfiguration.GetSection().DefaultFunctionExecutor)).Select(el => el.Type).FirstOrDefault();
+            var settingsType = plugin.FunctionExecutors.Where(el => el.Function == (definition.FormExecutor ?? FormBuilderConfiguration.GetSection().DefaultFunctionExecutor)).Select(el => el.Type).FirstOrDefault();
 
             if (settingsType == null)
             {

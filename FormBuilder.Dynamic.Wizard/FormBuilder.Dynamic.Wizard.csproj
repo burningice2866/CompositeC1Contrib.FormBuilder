@@ -48,6 +48,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Workflow.Activities" />
     <Reference Include="System.Workflow.ComponentModel" />
     <Reference Include="System.XML" />
@@ -91,6 +92,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SubmitHandlers\EmailSubmitHandler.cs" />
     <Compile Include="Web\DynamicFormWizardRequestContext.cs" />
+    <Compile Include="Web\UI\SortWizardStepsPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FormBuilder.Dynamic\FormBuilder.Dynamic.csproj">
@@ -117,6 +121,10 @@
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic.Wizard\EditEmailSubmitHandlerWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic.Wizard\EditFormWizardWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic.Wizard\EditWizardStepWorkflow.xml" />
+    <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic.Wizard\arrow.png" />
+    <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic.Wizard\SortWizardSteps.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="Package\install.xml">
       <SubType>Designer</SubType>
     </Content>

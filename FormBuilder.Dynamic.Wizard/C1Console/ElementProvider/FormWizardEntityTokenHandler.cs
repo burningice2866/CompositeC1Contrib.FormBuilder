@@ -7,6 +7,7 @@ using Composite.C1Console.Elements;
 using Composite.C1Console.Security;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
+using Composite.Core.WebClient;
 
 using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
 using CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.EntityTokens;
@@ -53,6 +54,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.ElementProvide
                     Label = "Add step",
                     ToolTip = "Add step",
                     Icon = new ResourceHandle("Composite.Icons", "generated-type-data-add"),
+                    ActionLocation = WizardsElementProvider.ActionLocation
+                }
+            });
+
+            var url = String.Format("InstalledPackages/CompositeC1Contrib.FormBuilder.Dynamic.Wizard/SortWizardSteps.aspx?wizardName={0}", wizardEntityToken.WizardName);
+            var sortActionToken = new UrlActionToken("Sort fields", UrlUtils.ResolveAdminUrl(url), new[] { PermissionType.Administrate });
+            stepsFolderElement.AddAction(new ElementAction(new ActionHandle(sortActionToken))
+            {
+                VisualData = new ActionVisualizedData
+                {
+                    Label = "Sort steps",
+                    ToolTip = "Sort steps",
+                    Icon = new ResourceHandle("Composite.Icons", "cut"),
                     ActionLocation = WizardsElementProvider.ActionLocation
                 }
             });

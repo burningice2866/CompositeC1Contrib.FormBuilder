@@ -61,6 +61,7 @@
     <Compile Include="C1Console\ElementProvider\FormWizardFolderEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormWizardsElementProviderEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormWizardEntityTokenHandler.cs" />
+    <Compile Include="C1Console\ElementProvider\NamespaceFolderEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\WizardsElementProvider.cs" />
     <Compile Include="C1Console\EntityTokens\FormSubmitHandlerEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormWizardFolderEntityToken.cs" />

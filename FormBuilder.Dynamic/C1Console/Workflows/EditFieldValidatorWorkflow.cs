@@ -1,8 +1,9 @@
 using System;
 using System.Linq;
+
 using Composite.C1Console.Workflow;
 
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
+using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
@@ -10,10 +11,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
     [AllowPersistingWorkflow(WorkflowPersistingType.Idle)]
     public sealed class EditFieldValidatorWorkflow : Basic1StepDocumentWorkflow
     {
-        public EditFieldValidatorWorkflow()
-            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditFieldValidatorWorkflow.xml")
-        {
-        }
+        public EditFieldValidatorWorkflow() : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditFieldValidatorWorkflow.xml") { }
 
         public override void OnInitialize(object sender, EventArgs e)
         {

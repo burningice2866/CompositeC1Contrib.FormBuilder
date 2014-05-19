@@ -71,6 +71,7 @@
     <Compile Include="C1Console\Actions\DeleteStringBasedDataSourceEntryActionToken.cs" />
     <Compile Include="C1Console\ElementProvider\FieldValidatorsEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\DataSourceEntityTokenHandler.cs" />
+    <Compile Include="C1Console\ElementProvider\NamespaceFolderEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormFieldEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormFolderEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormInstanceEntityTokenHandler.cs" />

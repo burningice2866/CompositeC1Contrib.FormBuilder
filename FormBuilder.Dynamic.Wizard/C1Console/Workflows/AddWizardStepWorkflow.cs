@@ -21,11 +21,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.Workflows
 
         public override void OnInitialize(object sender, EventArgs e)
         {
-            if (!BindingExist("StepName"))
+            if (BindingExist("StepName"))
             {
-                Bindings.Add("StepName", String.Empty);
-                Bindings.Add("FormName", String.Empty);
+                return;
             }
+
+            Bindings.Add("StepName", String.Empty);
+            Bindings.Add("FormName", String.Empty);
         }
 
         public override void OnFinish(object sender, EventArgs e)
@@ -66,16 +68,16 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.Workflows
             }
 
             var wizard = DynamicFormWizardsFacade.GetWizard(wizardToken.WizardName);
+
             var step = wizard.Steps.SingleOrDefault(s => s.Name == stepName);
-
-            if (step != null)
+            if (step == null)
             {
-                ShowFieldMessage("StepName", "Step name already exists");
-
-                return false;
+                return true;
             }
 
-            return true;
+            ShowFieldMessage("StepName", "Step name already exists");
+
+            return false;
         }
     }
 }

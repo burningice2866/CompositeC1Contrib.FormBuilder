@@ -1,17 +1,15 @@
 using System;
 using System.Linq;
+
+using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
     public class AddFormWorkflow : Basic1StepDialogWorkflow
     {
-        public AddFormWorkflow()
-            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddFormWorkflow.xml")
-        {
-        }
+        public AddFormWorkflow() : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddFormWorkflow.xml") { }
 
         public override void OnInitialize(object sender, EventArgs e)
         {

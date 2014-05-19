@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Registration;
 using System.Linq;
 using System.Web;
 
 using Composite.C1Console.Workflow;
-
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
+using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Validation;
 using CompositeC1Contrib.Workflows;
 
@@ -15,10 +13,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
     public class AddFieldValidatorWorkflow : Basic1StepDialogWorkflow
     {
-        public AddFieldValidatorWorkflow()
-            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddFieldValidatorWorkflow.xml")
-        {
-        }
+        public AddFieldValidatorWorkflow() : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddFieldValidatorWorkflow.xml") { }
 
         public static Dictionary<string, string> GetValidatorTypes()
         {
@@ -40,9 +35,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 return;
             }
 
-                Bindings.Add("ValidatorType", String.Empty);
-                Bindings.Add("Message", String.Empty);
-            }
+            Bindings.Add("ValidatorType", String.Empty);
+            Bindings.Add("Message", String.Empty);
+        }
 
         public override void OnFinish(object sender, EventArgs e)
         {

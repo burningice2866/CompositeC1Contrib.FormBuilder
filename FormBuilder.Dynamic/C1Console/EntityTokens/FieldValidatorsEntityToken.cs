@@ -3,24 +3,24 @@ using System.Collections.Generic;
 
 using Composite.C1Console.Security;
 
-namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
+namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens
 {
     [SecurityAncestorProvider(typeof(FieldValidatorsAncestorProvider))]
     public class FieldValidatorsEntityToken : EntityToken
     {
-        private string _type = String.Empty;
+        private readonly string _type = String.Empty;
         public override string Type
         {
             get { return _type; }
         }
 
-        private string _source;
+        private readonly string _source;
         public override string Source
         {
             get { return _source; }
         }
 
-        private string _id;
+        private readonly string _id;
         public override string Id
         {
             get { return _id; }
@@ -51,7 +51,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
 
         public override string Serialize()
         {
-            return base.DoSerialize();
+            return DoSerialize();
         }
 
         public static EntityToken Deserialize(string serializedEntityToken)
@@ -60,7 +60,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
             string source;
             string id;
 
-            EntityToken.DoDeserialize(serializedEntityToken, out type, out source, out id);
+            DoDeserialize(serializedEntityToken, out type, out source, out id);
 
             Type validatorType = null;
             if (!String.IsNullOrEmpty(type))

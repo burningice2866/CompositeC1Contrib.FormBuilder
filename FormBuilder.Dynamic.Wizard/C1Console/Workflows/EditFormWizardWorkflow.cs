@@ -14,16 +14,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.Workflows
 
         public override void OnInitialize(object sender, EventArgs e)
         {
-            if (!BindingExist("WizardName"))
+            if (BindingExist("WizardName"))
             {
-                var wizardToken = (FormWizardEntityToken)EntityToken;
-                var wizard = DynamicFormWizardsFacade.GetWizard(wizardToken.WizardName);
-
-                Bindings.Add("WizardName", wizardToken.WizardName);
-                Bindings.Add("ForceHttpsConnection", wizard.ForceHttpSConnection);
-                Bindings.Add("IntroText", wizard.IntroText.ToString());
-                Bindings.Add("SuccessResponse", wizard.SuccessResponse.ToString());
+                return;
             }
+
+            var wizardToken = (FormWizardEntityToken)EntityToken;
+            var wizard = DynamicFormWizardsFacade.GetWizard(wizardToken.WizardName);
+
+            Bindings.Add("WizardName", wizardToken.WizardName);
+            Bindings.Add("ForceHttpsConnection", wizard.ForceHttpSConnection);
+            Bindings.Add("IntroText", wizard.IntroText.ToString());
+            Bindings.Add("SuccessResponse", wizard.SuccessResponse.ToString());
         }
 
         public override void OnFinish(object sender, EventArgs e)
@@ -52,25 +54,27 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.Workflows
             var wizardToken = (FormWizardEntityToken)EntityToken;
             var wizardName = GetBinding<string>("WizardName");
 
-            if (wizardName != wizardToken.WizardName)
+            if (wizardName == wizardToken.WizardName)
             {
-                if (!FormModel.IsValidName(wizardName))
-                {
-                    ShowFieldMessage("WizardName", "Wizard name is invalid, only a-z and 0-9 is allowed");
-
-                    return false;
-                }
-
-                var isNameInUse = DynamicFormWizardsFacade.GetWizards().Any(m => m.Name == wizardName);
-                if (isNameInUse)
-                {
-                    ShowFieldMessage("WizardName", "Wizard name already exists");
-
-                    return false;
-                }
+                return true;
             }
 
-            return true;
+            if (!FormModel.IsValidName(wizardName))
+            {
+                ShowFieldMessage("WizardName", "Wizard name is invalid, only a-z and 0-9 is allowed");
+
+                return false;
+            }
+
+            var isNameInUse = DynamicFormWizardsFacade.GetWizards().Any(m => m.Name == wizardName);
+            if (!isNameInUse)
+            {
+                return true;
+            }
+
+            ShowFieldMessage("WizardName", "Wizard name already exists");
+
+            return false;
         }
     }
 }

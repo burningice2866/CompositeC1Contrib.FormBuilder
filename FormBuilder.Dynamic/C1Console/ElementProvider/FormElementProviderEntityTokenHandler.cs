@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 
 using Composite.C1Console.Elements;
 using Composite.C1Console.Security;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
+
 using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
-using CompositeC1Contrib.FormBuilder.C1Console.Tokens;
+using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
+using CompositeC1Contrib.FormBuilder.C1Console.Workflows;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
@@ -24,84 +26,127 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 
         public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)
         {
-            var elements = getFormElements(context);
-
-            foreach (var el in elements)
-            {
-                yield return el;
-            }
+            return GetNamespaceAndFormElements(context, String.Empty);
         }
 
-        private IEnumerable<Element> getFormElements(ElementProviderContext context)
+        public static IEnumerable<Element> GetNamespaceAndFormElements(ElementProviderContext context, string ns)
         {
             var formDefinitions = DynamicFormsFacade.GetFormDefinitions();
+
+            var folders = new List<string>();
+            var formElements = new List<Element>();
+
+            if (!String.IsNullOrEmpty(ns))
+            {
+                formDefinitions = formDefinitions.Where(def => def.Name.StartsWith(ns));
+            }
+
             foreach (var definition in formDefinitions)
             {
                 var label = definition.Name;
 
-                var elementHandle = context.CreateElementHandle(new FormInstanceEntityToken(typeof(FormBuilderElementProvider).Name, label));
-                var formElement = new Element(elementHandle)
+                if (!String.IsNullOrEmpty(ns))
                 {
-                    VisualData = new ElementVisualizedData
-                    {
-                        Label = label,
-                        ToolTip = label,
-                        HasChildren = true,
-                        Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                        OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
-                    }
-                };
+                    label = label.Remove(0, ns.Length + 1);
+                }
 
-                var editActionToken = new WorkflowActionToken(typeof(EditFormWorkflow));
-                formElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
+                var split = label.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+                if (split.Length > 1)
                 {
-                    VisualData = new ActionVisualizedData
-                    {
-                        Label = "Edit",
-                        ToolTip = "Edit",
-                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
-                        ActionLocation = FormBuilderElementProvider.ActionLocation
-                    }
-                });
+                    var folder = split[0];
 
-                var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + label, typeof(DeleteFormActionToken));
-                formElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
+                    if (!folders.Contains(folder))
+                    {
+                        folders.Add(folder);
+                    }
+                }
+                else if (split.Length == 1)
                 {
-                    VisualData = new ActionVisualizedData
+                    var formName = label;
+                    if (!String.IsNullOrEmpty(ns))
                     {
-                        Label = "Delete",
-                        ToolTip = "Delete",
-                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
-                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                        formName = ns + "." + formName;
                     }
-                });
 
-                var editRenderingLayoutActionToken = new WorkflowActionToken(typeof(EditFormRenderingLayoutWorkflow));
-                formElement.AddAction(new ElementAction(new ActionHandle(editRenderingLayoutActionToken))
+                    var elementHandle = context.CreateElementHandle(new FormInstanceEntityToken(typeof(FormBuilderElementProvider).Name, formName));
+                    var formElement = new Element(elementHandle)
+                    {
+                        VisualData = new ElementVisualizedData
+                        {
+                            Label = label,
+                            ToolTip = label,
+                            HasChildren = true,
+                            Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
+                            OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                        }
+                    };
+
+                    var editActionToken = new WorkflowActionToken(typeof(EditFormWorkflow));
+                    formElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
+                    {
+                        VisualData = new ActionVisualizedData
+                        {
+                            Label = "Edit",
+                            ToolTip = "Edit",
+                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                            ActionLocation = FormBuilderElementProvider.ActionLocation
+                        }
+                    });
+
+                    var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + label, typeof(DeleteFormActionToken));
+                    formElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
+                    {
+                        VisualData = new ActionVisualizedData
+                        {
+                            Label = "Delete",
+                            ToolTip = "Delete",
+                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
+                            ActionLocation = FormBuilderElementProvider.ActionLocation
+                        }
+                    });
+
+                    var editRenderingLayoutActionToken = new WorkflowActionToken(typeof(EditFormRenderingLayoutWorkflow));
+                    formElement.AddAction(new ElementAction(new ActionHandle(editRenderingLayoutActionToken))
+                    {
+                        VisualData = new ActionVisualizedData
+                        {
+                            Label = "Edit rendering layout",
+                            ToolTip = "Edit rendering layout",
+                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                            ActionLocation = FormBuilderElementProvider.ActionLocation
+                        }
+                    });
+
+                    var copyActionToken = new WorkflowActionToken(typeof(CopyFormWorkflow));
+                    formElement.AddAction(new ElementAction(new ActionHandle(copyActionToken))
+                    {
+                        VisualData = new ActionVisualizedData
+                        {
+                            Label = "Copy",
+                            ToolTip = "Copy",
+                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                            ActionLocation = FormBuilderElementProvider.ActionLocation
+                        }
+                    });
+
+                    formElements.Add(formElement);
+                }
+            }
+
+            foreach (var folder in folders)
+            {
+                var handleNamespace = folder;
+                if (!String.IsNullOrEmpty(ns))
                 {
-                    VisualData = new ActionVisualizedData
-                    {
-                        Label = "Edit rendering layout",
-                        ToolTip = "Edit rendering layout",
-                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
-                        ActionLocation = FormBuilderElementProvider.ActionLocation
-                    }
-                });
+                    handleNamespace = ns + "." + handleNamespace;
+                }
 
-                var copyActionToken = new WorkflowActionToken(typeof(CopyFormWorkflow));
-                formElement.AddAction(new ElementAction(new ActionHandle(copyActionToken))
-                {
-                    VisualData = new ActionVisualizedData
-                    {
-                        Label = "Copy",
-                        ToolTip = "Copy",
-                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
-                        ActionLocation = FormBuilderElementProvider.ActionLocation
-                    }
-                });
+                yield return NamespaceFolderEntityToken.CreateElement(context, typeof(FormBuilderElementProvider).Name, folder, handleNamespace);
+            }
 
-
-                yield return formElement;
+            foreach (var form in formElements)
+            {
+                yield return form;
             }
         }
     }

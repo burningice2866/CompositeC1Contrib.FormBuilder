@@ -88,12 +88,14 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.Workflows
             CreateSpecificTreeRefresher().PostRefreshMesseges(token);
 
             var editWorkFlowAttribute = handlerType.GetCustomAttribute<EditWorkflowAttribute>();
-            if (editWorkFlowAttribute != null)
+            if (editWorkFlowAttribute == null)
             {
-                var workflowToken = new WorkflowActionToken(editWorkFlowAttribute.EditWorkflowType);
-
-                ExecuteAction(new FormSubmitHandlerEntityToken(handlerType, token.WizardName, name), workflowToken);
+                return;
             }
+
+            var workflowToken = new WorkflowActionToken(editWorkFlowAttribute.EditWorkflowType);
+
+            ExecuteAction(new FormSubmitHandlerEntityToken(handlerType, token.WizardName, name), workflowToken);
         }
     }
 }

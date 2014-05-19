@@ -1,25 +1,27 @@
-﻿using Composite.C1Console.Security;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
+using Composite.C1Console.Security;
+
 using CompositeC1Contrib.FormBuilder.Attributes;
 
-namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
+namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens
 {
     [SecurityAncestorProvider(typeof(StringBasedDataSourceEntryAncestorProvider))]
     public class StringBasedDataSourceEntryEntityToken : EntityToken
     {
-        private string _type;
+        private readonly string _type;
         public override string Type
         {
             get { return _type; }
         }
 
-        private string _source;
+        private readonly string _source;
         public override string Source
         {
             get { return _source; }
         }
 
-        private string _id;
+        private readonly string _id;
         public override string Id
         {
             get { return _id; }
@@ -44,7 +46,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
 
         public override string Serialize()
         {
-            return base.DoSerialize();
+            return DoSerialize();
         }
 
         public static EntityToken Deserialize(string serializedEntityToken)
@@ -53,7 +55,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens
             string source;
             string id;
 
-            EntityToken.DoDeserialize(serializedEntityToken, out type, out source, out id);
+            DoDeserialize(serializedEntityToken, out type, out source, out id);
 
             return new StringBasedDataSourceEntryEntityToken(type, source, id);
         }

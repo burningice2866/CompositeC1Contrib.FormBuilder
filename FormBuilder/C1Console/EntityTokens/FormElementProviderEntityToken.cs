@@ -3,7 +3,7 @@
 using Composite.C1Console.Security;
 using Composite.C1Console.Security.SecurityAncestorProviders;
 
-namespace CompositeC1Contrib.FormBuilder.C1Console.Tokens
+namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
 {
     [SecurityAncestorProvider(typeof(NoAncestorSecurityAncestorProvider))]
     public class FormElementProviderEntityToken : EntityToken

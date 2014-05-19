@@ -10,10 +10,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.Workflows
 {
     public class AddFormWizardWorkflow : Basic1StepDialogWorkflow
     {
-        public AddFormWizardWorkflow()
-            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic.Wizard\\AddFormWizardWorkflow.xml")
-        {
-        }
+        public AddFormWizardWorkflow() : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic.Wizard\\AddFormWizardWorkflow.xml") { }
 
         public override void OnInitialize(object sender, EventArgs e)
         {
@@ -47,7 +44,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.Workflows
         public override bool Validate()
         {
             var wizardName = GetBinding<string>("WizardName");
-
             if (!FormModel.IsValidName(wizardName))
             {
                 ShowFieldMessage("WizardName", "Wizard name is invalid, only a-z and 0-9 is allowed");
@@ -56,14 +52,14 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.Workflows
             }
 
             var isNameInUse = DynamicFormWizardsFacade.GetWizards().Any(m => m.Name == wizardName);
-            if (isNameInUse)
+            if (!isNameInUse)
             {
-                ShowFieldMessage("WizardName", "Wizard name already exists");
-
-                return false;
+                return true;
             }
 
-            return true;
+            ShowFieldMessage("WizardName", "Wizard name already exists");
+
+            return false;
         }
     }
 }

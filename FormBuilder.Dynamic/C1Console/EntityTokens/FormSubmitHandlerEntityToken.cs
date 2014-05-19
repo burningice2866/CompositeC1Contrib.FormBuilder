@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 using Composite.C1Console.Security;
 
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
-
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens
 {
     [SecurityAncestorProvider(typeof(FormSubmitHandlerAncestorProvider))]
@@ -47,7 +45,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens
 
         public override string Serialize()
         {
-            return base.DoSerialize();
+            return DoSerialize();
         }
 
         public static EntityToken Deserialize(string serializedEntityToken)

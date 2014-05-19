@@ -6,14 +6,14 @@ using Composite.C1Console.Actions;
 using Composite.C1Console.Security;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
+using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 {
     [ActionExecutor(typeof(DeleteDataSourceActionExecutor))]
     public class DeleteDataSourceActionToken : ActionToken
     {
-        private static IEnumerable<PermissionType> _permissionTypes = new[] { PermissionType.Administrate };
+        private static readonly IEnumerable<PermissionType> _permissionTypes = new[] { PermissionType.Administrate };
 
         public override IEnumerable<PermissionType> PermissionTypes
         {

@@ -12,17 +12,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.Workflows
 
         public override void OnInitialize(object sender, EventArgs e)
         {
-            if (!BindingExist("StepName"))
+            if (BindingExist("StepName"))
             {
-                var wizardStepEntityToken = (FormWizardStepEntityToken) EntityToken;
-                var wizard = DynamicFormWizardsFacade.GetWizard(wizardStepEntityToken.WizardName);
-                var step = wizard.Steps.Single(s => s.Name == wizardStepEntityToken.StepName);
-
-                Bindings.Add("StepName", step.Name);
-                Bindings.Add("FormName", step.FormName);
-                Bindings.Add("NextButtonLabel", step.NextButtonLabel ?? String.Empty);
-                Bindings.Add("PreviousButtonLabel", step.PreviousButtonLabel ?? String.Empty);
+                return;
             }
+
+            var wizardStepEntityToken = (FormWizardStepEntityToken) EntityToken;
+            var wizard = DynamicFormWizardsFacade.GetWizard(wizardStepEntityToken.WizardName);
+            var step = wizard.Steps.Single(s => s.Name == wizardStepEntityToken.StepName);
+
+            Bindings.Add("StepName", step.Name);
+            Bindings.Add("FormName", step.FormName);
+            Bindings.Add("NextButtonLabel", step.NextButtonLabel ?? String.Empty);
+            Bindings.Add("PreviousButtonLabel", step.PreviousButtonLabel ?? String.Empty);
         }
 
         public override void OnFinish(object sender, EventArgs e)
@@ -53,27 +55,29 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.Workflows
             var stepToken = (FormWizardStepEntityToken)EntityToken;
             var stepName = GetBinding<string>("StepName");
 
-            if (stepName != stepToken.StepName)
+            if (stepName == stepToken.StepName)
             {
-                if (!FormField.IsValidName(stepName))
-                {
-                    ShowFieldMessage("StepName", "Step name is invalid, only a-z and 0-9 is allowed");
-
-                    return false;
-                }
-
-                var wizard = DynamicFormWizardsFacade.GetWizard(stepToken.WizardName);
-                var step = wizard.Steps.SingleOrDefault(s => s.Name == stepName);
-
-                if (step != null)
-                {
-                    ShowFieldMessage("StepName", "Step name already exists");
-
-                    return false;
-                }
+                return true;
             }
 
-            return true;
+            if (!FormField.IsValidName(stepName))
+            {
+                ShowFieldMessage("StepName", "Step name is invalid, only a-z and 0-9 is allowed");
+
+                return false;
+            }
+
+            var wizard = DynamicFormWizardsFacade.GetWizard(stepToken.WizardName);
+
+            var step = wizard.Steps.SingleOrDefault(s => s.Name == stepName);
+            if (step == null)
+            {
+                return true;
+            }
+
+            ShowFieldMessage("StepName", "Step name already exists");
+
+            return false;
         }
     }
 }

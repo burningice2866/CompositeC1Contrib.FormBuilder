@@ -1,18 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using CompositeC1Contrib.FormBuilder.Attributes;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
+using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
     public class AddDataSourceWorkflow : Basic1StepDialogWorkflow
     {
-        public AddDataSourceWorkflow()
-            : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddDataSourceWorkflow.xml")
-        {
-        }
+        public AddDataSourceWorkflow() : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddDataSourceWorkflow.xml") { }
 
         public static Dictionary<string, string> GetDataSourceTypes()
         {

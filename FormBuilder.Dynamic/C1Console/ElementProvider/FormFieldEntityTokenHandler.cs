@@ -11,7 +11,7 @@ using Composite.Core.ResourceSystem;
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
+using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
@@ -29,85 +29,91 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
             var fieldToken = (FormFieldEntityToken)token;
             var form = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
 
-            if (form != null)
+            if (form == null)
             {
-                var field = form.Model.Fields.SingleOrDefault(f => f.Name == fieldToken.FieldName);
-                if (field != null)
-                {
-                    var fieldValidatorsElementHandle = context.CreateElementHandle(new FieldValidatorsEntityToken(form.Name, field.Name));
-                    var fieldValidatorsElement = new Element(fieldValidatorsElementHandle)
-                    {
-                        VisualData = new ElementVisualizedData
-                        {
-                            Label = "Validators",
-                            ToolTip = "Validators",
-                            HasChildren = true,
-                            Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                            OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
-                        }
-                    };
-
-                    var addValidatorActionToken = new WorkflowActionToken(typeof(AddFieldValidatorWorkflow), new PermissionType[] { PermissionType.Administrate });
-                    fieldValidatorsElement.AddAction(new ElementAction(new ActionHandle(addValidatorActionToken))
-                    {
-                        VisualData = new ActionVisualizedData
-                        {
-                            Label = "Add validator",
-                            ToolTip = "Add validator",
-                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
-                            ActionLocation = FormBuilderElementProvider.ActionLocation
-                        }
-                    });
-
-                    yield return fieldValidatorsElement;
-
-                    var datasourceAttribute = field.Attributes.OfType<DataSourceAttribute>().FirstOrDefault();
-                    if (datasourceAttribute != null)
-                    {
-                        var fieldsElementHandle = context.CreateElementHandle(new DataSourceEntityToken(datasourceAttribute.GetType(), form.Name, field.Name));
-                        var fieldElement = new Element(fieldsElementHandle)
-                        {
-                            VisualData = new ElementVisualizedData
-                            {
-                                Label = "Datasource",
-                                ToolTip = "Datasource",
-                                HasChildren = true,
-                                Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                                OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
-                            }
-                        };
-
-                        var deleteActionToken = new ConfirmWorkflowActionToken("Delete datasource", typeof(DeleteDataSourceActionToken));
-                        fieldElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
-                        {
-                            VisualData = new ActionVisualizedData
-                            {
-                                Label = "Delete datasource",
-                                ToolTip = "Delete datasource",
-                                Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
-                                ActionLocation = FormBuilderElementProvider.ActionLocation
-                            }
-                        });
-
-                        if (datasourceAttribute.GetType() == typeof(StringBasedDataSourceAttribute))
-                        {
-                            var addActionToken = new WorkflowActionToken(typeof(AddStringBasedDataSourceEntryWorkflow), new PermissionType[] { PermissionType.Administrate });
-                            fieldElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
-                            {
-                                VisualData = new ActionVisualizedData
-                                {
-                                    Label = "Add value",
-                                    ToolTip = "Add value",
-                                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
-                                    ActionLocation = FormBuilderElementProvider.ActionLocation
-                                }
-                            });
-                        }
-
-                        yield return fieldElement;
-                    }
-                }
+                yield break;
             }
+
+            var field = form.Model.Fields.SingleOrDefault(f => f.Name == fieldToken.FieldName);
+            if (field == null)
+            {
+                yield break;
+            }
+
+            var fieldValidatorsElementHandle = context.CreateElementHandle(new FieldValidatorsEntityToken(form.Name, field.Name));
+            var fieldValidatorsElement = new Element(fieldValidatorsElementHandle)
+            {
+                VisualData = new ElementVisualizedData
+                {
+                    Label = "Validators",
+                    ToolTip = "Validators",
+                    HasChildren = true,
+                    Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
+                    OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                }
+            };
+
+            var addValidatorActionToken = new WorkflowActionToken(typeof(AddFieldValidatorWorkflow), new[] { PermissionType.Administrate });
+            fieldValidatorsElement.AddAction(new ElementAction(new ActionHandle(addValidatorActionToken))
+            {
+                VisualData = new ActionVisualizedData
+                {
+                    Label = "Add validator",
+                    ToolTip = "Add validator",
+                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                    ActionLocation = FormBuilderElementProvider.ActionLocation
+                }
+            });
+
+            yield return fieldValidatorsElement;
+
+            var datasourceAttribute = field.Attributes.OfType<DataSourceAttribute>().FirstOrDefault();
+            if (datasourceAttribute == null)
+            {
+                yield break;
+            }
+
+            var fieldsElementHandle = context.CreateElementHandle(new DataSourceEntityToken(datasourceAttribute.GetType(), form.Name, field.Name));
+            var fieldElement = new Element(fieldsElementHandle)
+            {
+                VisualData = new ElementVisualizedData
+                {
+                    Label = "Datasource",
+                    ToolTip = "Datasource",
+                    HasChildren = true,
+                    Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
+                    OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                }
+            };
+
+            var deleteActionToken = new ConfirmWorkflowActionToken("Delete datasource", typeof(DeleteDataSourceActionToken));
+            fieldElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
+            {
+                VisualData = new ActionVisualizedData
+                {
+                    Label = "Delete datasource",
+                    ToolTip = "Delete datasource",
+                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
+                    ActionLocation = FormBuilderElementProvider.ActionLocation
+                }
+            });
+
+            if (datasourceAttribute.GetType() == typeof(StringBasedDataSourceAttribute))
+            {
+                var addActionToken = new WorkflowActionToken(typeof(AddStringBasedDataSourceEntryWorkflow), new[] { PermissionType.Administrate });
+                fieldElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
+                {
+                    VisualData = new ActionVisualizedData
+                    {
+                        Label = "Add value",
+                        ToolTip = "Add value",
+                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                    }
+                });
+            }
+
+            yield return fieldElement;
         }
     }
 }

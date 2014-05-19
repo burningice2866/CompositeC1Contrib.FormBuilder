@@ -85,6 +85,7 @@
     <Compile Include="Attributes\DataSourceAttribute.cs" />
     <Compile Include="C1Console\ElementProvider\IEntityTokenBasedElementProvider.cs" />
     <Compile Include="C1Console\EntityTokens\FormElementProviderEntityToken.cs" />
+    <Compile Include="C1Console\EntityTokens\NamespaceFolderEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormInstanceEntityToken.cs" />
     <Compile Include="Configuration\FormBuilderConfiguration.cs" />
     <Compile Include="Configuration\FormBuilderConfigurationHandler.cs" />

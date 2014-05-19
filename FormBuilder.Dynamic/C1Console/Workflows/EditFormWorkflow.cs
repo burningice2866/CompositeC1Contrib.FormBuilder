@@ -10,9 +10,8 @@ using Composite.C1Console.Workflow;
 using Composite.Core.Xml;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
-using CompositeC1Contrib.FormBuilder.C1Console.Tokens;
+using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Configuration;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Tokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.Configuration;
 using CompositeC1Contrib.Workflows;
 
@@ -205,12 +204,14 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             foreach (var prop in settings.GetType().GetProperties())
             {
-                if (BindingExist(prop.Name))
+                if (!BindingExist(prop.Name))
                 {
-                    var value = GetBinding<object>(prop.Name);
-
-                    prop.SetValue(settings, value, null);
+                    continue;
                 }
+
+                var value = GetBinding<object>(prop.Name);
+
+                prop.SetValue(settings, value, null);
             }
         }
 
@@ -219,25 +220,27 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var formToken = (FormInstanceEntityToken)EntityToken;
             var formName = GetBinding<string>("FormName");
 
-            if (formName != formToken.FormName)
+            if (formName == formToken.FormName)
             {
-                if (!FormModel.IsValidName(formName))
-                {
-                    ShowFieldMessage("FormName", "Form name is invalid, only a-z and 0-9 is allowed");
-
-                    return false;
-                }
-
-                var isNameInUse = FormModelsFacade.GetModels().Any(m => m.Name == formName);
-                if (isNameInUse)
-                {
-                    ShowFieldMessage("FormName", "Form name already exists");
-
-                    return false;
-                }
+                return true;
             }
 
-            return true;
+            if (!FormModel.IsValidName(formName))
+            {
+                ShowFieldMessage("FormName", "Form name is invalid, only a-z and 0-9 is allowed");
+
+                return false;
+            }
+
+            var isNameInUse = FormModelsFacade.GetModels().Any(m => m.Name == formName);
+            if (!isNameInUse)
+            {
+                return true;
+            }
+
+            ShowFieldMessage("FormName", "Form name already exists");
+
+            return false;
         }
 
         private void SwitchAttribute<T>(string bindingName, IList<Attribute> attributes) where T : Attribute, new()

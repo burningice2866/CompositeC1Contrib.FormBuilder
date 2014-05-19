@@ -37,7 +37,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.ElementProvide
 
             container.Compose(batch);
 
-            EntityTokenHandlers = container.GetExportedValues<IEntityTokenBasedElementProvider>().ToDictionary(o => o.EntityTokenType, o => o);
+            var any = container.GetExportedValues<IEntityTokenBasedElementProvider>().ToDictionary(o => o.EntityTokenType, o => o);
+            var specific = container.GetExportedValues<IEntityTokenBasedElementProvider>("FormBuilder.Dynamic.Wizard").ToDictionary(o => o.EntityTokenType, o => o);
+
+            EntityTokenHandlers = any.Concat(specific).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
         public IEnumerable<Element> GetChildren(EntityToken entityToken, SearchToken searchToken)

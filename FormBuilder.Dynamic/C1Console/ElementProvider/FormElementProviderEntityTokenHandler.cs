@@ -38,7 +38,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 
             if (!String.IsNullOrEmpty(ns))
             {
-                formDefinitions = formDefinitions.Where(def => def.Name.StartsWith(ns));
+                formDefinitions = formDefinitions.Where(def => def.Name.StartsWith(ns + "."));
             }
 
             foreach (var definition in formDefinitions)

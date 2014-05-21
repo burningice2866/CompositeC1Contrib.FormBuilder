@@ -38,7 +38,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.ElementProvide
 
             if (!String.IsNullOrEmpty(ns))
             {
-                wizards = wizards.Where(def => def.Name.StartsWith(ns));
+                wizards = wizards.Where(def => def.Name.StartsWith(ns + "."));
             }
 
             foreach (var wizard in wizards)

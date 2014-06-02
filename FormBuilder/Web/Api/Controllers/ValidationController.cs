@@ -37,6 +37,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
         {
             var model = CreateFormModel(form);
 
+            model.SetDefaultValues();
             model.MapValues(form, files);
             model.Validate();
 

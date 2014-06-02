@@ -1,7 +1,10 @@
 ﻿using System.IO;
 using System.Web.Http;
+using System.Web.Routing;
 
 using Composite.Core.Application;
+
+using CompositeC1Contrib.FormBuilder.Web.Api;
 
 namespace CompositeC1Contrib.FormBuilder.Web
 {
@@ -10,7 +13,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
     {
         public static void OnBeforeInitialize()
         {
-            GlobalConfiguration.Configuration.Routes.MapHttpRoute("Form validator", "formbuilder/{controller}");
+            RouteTable.Routes.MapHttpRoute("Form validator", "Form validator", new { controller = "attachment" }).RouteHandler = new FormValidationControllerRouteHandler();
 
             var formsFolder = Path.Combine(FormModelsFacade.RootPath, "Forms");
             if (!Directory.Exists(formsFolder))

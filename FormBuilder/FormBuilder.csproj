@@ -96,6 +96,7 @@
     <Compile Include="IFormModel.cs" />
     <Compile Include="SafeDirectoryCatalog.cs" />
     <Compile Include="SerializableMailTemplate.cs" />
+    <Compile Include="Web\Api\FormValidationControllerHandler.cs" />
     <Compile Include="Web\BaseFormBuilderRequestContext.cs" />
     <Compile Include="Web\FormBuilderRequestContext.cs" />
     <Compile Include="FormModelsFacade.cs" />

@@ -15,6 +15,8 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public sealed class FormModel : IFormModel
     {
+        private static readonly IDictionary<Type, Action<FormField, string>> ValueMappers = new Dictionary<Type, Action<FormField, string>>();
+        
         private IDictionary<FormField, IList<FormValidationRule>> _ruleList;
 
         public NameValueCollection SubmittedValues { get; private set; }
@@ -59,6 +61,144 @@ namespace CompositeC1Contrib.FormBuilder
 
                 return label;
             }
+        }
+
+        static FormModel()
+        {
+            ValueMappers.Add(typeof(int), (f, val) =>
+            {
+                int i;
+                int.TryParse(val, out i);
+
+                f.Value = i;
+            });
+
+            ValueMappers.Add(typeof(int?), (f, val) =>
+            {
+                int i;
+                if (int.TryParse(val, out i))
+                {
+                    f.Value = i;
+                }
+                else
+                {
+                    f.Value = null;
+                }
+            });
+
+            ValueMappers.Add(typeof(decimal), (f, val) =>
+            {
+                decimal d;
+                decimal.TryParse(val, out d);
+
+                f.Value = d;
+            });
+
+            ValueMappers.Add(typeof(decimal?), (f, val) =>
+            {
+                decimal d;
+                if (decimal.TryParse(val, out d))
+                {
+                    f.Value = d;
+                }
+                else
+                {
+                    f.Value = null;
+                }
+            });
+
+            ValueMappers.Add(typeof(Guid), (f, val) =>
+            {
+                Guid g;
+                Guid.TryParse(val, out g);
+
+                f.Value = g;
+            });
+
+            ValueMappers.Add(typeof(Guid?), (f, val) =>
+            {
+                Guid g;
+                if (Guid.TryParse(val, out g))
+                {
+                    f.Value = g;
+                }
+                else
+                {
+                    f.Value = null;
+                }
+            });
+
+            ValueMappers.Add(typeof(DateTime), (f, val) =>
+            {
+                DateTime dt;
+                var formatAttr = f.Attributes.OfType<DisplayFormatAttribute>().SingleOrDefault();
+
+                if (formatAttr != null)
+                {
+                    DateTime.TryParseExact(val, formatAttr.FormatString, CultureInfo.CurrentUICulture, DateTimeStyles.None, out dt);
+                }
+                else
+                {
+                    DateTime.TryParse(val, out dt);
+                }
+
+                f.Value = dt;
+            });
+
+            ValueMappers.Add(typeof(DateTime?), (f, val) =>
+            {
+                DateTime dt;
+                var formatAttr = f.Attributes.OfType<DisplayFormatAttribute>().SingleOrDefault();
+
+                if (formatAttr != null)
+                {
+                    if (DateTime.TryParseExact(val, formatAttr.FormatString, CultureInfo.CurrentUICulture, DateTimeStyles.None, out dt))
+                    {
+                        f.Value = dt;
+                    }
+                    else
+                    {
+                        f.Value = null;
+                    }
+                }
+                else
+                {
+                    if (DateTime.TryParse(val, out dt))
+                    {
+                        f.Value = dt;
+                    }
+                    else
+                    {
+                        f.Value = null;
+                    }
+                }
+            });
+
+            ValueMappers.Add(typeof(bool), (f, val) =>
+            {
+                bool b;
+
+                if (val == "on")
+                {
+                    b = true;
+                }
+                else
+                {
+                    bool.TryParse(val, out b);
+                }
+
+                f.Value = b;
+            });
+
+            ValueMappers.Add(typeof(string), (f, val) =>
+            {
+                f.Value = val;
+            });
+
+            ValueMappers.Add(typeof(IEnumerable<string>), (f, val) =>
+            {
+                f.Value = val.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            });
         }
 
         public FormModel(string name)
@@ -246,6 +386,16 @@ namespace CompositeC1Contrib.FormBuilder
             return true;
         }
 
+        private static void MapValueToField(FormField field, string val)
+        {
+            Action<FormField, string> mapper;
+
+            if (ValueMappers.TryGetValue(field.ValueType, out mapper))
+            {
+                mapper(field, val);
+            }
+        }
+
         private static void MapFilesToField(FormField field, IEnumerable<FormFile> files)
         {
             if (files == null)
@@ -266,118 +416,6 @@ namespace CompositeC1Contrib.FormBuilder
             else if (field.ValueType == typeof(IEnumerable<FormFile>))
             {
                 field.Value = fieldFiles;
-            }
-        }
-
-        private static void MapValueToField(FormField field, string val)
-        {
-            var formatAttr = field.Attributes.OfType<DisplayFormatAttribute>().SingleOrDefault();
-
-            if (field.ValueType == typeof(int))
-            {
-                int i;
-                int.TryParse(val, out i);
-
-                field.Value = i;
-            }
-            else if (field.ValueType == typeof(int?))
-            {
-                int i;
-                if (int.TryParse(val, out i))
-                {
-                    field.Value = i;
-                }
-                else
-                {
-                    field.Value = null;
-                }
-            }
-
-            else if (field.ValueType == typeof(decimal))
-            {
-                decimal d;
-                decimal.TryParse(val, out d);
-
-                field.Value = d;
-            }
-            else if (field.ValueType == typeof(decimal?))
-            {
-                decimal d;
-                if (decimal.TryParse(val, out d))
-                {
-                    field.Value = d;
-                }
-                else
-                {
-                    field.Value = null;
-                }
-            }
-
-            else if (field.ValueType == typeof(bool))
-            {
-                bool b;
-
-                if (val == "on")
-                {
-                    b = true;
-                }
-                else
-                {
-                    bool.TryParse(val, out b);
-                }
-
-                field.Value = b;
-            }
-
-            else if (field.ValueType == typeof(string))
-            {
-                field.Value = val;
-            }
-            else if (field.ValueType == typeof(IEnumerable<string>))
-            {
-                field.Value = val.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            }
-
-            else if (field.ValueType == typeof(DateTime))
-            {
-                DateTime dt;
-
-                if (formatAttr != null)
-                {
-                    DateTime.TryParseExact(val, formatAttr.FormatString, CultureInfo.CurrentUICulture, DateTimeStyles.None, out dt);
-                }
-                else
-                {
-                    DateTime.TryParse(val, out dt);
-                }
-
-                field.Value = dt;
-            }
-            else if (field.ValueType == typeof(DateTime?))
-            {
-                DateTime dt;
-                if (formatAttr != null)
-                {
-                    if (DateTime.TryParseExact(val, formatAttr.FormatString, CultureInfo.CurrentUICulture, DateTimeStyles.None, out dt))
-                    {
-                        field.Value = dt;
-                    }
-                    else
-                    {
-                        field.Value = null;
-                    }
-                }
-                else
-                {
-                    if (DateTime.TryParse(val, out dt))
-                    {
-                        field.Value = dt;
-                    }
-                    else
-                    {
-                        field.Value = null;
-                    }
-                }
             }
         }
     }

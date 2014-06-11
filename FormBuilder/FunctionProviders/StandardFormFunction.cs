@@ -20,8 +20,6 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
     public class StandardFormFunction<T> : StandardFormFunction where T : FormBuilderRequestContext
     {
-        public string OverrideFormExecutor { get; set; }
-
         public StandardFormFunction(string name) : this(name, null, null) { }
         public StandardFormFunction(string name, XhtmlDocument introText, XhtmlDocument successResponse) : base(name, introText, successResponse) { }
 
@@ -39,10 +37,6 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             });
 
             var formExecutorFunction = FormExecutorFunction;
-            if (!String.IsNullOrEmpty(OverrideFormExecutor))
-            {
-                formExecutorFunction = OverrideFormExecutor;
-            }
 
             var formExecutor = FunctionFacade.GetFunction(formExecutorFunction);
             var functionParameters = new Dictionary<string, object>

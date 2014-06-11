@@ -14,6 +14,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             get
             {
                 yield return new DumpSubmittedFormValues();
+                yield return new DumpSubmittedWizardValues();
             }
         }
     }

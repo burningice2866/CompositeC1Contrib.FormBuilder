@@ -8,7 +8,7 @@
         {
             if (HttpContext.IsDebuggingEnabled)
             {
-                SaveFormSubmitFacade.SaveSubmitDebug(FormModelsFacade.FormsPath, RenderingModel);
+                SaveFormSubmitFacade.SaveSubmitDebug(RenderingModel);
             }
 
             base.Submit();

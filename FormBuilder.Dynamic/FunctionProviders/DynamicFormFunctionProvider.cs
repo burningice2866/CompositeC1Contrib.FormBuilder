@@ -22,12 +22,19 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                     IFunction function;
                     if (!FunctionFacade.TryGetFunction(out function, def.Name))
                     {
-                        function = new StandardFormFunction<DynamicFormBuilderRequestContext>(def.Name, def.IntroText, def.SuccessResponse)
-                        {
-                            OverrideFormExecutor = def.FormExecutor
-                        };
+                        function = new StandardFormFunction<DynamicFormBuilderRequestContext>(def.Name, def.IntroText, def.SuccessResponse);
 
                         yield return function;
+                    }
+                }
+
+                var wizards = DynamicFormWizardsFacade.GetWizards();
+                foreach (var wizard in wizards)
+                {
+                    IFunction function;
+                    if (!FunctionFacade.TryGetFunction(out function, wizard.Name))
+                    {
+                        yield return new FormWizardFunction<DynamicFormWizardRequestContext>(wizard.Name);
                     }
                 }
             }
@@ -35,7 +42,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
         public DynamicFormFunctionProvider()
         {
-            DynamicFormsFacade.SubscribeToFormChanges(() =>
+            DefinitionsFacade.SubscribeToFormChanges(() =>
             {
                 if (FunctionNotifier != null)
                 {

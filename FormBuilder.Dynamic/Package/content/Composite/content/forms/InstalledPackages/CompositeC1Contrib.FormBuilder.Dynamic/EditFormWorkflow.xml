@@ -7,7 +7,6 @@
     <cms:binding name="SubmitButtonLabel" type="System.String" />
     <cms:binding name="IntroText" type="System.String" />
     <cms:binding name="SuccessResponse" type="System.String" />
-    <cms:binding name="FunctionExecutor" type="System.String" />
   </cms:bindings>
 
   <cms:layout>
@@ -49,20 +48,6 @@
           <InlineXhtmlEditor Label="Success response">
             <cms:bind source="SuccessResponse"/>
           </InlineXhtmlEditor>
-        </FieldGroup>
-      </PlaceHolder>
-
-      <PlaceHolder Label="Advanced">
-        <FieldGroup>
-          <KeySelector Label="Function executor" OptionsKeyField="Key" OptionsLabelField="Value" Required="true">
-            <KeySelector.Options>
-              <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows.EditFormWorkflow, CompositeC1Contrib.FormBuilder.Dynamic" Method="GetFunctionExecutors" />
-            </KeySelector.Options>
-
-            <KeySelector.Selected>
-              <cms:bind source="FunctionExecutor" />
-            </KeySelector.Selected>
-          </KeySelector>
         </FieldGroup>
       </PlaceHolder>
     </TabPanels>

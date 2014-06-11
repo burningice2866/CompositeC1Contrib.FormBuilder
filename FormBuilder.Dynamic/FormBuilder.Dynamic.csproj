@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="C1Console\Actions\DeleteFieldValidatorActionToken.cs" />
+    <Compile Include="C1Console\Actions\DeleteFormWizardStepActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteSubmitHandlerActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteDataSourceActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteFormActionToken.cs" />
@@ -78,9 +79,22 @@
     <Compile Include="C1Console\ElementProvider\FormElementProviderEntityTokenHandler.cs" />
     <Compile Include="C1Console\EntityTokens\FieldValidatorsEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormSubmitHandlerEntityToken.cs" />
+    <Compile Include="C1Console\EntityTokens\FormWizardStepEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\StringBasedDataSourceEntryEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\DataSourceEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormFieldEntityToken.cs" />
+    <Compile Include="C1Console\Workflows\AddFormWizardWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="C1Console\Workflows\AddWizardStepWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="C1Console\Workflows\EditFormWizardWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="C1Console\Workflows\EditWizardStepWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Configuration\FormExecutorSettingsElement.cs" />
     <Compile Include="C1Console\IFormExecutorSettingsHandler.cs" />
     <Compile Include="C1Console\InputElementHandler.cs" />
@@ -97,13 +111,10 @@
     <Compile Include="C1Console\Workflows\CopyFormWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="C1Console\Workflows\BaseEditEmailSubmitHandlerWorkflow.cs">
+    <Compile Include="C1Console\Workflows\EditEmailSubmitHandlerWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="C1Console\Workflows\EditFieldValidatorWorkflow.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="C1Console\Workflows\EditEmailSubmitHandlerWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="C1Console\Workflows\EditFormWorkflow.cs">
@@ -113,29 +124,40 @@
     <Compile Include="C1Console\Workflows\EditWorkflowAttribute.cs" />
     <Compile Include="CompositeFormRendererConverter.cs" />
     <Compile Include="Configuration\DynamicFormBuilderConfiguration.cs" />
+    <Compile Include="DefinitionsFacade.cs" />
     <Compile Include="DynamicFormDefinition.cs" />
     <Compile Include="DynamicFormModelsProvider.cs" />
     <Compile Include="C1Console\IInputTypeSettingsHandler.cs" />
     <Compile Include="C1Console\TextAreaSettings.cs" />
+    <Compile Include="DynamicFormWizard.cs" />
+    <Compile Include="DynamicFormWizardsFacade.cs" />
     <Compile Include="FormModelMailMessageBuilder.cs" />
+    <Compile Include="FormXmlSerializer.cs" />
     <Compile Include="IDynamicFormDefinition.cs" />
-    <Compile Include="SubmitHandlers\BaseDynamicEmailSubmitHandler.cs" />
+    <Compile Include="SubmitHandlers\EmailSubmitHandler.cs" />
     <Compile Include="SubmitHandlers\FormSubmitHandler.cs" />
     <Compile Include="Web\DynamicFormBuilderRequestContext.cs" />
-    <Compile Include="SubmitHandlers\DownloadSavedFormsActionToken.cs" />
     <Compile Include="SubmitHandlers\SaveFormSubmitHandler.cs" />
+    <Compile Include="Web\DynamicFormWizardRequestContext.cs" />
     <Compile Include="Web\StartupHandler.cs" />
-    <Compile Include="Web\UI\DownloadSavedFormsHandler.cs" />
     <Compile Include="Web\UI\FunctionSelector.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Web\UI\SortFormFieldsPage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Web\UI\SortWizardStepsPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WizardXmlSerializer.cs" />
+    <Compile Include="XmlDefinitionSerializer.cs" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\AddFormWizardWorkflow.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\AddWizardStepWorkflow.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditFormWizardWorkflow.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditWizardStepWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\InputElementSettings\TextBox.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\InputElementSettings\TextArea.xml" />
     <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\arrow.png" />
-    <Compile Include="SubmitHandlers\EmailSubmitHandler.cs" />
     <Compile Include="FunctionProviders\DynamicFormFunctionProvider.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -168,7 +190,6 @@
   <ItemGroup>
     <None Include="Package\config\App_Data\Composite\composite.config" />
     <None Include="Package\config\web.config" />
-    <None Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\DownloadSavedForms.ashx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\AddDataSourceWorkflow.xml" />
@@ -187,12 +208,20 @@
     <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\SortFormFields.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
+    <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\SortWizardSteps.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="Package\install.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)Package\Bin\$(TargetFileName)"
+    <PostBuildEvent>del "$(ProjectDir)Package\Bin\"
+mkdir "$(ProjectDir)Package\Bin\"
+
+copy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)Package\Bin\$(TargetFileName)"
+
 del "$(ProjectDir)\Package\package.zip"
+
 "$(ProjectDir)..\.vendor\7z.exe" a "$(ProjectDir)\Package\package.zip" -tzip -r "$(ProjectDir)\Package\*"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

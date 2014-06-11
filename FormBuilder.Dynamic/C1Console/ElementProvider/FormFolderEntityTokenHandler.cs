@@ -28,14 +28,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
         {
             var formFolderToken = (FormFolderEntityToken)token;
 
-            if (formFolderToken.FolderType == FormFolderType.Fields)
+            switch (formFolderToken.FolderType)
             {
-                return getFormFieldElements(context, formFolderToken);
-            }
+                case FormFolderType.SubmitHandlers: return getFormSubmitHandlerElements(context, formFolderToken);
 
-            if (formFolderToken.FolderType == FormFolderType.SubmitHandlers)
-            {
-                return getFormSubmitHandlerElements(context, formFolderToken);
+                case FormFolderType.Fields: return getFormFieldElements(context, formFolderToken);
+                case FormFolderType.Steps: return getWizardStepElements(context, formFolderToken);
             }
 
             return Enumerable.Empty<Element>();
@@ -43,85 +41,32 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 
         private IEnumerable<Element> getFormSubmitHandlerElements(ElementProviderContext context, FormFolderEntityToken folder)
         {
-            var definition = DynamicFormsFacade.GetFormByName(folder.FormName);
-            if (definition != null)
+            var definition = DefinitionsFacade.GetDefinition(folder.FormName);
+            if (definition == null)
             {
-                foreach (var handler in definition.SubmitHandlers)
-                {
-                    var elementHandle = context.CreateElementHandle(new FormSubmitHandlerEntityToken(handler.GetType(), folder.FormName, handler.Name));
-                    var handlerElement = new Element(elementHandle)
-                    {
-                        VisualData = new ElementVisualizedData
-                        {
-                            Label = handler.Name,
-                            ToolTip = handler.Name,
-                            HasChildren = false,
-                            Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                            OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
-                        }
-                    };
-
-                    var editWorkflowAttribute = handler.GetType().GetCustomAttributes(true).OfType<EditWorkflowAttribute>().FirstOrDefault();
-                    if (editWorkflowAttribute != null)
-                    {
-                        var editActionToken = new WorkflowActionToken(editWorkflowAttribute.EditWorkflowType);
-                        handlerElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
-                        {
-                            VisualData = new ActionVisualizedData
-                            {
-                                Label = "Edit",
-                                ToolTip = "Edit",
-                                Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
-                                ActionLocation = FormBuilderElementProvider.ActionLocation
-                            }
-                        });
-                    }
-
-                    var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + handler.Name, typeof(DeleteSubmitHandlerActionToken));
-                    handlerElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
-                    {
-                        VisualData = new ActionVisualizedData
-                        {
-                            Label = "Delete",
-                            ToolTip = "Delete",
-                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
-                            ActionLocation = FormBuilderElementProvider.ActionLocation
-                        }
-                    });
-
-                    var actionProvider = handler as IActionPrivider;
-                    if (actionProvider != null)
-                    {
-                        actionProvider.AddActions(definition, handlerElement);
-                    }
-
-                    yield return handlerElement;
-                }
+                yield break;
             }
-        }
 
-        private IEnumerable<Element> getFormFieldElements(ElementProviderContext context, FormFolderEntityToken folder)
-        {
-            var definition = DynamicFormsFacade.GetFormByName(folder.FormName);
-            if (definition != null)
+            foreach (var handler in definition.SubmitHandlers)
             {
-                foreach (var field in definition.Model.Fields)
+                var elementHandle = context.CreateElementHandle(new FormSubmitHandlerEntityToken(handler.GetType(), folder.FormName, handler.Name));
+                var handlerElement = new Element(elementHandle)
                 {
-                    var elementHandle = context.CreateElementHandle(new FormFieldEntityToken(definition.Name, field.Name));
-                    var fieldElement = new Element(elementHandle)
+                    VisualData = new ElementVisualizedData
                     {
-                        VisualData = new ElementVisualizedData
-                        {
-                            Label = field.Name,
-                            ToolTip = field.Name,
-                            HasChildren = true,
-                            Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                            OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
-                        }
-                    };
+                        Label = handler.Name,
+                        ToolTip = handler.Name,
+                        HasChildren = false,
+                        Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
+                        OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                    }
+                };
 
-                    var editActionToken = new WorkflowActionToken(typeof(EditFormFieldWorkflow));
-                    fieldElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
+                var editWorkflowAttribute = handler.GetType().GetCustomAttributes(true).OfType<EditWorkflowAttribute>().FirstOrDefault();
+                if (editWorkflowAttribute != null)
+                {
+                    var editActionToken = new WorkflowActionToken(editWorkflowAttribute.EditWorkflowType);
+                    handlerElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
                     {
                         VisualData = new ActionVisualizedData
                         {
@@ -131,36 +76,139 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                             ActionLocation = FormBuilderElementProvider.ActionLocation
                         }
                     });
+                }
 
-                    var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + field.Name, typeof(DeleteFormFieldActionToken));
-                    fieldElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
+                var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + handler.Name, typeof(DeleteSubmitHandlerActionToken));
+                handlerElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
+                {
+                    VisualData = new ActionVisualizedData
+                    {
+                        Label = "Delete",
+                        ToolTip = "Delete",
+                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
+                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                    }
+                });
+
+                var actionProvider = handler as IActionPrivider;
+                if (actionProvider != null)
+                {
+                    actionProvider.AddActions(definition, handlerElement);
+                }
+
+                yield return handlerElement;
+            }
+        }
+
+        private IEnumerable<Element> getFormFieldElements(ElementProviderContext context, FormFolderEntityToken folder)
+        {
+            var definition = (DynamicFormDefinition)DefinitionsFacade.GetDefinition(folder.FormName);
+            if (definition == null)
+            {
+                yield break;
+            }
+
+            foreach (var field in definition.Model.Fields)
+            {
+                var elementHandle = context.CreateElementHandle(new FormFieldEntityToken(definition.Name, field.Name));
+                var fieldElement = new Element(elementHandle)
+                {
+                    VisualData = new ElementVisualizedData
+                    {
+                        Label = field.Name,
+                        ToolTip = field.Name,
+                        HasChildren = true,
+                        Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
+                        OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                    }
+                };
+
+                var editActionToken = new WorkflowActionToken(typeof(EditFormFieldWorkflow));
+                fieldElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
+                {
+                    VisualData = new ActionVisualizedData
+                    {
+                        Label = "Edit",
+                        ToolTip = "Edit",
+                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                    }
+                });
+
+                var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + field.Name, typeof(DeleteFormFieldActionToken));
+                fieldElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
+                {
+                    VisualData = new ActionVisualizedData
+                    {
+                        Label = "Delete",
+                        ToolTip = "Delete",
+                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
+                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                    }
+                });
+
+                if (!field.Attributes.OfType<DataSourceAttribute>().Any())
+                {
+                    var addDataSourceActionToken = new WorkflowActionToken(typeof(AddDataSourceWorkflow));
+                    fieldElement.AddAction(new ElementAction(new ActionHandle(addDataSourceActionToken))
                     {
                         VisualData = new ActionVisualizedData
                         {
-                            Label = "Delete",
-                            ToolTip = "Delete",
-                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
+                            Label = "Add datasource",
+                            ToolTip = "Add datasource",
+                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
                             ActionLocation = FormBuilderElementProvider.ActionLocation
                         }
                     });
-
-                    if (!field.Attributes.OfType<DataSourceAttribute>().Any())
-                    {
-                        var addDataSourceActionToken = new WorkflowActionToken(typeof(AddDataSourceWorkflow));
-                        fieldElement.AddAction(new ElementAction(new ActionHandle(addDataSourceActionToken))
-                        {
-                            VisualData = new ActionVisualizedData
-                            {
-                                Label = "Add datasource",
-                                ToolTip = "Add datasource",
-                                Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
-                                ActionLocation = FormBuilderElementProvider.ActionLocation
-                            }
-                        });
-                    }
-
-                    yield return fieldElement;
                 }
+
+                yield return fieldElement;
+            }
+        }
+
+        private IEnumerable<Element> getWizardStepElements(ElementProviderContext context, FormFolderEntityToken folder)
+        {
+            var wizard = (DynamicFormWizard)DefinitionsFacade.GetDefinition(folder.FormName);
+            foreach (var step in wizard.Steps)
+            {
+                var elementHandle = context.CreateElementHandle(new FormWizardStepEntityToken(wizard.Name, step.Name));
+                var wizardStepElement = new Element(elementHandle)
+                {
+                    VisualData = new ElementVisualizedData
+                    {
+                        Label = step.Name,
+                        ToolTip = step.Name,
+                        HasChildren = false,
+                        Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
+                        OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                    }
+                };
+
+                var editActionToken = new WorkflowActionToken(typeof(EditWizardStepWorkflow));
+                wizardStepElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
+                {
+                    VisualData = new ActionVisualizedData
+                    {
+                        Label = "Edit step",
+                        ToolTip = "Edit step",
+                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                    }
+                });
+
+                var deleteActionToken = new ConfirmWorkflowActionToken("Delete step", typeof(DeleteFormWizardStepActionToken));
+                wizardStepElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
+                {
+                    VisualData = new ActionVisualizedData
+                    {
+                        Label = "Delete step",
+                        ToolTip = "Delete step",
+                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
+                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                    }
+                });
+
+                yield return wizardStepElement;
             }
         }
     }

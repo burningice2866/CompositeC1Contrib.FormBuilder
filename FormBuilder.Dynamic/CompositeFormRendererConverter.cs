@@ -14,6 +14,7 @@ using Composite.Data;
 using Composite.Data.DynamicTypes;
 using Composite.Data.GeneratedTypes;
 using Composite.Data.Types;
+
 using CompositeC1Contrib.Email.Data.Types;
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
@@ -166,7 +167,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                                         field.Value = prop.GetValue(instance, null);
                                     }
 
-                                    SaveFormSubmitFacade.SaveSubmit(FormModelsFacade.FormsPath, dfd.Model, false, now.AddSeconds(i));
+                                    SaveFormSubmitFacade.SaveSubmit(dfd.Model, false, now.AddSeconds(i));
                                 }
                             }
 

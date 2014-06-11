@@ -10,7 +10,7 @@ using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 {
-    [Export("FormBuilder.Dynamic", typeof(IEntityTokenBasedElementProvider))]
+    [Export(typeof(IEntityTokenBasedElementProvider))]
     public class NamespaceFolderEntityTokenHandler : IEntityTokenBasedElementProvider
     {
         public Type EntityTokenType
@@ -20,7 +20,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 
         public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)
         {
-            var folderToken = (NamespaceFolderEntityToken) token;
+            var folderToken = (NamespaceFolderEntityToken)token;
             var elements = FormElementProviderEntityTokenHandler.GetNamespaceAndFormElements(context, folderToken.Namespace);
 
             return elements;

@@ -15,17 +15,23 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Configuration
     {
         public IList<InputElementHandler> InputElementHandlers { get; private set; }
         public IList<SubmitHandlerElement> SubmitHandlers { get; private set; }
-        public IList<FormExecutorSettingsElement> FunctionExecutors { get; private set; }
+        public IFormExecutorSettingsHandler FormSettingsHandler { get; private set; }
 
         public DynamicFormBuilderConfiguration()
         {
             InputElementHandlers = new List<InputElementHandler>();
             SubmitHandlers = new List<SubmitHandlerElement>();
-            FunctionExecutors = new List<FormExecutorSettingsElement>();
         }
 
         public void Load(XmlNode element)
         {
+            var formSettingsHandler = element.Attributes.Cast<XmlAttribute>().SingleOrDefault(attr => attr.Name == "settingsHandler");
+            if (formSettingsHandler != null)
+            {
+                var type = Type.GetType(formSettingsHandler.Value);
+                FormSettingsHandler = (IFormExecutorSettingsHandler) Activator.CreateInstance(type);
+            }
+
             var inputElementHandlers = element.ChildNodes.Cast<XmlNode>().FirstOrDefault(n => n.LocalName == "inputElementHandlers");
             if (inputElementHandlers != null)
             {
@@ -76,35 +82,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Configuration
                         Type = type,
                         AllowMultiple = allowMultiple
                     });
-                }
-            }
-
-            var functionExecutors = element.ChildNodes.Cast<XmlNode>().FirstOrDefault(n => n.LocalName == "functionExecutors");
-            if (functionExecutors != null)
-            {
-                foreach (XmlNode add in functionExecutors.ChildNodes)
-                {
-                    var attributes = add.Attributes.Cast<XmlAttribute>().ToDictionary(attr => attr.Name);
-
-                    var name = attributes["name"].Value;
-                    var function = attributes["function"].Value;
-
-                    var functionExecutor = new FormExecutorSettingsElement
-                    {
-                        Name = name,
-                        Function = function
-                    };
-
-                    if (attributes.ContainsKey("settingsHandler"))
-                    {
-                        var settingsHandlerType = Type.GetType(attributes["settingsHandler"].Value);
-
-                        Verify.IsNotNull(settingsHandlerType, "Unrecognized FunctionExecutor settingshandler");
-
-                        functionExecutor.Type = settingsHandlerType;
-                    }
-
-                    FunctionExecutors.Add(functionExecutor);
                 }
             }
         }

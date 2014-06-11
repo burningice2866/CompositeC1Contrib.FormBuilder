@@ -12,12 +12,12 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public class SaveFormSubmitFacade
     {
-        public static void SaveSubmitDebug(string basePath, IFormModel model)
+        public static void SaveSubmitDebug(IFormModel model)
         {
             var ctx = HttpContext.Current;
             var time = DateTime.UtcNow;
             var timeStamp = time.ToString("yyyy-MM-dd HH.mm.ss", CultureInfo.InvariantCulture);
-            var dir = Path.Combine(basePath, model.Name, "Debug");
+            var dir = Path.Combine(FormModelsFacade.RootPath, model.Name, "Debug");
             var file = Path.Combine(dir, timeStamp + ".xml");
             var xml = GenerateBasicSubmitDocument(model, time);
 
@@ -37,23 +37,23 @@ namespace CompositeC1Contrib.FormBuilder
             SaveAttachments(model, dir, timeStamp);
         }
 
-        public static IEnumerable<XElement> LoadSubmits(string basePath, IFormModel model)
+        public static IEnumerable<XElement> LoadSubmits(string name)
         {
-            var dir = Path.Combine(basePath, model.Name, "Submits");
+            var dir = Path.Combine(FormModelsFacade.RootPath, name, "Submits");
             var files = Directory.GetFiles(dir, "*.xml");
 
             return files.Select(XElement.Load);
         }
 
-        public static void SaveSubmit(string basePath, IFormModel model, bool includeAttachments)
+        public static void SaveSubmit(IFormModel model, bool includeAttachments)
         {
-            SaveSubmit(basePath, model, includeAttachments, DateTime.UtcNow);
+            SaveSubmit(model, includeAttachments, DateTime.UtcNow);
         }
 
-        public static void SaveSubmit(string basePath, IFormModel model, bool includeAttachments, DateTime time)
+        public static void SaveSubmit(IFormModel model, bool includeAttachments, DateTime time)
         {
             var timeStamp = time.ToString("yyyy-MM-dd HH.mm.ss", CultureInfo.InvariantCulture);
-            var dir = Path.Combine(basePath, model.Name, "Submits");
+            var dir = Path.Combine(FormModelsFacade.RootPath, model.Name, "Submits");
             var file = Path.Combine(dir, timeStamp + ".xml");
             var xml = GenerateBasicSubmitDocument(model, time);
 

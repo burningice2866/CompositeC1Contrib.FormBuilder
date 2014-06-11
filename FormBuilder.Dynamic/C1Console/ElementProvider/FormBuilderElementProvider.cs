@@ -38,9 +38,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
             container.Compose(batch);
 
             var any = container.GetExportedValues<IEntityTokenBasedElementProvider>().ToDictionary(o => o.EntityTokenType, o => o);
-            var specific = container.GetExportedValues<IEntityTokenBasedElementProvider>("FormBuilder.Dynamic").ToDictionary(o => o.EntityTokenType, o => o);
 
-            EntityTokenHandlers = any.Concat(specific).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            EntityTokenHandlers = any.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
         public IEnumerable<Element> GetChildren(EntityToken entityToken, SearchToken searchToken)
@@ -71,13 +70,25 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 }
             };
 
-            var addActionToken = new WorkflowActionToken(typeof(AddFormWorkflow));
-            rootElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
+            var addFormActionToken = new WorkflowActionToken(typeof(AddFormWorkflow));
+            rootElement.AddAction(new ElementAction(new ActionHandle(addFormActionToken))
             {
                 VisualData = new ActionVisualizedData
                 {
                     Label = "Add form",
                     ToolTip = "Add form",
+                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                    ActionLocation = ActionLocation
+                }
+            });
+
+            var addWizardActionToken = new WorkflowActionToken(typeof(AddFormWizardWorkflow));
+            rootElement.AddAction(new ElementAction(new ActionHandle(addWizardActionToken))
+            {
+                VisualData = new ActionVisualizedData
+                {
+                    Label = "Add wizard",
+                    ToolTip = "Add wizard",
                     Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
                     ActionLocation = ActionLocation
                 }

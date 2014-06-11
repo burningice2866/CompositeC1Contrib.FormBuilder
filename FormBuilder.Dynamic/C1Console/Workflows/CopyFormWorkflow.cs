@@ -11,12 +11,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var formToken = (FormInstanceEntityToken)EntityToken;
             var formName = GetBinding<string>("FormName");
-            var definition = DynamicFormsFacade.GetFormByName(formToken.FormName);
+            var definition = DefinitionsFacade.GetDefinition(formToken.FormName);
 
-            definition.Copy(formName);
+            DefinitionsFacade.Copy(definition, formName);
 
-            var treeRefresher = CreateAddNewTreeRefresher(EntityToken);
-            treeRefresher.PostRefreshMesseges(new FormInstanceEntityToken(typeof(FormBuilderElementProvider).Name, formName));
+            CreateAddNewTreeRefresher(EntityToken).PostRefreshMesseges(new FormInstanceEntityToken(typeof(FormBuilderElementProvider).Name, formName));
         }
     }
 }

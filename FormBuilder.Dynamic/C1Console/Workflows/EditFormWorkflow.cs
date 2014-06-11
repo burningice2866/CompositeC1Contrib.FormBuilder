@@ -20,19 +20,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
     [AllowPersistingWorkflow(WorkflowPersistingType.Idle)]
     public class EditFormWorkflow : Basic1StepDocumentWorkflow
     {
-        public static Dictionary<string, string> GetFunctionExecutors()
-        {
-            var config = FormBuilderConfiguration.GetSection();
-            var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
-
-            if (plugin.FunctionExecutors.Any())
-            {
-                return plugin.FunctionExecutors.ToDictionary(e => e.Function, e => e.Name);
-            }
-
-            return new Dictionary<string, string>() { { config.DefaultFunctionExecutor, "Default" } };
-        }
-
         public override void OnInitialize(object sender, EventArgs e)
         {
             if (BindingExist("FormName"))
@@ -49,7 +36,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             Bindings.Add("SubmitButtonLabel", definition.Model.SubmitButtonLabel);
             Bindings.Add("IntroText", definition.IntroText.ToString());
             Bindings.Add("SuccessResponse", definition.SuccessResponse.ToString());
-            Bindings.Add("FunctionExecutor", definition.FormExecutor ?? FormBuilderConfiguration.GetSection().DefaultFunctionExecutor);
 
             SetupFormData(definition);
         }
@@ -89,19 +75,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var config = FormBuilderConfiguration.GetSection();
             var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
-            var settingsType = plugin.FunctionExecutors.Where(el => el.Function == (definition.FormExecutor ?? FormBuilderConfiguration.GetSection().DefaultFunctionExecutor)).Select(el => el.Type).FirstOrDefault();
 
-            if (settingsType == null)
+            var settings = plugin.FormSettingsHandler;
+            if (settings == null)
             {
                 return;
             }
-
-            if (definition.FormExecutorSettings == null || definition.FormExecutorSettings.GetType() != settingsType)
-            {
-                definition.FormExecutorSettings = (IFormExecutorSettingsHandler)Activator.CreateInstance(settingsType, null);
-            }
-
-            var settings = definition.FormExecutorSettings;
 
             var formFile = "\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\FunctionExcutorSettings\\" + settings.GetType().FullName + ".xml";
             var settingsMarkupProvider = new FormDefinitionFileMarkupProvider(formFile);
@@ -145,11 +124,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var submitButtonLabel = GetBinding<string>("SubmitButtonLabel");
             var introText = GetBinding<string>("IntroText");
             var successResponse = GetBinding<string>("SuccessResponse");
-            var functionExecutor = GetBinding<string>("FunctionExecutor");
 
             definition.IntroText = XhtmlDocument.Parse(introText);
             definition.SuccessResponse = XhtmlDocument.Parse(successResponse);
-            definition.FormExecutor = functionExecutor;
 
             var submitButtonLabelAttr = definition.Model.Attributes.OfType<SubmitButtonLabelAttribute>().SingleOrDefault();
             if (submitButtonLabel != null)
@@ -170,9 +147,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             if (formName != formToken.FormName)
             {
-                definition.Copy(formName);
+                DefinitionsFacade.Copy(definition, formName);
 
-                DynamicFormsFacade.DeleteModel(definition);
+                DefinitionsFacade.Delete(definition);
             }
             else
             {
@@ -187,20 +164,14 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var config = FormBuilderConfiguration.GetSection();
             var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
-            var settingsType = plugin.FunctionExecutors.Where(el => el.Function == (definition.FormExecutor ?? FormBuilderConfiguration.GetSection().DefaultFunctionExecutor)).Select(el => el.Type).FirstOrDefault();
 
-            if (settingsType == null)
+            var settings = plugin.FormSettingsHandler;
+            if (settings == null)
             {
                 definition.FormExecutorSettings = null;
 
                 return;
             }
-
-            if (definition.FormExecutorSettings == null || definition.FormExecutorSettings.GetType() != settingsType)
-            {
-                definition.FormExecutorSettings = (IFormExecutorSettingsHandler)Activator.CreateInstance(settingsType, null);
-            }
-            var settings = definition.FormExecutorSettings;
 
             foreach (var prop in settings.GetType().GetProperties())
             {

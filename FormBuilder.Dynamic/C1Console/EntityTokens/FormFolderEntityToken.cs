@@ -11,6 +11,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens
     public enum FormFolderType
     {
         Fields,
+        Steps,
         SubmitHandlers
     }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using Composite.C1Console.Actions;
 using Composite.C1Console.Security;
+
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
@@ -35,7 +36,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
             var fieldToken = (FormInstanceEntityToken)entityToken;
             var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
 
-            DynamicFormsFacade.DeleteModel(definition);
+            DefinitionsFacade.Delete(definition);
 
             new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(entityToken);
 

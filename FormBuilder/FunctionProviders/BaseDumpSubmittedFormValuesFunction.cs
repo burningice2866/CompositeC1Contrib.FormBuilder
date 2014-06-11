@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web;
 using System.Xml.Linq;
 
@@ -135,7 +134,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             return field.Value.ToString();
         }
 
-        private static void ReplaceElementsWithTable(List<XElement> elements, List<FormField> fields)
+        private static void ReplaceElementsWithTable(IList<XElement> elements, List<FormField> fields)
         {
             if (!fields.Any())
             {

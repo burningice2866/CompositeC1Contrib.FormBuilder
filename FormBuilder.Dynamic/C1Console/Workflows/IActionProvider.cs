@@ -4,6 +4,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
     public interface IActionPrivider
     {
-        void AddActions(DynamicFormDefinition defintion, Element element);
+        void AddActions(IDynamicFormDefinition defintion, Element element);
     }
 }

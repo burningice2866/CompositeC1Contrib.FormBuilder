@@ -32,45 +32,93 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 
         private IEnumerable<Element> getFormFolders(ElementProviderContext context, FormInstanceEntityToken token)
         {
-            var fieldsElementHandle = context.CreateElementHandle(new FormFolderEntityToken(token.FormName, FormFolderType.Fields));
-            var fieldElement = new Element(fieldsElementHandle)
-            {
-                VisualData = new ElementVisualizedData
-                {
-                    Label = "Fields",
-                    ToolTip = "Fields",
-                    HasChildren = true,
-                    Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                    OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
-                }
-            };
+            var def = DefinitionsFacade.GetDefinition(token.FormName);
 
-            var addActionToken = new WorkflowActionToken(typeof(AddFormFieldWorkflow), new[] { PermissionType.Administrate });
-            fieldElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
+            if (def is DynamicFormDefinition)
             {
-                VisualData = new ActionVisualizedData
+                var fieldsElementHandle = context.CreateElementHandle(new FormFolderEntityToken(token.FormName, FormFolderType.Fields));
+                var fieldElement = new Element(fieldsElementHandle)
                 {
-                    Label = "Add",
-                    ToolTip = "Add",
-                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
-                    ActionLocation = FormBuilderElementProvider.ActionLocation
-                }
-            });
+                    VisualData = new ElementVisualizedData
+                    {
+                        Label = "Fields",
+                        ToolTip = "Fields",
+                        HasChildren = true,
+                        Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
+                        OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                    }
+                };
 
-            var url = String.Format("InstalledPackages/CompositeC1Contrib.FormBuilder.Dynamic/SortFormFields.aspx?formName={0}", token.FormName);
-            var sortActionToken = new UrlActionToken("Sort fields", UrlUtils.ResolveAdminUrl(url), new[] { PermissionType.Administrate });
-            fieldElement.AddAction(new ElementAction(new ActionHandle(sortActionToken))
+                var addActionToken = new WorkflowActionToken(typeof(AddFormFieldWorkflow), new[] { PermissionType.Administrate });
+                fieldElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
+                {
+                    VisualData = new ActionVisualizedData
+                    {
+                        Label = "Add",
+                        ToolTip = "Add",
+                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                    }
+                });
+
+                var url = String.Format("InstalledPackages/CompositeC1Contrib.FormBuilder.Dynamic/SortFormFields.aspx?formName={0}", token.FormName);
+                var sortActionToken = new UrlActionToken("Sort fields", UrlUtils.ResolveAdminUrl(url), new[] { PermissionType.Administrate });
+                fieldElement.AddAction(new ElementAction(new ActionHandle(sortActionToken))
+                {
+                    VisualData = new ActionVisualizedData
+                    {
+                        Label = "Sort fields",
+                        ToolTip = "Sort fields",
+                        Icon = new ResourceHandle("Composite.Icons", "cut"),
+                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                    }
+                });
+
+                yield return fieldElement;
+            }
+
+            if (def is DynamicFormWizard)
             {
-                VisualData = new ActionVisualizedData
+                var stepsFolderElementHandle = context.CreateElementHandle(new FormFolderEntityToken(token.FormName, FormFolderType.Steps));
+                var stepsFolderElement = new Element(stepsFolderElementHandle)
                 {
-                    Label = "Sort fields",
-                    ToolTip = "Sort fields",
-                    Icon = new ResourceHandle("Composite.Icons", "cut"),
-                    ActionLocation = FormBuilderElementProvider.ActionLocation
-                }
-            });
+                    VisualData = new ElementVisualizedData
+                    {
+                        Label = "Steps",
+                        ToolTip = "Steps",
+                        HasChildren = true,
+                        Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
+                        OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                    }
+                };
 
-            yield return fieldElement;
+                var addActionToken = new WorkflowActionToken(typeof(AddWizardStepWorkflow), new[] { PermissionType.Administrate });
+                stepsFolderElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
+                {
+                    VisualData = new ActionVisualizedData
+                    {
+                        Label = "Add",
+                        ToolTip = "Add",
+                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                    }
+                });
+
+                var url = String.Format("InstalledPackages/CompositeC1Contrib.FormBuilder.Dynamic/SortWizardSteps.aspx?wizardName={0}", token.FormName);
+                var sortActionToken = new UrlActionToken("Sort fields", UrlUtils.ResolveAdminUrl(url), new[] { PermissionType.Administrate });
+                stepsFolderElement.AddAction(new ElementAction(new ActionHandle(sortActionToken))
+                {
+                    VisualData = new ActionVisualizedData
+                    {
+                        Label = "Sort steps",
+                        ToolTip = "Sort steps",
+                        Icon = new ResourceHandle("Composite.Icons", "cut"),
+                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                    }
+                });
+
+                yield return stepsFolderElement;
+            }
 
             var submitHandlersElementHandle = context.CreateElementHandle(new FormFolderEntityToken(token.FormName, FormFolderType.SubmitHandlers));
             var submitHandlersElement = new Element(submitHandlersElementHandle)
@@ -85,8 +133,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 }
             };
 
-            addActionToken = new WorkflowActionToken(typeof(AddSubmitHandlerWorkflow), new[] { PermissionType.Administrate });
-            submitHandlersElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
+            var submitHandlerActionToken = new WorkflowActionToken(typeof(AddSubmitHandlerWorkflow), new[] { PermissionType.Administrate });
+            submitHandlersElement.AddAction(new ElementAction(new ActionHandle(submitHandlerActionToken))
             {
                 VisualData = new ActionVisualizedData
                 {

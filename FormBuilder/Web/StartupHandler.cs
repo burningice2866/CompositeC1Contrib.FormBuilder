@@ -15,14 +15,25 @@ namespace CompositeC1Contrib.FormBuilder.Web
         {
             RouteTable.Routes.MapHttpRoute("Form validator", "Form validator", new { controller = "attachment" }).RouteHandler = new FormValidationControllerRouteHandler();
 
-            var formsFolder = Path.Combine(FormModelsFacade.RootPath, "Forms");
-            if (!Directory.Exists(formsFolder))
+            if (!Directory.Exists(FormModelsFacade.RootPath))
             {
-                Directory.CreateDirectory(formsFolder);
+                Directory.CreateDirectory(FormModelsFacade.RootPath);
             }
 
             MoveRenderingLayoutToFormsFolder(FormModelsFacade.RootPath);
-            MoveFormDefinitionFoldersToExplcitFormSubFolder(FormModelsFacade.RootPath, formsFolder);
+            MoveSubfoldersToRoot(FormModelsFacade.RootPath);
+            RenameDefinitionFile(FormModelsFacade.RootPath);
+        }
+
+        private static void RenameDefinitionFile(string rootFolder)
+        {
+            foreach (var file in Directory.GetFiles(rootFolder, "Definition.xml"))
+            {
+                var folder = Path.GetDirectoryName(file);
+                var newFilePath = Path.Combine(folder, "DynamicDefinition.xml");
+
+                File.Move(file, newFilePath);
+            }
         }
 
         private static void MoveRenderingLayoutToFormsFolder(string baseFolder)
@@ -50,9 +61,18 @@ namespace CompositeC1Contrib.FormBuilder.Web
             Directory.Delete(layoutsFolder);
         }
 
-        private static void MoveFormDefinitionFoldersToExplcitFormSubFolder(string baseFolder, string formsFolder)
+        private static void MoveSubfoldersToRoot(string rootFolder)
         {
-            foreach (var directory in Directory.GetDirectories(baseFolder))
+            var formsFolder = Path.Combine(rootFolder, "Forms");
+            var wizardsFolder = Path.Combine(rootFolder, "Wizards");
+
+            MoveSubfoldersToRoot(rootFolder, formsFolder);
+            MoveSubfoldersToRoot(rootFolder, wizardsFolder);
+        }
+
+        private static void MoveSubfoldersToRoot(string rootFolder, string subFolder)
+        {
+            foreach (var directory in Directory.GetDirectories(subFolder))
             {
                 var name = new DirectoryInfo(directory).Name;
                 if (!name.Contains("."))
@@ -60,7 +80,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
                     continue;
                 }
 
-                Directory.Move(directory, Path.Combine(formsFolder, name));
+                Directory.Move(directory, Path.Combine(rootFolder, name));
             }
         }
 

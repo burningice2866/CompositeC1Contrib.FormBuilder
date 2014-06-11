@@ -25,18 +25,22 @@ namespace CompositeC1Contrib.FormBuilder.Configuration
             foreach (XmlNode element in section.ChildNodes)
             {
                 var sType = element.Attributes.Cast<XmlAttribute>().SingleOrDefault(attr => attr.Name == "type");
-                if (sType != null)
+                if (sType == null)
                 {
-                    var type = Type.GetType(sType.Value);
-                    if (type != null)
-                    {
-                        var plugin = (IPluginConfiguration)Activator.CreateInstance(type);
-
-                        plugin.Load(element);
-
-                        config.Plugins.Add(element.Name, plugin);
-                    }
+                    continue;
                 }
+
+                var type = Type.GetType(sType.Value);
+                if (type == null)
+                {
+                    continue;
+                }
+
+                var plugin = (IPluginConfiguration)Activator.CreateInstance(type);
+
+                plugin.Load(element);
+
+                config.Plugins.Add(element.Name, plugin);
             }
 
             return config;

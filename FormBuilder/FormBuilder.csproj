@@ -83,6 +83,7 @@
     <Compile Include="Attributes\ForceHttpsConnectionAttribute.cs" />
     <Compile Include="Attributes\FormNameAttribute.cs" />
     <Compile Include="Attributes\DataSourceAttribute.cs" />
+    <Compile Include="C1Console\Actions\DownloadSavedFormsActionToken.cs" />
     <Compile Include="C1Console\ElementProvider\IEntityTokenBasedElementProvider.cs" />
     <Compile Include="C1Console\EntityTokens\FormElementProviderEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\NamespaceFolderEntityToken.cs" />
@@ -91,8 +92,12 @@
     <Compile Include="Configuration\FormBuilderConfigurationHandler.cs" />
     <Compile Include="Configuration\IPluginConfiguration.cs" />
     <Compile Include="Configuration\SubmitHandlerElement.cs" />
+    <Compile Include="FormWizard.cs" />
+    <Compile Include="FormWizardStep.cs" />
     <Compile Include="FunctionProviders\BaseFormFunction.cs" />
     <Compile Include="FunctionProviders\BaseDumpSubmittedFormValuesFunction.cs" />
+    <Compile Include="FunctionProviders\DumpSubmittedWizardValues.cs" />
+    <Compile Include="FunctionProviders\FormWizardFunction.cs" />
     <Compile Include="IFormModel.cs" />
     <Compile Include="SafeDirectoryCatalog.cs" />
     <Compile Include="SerializableMailTemplate.cs" />
@@ -118,8 +123,10 @@
     <Compile Include="Attributes\FunctionBasedDataSourceAttribute.cs" />
     <Compile Include="Web\Api\Controllers\ValidationController.cs" />
     <Compile Include="Web\Api\Models\ValidationError.cs" />
+    <Compile Include="Web\FormWizardRequestContext.cs" />
     <Compile Include="Web\StartupHandler.cs" />
     <Compile Include="Web\UI\ControlsGroup.cs" />
+    <Compile Include="Web\UI\DownloadSavedFormsHandler.cs" />
     <Compile Include="Web\UI\FieldsGroup.cs" />
     <Compile Include="Web\UI\FormRenderers\Bootstrap3FormRenderer.cs" />
     <Compile Include="Web\UI\FormRenderers\Bootstrap2FormRenderer.cs" />
@@ -141,6 +148,7 @@
     <Compile Include="Web\UI\FunctionbasedInputElement.cs" />
     <Compile Include="Web\UI\PasswordInputElementAttribute.cs" />
     <Compile Include="Web\UI\DropdownInputElementAttribute.cs" />
+    <Compile Include="Web\UI\StandardFormWizardPage.cs" />
     <Compile Include="Web\UI\TextAreaInputElementAttribute.cs" />
     <Compile Include="Web\UI\RadioButtonInputElementAttribute.cs" />
     <Compile Include="Web\UI\FileuploadInputElementAttribute.cs" />
@@ -176,6 +184,7 @@
     <Compile Include="C1Console\Workflows\EditFormRenderingLayoutWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Web\UI\WizardHtmlForm.cs" />
     <Compile Include="XElementHelper.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +198,8 @@
     <None Include="Package\content\App_Data\Razor\FormBuilder\StandardFormExecutor.cshtml">
       <SubType>Code</SubType>
     </None>
+    <None Include="Package\content\App_Data\Razor\FormBuilder\StandardFormWizardExecutor.cshtml" />
+    <None Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder\DownloadSavedForms.ashx" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -198,6 +209,7 @@
     <Content Include="Package\content\Composite\InstalledPackages\localization\CompositeC1Contrib.FormBuilder.da-dk.xml" />
     <Content Include="Package\content\Composite\InstalledPackages\localization\CompositeC1Contrib.FormBuilder.en-us.xml" />
     <Content Include="Package\content\Frontend\js\plugins\jquery.formbuilder.js" />
+    <Content Include="Package\content\Frontend\js\plugins\jquery.formbuilder.wizard.js" />
     <Content Include="Package\install.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -207,8 +219,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)Package\Bin\$(TargetFileName)"
+    <PostBuildEvent>del "$(ProjectDir)Package\Bin\"
+mkdir "$(ProjectDir)Package\Bin\"
+
+copy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)Package\Bin\$(TargetFileName)"
+
 del "$(ProjectDir)\Package\package.zip"
+
 "$(ProjectDir)..\.vendor\7z.exe" a "$(ProjectDir)\Package\package.zip" -tzip -r "$(ProjectDir)\Package\*"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

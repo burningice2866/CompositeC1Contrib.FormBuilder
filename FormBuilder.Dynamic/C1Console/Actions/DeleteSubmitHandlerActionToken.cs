@@ -4,6 +4,7 @@ using System.Linq;
 
 using Composite.C1Console.Actions;
 using Composite.C1Console.Security;
+
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
@@ -34,13 +35,15 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
         public FlowToken Execute(EntityToken entityToken, ActionToken actionToken, FlowControllerServicesContainer flowControllerServicesContainer)
         {
             var token = (FormSubmitHandlerEntityToken)entityToken;
-            var definition = DynamicFormsFacade.GetFormByName(token.FormName);
+            var definition = DefinitionsFacade.GetDefinition(token.FormName);
             var handler = definition.SubmitHandlers.Single(h => h.Name == token.Name);
 
             definition.SubmitHandlers.Remove(handler);
 
             handler.Delete(definition);
-            DynamicFormsFacade.SaveForm(definition);
+
+            var serializer = XmlDefinitionSerializer.GetSerializer(definition.Name);
+            serializer.Save(definition);
 
             new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(entityToken);
 

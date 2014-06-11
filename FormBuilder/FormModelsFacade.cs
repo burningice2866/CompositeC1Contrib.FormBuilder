@@ -10,17 +10,11 @@ namespace CompositeC1Contrib.FormBuilder
     public static class FormModelsFacade
     {
         public static readonly string RootPath = HostingEnvironment.MapPath("~/App_Data/FormBuilder");
-        public static readonly string FormsPath = Path.Combine(RootPath, "Forms");
 
         private static readonly IList<IFormModelsProvider> ModelProviders;
 
         static FormModelsFacade()
         {
-            if (!Directory.Exists(FormsPath))
-            {
-                Directory.CreateDirectory(FormsPath);
-            }
-
             var batch = new CompositionBatch();
             var catalog = new SafeDirectoryCatalog(HttpRuntime.BinDirectory);
             var container = new CompositionContainer(catalog);

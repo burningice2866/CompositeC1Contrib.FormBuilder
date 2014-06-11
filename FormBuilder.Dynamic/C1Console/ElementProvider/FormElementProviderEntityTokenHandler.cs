@@ -31,7 +31,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 
         public static IEnumerable<Element> GetNamespaceAndFormElements(ElementProviderContext context, string ns)
         {
-            var formDefinitions = DynamicFormsFacade.GetFormDefinitions();
+            var formDefinitions = DefinitionsFacade.GetDefinitions();
 
             var folders = new List<string>();
             var formElements = new List<Element>();
@@ -81,17 +81,32 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         }
                     };
 
-                    var editActionToken = new WorkflowActionToken(typeof(EditFormWorkflow));
-                    formElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
+                    if (definition is DynamicFormDefinition)
                     {
-                        VisualData = new ActionVisualizedData
+                        var editActionToken = new WorkflowActionToken(typeof(EditFormWorkflow));
+                        formElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
                         {
-                            Label = "Edit",
-                            ToolTip = "Edit",
-                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
-                            ActionLocation = FormBuilderElementProvider.ActionLocation
-                        }
-                    });
+                            VisualData = new ActionVisualizedData
+                            {
+                                Label = "Edit",
+                                ToolTip = "Edit",
+                                Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                                ActionLocation = FormBuilderElementProvider.ActionLocation
+                            }
+                        });
+
+                        var editRenderingLayoutActionToken = new WorkflowActionToken(typeof(EditFormRenderingLayoutWorkflow));
+                        formElement.AddAction(new ElementAction(new ActionHandle(editRenderingLayoutActionToken))
+                        {
+                            VisualData = new ActionVisualizedData
+                            {
+                                Label = "Edit rendering layout",
+                                ToolTip = "Edit rendering layout",
+                                Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                                ActionLocation = FormBuilderElementProvider.ActionLocation
+                            }
+                        });
+                    }
 
                     var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + label, typeof(DeleteFormActionToken));
                     formElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
@@ -101,18 +116,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                             Label = "Delete",
                             ToolTip = "Delete",
                             Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
-                            ActionLocation = FormBuilderElementProvider.ActionLocation
-                        }
-                    });
-
-                    var editRenderingLayoutActionToken = new WorkflowActionToken(typeof(EditFormRenderingLayoutWorkflow));
-                    formElement.AddAction(new ElementAction(new ActionHandle(editRenderingLayoutActionToken))
-                    {
-                        VisualData = new ActionVisualizedData
-                        {
-                            Label = "Edit rendering layout",
-                            ToolTip = "Edit rendering layout",
-                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
                             ActionLocation = FormBuilderElementProvider.ActionLocation
                         }
                     });

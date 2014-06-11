@@ -13,7 +13,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static bool HasCustomRenderingLayout(string formName)
         {
-            var file = Path.Combine(FormModelsFacade.FormsPath, formName, RenderingLayoutFileName);
+            var file = Path.Combine(FormModelsFacade.RootPath, formName, RenderingLayoutFileName);
 
             return File.Exists(file);
         }
@@ -22,7 +22,7 @@ namespace CompositeC1Contrib.FormBuilder
         {
             if (HasCustomRenderingLayout(formName))
             {
-                var file = Path.Combine(FormModelsFacade.FormsPath, formName, RenderingLayoutFileName);
+                var file = Path.Combine(FormModelsFacade.RootPath, formName, RenderingLayoutFileName);
                 var fileContent = File.ReadAllText(file);
 
                 return XhtmlDocument.Parse(fileContent);
@@ -46,7 +46,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static void SaveRenderingLayout(string formName, XhtmlDocument markup)
         {
-            var dir = Path.Combine(FormModelsFacade.FormsPath, formName);
+            var dir = Path.Combine(FormModelsFacade.RootPath, formName);
             var file = Path.Combine(dir, RenderingLayoutFileName);
 
             if (!Directory.Exists(dir))

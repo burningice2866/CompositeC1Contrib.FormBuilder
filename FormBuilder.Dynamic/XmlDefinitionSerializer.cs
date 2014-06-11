@@ -16,7 +16,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             var file = Path.Combine(FormModelsFacade.RootPath, name, "DynamicDefinition.xml");
             if (!File.Exists(file))
             {
-                throw new InvalidOperationException("Can't get serializer of a form that hasn't previosyly been saved");
+                throw new InvalidOperationException("Can't get serializer of a form that hasn't previously been saved");
             }
 
             var xml = XElement.Load(file);
@@ -63,9 +63,15 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
                 foreach (var handler in definition.SubmitHandlers)
                 {
+                    var qualifiedName = handler.GetType().AssemblyQualifiedName;
+                    if (qualifiedName == null)
+                    {
+                        continue;
+                    }
+
                     var handlerElement = new XElement("Add",
                         new XAttribute("Name", handler.Name),
-                        new XAttribute("Type", handler.GetType().AssemblyQualifiedName));
+                        new XAttribute("Type", qualifiedName));
 
                     handler.Save(definition, handlerElement);
 
@@ -75,13 +81,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 root.Add(submitHandlers);
             }
 
-            if (definition.FormExecutorSettings != null)
+            if (definition.Settings != null)
             {
-                var settingsElement = new XElement("FunctionExecutorSettings", new XAttribute("Type", definition.FormExecutorSettings.GetType().AssemblyQualifiedName));
+                var qualifiedName = definition.Settings.GetType().AssemblyQualifiedName;
+                if (qualifiedName != null)
+                {
+                    var settingsElement = new XElement("FormSettings",
+                        new XAttribute("Type", qualifiedName));
 
-                SerializeInstanceWithArgument(definition.FormExecutorSettings, settingsElement);
+                    SerializeInstanceWithArgument(definition.Settings, settingsElement);
 
-                root.Add(settingsElement);
+                    root.Add(settingsElement);
+                }
             }
         }
 
@@ -152,20 +163,20 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
         }
 
-        protected void ParseMetaDataFunctionExecutorSettings(XElement metaData, IDynamicFormDefinition definition)
+        protected void ParseFormSettings(XElement metaData, IDynamicFormDefinition definition)
         {
-            var functionExecutorSettingsElement = metaData.Element("FunctionExecutorSettings");
-            if (functionExecutorSettingsElement == null)
+            var formSettingsElement = metaData.Element("FormSettings");
+            if (formSettingsElement == null)
             {
                 return;
             }
 
-            var typeString = functionExecutorSettingsElement.Attribute("Type").Value;
+            var typeString = formSettingsElement.Attribute("Type").Value;
             var type = Type.GetType(typeString);
 
-            var instance = (IFormExecutorSettingsHandler)XElementHelper.DeserializeInstanceWithArgument(type, functionExecutorSettingsElement);
+            var instance = (IFormSettings)XElementHelper.DeserializeInstanceWithArgument(type, formSettingsElement);
 
-            definition.FormExecutorSettings = instance;
+            definition.Settings = instance;
         }
 
         public void SerializeInstanceWithArgument(object instance, XElement element)

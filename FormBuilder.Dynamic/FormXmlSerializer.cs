@@ -274,7 +274,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
             ParseMetaDataDefaultValues(metaData, definition);
             ParseSubmitHandlers(metaData, definition);
-            ParseMetaDataFunctionExecutorSettings(metaData, definition);
+            ParseFormSettings(metaData, definition);
         }
 
         private static void ParseMetaDataDefaultValues(XElement metaData, DynamicFormDefinition definition)

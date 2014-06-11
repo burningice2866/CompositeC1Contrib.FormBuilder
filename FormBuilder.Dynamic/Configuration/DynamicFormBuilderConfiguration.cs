@@ -15,7 +15,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Configuration
     {
         public IList<InputElementHandler> InputElementHandlers { get; private set; }
         public IList<SubmitHandlerElement> SubmitHandlers { get; private set; }
-        public IFormExecutorSettingsHandler FormSettingsHandler { get; private set; }
+        public Type SettingsHandler { get; private set; }
 
         public DynamicFormBuilderConfiguration()
         {
@@ -29,7 +29,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Configuration
             if (formSettingsHandler != null)
             {
                 var type = Type.GetType(formSettingsHandler.Value);
-                FormSettingsHandler = (IFormExecutorSettingsHandler) Activator.CreateInstance(type);
+                
+                SettingsHandler = type;
             }
 
             var inputElementHandlers = element.ChildNodes.Cast<XmlNode>().FirstOrDefault(n => n.LocalName == "inputElementHandlers");

@@ -6,7 +6,6 @@ namespace CompositeC1Contrib.FormBuilder.Web
 {
     public abstract class FormWizardRequestContext : BaseFormBuilderRequestContext<FormWizard>
     {
-        public IDictionary<string, FormModel> StepModels { get; private set; }
         public List<FormValidationRule> ValidationResult { get; private set; }
 
         public FormWizard Wizard
@@ -17,7 +16,6 @@ namespace CompositeC1Contrib.FormBuilder.Web
         protected FormWizardRequestContext(string name)
             : base(name)
         {
-            StepModels = new Dictionary<string, FormModel>();
             ValidationResult = new List<FormValidationRule>();
         }
 

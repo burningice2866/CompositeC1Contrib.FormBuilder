@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:f="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0">
   <cms:bindings>
-    <cms:binding name="FormName" type="System.String" />
+    <cms:binding name="Name" type="System.String" />
     <cms:binding name="RequiresCaptcha" type="System.Boolean" />
     <cms:binding name="ForceHttpsConnection" type="System.Boolean" />
     <cms:binding name="SubmitButtonLabel" type="System.String" />
@@ -11,7 +11,7 @@
 
   <cms:layout>
     <cms:layout.label>
-      <cms:read source="FormName" />
+      <cms:read source="Name" />
     </cms:layout.label>
 
     <TabPanels>
@@ -19,7 +19,7 @@
         <FieldGroup>
           <TextBox Label="Form name">
             <TextBox.Text>
-              <cms:bind source="FormName" />
+              <cms:bind source="Name" />
             </TextBox.Text>
           </TextBox>
 

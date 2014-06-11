@@ -1,5 +1,4 @@
-﻿
-namespace CompositeC1Contrib.FormBuilder.Dynamic
+﻿namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
 {
     public interface IInputTypeSettingsHandler
     {

@@ -1,5 +1,4 @@
-﻿
-using CompositeC1Contrib.FormBuilder.FunctionProviders;
+﻿using CompositeC1Contrib.FormBuilder.FunctionProviders;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {

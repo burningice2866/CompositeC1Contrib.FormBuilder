@@ -16,7 +16,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         public XhtmlDocument IntroText { get; set; }
         public XhtmlDocument SuccessResponse { get; set; }
 
-        public IFormExecutorSettingsHandler FormExecutorSettings { get; set; }
+        public IFormSettings Settings { get; set; }
 
         public DynamicFormDefinition(string name) : this(new FormModel(name)) { }
 

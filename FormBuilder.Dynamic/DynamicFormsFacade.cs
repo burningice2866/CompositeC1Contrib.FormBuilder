@@ -36,7 +36,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
         }
 
-        public static void SaveForm(DynamicFormDefinition definition)
+        public static void SaveForm(IDynamicFormDefinition definition)
         {
             var serializer = new FormXmlSerializer();
 

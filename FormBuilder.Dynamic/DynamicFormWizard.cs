@@ -7,7 +7,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
     public class DynamicFormWizard : FormWizard, IDynamicFormDefinition
     {
         public IList<FormSubmitHandler> SubmitHandlers { get; private set; }
-        public IFormExecutorSettingsHandler FormExecutorSettings { get; set; }
+        public IFormSettings Settings { get; set; }
 
         public DynamicFormWizard()
         {

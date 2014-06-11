@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace CompositeC1Contrib.FormBuilder
+namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
     public class XElementHelper
     {

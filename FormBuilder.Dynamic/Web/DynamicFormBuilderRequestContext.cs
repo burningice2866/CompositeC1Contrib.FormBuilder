@@ -1,8 +1,4 @@
-﻿using System.Xml.Linq;
-
-using Composite.Functions;
-
-using CompositeC1Contrib.FormBuilder.Dynamic;
+﻿using CompositeC1Contrib.FormBuilder.Dynamic;
 
 namespace CompositeC1Contrib.FormBuilder.Web
 {

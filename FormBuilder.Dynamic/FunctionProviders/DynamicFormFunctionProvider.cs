@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Composite.Functions;
 using Composite.Functions.Plugins.FunctionProvider;
@@ -16,25 +17,37 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
         {
             get
             {
-                var definitions = DynamicFormsFacade.GetFormDefinitions();
+                var definitions = DefinitionsFacade.GetDefinitions();
                 foreach (var def in definitions)
                 {
                     IFunction function;
-                    if (!FunctionFacade.TryGetFunction(out function, def.Name))
+                    if (FunctionFacade.TryGetFunction(out function, def.Name))
+                    {
+                        continue;
+                    }
+
+                    if (def is DynamicFormDefinition)
                     {
                         function = new StandardFormFunction<DynamicFormBuilderRequestContext>(def.Name, def.IntroText, def.SuccessResponse);
+                    }
+
+                    if (def is DynamicFormWizard)
+                    {
+                        function = new FormWizardFunction<DynamicFormWizardRequestContext>(def.Name, def.IntroText, def.SuccessResponse);
+                    }
+
+                    if (function != null)
+                    {
+                        if (def.Settings != null)
+                        {
+                            var executor = def.Settings.GetFormExecutor(def);
+                            if (!String.IsNullOrEmpty(executor))
+                            {
+                                ((BaseFormFunction)function).OverrideFormExecutor = executor;
+                            }
+                        }
 
                         yield return function;
-                    }
-                }
-
-                var wizards = DynamicFormWizardsFacade.GetWizards();
-                foreach (var wizard in wizards)
-                {
-                    IFunction function;
-                    if (!FunctionFacade.TryGetFunction(out function, wizard.Name))
-                    {
-                        yield return new FormWizardFunction<DynamicFormWizardRequestContext>(wizard.Name);
                     }
                 }
             }

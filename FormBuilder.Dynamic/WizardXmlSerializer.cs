@@ -47,6 +47,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
 
             ParseSubmitHandlers(xml, wizard);
+            ParseFormSettings(xml, wizard);
 
             return wizard;
         }

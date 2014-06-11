@@ -12,6 +12,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         IList<FormSubmitHandler> SubmitHandlers { get; }
         XhtmlDocument IntroText { get; set; }
         XhtmlDocument SuccessResponse { get; set; }
-        IFormExecutorSettingsHandler FormExecutorSettings { get; set; }
+        IFormSettings Settings { get; set; }
     }
 }

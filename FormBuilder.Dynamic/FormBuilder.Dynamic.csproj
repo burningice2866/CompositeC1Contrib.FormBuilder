@@ -92,11 +92,14 @@
     <Compile Include="C1Console\Workflows\EditFormWizardWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="C1Console\Workflows\BaseEditFormWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="C1Console\Workflows\EditWizardStepWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Configuration\FormExecutorSettingsElement.cs" />
-    <Compile Include="C1Console\IFormExecutorSettingsHandler.cs" />
+    <Compile Include="IFormSettings.cs" />
     <Compile Include="C1Console\InputElementHandler.cs" />
     <Compile Include="C1Console\TextBoxSettings.cs" />
     <Compile Include="C1Console\Workflows\AddDataSourceWorkflow.cs">
@@ -150,6 +153,7 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="WizardXmlSerializer.cs" />
+    <Compile Include="XElementHelper.cs" />
     <Compile Include="XmlDefinitionSerializer.cs" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\AddFormWizardWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\AddWizardStepWorkflow.xml" />

@@ -48,7 +48,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new HtmlString(field.Name);
         }
 
-        public static IHtmlString WriteErrors(FormModel model)
+        public static IHtmlString WriteErrors(IFormModel model)
         {
             var validationResult = model.ValidationResult;
 

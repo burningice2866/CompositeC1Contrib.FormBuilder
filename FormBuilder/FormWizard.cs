@@ -17,11 +17,10 @@ namespace CompositeC1Contrib.FormBuilder
         public IList<FormWizardStep> Steps { get; private set; }
 
         public IList<FormValidationRule> ValidationResult { get; private set; }
-        public IDictionary<string, IFormModel> StepModels { get; private set; }
 
         public IList<FormField> Fields
         {
-            get { return StepModels.Values.SelectMany(m => m.Fields).ToList(); }
+            get { return Steps.Select(s => s.FormModel).SelectMany(m => m.Fields).ToList(); }
         }
 
         public bool HasFileUpload
@@ -39,20 +38,18 @@ namespace CompositeC1Contrib.FormBuilder
             Steps = new List<FormWizardStep>();
 
             ValidationResult = new List<FormValidationRule>();
-
-            StepModels = new Dictionary<string, IFormModel>();
         }
 
         public bool ForceHttps
         {
-            get { return StepModels.Values.Any(m => m.ForceHttps); }
+            get { return Steps.Select(s => s.FormModel).Any(m => m.ForceHttps); }
         }
 
         public virtual void Submit() { }
 
         public void SetDefaultValues()
         {
-            foreach (var model in StepModels.Values)
+            foreach (var model in Steps.Select(s => s.FormModel))
             {
                 model.SetDefaultValues();
             }
@@ -63,7 +60,7 @@ namespace CompositeC1Contrib.FormBuilder
             for (int i = 0; i < Steps.Count; i++)
             {
                 var step = Steps[i];
-                var model = StepModels[step.Name];
+                var model = step.FormModel;
                 var stepPrepend = "step-" + (i + 1) + "-";
 
                 var localValues = MapLocal(values, stepPrepend);
@@ -76,7 +73,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public void Validate()
         {
-            foreach (var model in StepModels.Values)
+            foreach (var model in Steps.Select(s => s.FormModel))
             {
                 model.Validate();
 

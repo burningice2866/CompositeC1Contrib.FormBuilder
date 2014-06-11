@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Xml.Linq;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic
@@ -26,8 +25,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     LocalOrdering = int.Parse(stepElement.Attribute("LocalOrdering").Value),
                 };
 
-                var model = FormModelsFacade.GetModel(wizardStep.FormName);
-
                 var nextButtonLabelAttribute = stepElement.Attribute("nextButtonLabel");
                 if (nextButtonLabelAttribute != null)
                 {
@@ -41,7 +38,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 }
 
                 wizard.Steps.Add(wizardStep);
-                wizard.StepModels.Add(wizardStep.Name, model);
             }
 
             var layoutElement = xml.Element("Layout");
@@ -58,13 +54,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         public override void Save(IDynamicFormDefinition form)
         {
             var wizard = (DynamicFormWizard)form;
-            var dir = Path.Combine(FormModelsFacade.RootPath, wizard.Name);
-            var file = Path.Combine(dir, "Definition.xml");
-
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-            }
 
             var root = new XElement("FormBuilder.Wizard",
                 new XAttribute("name", wizard.Name),
@@ -102,7 +91,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
             SaveMetaData(form, root);
 
-            root.Save(file);
+            SaveDefinitionFile(form.Name, root);
 
             base.Save(form);
         }

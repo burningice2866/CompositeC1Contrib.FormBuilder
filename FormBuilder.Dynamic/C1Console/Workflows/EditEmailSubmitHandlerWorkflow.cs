@@ -14,7 +14,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
     [AllowPersistingWorkflow(WorkflowPersistingType.Idle)]
     public class EditEmailSubmitHandlerWorkflow : Basic1StepDocumentWorkflow
     {
-        protected EditEmailSubmitHandlerWorkflow() : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditEmailSubmitHandlerWorkflow.xml") { }
+        public EditEmailSubmitHandlerWorkflow() : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditEmailSubmitHandlerWorkflow.xml") { }
 
         public override void OnInitialize(object sender, EventArgs e)
         {
@@ -76,7 +76,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             definition.SubmitHandlers.Remove(existingHandler);
             definition.SubmitHandlers.Add(handler);
 
-            SaveDefintion(definition);
+            DefinitionsFacade.Save(definition);
 
             CreateSpecificTreeRefresher().PostRefreshMesseges(EntityToken);
             SetSaveStatus(true);
@@ -116,14 +116,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var token = (FormSubmitHandlerEntityToken)EntityToken;
 
             return DefinitionsFacade.GetDefinition(token.FormName);
-        }
-
-        private void SaveDefintion(IDynamicFormDefinition definition)
-        {
-            var token = (FormSubmitHandlerEntityToken)EntityToken;
-            var serializer = XmlDefinitionSerializer.GetSerializer(token.FormName);
-
-            serializer.Save(definition);
         }
     }
 }

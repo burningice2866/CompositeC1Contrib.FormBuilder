@@ -13,9 +13,9 @@
         </TextBox.Text>
       </TextBox>
 
-      <KeySelector Label="Select field type" OptionsKeyField="Key" OptionsLabelField="Value" Required="true">
+      <KeySelector Label="Select step form" OptionsKeyField="Key" OptionsLabelField="Value" Required="true">
         <KeySelector.Options>
-          <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Dynamic.Wizard.C1Console.Workflows.AddWizardStepWorkflow, CompositeC1Contrib.FormBuilder.Dynamic.Wizard" Method="GetFormNames" />
+          <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows.AddWizardStepWorkflow, CompositeC1Contrib.FormBuilder.Dynamic" Method="GetFormNames" />
         </KeySelector.Options>
 
         <KeySelector.Selected>

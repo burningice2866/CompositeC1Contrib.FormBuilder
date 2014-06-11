@@ -43,6 +43,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             return seralizer.Load(name, xml);
         }
 
+        public static void Save(IDynamicFormDefinition definition)
+        {
+            var serializer = XmlDefinitionSerializer.GetSerializer(definition.Name);
+
+            serializer.Save(definition);
+        }
+
         public static void Delete(IDynamicFormDefinition definition)
         {
             var dir = Path.Combine(FormModelsFacade.RootPath, definition.Name);

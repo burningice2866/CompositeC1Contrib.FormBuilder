@@ -82,7 +82,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public override bool Validate()
         {
-            var folderToken = (FormFolderEntityToken)EntityToken;
             var fieldName = GetBinding<string>("FieldName");
 
             if (!FormField.IsValidName(fieldName))
@@ -92,6 +91,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 return false;
             }
 
+            var folderToken = (FormFolderEntityToken)EntityToken;
             var definition = DynamicFormsFacade.GetFormByName(folderToken.FormName);
             var field = definition.Model.Fields.SingleOrDefault(f => f.Name == fieldName);
 

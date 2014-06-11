@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-
-using Composite.Core.Xml;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
@@ -87,13 +84,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         {
             var definition = (DynamicFormDefinition)form;
             var model = definition.Model;
-            var dir = Path.Combine(FormModelsFacade.RootPath, form.Name);
-            var file = Path.Combine(dir, "DynamicDefinition.xml");
-
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-            }
 
             var root = new XElement("FormBuilder.DynamicForm",
                 new XAttribute("name", definition.Name));
@@ -238,7 +228,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
 
             root.Add(fields);
-            root.Save(file);
+
+            SaveDefinitionFile(model.Name, root);
 
             base.Save(definition);
         }

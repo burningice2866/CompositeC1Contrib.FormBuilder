@@ -10,6 +10,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Web
         public static void OnBeforeInitialize()
         {
             MoveDefinitionFilesToFolders(FormModelsFacade.RootPath);
+            RenameDefinitionFile(FormModelsFacade.RootPath);
         }
 
         private static void MoveDefinitionFilesToFolders(string baseFolder)
@@ -35,6 +36,17 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Web
             }
 
             Directory.Delete(definitionsFolder);
+        }
+
+        private static void RenameDefinitionFile(string rootFolder)
+        {
+            foreach (var file in Directory.GetFiles(rootFolder, "Definition.xml", SearchOption.AllDirectories))
+            {
+                var folder = Path.GetDirectoryName(file);
+                var newFilePath = Path.Combine(folder, "DynamicDefinition.xml");
+
+                File.Move(file, newFilePath);
+            }
         }
 
         public static void OnInitialized() { }

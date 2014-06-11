@@ -25,9 +25,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                     doc.Body.Add(XElement.Parse("<h3>" + step.Name + "</h3>"));
                 }
 
-                var model = wizard.StepModels[step.Name];
-
-                DumpModelValues(model, doc, useRenderingLayout);
+                DumpModelValues(step.FormModel, doc, useRenderingLayout);
             }
 
             return doc;

@@ -49,7 +49,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 return false;
             }
 
-            var isNameInUse = DynamicFormWizardsFacade.GetWizards().Any(m => m.Name == wizardName);
+            var isNameInUse = DefinitionsFacade.GetDefinitions().Any(m => m.Name == wizardName);
             if (!isNameInUse)
             {
                 return true;

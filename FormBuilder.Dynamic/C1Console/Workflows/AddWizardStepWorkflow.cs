@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Composite.C1Console.Workflow;
-using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
+
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.Workflows;
 
@@ -31,11 +31,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public override void OnFinish(object sender, EventArgs e)
         {
-            var wizardToken = (FormInstanceEntityToken)EntityToken;
+            var folderToken = (FormFolderEntityToken)EntityToken;
             var stepName = GetBinding<string>("StepName");
             var formName = GetBinding<string>("FormName");
 
-            var wizard = DynamicFormWizardsFacade.GetWizard(wizardToken.FormName);
+            var wizard = DynamicFormWizardsFacade.GetWizard(folderToken.FormName);
             var step = new FormWizardStep
             {
                 Name = stepName,
@@ -56,7 +56,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public override bool Validate()
         {
-            var wizardToken = (FormInstanceEntityToken)EntityToken;
             var stepName = GetBinding<string>("StepName");
 
             if (!FormField.IsValidName(stepName))
@@ -66,7 +65,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 return false;
             }
 
-            var wizard = DynamicFormWizardsFacade.GetWizard(wizardToken.FormName);
+            var folderToken = (FormFolderEntityToken)EntityToken;
+            var wizard = DynamicFormWizardsFacade.GetWizard(folderToken.FormName);
 
             var step = wizard.Steps.SingleOrDefault(s => s.Name == stepName);
             if (step == null)

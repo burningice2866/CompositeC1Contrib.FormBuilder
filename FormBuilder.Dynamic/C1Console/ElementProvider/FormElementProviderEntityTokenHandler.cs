@@ -108,6 +108,21 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         });
                     }
 
+                    if (definition is DynamicFormWizard)
+                    {
+                        var editActionToken = new WorkflowActionToken(typeof(EditFormWizardWorkflow));
+                        formElement.AddAction(new ElementAction(new ActionHandle(editActionToken))
+                        {
+                            VisualData = new ActionVisualizedData
+                            {
+                                Label = "Edit",
+                                ToolTip = "Edit",
+                                Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                                ActionLocation = FormBuilderElementProvider.ActionLocation
+                            }
+                        });
+                    }
+
                     var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + label, typeof(DeleteFormActionToken));
                     formElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
                     {

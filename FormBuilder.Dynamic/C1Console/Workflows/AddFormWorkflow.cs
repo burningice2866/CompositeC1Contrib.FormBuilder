@@ -46,7 +46,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 return false;
             }
 
-            var isNameInUse = FormModelsFacade.GetModels().Any(m => m.Name == formName);
+            var isNameInUse = DefinitionsFacade.GetDefinitions().Any(m => m.Name == formName);
             if (isNameInUse)
             {
                 ShowFieldMessage("FormName", "Form name already exists");

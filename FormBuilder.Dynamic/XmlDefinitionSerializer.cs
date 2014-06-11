@@ -14,6 +14,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         public static XmlDefinitionSerializer GetSerializer(string name)
         {
             var file = Path.Combine(FormModelsFacade.RootPath, name, "DynamicDefinition.xml");
+            if (!File.Exists(file))
+            {
+                throw new InvalidOperationException("Can't get serializer of a form that hasn't previosyly been saved");
+            }
+
             var xml = XElement.Load(file);
 
             return GetSerializer(xml);
@@ -36,6 +41,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         }
 
         public abstract IDynamicFormDefinition Load(string name, XElement xml);
+
+        protected void SaveDefinitionFile(string name, XElement xml)
+        {
+            var dir = Path.Combine(FormModelsFacade.RootPath, name);
+            var file = Path.Combine(dir, "DynamicDefinition.xml");
+
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            xml.Save(file);
+        }
 
         protected void SaveMetaData(IDynamicFormDefinition definition, XElement root)
         {

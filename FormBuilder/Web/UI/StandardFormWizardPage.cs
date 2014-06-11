@@ -131,7 +131,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             var options = new FormOptions();
 
-            var model = Wizard.StepModels[step.Name];
+            var model = step.FormModel;
             var html = FormsPage.RenderModelFields(model, options).ToString();
             var xelement = XElement.Parse(html);
 

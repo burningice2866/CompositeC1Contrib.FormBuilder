@@ -53,7 +53,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
 
             var token = (FormFolderEntityToken)EntityToken;
-            var definition = DynamicFormsFacade.GetFormByName(token.FormName);
+            var definition = DefinitionsFacade.GetDefinition(token.FormName);
 
             if (definition.SubmitHandlers.Any(handler => handler.GetType() == handlerType))
             {
@@ -72,7 +72,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var name = GetBinding<string>("Name");
             var type = GetBinding<string>("SubmitHandlerType");
 
-            var definition = DynamicFormsFacade.GetFormByName(token.FormName);
+            var definition = DefinitionsFacade.GetDefinition(token.FormName);
             var handlerType = Type.GetType(type);
             var instance = (FormSubmitHandler)Activator.CreateInstance(handlerType);
 
@@ -80,7 +80,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             definition.SubmitHandlers.Add(instance);
 
-            DynamicFormsFacade.SaveForm(definition);
+            DefinitionsFacade.Save(definition);
 
             CreateSpecificTreeRefresher().PostRefreshMesseges(token);
 

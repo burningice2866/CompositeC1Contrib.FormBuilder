@@ -22,18 +22,6 @@ namespace CompositeC1Contrib.FormBuilder.Web
 
             MoveRenderingLayoutToFormsFolder(FormModelsFacade.RootPath);
             MoveSubfoldersToRoot(FormModelsFacade.RootPath);
-            RenameDefinitionFile(FormModelsFacade.RootPath);
-        }
-
-        private static void RenameDefinitionFile(string rootFolder)
-        {
-            foreach (var file in Directory.GetFiles(rootFolder, "Definition.xml"))
-            {
-                var folder = Path.GetDirectoryName(file);
-                var newFilePath = Path.Combine(folder, "DynamicDefinition.xml");
-
-                File.Move(file, newFilePath);
-            }
         }
 
         private static void MoveRenderingLayoutToFormsFolder(string baseFolder)

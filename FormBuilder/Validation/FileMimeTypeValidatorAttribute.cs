@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace CompositeC1Contrib.FormBuilder.Validation
 {
-    public class FileMimeTypeValidatorAttribute : FormValidationAttribute
+    public class FileMimeTypeValidatorAttribute : BaseFileValidatorAttribute
     {
         public string[] MimeTypes { get; private set; }
 
@@ -17,19 +16,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 
         public override FormValidationRule CreateRule(FormField field)
         {
-            var value = Enumerable.Empty<FormFile>();
-
-            if (field.Value != null) 
-            {
-                if (field.ValueType == typeof(FormFile))
-                {
-                    value = new[] { (FormFile)field.Value };
-                }
-                else
-                {
-                    value = (IEnumerable<FormFile>)field.Value;
-                }
-            }           
+            var value = GetFiles(field);
 
             return new FormValidationRule(new[] { field.Name }, Message)
             {

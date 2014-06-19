@@ -36,7 +36,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
                     {
                         var user = Membership.GetUser(value);
 
-                        isValid = user != null;
+                        isValid = IsValid(user);
                     }
 
                     if (!isValid && CheckEmail)
@@ -44,8 +44,12 @@ namespace CompositeC1Contrib.FormBuilder.Validation
                         var username = Membership.GetUserNameByEmail(value);
                         if (username != null)
                         {
-                            isValid = true;
-                            value = username;
+                            var user = Membership.GetUser(username);
+                            if (user != null)
+                            {
+                                isValid = IsValid(user);
+                                value = username;
+                            }
                         }
                     }
 
@@ -57,6 +61,16 @@ namespace CompositeC1Contrib.FormBuilder.Validation
                     return UserValidationFacade.IsLoggedIn() || Membership.ValidateUser(value, password);
                 }
             };
+        }
+
+        private static bool IsValid(MembershipUser user)
+        {
+            if (user == null)
+            {
+                return false;
+            }
+
+            return user.IsApproved && !user.IsLockedOut;
         }
     }
 }

@@ -101,6 +101,8 @@
     <Compile Include="IFormModel.cs" />
     <Compile Include="SafeDirectoryCatalog.cs" />
     <Compile Include="SerializableMailTemplate.cs" />
+    <Compile Include="Validation\BaseFileValidatorAttribute.cs" />
+    <Compile Include="Validation\MaxFileSizeValidatorAttribute.cs" />
     <Compile Include="Web\Api\FormValidationControllerHandler.cs" />
     <Compile Include="Web\BaseFormBuilderRequestContext.cs" />
     <Compile Include="Web\FormBuilderRequestContext.cs" />

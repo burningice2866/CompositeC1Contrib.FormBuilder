@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -69,7 +70,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
                         Key = requestFiles.AllKeys[i],
                         ContentLength = f.ContentLength,
                         ContentType = f.ContentType,
-                        FileName = f.FileName,
+                        FileName = Path.GetFileName(f.FileName),
                         InputStream = f.InputStream
                     });
                 }

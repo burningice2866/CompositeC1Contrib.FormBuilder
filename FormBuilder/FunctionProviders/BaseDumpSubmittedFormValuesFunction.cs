@@ -77,7 +77,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                         value = value.Substring(1, value.Length - 2);
 
                         var field = model.Fields.FirstOrDefault(f => f.Label != null && f.Name == value);
-                        if (field == null || field.Value == null)
+                        if (field == null)
                         {
                             continue;
                         }
@@ -106,6 +106,11 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
         public static string FormatFieldValue(FormField field)
         {
+            if (field.Value == null)
+            {
+                return String.Empty;
+            }
+
             if (field.Value is IEnumerable<string>)
             {
                 return String.Join(", ", field.Value as IEnumerable<string>);

@@ -31,10 +31,17 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             if (RenderingContext.IsSuccess)
             {
-                RenderingContext.Submit();
+                HandleSubmit();
             }
 
             base.ExecutePageHierarchy();
+        }
+
+        public override void Execute() { }
+
+        public virtual void HandleSubmit()
+        {
+            RenderingContext.Submit();
         }
 
         public IHtmlString EvaluateMarkup(XElement element)

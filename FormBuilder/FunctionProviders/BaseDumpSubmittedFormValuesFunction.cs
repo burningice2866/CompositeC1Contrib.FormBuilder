@@ -174,7 +174,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
         private static XElement GetFieldTableRow(FormField field)
         {
             var value = FormatFieldValue(field);
-            var row = new XElement(Namespaces.Xhtml + "tr", new XElement(Namespaces.Xhtml + "td", new XElement(Namespaces.Xhtml + "strong", field.Label.Label.TrimEnd(':') + ":")));
+            var row = new XElement(Namespaces.Xhtml + "tr", new XAttribute("style", "vertical-align: top;"), new XElement(Namespaces.Xhtml + "td", new XElement(Namespaces.Xhtml + "strong", field.Label.Label.TrimEnd(':') + ":")));
 
             if (field.InputElementType is TextAreaInputElementAttribute)
             {

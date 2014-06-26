@@ -205,6 +205,8 @@
                     l.stop();
                 }
 
+                window.scrollTo(0, 0);
+
                 e.preventDefault();
             });
         });

@@ -59,16 +59,14 @@
             if (form.data('error') === false) {
                 if (nextStep !== undefined) {
                     var nextStepContainer = $('.js-formwizard-step[data-step=' + nextStep + ']', form);
-                    var scrollTop = form.position().top;
 
                     container.hide();
                     nextStepContainer.show();
 
-                    window.scrollTo(0, scrollTop);
-                }
-                else {
+                    window.scrollTo(0, 0);
+                } else {
                     if (window.Ladda && button.hasClass('ladda-button')) {
-                        setTimeout(function () {
+                        setTimeout(function() {
                             var l = window.Ladda.create(button[0]);
 
                             l.start();
@@ -77,6 +75,8 @@
 
                     form.submit();
                 }
+            } else {
+                window.scrollTo(0, 0);
             }
         });
     });

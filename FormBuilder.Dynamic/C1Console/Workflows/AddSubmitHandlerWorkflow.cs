@@ -43,6 +43,17 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public override bool Validate()
         {
+            var token = (FormFolderEntityToken)EntityToken;
+            var definition = DefinitionsFacade.GetDefinition(token.FormName);
+
+            var name = GetBinding<string>("Name");
+            if (definition.SubmitHandlers.Any(e => e.Name == name))
+            {
+                ShowFieldMessage("Name", "A handler with this name already exists");
+
+                return false;
+            }
+
             var type = GetBinding<string>("SubmitHandlerType");
             var handlerType = Type.GetType(type);
             var element = Handlers.Single(e => e.Type == handlerType);
@@ -51,9 +62,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             {
                 return true;
             }
-
-            var token = (FormFolderEntityToken)EntityToken;
-            var definition = DefinitionsFacade.GetDefinition(token.FormName);
 
             if (definition.SubmitHandlers.Any(handler => handler.GetType() == handlerType))
             {

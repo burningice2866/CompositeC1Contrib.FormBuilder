@@ -229,7 +229,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
             root.Add(fields);
 
-            SaveDefinitionFile(model.Name, root);
+            SaveDefinitionFile(definition.Name, root);
 
             base.Save(definition);
         }

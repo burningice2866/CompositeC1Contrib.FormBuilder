@@ -35,8 +35,12 @@ namespace CompositeC1Contrib.FormBuilder.Web
             foreach (var file in Directory.GetFiles(layoutsFolder, "*.xml"))
             {
                 var fileName = Path.GetFileNameWithoutExtension(file);
-                var folder = Path.Combine(baseFolder, fileName);
+                if (fileName == null)
+                {
+                    continue;
+                }
 
+                var folder = Path.Combine(baseFolder, fileName);
                 if (!Directory.Exists(folder))
                 {
                     Directory.CreateDirectory(folder);
@@ -52,10 +56,16 @@ namespace CompositeC1Contrib.FormBuilder.Web
         private static void MoveSubfoldersToRoot(string rootFolder)
         {
             var formsFolder = Path.Combine(rootFolder, "Forms");
-            var wizardsFolder = Path.Combine(rootFolder, "Wizards");
+            if (Directory.Exists(formsFolder))
+            {
+                MoveSubfoldersToRoot(rootFolder, formsFolder);
+            }
 
-            MoveSubfoldersToRoot(rootFolder, formsFolder);
-            MoveSubfoldersToRoot(rootFolder, wizardsFolder);
+            var wizardsFolder = Path.Combine(rootFolder, "Wizards");
+            if (Directory.Exists(wizardsFolder))
+            {
+                MoveSubfoldersToRoot(rootFolder, wizardsFolder);
+            }
         }
 
         private static void MoveSubfoldersToRoot(string rootFolder, string subFolder)

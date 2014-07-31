@@ -83,7 +83,7 @@
     <Compile Include="Attributes\ForceHttpsConnectionAttribute.cs" />
     <Compile Include="Attributes\FormNameAttribute.cs" />
     <Compile Include="Attributes\DataSourceAttribute.cs" />
-    <Compile Include="C1Console\Actions\DownloadSavedFormsActionToken.cs" />
+    <Compile Include="C1Console\Actions\DownloadSubmittedFormsActionToken.cs" />
     <Compile Include="C1Console\ElementProvider\IEntityTokenBasedElementProvider.cs" />
     <Compile Include="C1Console\EntityTokens\FormElementProviderEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\NamespaceFolderEntityToken.cs" />
@@ -92,6 +92,7 @@
     <Compile Include="Configuration\FormBuilderConfigurationHandler.cs" />
     <Compile Include="Configuration\IPluginConfiguration.cs" />
     <Compile Include="Configuration\SubmitHandlerElement.cs" />
+    <Compile Include="FormSubmit.cs" />
     <Compile Include="FormWizard.cs" />
     <Compile Include="FormWizardStep.cs" />
     <Compile Include="FunctionProviders\BaseFormFunction.cs" />
@@ -103,7 +104,11 @@
     <Compile Include="SerializableMailTemplate.cs" />
     <Compile Include="Validation\BaseFileValidatorAttribute.cs" />
     <Compile Include="Validation\MaxFileSizeValidatorAttribute.cs" />
-    <Compile Include="Web\Api\FormValidationControllerHandler.cs" />
+    <Compile Include="Web\Api\C1ConsoleAuthorizeAttribute.cs" />
+    <Compile Include="Web\Api\Controllers\FormSubmitsController.cs" />
+    <Compile Include="Web\Api\Formatters\CsvMediaTypeFormatter.cs" />
+    <Compile Include="SubmitField.cs" />
+    <Compile Include="Web\Api\RequireSessionStateControllerHandler.cs" />
     <Compile Include="Web\BaseFormBuilderRequestContext.cs" />
     <Compile Include="Web\FormBuilderRequestContext.cs" />
     <Compile Include="FormModelsFacade.cs" />
@@ -128,7 +133,6 @@
     <Compile Include="Web\FormWizardRequestContext.cs" />
     <Compile Include="Web\StartupHandler.cs" />
     <Compile Include="Web\UI\ControlsGroup.cs" />
-    <Compile Include="Web\UI\DownloadSavedFormsHandler.cs" />
     <Compile Include="Web\UI\FieldsGroup.cs" />
     <Compile Include="Web\UI\FormRenderers\Bootstrap3FormRenderer.cs" />
     <Compile Include="Web\UI\FormRenderers\Bootstrap2FormRenderer.cs" />
@@ -200,7 +204,6 @@
       <SubType>Code</SubType>
     </None>
     <None Include="Package\content\App_Data\Razor\FormBuilder\StandardFormWizardExecutor.cshtml" />
-    <None Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder\DownloadSavedForms.ashx" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

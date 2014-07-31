@@ -37,12 +37,12 @@ namespace CompositeC1Contrib.FormBuilder
             SaveAttachments(model, dir, timeStamp);
         }
 
-        public static IEnumerable<XElement> LoadSubmits(string name)
+        public static IEnumerable<FormSubmit> LoadSubmits(string name)
         {
             var dir = Path.Combine(FormModelsFacade.RootPath, name, "Submits");
             var files = Directory.GetFiles(dir, "*.xml");
 
-            return files.Select(XElement.Load);
+            return files.Select(XElement.Load).Select(FormSubmit.Parse);
         }
 
         public static void SaveSubmit(IFormModel model, bool includeAttachments)

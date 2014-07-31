@@ -161,7 +161,6 @@
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditWizardStepWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\InputElementSettings\TextBox.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\InputElementSettings\TextArea.xml" />
-    <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\arrow.png" />
     <Compile Include="FunctionProviders\DynamicFormFunctionProvider.cs">
       <SubType>Code</SubType>
     </Compile>

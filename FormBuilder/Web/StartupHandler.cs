@@ -5,6 +5,7 @@ using System.Web.Routing;
 using Composite.Core.Application;
 
 using CompositeC1Contrib.FormBuilder.Web.Api;
+using CompositeC1Contrib.FormBuilder.Web.Api.Formatters;
 
 namespace CompositeC1Contrib.FormBuilder.Web
 {
@@ -13,7 +14,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
     {
         public static void OnBeforeInitialize()
         {
-            RouteTable.Routes.MapHttpRoute("Form validator", "Form validator", new { controller = "attachment" }).RouteHandler = new FormValidationControllerRouteHandler();
+            InitWebApi();
 
             if (!Directory.Exists(FormModelsFacade.RootPath))
             {
@@ -22,6 +23,17 @@ namespace CompositeC1Contrib.FormBuilder.Web
 
             MoveRenderingLayoutToFormsFolder(FormModelsFacade.RootPath);
             MoveSubfoldersToRoot(FormModelsFacade.RootPath);
+        }
+
+        private static void InitWebApi()
+        {
+            var routes = RouteTable.Routes;
+            var config = GlobalConfiguration.Configuration;
+
+            routes.MapHttpRoute("Validation", "formbuilder/validation", new { controller = "validation" }).RouteHandler = new RequireSessionStateControllerRouteHandler();
+            routes.MapHttpRoute("Submit", "formbuilder/{name}/submits.{ext}", new { controller = "formsubmits" }).RouteHandler = new RequireSessionStateControllerRouteHandler(); ;
+            
+            config.Formatters.Add(new CsvMediaTypeFormatter());
         }
 
         private static void MoveRenderingLayoutToFormsFolder(string baseFolder)

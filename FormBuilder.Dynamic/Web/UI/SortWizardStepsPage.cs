@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Services;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
-using Composite.C1Console.Events;
-using Composite.C1Console.Security;
+using CompositeC1Contrib.Sorting.Web.UI;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.Web.UI
 {
-    public class SortWizardStepsPage : Page
+    public class SortWizardStepsPage : BaseSortPage
     {
-        protected Repeater rptFields;
-
         [WebMethod]
         public static void UpdateOrder(string wizardName, string consoleId, string entityToken, string serializedOrder)
         {
@@ -34,54 +28,28 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Web.UI
             var wizardName = Request.QueryString["wizardName"];
             var def = DynamicFormWizardsFacade.GetWizard(wizardName);
 
-            rptFields.DataSource = def.Steps;
-            rptFields.DataBind();
+            Master.CustomJsonDataName = "wizardName";
+            Master.CustomJsonDataValue = Request.QueryString["wizardName"];
+
+            Master.SortableItems = def.Steps.Select(i => new SortableItem
+            {
+                Id = i.Name,
+                Name = i.Name
+            });
 
             base.OnLoad(e);
         }
 
-        private static void UpdateParents(string seralizedEntityToken, string consoleId)
-        {
-            var entityToken = EntityTokenSerializer.Deserialize(seralizedEntityToken);
-            var graph = new RelationshipGraph(entityToken, RelationshipGraphSearchOption.Both);
-
-            if (graph.Levels.Count() <= 1)
-            {
-                return;
-            }
-
-            var level = graph.Levels.ElementAt(1);
-            foreach (var token in level.AllEntities)
-            {
-                var consoleMessageQueueItem = new RefreshTreeMessageQueueItem
-                {
-                    EntityToken = token
-                };
-
-                ConsoleMessageQueueFacade.Enqueue(consoleMessageQueueItem, consoleId);
-            }
-        }
-
         private static void UpdateOrder(DynamicFormWizard def, string serializedOrder)
         {
-            var newOrder = new Dictionary<FormWizardStep, int>();
-
-            serializedOrder = serializedOrder.Replace("instance[]=", ",").Replace("&", "");
-            var split = serializedOrder.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-            for (int i = 0; i < split.Length; i++)
-            {
-                var name = split[i];
-                var step = def.Steps.Single(f => f.Name == name);
-
-                newOrder.Add(step, i);
-            }
+            var newOrder = ParseNewOrder(serializedOrder);
+            var tmpList = newOrder.OrderBy(i => i.Value).Select(itm => def.Steps.Single(f => f.Name == itm.Key)).ToList();
 
             def.Steps.Clear();
 
-            foreach (var itm in newOrder.OrderBy(i => i.Value))
+            foreach (var s in tmpList)
             {
-                def.Steps.Add(itm.Key);
+                def.Steps.Add(s);
             }
 
             DynamicFormWizardsFacade.SaveWizard(def);

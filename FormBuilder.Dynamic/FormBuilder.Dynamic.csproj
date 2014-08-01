@@ -47,6 +47,9 @@
     <Reference Include="CompositeC1Contrib.Email">
       <HintPath>..\.vendor\CompositeC1Contrib.Email.dll</HintPath>
     </Reference>
+    <Reference Include="CompositeC1Contrib.Sorting">
+      <HintPath>..\.vendor\CompositeC1Contrib.Sorting.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common">
       <HintPath>..\.vendor\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
     </Reference>

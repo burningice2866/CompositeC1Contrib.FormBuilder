@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Services;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
-using Composite.C1Console.Events;
-using Composite.C1Console.Security;
+using CompositeC1Contrib.Sorting.Web.UI;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.Web.UI
 {
-    public class SortFormFieldsPage : Page
+    public class SortFormFieldsPage : BaseSortPage
     {
-        protected Repeater rptFields;
-
         [WebMethod]
         public static void UpdateOrder(string formName, string consoleId, string entityToken, string serializedOrder)
         {
@@ -32,56 +26,36 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Web.UI
         protected override void OnLoad(EventArgs e)
         {
             var formName = Request.QueryString["formName"];
+
+            if (Request.HttpMethod == "POST")
+            {
+                formName = Request.Form["formName"];
+            }
+
             var formDefinition = DynamicFormsFacade.GetFormByName(formName);
 
-            rptFields.DataSource = formDefinition.Model.Fields;
-            rptFields.DataBind();
+            Master.CustomJsonDataName = "formName";
+            Master.CustomJsonDataValue = formName;
+
+            Master.SortableItems = formDefinition.Model.Fields.Select(i => new SortableItem
+            {
+                Id = i.Name,
+                Name = i.Name
+            });
 
             base.OnLoad(e);
         }
 
-        private static void UpdateParents(string seralizedEntityToken, string consoleId)
-        {
-            var entityToken = EntityTokenSerializer.Deserialize(seralizedEntityToken);
-            var graph = new RelationshipGraph(entityToken, RelationshipGraphSearchOption.Both);
-
-            if (graph.Levels.Count() <= 1)
-            {
-                return;
-            }
-
-            var level = graph.Levels.ElementAt(1);
-            foreach (var token in level.AllEntities)
-            {
-                var consoleMessageQueueItem = new RefreshTreeMessageQueueItem
-                {
-                    EntityToken = token
-                };
-
-                ConsoleMessageQueueFacade.Enqueue(consoleMessageQueueItem, consoleId);
-            }
-        }
-
         private static void UpdateOrder(DynamicFormDefinition formDefinition, string serializedOrder)
         {
-            var newOrder = new Dictionary<FormField, int>();
-
-            serializedOrder = serializedOrder.Replace("instance[]=", ",").Replace("&", "");
-            var split = serializedOrder.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-            for (int i = 0; i < split.Length; i++)
-            {
-                var name = split[i];
-                var field = formDefinition.Model.Fields.Single(f => f.Name == name);
-
-                newOrder.Add(field, i);
-            }
+            var newOrder = ParseNewOrder(serializedOrder);
+            var tmpList = newOrder.OrderBy(i => i.Value).Select(itm => formDefinition.Model.Fields.Single(f => f.Name == itm.Key)).ToList();
 
             formDefinition.Model.Fields.Clear();
 
-            foreach (var itm in newOrder.OrderBy(i => i.Value))
+            foreach (var f in tmpList)
             {
-                formDefinition.Model.Fields.Add(itm.Key);
+                formDefinition.Model.Fields.Add(f);
             }
 
             DynamicFormsFacade.SaveForm(formDefinition);

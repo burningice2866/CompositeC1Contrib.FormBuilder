@@ -40,6 +40,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             {
                 Name = stepName,
                 FormName = formName,
+                Label =  stepName,
                 LocalOrdering = wizard.Steps.Count + 1
             };
 

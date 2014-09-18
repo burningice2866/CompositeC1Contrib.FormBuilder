@@ -18,12 +18,16 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             var stepsElement = xml.Element("Steps");
             foreach (var stepElement in stepsElement.Elements("Step"))
             {
+                var labelAttr = stepElement.Attribute("Label");
+
                 var wizardStep = new FormWizardStep
                 {
                     Name = stepElement.Attribute("Name").Value,
                     FormName = stepElement.Attribute("FormName").Value,
                     LocalOrdering = int.Parse(stepElement.Attribute("LocalOrdering").Value),
                 };
+
+                wizardStep.Label = labelAttr != null ? labelAttr.Value : wizardStep.Name;
 
                 var nextButtonLabelAttribute = stepElement.Attribute("nextButtonLabel");
                 if (nextButtonLabelAttribute != null)
@@ -73,6 +77,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 var stepElement = new XElement("Step",
                     new XAttribute("Name", step.Name),
                     new XAttribute("FormName", step.FormName),
+                    new XAttribute("Label", step.Label),
                     new XAttribute("LocalOrdering", step.LocalOrdering));
 
                 if (!String.IsNullOrEmpty(step.NextButtonLabel))

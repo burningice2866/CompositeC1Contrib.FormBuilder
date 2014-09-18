@@ -25,6 +25,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             Bindings.Add("StepName", step.Name);
             Bindings.Add("FormName", step.FormName);
+            Bindings.Add("StepLabel", step.Label);
             Bindings.Add("NextButtonLabel", step.NextButtonLabel ?? String.Empty);
             Bindings.Add("PreviousButtonLabel", step.PreviousButtonLabel ?? String.Empty);
         }
@@ -33,16 +34,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var stepName = GetBinding<string>("StepName");
             var formName = GetBinding<string>("FormName");
+            var stepLabel = GetBinding<string>("StepLabel");
             var nextButtonLabel = GetBinding<string>("NextButtonLabel");
             var previousButtonLabel = GetBinding<string>("PreviousButtonLabel");
 
             var stepToken = (FormWizardStepEntityToken)EntityToken;
             var wizard = DynamicFormWizardsFacade.GetWizard(stepToken.WizardName);
-            
+
             var step = wizard.Steps.Single(s => s.Name == stepToken.StepName);
 
             step.Name = stepName;
             step.FormName = formName;
+            step.Label = stepLabel;
             step.NextButtonLabel = nextButtonLabel;
             step.PreviousButtonLabel = previousButtonLabel;
 

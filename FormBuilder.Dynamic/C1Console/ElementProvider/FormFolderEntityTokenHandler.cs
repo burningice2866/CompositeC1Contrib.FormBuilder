@@ -169,6 +169,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
         private IEnumerable<Element> getWizardStepElements(ElementProviderContext context, FormFolderEntityToken folder)
         {
             var wizard = (DynamicFormWizard)DefinitionsFacade.GetDefinition(folder.FormName);
+            if (wizard == null)
+            {
+                yield break;
+            }
+
             foreach (var step in wizard.Steps)
             {
                 var elementHandle = context.CreateElementHandle(new FormWizardStepEntityToken(wizard.Name, step.Name));

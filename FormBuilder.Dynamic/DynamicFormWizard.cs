@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
+using CompositeC1Contrib.FormBuilder.Configuration;
+using CompositeC1Contrib.FormBuilder.Dynamic.Configuration;
 using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic
@@ -12,6 +15,15 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         public DynamicFormWizard()
         {
             SubmitHandlers = new List<FormSubmitHandler>();
+
+            var config = FormBuilderConfiguration.GetSection();
+            var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
+
+            var settingsType = plugin.SettingsHandler;
+            if (settingsType != null)
+            {
+                Settings = (IFormSettings)Activator.CreateInstance(settingsType);
+            }
         }
 
         public override void Submit()

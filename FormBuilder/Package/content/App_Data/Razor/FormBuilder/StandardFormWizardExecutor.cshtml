@@ -1,16 +1,14 @@
-﻿@using CompositeC1Contrib.FormBuilder.Web.UI
+﻿@inherits CompositeC1Contrib.FormBuilder.Web.UI.StandardFormWizardPage
 
-@inherits StandardFormWizardPage
-
-@if (IsSuccess && (Wizard.SuccessResponse != null && !Wizard.SuccessResponse.IsEmpty))
+@if (IsSuccess && (SuccessResponse != null && !SuccessResponse.IsEmpty))
 {
-    @EvaluateMarkup(Wizard.SuccessResponse.Root)
+    @EvaluateMarkup(SuccessResponse.Root)
 }
 else
 {
-    if (Wizard.IntroText != null && !Wizard.IntroText.IsEmpty)
+    if (IntroText != null && !IntroText.IsEmpty)
     {
-        @EvaluateMarkup(Wizard.IntroText.Root)
+        @EvaluateMarkup(IntroText.Root)
     }
 
     using (BeginForm())

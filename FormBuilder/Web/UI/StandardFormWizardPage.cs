@@ -5,6 +5,8 @@ using System.Xml.Linq;
 
 using Composite.AspNet.Razor;
 using Composite.Core.WebClient.Renderings.Page;
+using Composite.Core.Xml;
+using Composite.Functions;
 
 using CompositeC1Contrib.FormBuilder.FunctionProviders;
 
@@ -26,6 +28,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             get { return (FormWizardRequestContext)FunctionContextContainer.GetParameterValue(BaseFormFunction.RenderingContextKey, typeof(FormWizardRequestContext)); }
         }
+
+        [FunctionParameter(Label = "Intro text", DefaultValue = null)]
+        public XhtmlDocument IntroText { get; set; }
+
+        [FunctionParameter(Label = "Success response", DefaultValue = null)]
+        public XhtmlDocument SuccessResponse { get; set; }
 
         public override void ExecutePageHierarchy()
         {

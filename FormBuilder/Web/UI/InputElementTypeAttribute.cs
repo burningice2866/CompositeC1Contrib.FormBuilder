@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -16,23 +17,21 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         abstract public IHtmlString GetHtmlString(FormOptions options, FormField field, IDictionary<string, string> htmlAttributes);
 
-        protected void RenderReadOnlyAttribute(StringBuilder sb, FormField field)
+        protected void AddReadOnlyAttribute(FormField field, IDictionary<string, string> htmlAttributes)
         {
             if (field.IsReadOnly)
             {
-                sb.Append(" readonly=\"readonly\"");
+                AddHtmlAttribute("readonly", "readonly", htmlAttributes);
             }
         }
 
-        protected void RenderMaxLengthAttribute(StringBuilder sb, FormField field)
+        protected void AddMaxLengthAttribute(FormField field, IDictionary<string, string> htmlAttributes)
         {
             var maxLengthAttribute = field.ValidationAttributes.OfType<MaxFieldLengthAttribute>().FirstOrDefault();
-            if (maxLengthAttribute == null)
+            if (maxLengthAttribute != null)
             {
-                return;
+                AddHtmlAttribute("maxlength", maxLengthAttribute.Length.ToString(CultureInfo.InvariantCulture), htmlAttributes);
             }
-
-            sb.AppendFormat(" maxlength=\"{0}\"", maxLengthAttribute.Length);
         }
 
         protected void AddHtmlAttribute(string attribute, string value, IDictionary<string, string> htmlAttributes)
@@ -81,40 +80,41 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected Dictionary<string, IList<string>> MapHtmlTagAttributes(FormField field, IDictionary<string, string> htmlAttributes)
         {
-            var htmlAttributesDictionary = new Dictionary<string, IList<string>>();
+            var result = new Dictionary<string, IList<string>>();
 
-            var htmlElementAttributes = field.Attributes.OfType<HtmlTagAttribute>();
-
-            foreach (var attr in htmlElementAttributes)
+            var fieldHmlTagAttributes = field.Attributes.OfType<HtmlTagAttribute>();
+            foreach (var attr in fieldHmlTagAttributes)
             {
                 IList<string> list;
-                if (!htmlAttributesDictionary.TryGetValue(attr.Attribute, out list))
+                if (!result.TryGetValue(attr.Attribute, out list))
                 {
-                    htmlAttributesDictionary.Add(attr.Attribute, new List<string>());
+                    result.Add(attr.Attribute, new List<string>());
                 }
 
-                htmlAttributesDictionary[attr.Attribute].Add(attr.Value);
+                result[attr.Attribute].Add(attr.Value);
             }
 
-            if (htmlAttributes != null && htmlAttributes.ContainsKey("class"))
+            if (htmlAttributes != null)
             {
-                IList<string> list;
-                if (!htmlAttributesDictionary.TryGetValue("class", out list))
+                foreach (var kvp in htmlAttributes)
                 {
-                    list = new List<string>();
+                    IList<string> list;
+                    if (!result.TryGetValue(kvp.Key, out list))
+                    {
+                        list = new List<string>();
 
-                    htmlAttributesDictionary.Add("class", list);
-                }
+                        result.Add(kvp.Key, list);
+                    }
 
-                var val = htmlAttributes["class"].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (var itm in val)
-                {
-                    list.Add(itm);
+                    var val = kvp.Value.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var itm in val)
+                    {
+                        list.Add(itm);
+                    }
                 }
             }
 
-            return htmlAttributesDictionary;
+            return result;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
     {
         public string Message { get; set; }
 
-        public FormValidationAttribute(string message)
+        protected FormValidationAttribute(string message)
         {
             Message = message;
         }

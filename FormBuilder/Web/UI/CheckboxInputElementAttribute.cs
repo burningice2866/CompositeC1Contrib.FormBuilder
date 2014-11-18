@@ -34,7 +34,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     HttpUtility.HtmlAttributeEncode(field.Label.Label),
                     FormRenderer.WriteChecked(bValue, "checked"));
 
-                RenderReadOnlyAttribute(sb, field);
+                AddReadOnlyAttribute(field, htmlAttributes);
                 RenderExtraHtmlTags(sb, field, htmlAttributes);
 
                 sb.Append(" />");
@@ -75,8 +75,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                             HttpUtility.HtmlAttributeEncode(item.Key),
                             FormRenderer.WriteChecked(list.Contains(item.Key), "checked"));
 
-                        RenderReadOnlyAttribute(sb, field);
-                        RenderMaxLengthAttribute(sb, field);
+                        AddReadOnlyAttribute(field, htmlAttributes);
+                        AddMaxLengthAttribute(field, htmlAttributes);
                         RenderExtraHtmlTags(sb, field, htmlAttributes);
 
                         sb.AppendFormat("/> {0}</label>", HttpUtility.HtmlEncode(item.Value));

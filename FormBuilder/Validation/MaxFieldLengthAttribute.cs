@@ -20,12 +20,12 @@ namespace CompositeC1Contrib.FormBuilder.Validation
             {
                 Rule = () =>
                 {
-                    if (String.IsNullOrEmpty(value) && !field.IsRequired)
+                    if (String.IsNullOrEmpty(value))
                     {
-                        return true;
+                        return !field.IsRequired;
                     }
 
-                    return value.Length <= Length;
+                    return value.Length < Length;
                 }
             };
         }

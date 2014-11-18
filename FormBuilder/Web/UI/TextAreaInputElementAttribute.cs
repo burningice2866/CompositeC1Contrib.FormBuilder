@@ -48,8 +48,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             AddHtmlAttribute("class", FormRenderer.RendererImplementation.FormControlClass, htmlAttributes);
 
-            RenderReadOnlyAttribute(sb, field);
-            RenderMaxLengthAttribute(sb, field);
+            AddReadOnlyAttribute(field, htmlAttributes);
+            AddMaxLengthAttribute(field, htmlAttributes);
             RenderExtraHtmlTags(sb, field, htmlAttributes);
 
             sb.AppendFormat(">{0}</textarea>", HttpUtility.HtmlEncode(FormRenderer.GetValue(field)));

@@ -75,7 +75,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Formatters
         {
             var values = submit.Values.Select(s => String.IsNullOrEmpty(s.Value) ? String.Empty : Escape(s.Value)).ToList();
 
-            values.Add(submit.Time.ToString(CultureInfo.InvariantCulture));
+            values.Add(submit.Time.ToString("o", CultureInfo.InvariantCulture));
 
             var line = String.Join(",", values);
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Composite.C1Console.Actions;
 using Composite.C1Console.Events;
@@ -10,25 +11,29 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Actions
     public class DownloadSubmittedFormsActionToken : ActionToken
     {
         public string FormName { get; private set; }
+        public string Extension { get; private set; }
 
         public override IEnumerable<PermissionType> PermissionTypes
         {
             get { return new[] { PermissionType.Edit, PermissionType.Administrate }; }
         }
 
-        public DownloadSubmittedFormsActionToken(string formName)
+        public DownloadSubmittedFormsActionToken(string formName, string extension)
         {
             FormName = formName;
+            Extension = extension;
         }
 
         public override string Serialize()
         {
-            return FormName;
+            return FormName + "?" + Extension;
         }
 
         public static ActionToken Deserialize(string serializedData)
         {
-            return new DownloadSubmittedFormsActionToken(serializedData);
+            var split = serializedData.Split(new[] { '?' }, StringSplitOptions.RemoveEmptyEntries);
+
+            return new DownloadSubmittedFormsActionToken(split[0], split[1]);
         }
     }
 
@@ -38,7 +43,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Actions
         {
             var downloadActionToken = (DownloadSubmittedFormsActionToken)actionToken;
             var currentConsoleId = flowControllerServicesContainer.GetService<IManagementConsoleMessageService>().CurrentConsoleId;
-            var url = "/formbuilder/" + downloadActionToken.FormName + "/submits.csv";
+            var url = "/formbuilder/" + downloadActionToken.FormName + "/submits" + downloadActionToken.Extension;
 
             ConsoleMessageQueueFacade.Enqueue(new DownloadFileMessageQueueItem(url), currentConsoleId);
 

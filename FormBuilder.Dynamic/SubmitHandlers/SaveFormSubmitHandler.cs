@@ -27,7 +27,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
 
         public void AddActions(IDynamicFormDefinition definition, Element element)
         {
-            var downloadActionToken = new DownloadSubmittedFormsActionToken(definition.Name);
+            var downloadActionToken = new DownloadSubmittedFormsActionToken(definition.Name, ".csv");
             element.AddAction(new ElementAction(new ActionHandle(downloadActionToken))
             {
                 VisualData = new ActionVisualizedData

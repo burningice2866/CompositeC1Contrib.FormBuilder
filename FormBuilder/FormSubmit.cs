@@ -7,6 +7,7 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public class FormSubmit
     {
+        public IFormModel OwningForm { get; set; }
         public DateTime Time { get; set; }
         public IList<SubmitField> Values { get; set; }
 
@@ -15,9 +16,12 @@ namespace CompositeC1Contrib.FormBuilder
             Values = new List<SubmitField>();
         }
 
-        public static FormSubmit Parse(XElement el)
+        public static FormSubmit Parse(IFormModel owner, XElement el)
         {
-            var submit = new FormSubmit();
+            var submit = new FormSubmit
+            {
+                OwningForm = owner
+            };
 
             foreach (var field in el.Descendants("field"))
             {
@@ -31,7 +35,17 @@ namespace CompositeC1Contrib.FormBuilder
                 });
             }
 
-            submit.Time = DateTime.Parse(el.Attribute("time").Value, CultureInfo.InvariantCulture);
+            var submittedTime = el.Attribute("time").Value;
+
+            try
+            {
+                submit.Time = DateTime.Parse(submittedTime, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+            }
+            catch (FormatException)
+            {
+                submit.Time = DateTime.Parse(submittedTime, CultureInfo.InvariantCulture);
+            }
+
 
             return submit;
         }

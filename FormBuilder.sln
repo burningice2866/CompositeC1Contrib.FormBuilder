@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormBuilder.POCO", "FormBui
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormBuilder.Dynamic", "FormBuilder.Dynamic\FormBuilder.Dynamic.csproj", "{41758BB5-C39D-48FB-82E9-299A693A8487}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormBuilder.Excel", "FormBuilder.Excel\FormBuilder.Excel.csproj", "{EE4F747E-4134-45AA-9A58-859AB36A3FA5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{41758BB5-C39D-48FB-82E9-299A693A8487}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41758BB5-C39D-48FB-82E9-299A693A8487}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41758BB5-C39D-48FB-82E9-299A693A8487}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE4F747E-4134-45AA-9A58-859AB36A3FA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE4F747E-4134-45AA-9A58-859AB36A3FA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE4F747E-4134-45AA-9A58-859AB36A3FA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE4F747E-4134-45AA-9A58-859AB36A3FA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

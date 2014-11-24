@@ -27,13 +27,15 @@ namespace CompositeC1Contrib.FormBuilder.Web
 
         private static void InitWebApi()
         {
-            var routes = RouteTable.Routes;
-            var config = GlobalConfiguration.Configuration;
+            GlobalConfiguration.Configure(config =>
+            {
+                var routes = RouteTable.Routes;
 
-            routes.MapHttpRoute("Validation", "formbuilder/validation", new { controller = "validation" }).RouteHandler = new RequireSessionStateControllerRouteHandler();
-            routes.MapHttpRoute("Submit", "formbuilder/{name}/submits.{ext}", new { controller = "formsubmits" }).RouteHandler = new RequireSessionStateControllerRouteHandler(); ;
-            
-            config.Formatters.Add(new CsvMediaTypeFormatter());
+                routes.MapHttpRoute("Validation", "formbuilder/validation", new { controller = "validation" }).RouteHandler = new RequireSessionStateControllerRouteHandler();
+                routes.MapHttpRoute("Submit", "formbuilder/{name}/submits.{ext}", new { controller = "formsubmits" }).RouteHandler = new RequireSessionStateControllerRouteHandler(); ;
+
+                config.Formatters.Add(new CsvMediaTypeFormatter());
+            });
         }
 
         private static void MoveRenderingLayoutToFormsFolder(string baseFolder)

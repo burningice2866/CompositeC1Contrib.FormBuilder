@@ -68,6 +68,7 @@ namespace CompositeC1Contrib.FormBuilder.Excel.Web.Api.Formatters
                 var worksheet = workbook.Worksheets.Add(list[0].OwningForm.Name);
 
                 worksheet.Cell(1, 1).InsertTable(table);
+                worksheet.Range(2, 1, table.Rows.Count, table.Columns.Count).Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
 
                 workbook.SaveAs(writeStream);
             });

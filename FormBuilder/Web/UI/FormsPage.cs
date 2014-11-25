@@ -66,8 +66,6 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             base.ExecutePageHierarchy();
         }
 
-        public override void Execute() { }
-
         public virtual void HandleSubmit()
         {
             RenderingContext.Submit();

@@ -31,7 +31,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ActionProviders
                 {
                     Label = "Download saved forms as Excel",
                     ToolTip = "Download saved forms as Excel",
-                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                    Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                     ActionLocation = FormBuilderElementProvider.ActionLocation
                 }
             };

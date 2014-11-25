@@ -19,9 +19,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
     public class FormBuilderElementProvider : IHooklessElementProvider
     {
         private static readonly ActionGroup ActionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
-        public static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = true, ActionGroup = ActionGroup };
+        private static readonly IEnumerable<PermissionType> AddPermissions = new[] { PermissionType.Add };
 
         private static readonly IDictionary<Type, IEntityTokenBasedElementProvider> EntityTokenHandlers = new Dictionary<Type, IEntityTokenBasedElementProvider>();
+
+        public static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = true, ActionGroup = ActionGroup };
 
         private ElementProviderContext _context;
         public ElementProviderContext Context
@@ -65,36 +67,41 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     Label = "Forms",
                     ToolTip = "Forms",
                     HasChildren = true,
-                    Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                    OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                    Icon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-closed-root"),
+                    OpenedIcon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-opened-root")
                 }
             };
 
-            var addFormActionToken = new WorkflowActionToken(typeof(AddFormWorkflow));
-            rootElement.AddAction(new ElementAction(new ActionHandle(addFormActionToken))
+            ConfigureFolderActions(rootElement);
+
+            return new[] { rootElement };
+        }
+
+        public static void ConfigureFolderActions(Element element)
+        {
+            var addFormActionToken = new WorkflowActionToken(typeof(AddFormWorkflow), AddPermissions);
+            element.AddAction(new ElementAction(new ActionHandle(addFormActionToken))
             {
                 VisualData = new ActionVisualizedData
                 {
                     Label = "Add form",
                     ToolTip = "Add form",
-                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                    Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                     ActionLocation = ActionLocation
                 }
             });
 
-            var addWizardActionToken = new WorkflowActionToken(typeof(AddFormWizardWorkflow));
-            rootElement.AddAction(new ElementAction(new ActionHandle(addWizardActionToken))
+            var addWizardActionToken = new WorkflowActionToken(typeof(AddFormWizardWorkflow), AddPermissions);
+            element.AddAction(new ElementAction(new ActionHandle(addWizardActionToken))
             {
                 VisualData = new ActionVisualizedData
                 {
                     Label = "Add wizard",
                     ToolTip = "Add wizard",
-                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                    Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                     ActionLocation = ActionLocation
                 }
             });
-
-            return new[] { rootElement };
-        }        
+        }
     }
 }

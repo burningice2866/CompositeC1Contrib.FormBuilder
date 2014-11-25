@@ -6,8 +6,6 @@ using System.Linq;
 using System.Web;
 using System.Xml.Linq;
 
-using CompositeC1Contrib.FormBuilder.FunctionProviders;
-
 namespace CompositeC1Contrib.FormBuilder
 {
     public class SaveFormSubmitFacade
@@ -82,7 +80,7 @@ namespace CompositeC1Contrib.FormBuilder
 
             foreach (var field in model.Fields.Where(f => f.Label != null && f.Value != null))
             {
-                var value = BaseDumpSubmittedFormValuesFunction.FormatFieldValue(field);
+                var value = FormattingUtils.FormatFieldValue(field);
 
                 fields.Add(new XElement("field",
                     new XAttribute("name", field.Name),

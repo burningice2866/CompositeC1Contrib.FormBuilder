@@ -48,8 +48,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     Label = "Validators",
                     ToolTip = "Validators",
                     HasChildren = true,
-                    Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                    OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                    Icon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-closed-root"),
+                    OpenedIcon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-opened-root")
                 }
             };
 
@@ -60,7 +60,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 {
                     Label = "Add validator",
                     ToolTip = "Add validator",
-                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                    Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                     ActionLocation = FormBuilderElementProvider.ActionLocation
                 }
             });
@@ -81,8 +81,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     Label = "Datasource",
                     ToolTip = "Datasource",
                     HasChildren = true,
-                    Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                    OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                    Icon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-closed-root"),
+                    OpenedIcon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-opened-root")
                 }
             };
 
@@ -93,7 +93,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 {
                     Label = "Delete datasource",
                     ToolTip = "Delete datasource",
-                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
+                    Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-delete"),
                     ActionLocation = FormBuilderElementProvider.ActionLocation
                 }
             });
@@ -107,7 +107,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     {
                         Label = "Add value",
                         ToolTip = "Add value",
-                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                        Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                         ActionLocation = FormBuilderElementProvider.ActionLocation
                     }
                 });

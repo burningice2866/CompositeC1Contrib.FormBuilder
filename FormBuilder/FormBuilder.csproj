@@ -92,6 +92,7 @@
     <Compile Include="Configuration\FormBuilderConfigurationHandler.cs" />
     <Compile Include="Configuration\IPluginConfiguration.cs" />
     <Compile Include="Configuration\SubmitHandlerElement.cs" />
+    <Compile Include="FormattingUtils.cs" />
     <Compile Include="FormSubmit.cs" />
     <Compile Include="FormWizard.cs" />
     <Compile Include="FormWizardStep.cs" />

@@ -44,8 +44,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         Label = "Fields",
                         ToolTip = "Fields",
                         HasChildren = true,
-                        Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                        OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                        Icon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-closed-root"),
+                        OpenedIcon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-opened-root")
                     }
                 };
 
@@ -56,7 +56,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     {
                         Label = "Add",
                         ToolTip = "Add",
-                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                        Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                         ActionLocation = FormBuilderElementProvider.ActionLocation
                     }
                 });
@@ -69,7 +69,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     {
                         Label = "Sort fields",
                         ToolTip = "Sort fields",
-                        Icon = new ResourceHandle("Composite.Icons", "cut"),
+                        Icon = ResourceHandle.BuildIconFromDefaultProvider("cut"),
                         ActionLocation = FormBuilderElementProvider.ActionLocation
                     }
                 });
@@ -87,8 +87,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         Label = "Steps",
                         ToolTip = "Steps",
                         HasChildren = true,
-                        Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                        OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                        Icon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-closed-root"),
+                        OpenedIcon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-opened-root")
                     }
                 };
 
@@ -99,7 +99,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     {
                         Label = "Add",
                         ToolTip = "Add",
-                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                        Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                         ActionLocation = FormBuilderElementProvider.ActionLocation
                     }
                 });
@@ -112,7 +112,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     {
                         Label = "Sort steps",
                         ToolTip = "Sort steps",
-                        Icon = new ResourceHandle("Composite.Icons", "cut"),
+                        Icon = ResourceHandle.BuildIconFromDefaultProvider("cut"),
                         ActionLocation = FormBuilderElementProvider.ActionLocation
                     }
                 });
@@ -128,8 +128,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     Label = "Submit handlers",
                     ToolTip = "Submit handlers",
                     HasChildren = true,
-                    Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                    OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                    Icon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-closed-root"),
+                    OpenedIcon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-opened-root")
                 }
             };
 
@@ -140,7 +140,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 {
                     Label = "Add",
                     ToolTip = "Add",
-                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                    Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                     ActionLocation = FormBuilderElementProvider.ActionLocation
                 }
             });

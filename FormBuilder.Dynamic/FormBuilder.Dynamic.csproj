@@ -94,6 +94,9 @@
     <Compile Include="C1Console\Workflows\AddWizardStepWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="C1Console\Workflows\BaseAddFormWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="C1Console\Workflows\EditFormWizardWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>

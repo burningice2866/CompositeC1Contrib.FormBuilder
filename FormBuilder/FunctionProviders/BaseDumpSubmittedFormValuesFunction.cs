@@ -104,41 +104,6 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             }
         }
 
-        public static string FormatFieldValue(FormField field)
-        {
-            if (field.Value == null)
-            {
-                return String.Empty;
-            }
-
-            if (field.Value is IEnumerable<string>)
-            {
-                return String.Join(", ", field.Value as IEnumerable<string>);
-            }
-
-            if (field.Value is FormFile)
-            {
-                var file = field.Value as FormFile;
-
-                return String.Format("{0} ({1} KB)", file.FileName, file.ContentLength / 1024);
-            }
-
-            if (field.Value is IEnumerable<FormFile>)
-            {
-                var files = field.Value as IEnumerable<FormFile>;
-                var values = new List<string>();
-
-                foreach (var file in files)
-                {
-                    values.Add(String.Format("{0} ({1} KB)", file.FileName, file.ContentLength / 1024));
-                }
-
-                return String.Join(", ", values);
-            }
-
-            return field.Value.ToString();
-        }
-
         private static void ReplaceElementsWithTable(IList<XElement> elements, List<FormField> fields)
         {
             if (!fields.Any())
@@ -173,8 +138,11 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
         private static XElement GetFieldTableRow(FormField field)
         {
-            var value = FormatFieldValue(field);
-            var row = new XElement(Namespaces.Xhtml + "tr", new XAttribute("style", "vertical-align: top;"), new XElement(Namespaces.Xhtml + "td", new XElement(Namespaces.Xhtml + "strong", field.Label.Label.TrimEnd(':') + ":")));
+            var value = FormattingUtils.FormatFieldValue(field);
+
+            var row = new XElement(Namespaces.Xhtml + "tr", new XAttribute("style", "vertical-align: top;"),
+                new XElement(Namespaces.Xhtml + "td",
+                    new XElement(Namespaces.Xhtml + "strong", field.Label.Label.TrimEnd(':') + ":")));
 
             if (field.InputElementType is TextAreaInputElementAttribute)
             {

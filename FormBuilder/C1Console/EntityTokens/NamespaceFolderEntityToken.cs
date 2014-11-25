@@ -49,8 +49,8 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
                     Label = label,
                     ToolTip = label,
                     HasChildren = true,
-                    Icon = new ResourceHandle("Composite.Icons", "datagroupinghelper-folder-closed"),
-                    OpenedIcon = new ResourceHandle("Composite.Icons", "datagroupinghelper-folder-open")
+                    Icon = ResourceHandle.BuildIconFromDefaultProvider("datagroupinghelper-folder-closed"),
+                    OpenedIcon = ResourceHandle.BuildIconFromDefaultProvider("datagroupinghelper-folder-open")
                 }
             };
 
@@ -81,18 +81,18 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
             var namespaceToken = entityToken as NamespaceFolderEntityToken;
             if (namespaceToken == null)
             {
-                yield break;
+                return Enumerable.Empty<EntityToken>();
             }
 
             var split = namespaceToken.Namespace.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
             if (split.Length == 1)
             {
-                yield return new FormElementProviderEntityToken();
+                return new[] { new FormElementProviderEntityToken() };
             }
 
             var parentName = String.Join(".", split.Take(split.Length - 1));
 
-            yield return new NamespaceFolderEntityToken(namespaceToken.Source, parentName);
+            return new[] { new NamespaceFolderEntityToken(namespaceToken.Source, parentName) };
         }
     }
 }

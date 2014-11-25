@@ -62,8 +62,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         Label = entry.Key,
                         ToolTip = entry.Key,
                         HasChildren = false,
-                        Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                        OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                        Icon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-closed-root"),
+                        OpenedIcon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-opened-root")
                     }
                 };
 
@@ -74,7 +74,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     {
                         Label = "Delete",
                         ToolTip = "Delete",
-                        Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
+                        Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-delete"),
                         ActionLocation = FormBuilderElementProvider.ActionLocation
                     }
                 });

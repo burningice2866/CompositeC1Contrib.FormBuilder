@@ -5,29 +5,20 @@ using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider;
-using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
-    public class AddFormWizardWorkflow : Basic1StepDialogWorkflow
+    public class AddFormWizardWorkflow : BaseAddFormWorkflow
     {
         public AddFormWizardWorkflow() : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\AddFormWizardWorkflow.xml") { }
 
-        public override void OnInitialize(object sender, EventArgs e)
-        {
-            if (!BindingExist("WizardName"))
-            {
-                Bindings.Add("WizardName", String.Empty);
-            }
-        }
-
         public override void OnFinish(object sender, EventArgs e)
         {
-            var wizardName = GetBinding<string>("WizardName");
+            var name = GetBinding<string>("Name");
 
             var wizard = new DynamicFormWizard
             {
-                Name = wizardName
+                Name = name
             };
 
             DynamicFormWizardsFacade.SaveWizard(wizard);
@@ -41,23 +32,23 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public override bool Validate()
         {
-            var wizardName = GetBinding<string>("WizardName");
-            if (!FormModel.IsValidName(wizardName))
+            var name = GetBinding<string>("Name");
+
+            var valid = base.Validate();
+            if (!valid)
             {
-                ShowFieldMessage("WizardName", "Wizard name is invalid, only a-z and 0-9 is allowed");
+                return false;
+            }
+
+            var isNameInUse = DefinitionsFacade.GetDefinitions().Any(m => m.Name == name);
+            if (isNameInUse)
+            {
+                ShowFieldMessage("Name", "Wizard name already exists");
 
                 return false;
             }
 
-            var isNameInUse = DefinitionsFacade.GetDefinitions().Any(m => m.Name == wizardName);
-            if (!isNameInUse)
-            {
                 return true;
             }
-
-            ShowFieldMessage("WizardName", "Wizard name already exists");
-
-            return false;
         }
     }
-}

@@ -58,12 +58,7 @@
 
             if (form.data('error') === false) {
                 if (nextStep !== undefined) {
-                    var nextStepContainer = $('.js-formwizard-step[data-step=' + nextStep + ']', form);
-
-                    container.hide();
-                    nextStepContainer.show();
-
-                    window.scrollTo(0, 0);
+                    window.formbuilderWizard.navigateTo(nextStep, form);
                 } else {
                     if (window.Ladda && button.hasClass('ladda-button')) {
                         setTimeout(function() {
@@ -79,5 +74,22 @@
                 window.scrollTo(0, 0);
             }
         });
+
+        window.formbuilderWizard = window.formbuilderWizard || {};
+
+        window.formbuilderWizard.navigateTo = function(nextStep, form) {
+            var containers = $('.js-formwizard-step[data-step]', form);
+            var nextStepContainer = $('.js-formwizard-step[data-step=' + nextStep + ']', form);
+
+            containers.hide();
+            nextStepContainer.show();
+
+            window.scrollTo(0, 0);
+
+            var event = $.Event('formbuilder.wizard.navigate.success');
+            event.nextStep = nextStep;
+
+            form.trigger(event);
+        }
     });
 })(jQuery, window.formbuilder, window, document);

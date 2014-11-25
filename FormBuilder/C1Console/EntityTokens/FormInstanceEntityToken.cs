@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Composite.C1Console.Security;
 
@@ -58,10 +59,15 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
         public IEnumerable<EntityToken> GetParents(EntityToken entityToken)
         {
             var formInstanceToken = entityToken as FormInstanceEntityToken;
-            if (formInstanceToken != null)
+            if (formInstanceToken == null)
             {
-                yield return new FormElementProviderEntityToken();
+                yield break;
             }
+
+            var parts = formInstanceToken.FormName.Split(new[] { '.' });
+            var ns = String.Join(".", parts.Take(parts.Length - 1));
+
+            yield return new NamespaceFolderEntityToken(formInstanceToken.Source, ns);
         }
     }
 }

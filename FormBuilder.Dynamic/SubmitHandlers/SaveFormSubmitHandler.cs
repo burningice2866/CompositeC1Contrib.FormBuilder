@@ -34,7 +34,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
                 {
                     Label = "Download saved forms",
                     ToolTip = "Download saved forms",
-                    Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                    Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                     ActionLocation = FormBuilderElementProvider.ActionLocation
                 }
             });

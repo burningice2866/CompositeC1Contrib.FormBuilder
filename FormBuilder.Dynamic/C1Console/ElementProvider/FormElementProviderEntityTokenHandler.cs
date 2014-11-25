@@ -7,6 +7,8 @@ using Composite.C1Console.Elements;
 using Composite.C1Console.Security;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
+using Composite.Data;
+using Composite.Data.Types;
 
 using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
@@ -36,7 +38,25 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
             var folders = new List<string>();
             var formElements = new List<Element>();
 
-            if (!String.IsNullOrEmpty(ns))
+            if (String.IsNullOrEmpty(ns))
+            {
+                using (var data = new DataConnection())
+                {
+                    var homepageIds = data.Get<IPageStructure>().Where(s => s.ParentId == Guid.Empty).Select(s => s.Id);
+                    if (homepageIds.Count() > 1)
+                    {
+                        foreach (var id in homepageIds)
+                        {
+                            var page = PageManager.GetPageById(id);
+                            var sanitizedTitle = SanatizeFormName(page.Title);
+
+                            folders.Add(sanitizedTitle);
+                        }
+                    }
+                }
+                
+            }
+            else
             {
                 formDefinitions = formDefinitions.Where(def => def.Name.StartsWith(ns + "."));
             }
@@ -76,8 +96,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                             Label = label,
                             ToolTip = label,
                             HasChildren = true,
-                            Icon = new ResourceHandle("Composite.Icons", "localization-element-closed-root"),
-                            OpenedIcon = new ResourceHandle("Composite.Icons", "localization-element-opened-root")
+                            Icon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-closed-root"),
+                            OpenedIcon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-opened-root")
                         }
                     };
 
@@ -90,7 +110,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                             {
                                 Label = "Edit",
                                 ToolTip = "Edit",
-                                Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                                Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                                 ActionLocation = FormBuilderElementProvider.ActionLocation
                             }
                         });
@@ -102,7 +122,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                             {
                                 Label = "Edit rendering layout",
                                 ToolTip = "Edit rendering layout",
-                                Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                                Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                                 ActionLocation = FormBuilderElementProvider.ActionLocation
                             }
                         });
@@ -117,7 +137,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                             {
                                 Label = "Edit",
                                 ToolTip = "Edit",
-                                Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                                Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                                 ActionLocation = FormBuilderElementProvider.ActionLocation
                             }
                         });
@@ -130,7 +150,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         {
                             Label = "Delete",
                             ToolTip = "Delete",
-                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-delete"),
+                            Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-delete"),
                             ActionLocation = FormBuilderElementProvider.ActionLocation
                         }
                     });
@@ -142,7 +162,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         {
                             Label = "Copy",
                             ToolTip = "Copy",
-                            Icon = new ResourceHandle("Composite.Icons", "generated-type-data-edit"),
+                            Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                             ActionLocation = FormBuilderElementProvider.ActionLocation
                         }
                     });
@@ -151,7 +171,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 }
             }
 
-            foreach (var folder in folders)
+            foreach (var folder in folders.OrderBy(f => f))
             {
                 var handleNamespace = folder;
                 if (!String.IsNullOrEmpty(ns))
@@ -159,13 +179,52 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     handleNamespace = ns + "." + handleNamespace;
                 }
 
-                yield return NamespaceFolderEntityToken.CreateElement(context, typeof(FormBuilderElementProvider).Name, folder, handleNamespace);
+                var folderElement = NamespaceFolderEntityToken.CreateElement(context, typeof(FormBuilderElementProvider).Name, folder, handleNamespace);
+
+                FormBuilderElementProvider.ConfigureFolderActions(folderElement);
+
+                yield return folderElement;
             }
 
             foreach (var form in formElements)
             {
                 yield return form;
             }
+        }
+
+        private static string SanatizeFormName(string input)
+        {
+            var replacementChars = new Dictionary<string, string>
+            {
+                {"Æ", "Ae" },
+                {"æ", "ae"},
+                {"Ø", "Oe"},
+                {"ø", "oe"},
+                {"Å", "Aa"},
+                {"å", "aa"},
+                {"²", "2"},
+                {"&", "og"}
+            };
+
+            var illegalChars = new[] { ".", "-", "(", ")", ",", "/", "\"", "§", ":", "?", "+", "Ë", "é" };
+
+            input = illegalChars.Aggregate(input, (current, s) => current.Replace(s, String.Empty));
+            input = replacementChars.Aggregate(input, (current, s) => current.Replace(s.Key, s.Value));
+
+            var split = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            for (var i = 0; i < split.Length; i++)
+            {
+                var el = split[i];
+
+                split[i] = el.Substring(0, 1).ToUpper();
+
+                if (el.Length > 1)
+                {
+                    split[i] += el.Substring(1, el.Length - 1);
+    }
+}
+
+            return String.Join(String.Empty, split);
         }
     }
 }

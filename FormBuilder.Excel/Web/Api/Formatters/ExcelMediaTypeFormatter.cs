@@ -15,6 +15,25 @@ namespace CompositeC1Contrib.FormBuilder.Excel.Web.Api.Formatters
 {
     public class ExcelMediaTypeFormatter : MediaTypeFormatter
     {
+        private static readonly HashSet<Type> UsableFieldTypes = new HashSet<Type>
+        {
+            typeof(string),
+            typeof(char),
+            typeof(TimeSpan),
+            typeof(DateTime),
+            typeof(sbyte),
+            typeof(byte),
+            typeof(short),
+            typeof(ushort),
+            typeof(int),
+            typeof(uint),
+            typeof(long),
+            typeof(ulong),
+            typeof(float),
+            typeof(double),
+            typeof(decimal)
+        };
+
         public ExcelMediaTypeFormatter()
         {
             SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
@@ -60,7 +79,9 @@ namespace CompositeC1Contrib.FormBuilder.Excel.Web.Api.Formatters
 
             foreach (var field in form.Fields)
             {
-                table.Columns.Add(field.Name, field.ValueType);
+                var usableType = GetUsableFieldType(field);
+
+                table.Columns.Add(field.Name, usableType);
             }
 
             table.Columns.Add("Submitted time", typeof(DateTime));
@@ -79,7 +100,9 @@ namespace CompositeC1Contrib.FormBuilder.Excel.Web.Api.Formatters
 
                     try
                     {
-                        var val = Convert.ChangeType(value.Value, field.ValueType);
+                        var usableType = GetUsableFieldType(field);
+
+                        var val = Convert.ChangeType(value.Value, usableType);
 
                         row[value.Key] = val;
                     }
@@ -92,6 +115,11 @@ namespace CompositeC1Contrib.FormBuilder.Excel.Web.Api.Formatters
             }
 
             return table;
+        }
+
+        private static Type GetUsableFieldType(FormField field)
+        {
+            return !UsableFieldTypes.Contains(field.ValueType) ? typeof(string) : field.ValueType;
         }
     }
 }

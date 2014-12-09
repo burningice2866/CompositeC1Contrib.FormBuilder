@@ -25,7 +25,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
                         return !field.IsRequired;
                     }
 
-                    return value.Length < Length;
+                    return value.Length <= Length;
                 }
             };
         }

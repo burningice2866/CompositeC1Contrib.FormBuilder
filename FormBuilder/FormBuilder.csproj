@@ -48,6 +48,9 @@
     <Reference Include="CompositeC1Contrib.Email">
       <HintPath>..\.vendor\CompositeC1Contrib.Email.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
@@ -91,6 +94,7 @@
     <Compile Include="C1Console\EntityTokens\FormElementProviderEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\NamespaceFolderEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormInstanceEntityToken.cs" />
+    <Compile Include="Configuration\CaptchaConfiguration.cs" />
     <Compile Include="Configuration\FormBuilderConfiguration.cs" />
     <Compile Include="Configuration\FormBuilderConfigurationHandler.cs" />
     <Compile Include="Configuration\IPluginConfiguration.cs" />
@@ -108,12 +112,14 @@
     <Compile Include="SerializableMailTemplate.cs" />
     <Compile Include="Validation\BaseFileValidatorAttribute.cs" />
     <Compile Include="Validation\MaxFileSizeValidatorAttribute.cs" />
+    <Compile Include="Validation\ValidationResultList.cs" />
     <Compile Include="Web\Api\C1ConsoleAuthorizeAttribute.cs" />
     <Compile Include="Web\Api\Controllers\FormSubmitsController.cs" />
     <Compile Include="Web\Api\Formatters\CsvMediaTypeFormatter.cs" />
     <Compile Include="SubmitField.cs" />
     <Compile Include="Web\Api\RequireSessionStateControllerHandler.cs" />
     <Compile Include="Web\BaseFormBuilderRequestContext.cs" />
+    <Compile Include="Web\UI\CompositeC1CaptchaProvider.cs" />
     <Compile Include="Web\FormBuilderRequestContext.cs" />
     <Compile Include="FormModelsFacade.cs" />
     <Compile Include="FunctionProviders\DumpSubmittedFormValues.cs" />
@@ -135,12 +141,14 @@
     <Compile Include="Web\Api\Controllers\ValidationController.cs" />
     <Compile Include="Web\Api\Models\ValidationError.cs" />
     <Compile Include="Web\FormWizardRequestContext.cs" />
+    <Compile Include="Web\CaptchaProvider.cs" />
     <Compile Include="Web\OwinExtensions.cs" />
     <Compile Include="Web\StartupHandler.cs" />
     <Compile Include="Web\UI\ControlsGroup.cs" />
     <Compile Include="Web\UI\FieldsGroup.cs" />
     <Compile Include="Web\UI\FormRenderers\Bootstrap3FormRenderer.cs" />
     <Compile Include="Web\UI\FormRenderers\Bootstrap2FormRenderer.cs" />
+    <Compile Include="Web\UI\GoogleReCAPTCHAProvider.cs" />
     <Compile Include="Web\UI\HtmlForm.cs" />
     <Compile Include="Web\UI\IFormFormRenderer.cs" />
     <Compile Include="Web\UI\InputElementTypeAttribute.cs" />

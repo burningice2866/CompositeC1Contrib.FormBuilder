@@ -95,12 +95,6 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             {
                 RenderHiddenField(field.Name, field.Id, field.Value == null ? String.Empty : FormRenderer.GetValue(field));
             }
-
-            var requiresCaptchaAttr = model.Attributes.OfType<RequiresCaptchaAttribute>().SingleOrDefault();
-            if (requiresCaptchaAttr != null)
-            {
-                RenderHiddenField(RequiresCaptchaAttribute.HiddenFieldName, RequiresCaptchaAttribute.HiddenFieldName, requiresCaptchaAttr.EncryptedValue);
-            }
         }
 
         private void RenderHiddenField(string name, string id, string value)

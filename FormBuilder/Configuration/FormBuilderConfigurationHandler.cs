@@ -24,13 +24,17 @@ namespace CompositeC1Contrib.FormBuilder.Configuration
 
             foreach (XmlNode element in section.ChildNodes)
             {
-                var sType = element.Attributes.Cast<XmlAttribute>().SingleOrDefault(attr => attr.Name == "type");
-                if (sType == null)
+                if (element.Name == "captcha")
                 {
+                    config.Captcha = CaptchaConfiguration.FromXml(element);
+
                     continue;
                 }
 
-                var type = Type.GetType(sType.Value);
+                var elementAttributes = element.Attributes.Cast<XmlAttribute>();
+                var sType = elementAttributes.Single(attr => attr.Name == "type").Value;
+
+                var type = Type.GetType(sType);
                 if (type == null)
                 {
                     continue;
@@ -38,7 +42,7 @@ namespace CompositeC1Contrib.FormBuilder.Configuration
 
                 var plugin = (IPluginConfiguration)Activator.CreateInstance(type);
 
-                plugin.Load(element);
+                plugin.Initialize(element);
 
                 config.Plugins.Add(element.Name, plugin);
             }

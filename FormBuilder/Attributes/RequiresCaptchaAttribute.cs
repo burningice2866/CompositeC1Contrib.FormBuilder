@@ -1,28 +1,34 @@
 ﻿using System;
+using System.Web;
 
-using Composite.Core.WebClient.Captcha;
+using CompositeC1Contrib.FormBuilder.Configuration;
+using CompositeC1Contrib.FormBuilder.Validation;
+using CompositeC1Contrib.FormBuilder.Web;
 
 namespace CompositeC1Contrib.FormBuilder.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class RequiresCaptchaAttribute : Attribute
     {
-        private readonly Lazy<string> _encryptedValue = new Lazy<string>(Captcha.CreateEncryptedValue);
+        private static readonly CaptchaProvider Provider;
 
-        public const string HiddenFieldName = "__captchaEncrypted";
         public const string InputName = "__captchaValue";
 
-        public string EncryptedValue
+        static RequiresCaptchaAttribute()
         {
-            get { return _encryptedValue.Value; }
+            var captchaConfig = FormBuilderConfiguration.GetSection().Captcha;
+
+            Provider = (CaptchaProvider)captchaConfig.Providers[captchaConfig.DefaultProvider];
         }
 
-        public static bool IsValid(string encryptedValue, string postedValue)
+        public string Render(IFormModel model)
         {
-            string value;
-            DateTime dt;
-            
-            return Captcha.Decrypt(encryptedValue, out dt, out value) && value == postedValue;
+            return Provider.Render(model);
+        }
+
+        public void Validate(HttpContextBase ctx, ValidationResultList validationMessages)
+        {
+            Provider.Validate(ctx, validationMessages);
         }
     }
 }

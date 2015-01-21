@@ -78,7 +78,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
 
             RenderingModel.MapValues(request.Form, files);
             OnMappedValues();
-            RenderingModel.Validate();
+            RenderingModel.Validate(true);
         }
 
         public virtual void OnMappedValues() { }

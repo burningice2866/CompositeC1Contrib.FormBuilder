@@ -39,7 +39,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
 
             model.SetDefaultValues();
             model.MapValues(form, files);
-            model.Validate();
+            model.Validate(false);
 
             if (!model.ValidationResult.Any())
             {

@@ -8,7 +8,7 @@ namespace CompositeC1Contrib.FormBuilder
     public interface IFormModel
     {
         string Name { get; }
-        IList<FormValidationRule> ValidationResult { get; }
+        ValidationResultList ValidationResult { get; }
         IList<FormField> Fields { get; }
 
         bool ForceHttps { get; }
@@ -16,6 +16,6 @@ namespace CompositeC1Contrib.FormBuilder
 
         void SetDefaultValues();
         void MapValues(NameValueCollection values, IEnumerable<FormFile> files);
-        void Validate();
+        void Validate(bool validateCaptcha);
     }
 }

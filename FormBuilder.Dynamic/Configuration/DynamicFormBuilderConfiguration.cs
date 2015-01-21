@@ -23,7 +23,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Configuration
             SubmitHandlers = new List<SubmitHandlerElement>();
         }
 
-        public void Load(XmlNode element)
+        public void Initialize(XmlNode element)
         {
             var formSettingsHandler = element.Attributes.Cast<XmlAttribute>().SingleOrDefault(attr => attr.Name == "settingsHandler");
             if (formSettingsHandler != null)

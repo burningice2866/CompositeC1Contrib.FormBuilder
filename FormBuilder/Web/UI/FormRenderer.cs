@@ -55,10 +55,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return WriteErrors(validationResult);
         }
 
-        public static IHtmlString WriteErrors(IEnumerable<FormValidationRule> validationResult)
+        public static IHtmlString WriteErrors(ValidationResultList validationResult)
         {
-            var formValidationRules = validationResult as IList<FormValidationRule> ?? validationResult.ToList();
-            if (!formValidationRules.Any())
+            if (!validationResult.Any())
             {
                 return new HtmlString(String.Empty);
             }
@@ -74,7 +73,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             sb.Append("<ul>");
 
-            foreach (var el in formValidationRules)
+            foreach (var el in validationResult)
             {
                 sb.Append("<li>" + el.ValidationMessage + "</li>");
             }
@@ -146,7 +145,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new HtmlString(sb.ToString());
         }
 
-        private static void WriteRowStart(string name, string elementName, string errorClass, bool isRequired, Action<StringBuilder> extraAttributesRenderer, StringBuilder sb)
+        public static void WriteRowStart(string name, string elementName, string errorClass, bool isRequired, Action<StringBuilder> extraAttributesRenderer, StringBuilder sb)
         {
             if (FieldsRow.Current != null)
             {
@@ -163,7 +162,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             sb.Append(">");
         }
 
-        private static void WriteRowEnd(StringBuilder sb)
+        public static void WriteRowEnd(StringBuilder sb)
         {
             if (FieldsRow.Current != null)
             {
@@ -336,7 +335,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             WriteLabelContent(field.IsRequired, field.Label.Label, field.Label.Link, field.Label.OpenLinkInNewWindow, sb);
         }
 
-        public static string WriteErrorClass(string name, IEnumerable<FormValidationRule> validationResult)
+        public static string WriteErrorClass(string name, ValidationResultList validationResult)
         {
             return validationResult.Any(el => el.AffectedFormIds.Contains(name)) ? RendererImplementation.ErrorClass : String.Empty;
         }
@@ -385,39 +384,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 return null;
             }
 
-            var sb = new StringBuilder();
+            var s = requiresCaptchaAttr.Render(model);
 
-            WriteRowStart(RequiresCaptchaAttribute.InputName, "captcha", WriteErrorClass(RequiresCaptchaAttribute.InputName, model.ValidationResult), true, null, sb);
-
-            WriteLabelStart(false, RequiresCaptchaAttribute.InputName, sb);
-            WriteLabelContent(true, Localization.Captcha_Label, String.Empty, false, sb);
-            WriteLabelEnd(sb);
-
-            using (new ControlsGroup(sb))
-            {
-                if (!String.IsNullOrEmpty(Localization.Captcha_Help))
-                {
-                    WriteFieldHelpStart(sb);
-                }
-
-                sb.AppendFormat("<div class=\"captcha-input\">");
-                sb.AppendFormat("<input name=\"{0}\" id=\"{0}\" type=\"text\"  />", RequiresCaptchaAttribute.InputName);
-                sb.AppendFormat("</div>");
-
-                sb.AppendFormat("<div class=\"captcha-img\">");
-                sb.AppendFormat("<img src=\"/Renderers/Captcha.ashx?value={0}\" />", requiresCaptchaAttr.EncryptedValue);
-                sb.AppendFormat("</div>");
-
-
-                if (!String.IsNullOrEmpty(Localization.Captcha_Help))
-                {
-                    WriteFieldHelpEnd(Localization.Captcha_Help, sb);
-                }
-            }
-
-            WriteRowEnd(sb);
-
-            return new HtmlString(sb.ToString());
+            return new HtmlString(s);
         }
     }
 }

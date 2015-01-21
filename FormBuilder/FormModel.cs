@@ -16,14 +16,14 @@ namespace CompositeC1Contrib.FormBuilder
     public sealed class FormModel : IFormModel
     {
         private static readonly IDictionary<Type, Action<FormField, string>> ValueMappers = new Dictionary<Type, Action<FormField, string>>();
-        
-        private IDictionary<FormField, IList<FormValidationRule>> _ruleList;
+
+        private IDictionary<FormField, ValidationResultList> _ruleList;
 
         public NameValueCollection SubmittedValues { get; private set; }
 
         public string Name { get; private set; }
         public IList<FormField> Fields { get; private set; }
-        public IList<FormValidationRule> ValidationResult { get; private set; }
+        public ValidationResultList ValidationResult { get; private set; }
         public IList<Attribute> Attributes { get; private set; }
 
         public Action<FormValidationEventArgs> OnValidateHandler { get; set; }
@@ -208,7 +208,7 @@ namespace CompositeC1Contrib.FormBuilder
             Name = name;
 
             Fields = new List<FormField>();
-            ValidationResult = new List<FormValidationRule>();
+            ValidationResult = new ValidationResultList();
             Attributes = new List<Attribute>();
         }
 
@@ -219,7 +219,7 @@ namespace CompositeC1Contrib.FormBuilder
             foreach (var fieldName in fieldNames)
             {
                 var field = Fields.Single(f => f.Name == fieldName);
-                var result = GetFormValidationResult(_ruleList[field], true);
+                var result = ValidationResultList.GetFormValidationResult(_ruleList[field], true);
 
                 if (result.Any(r => r.AffectedFormIds.Contains(fieldName)))
                 {
@@ -230,7 +230,7 @@ namespace CompositeC1Contrib.FormBuilder
             return true;
         }
 
-        public void Validate()
+        public void Validate(bool validateCaptcha)
         {
             if (SubmittedValues == null || SubmittedValues.AllKeys.Length == 0)
             {
@@ -251,25 +251,22 @@ namespace CompositeC1Contrib.FormBuilder
 
             EnsureRulesList();
 
-            var validationList = new List<FormValidationRule>();
+            var validationList = new ValidationResultList();
             foreach (var list in _ruleList.Values)
             {
-                var result = GetFormValidationResult(list, false);
+                var result = ValidationResultList.GetFormValidationResult(list, false);
 
                 validationList.AddRange(result);
             }
 
-            var requiresCaptchaAttr = Attributes.OfType<RequiresCaptchaAttribute>().SingleOrDefault();
-            if (requiresCaptchaAttr != null)
+            if (validateCaptcha)
             {
-                var form = HttpContext.Current.Request.Form;
-                var encrypted = form[RequiresCaptchaAttribute.HiddenFieldName];
-                var postedValue = form[RequiresCaptchaAttribute.InputName];
-
-                var isValid = RequiresCaptchaAttribute.IsValid(encrypted, postedValue);
-                if (!isValid)
+                var requiresCaptchaAttr = Attributes.OfType<RequiresCaptchaAttribute>().SingleOrDefault();
+                if (requiresCaptchaAttr != null)
                 {
-                    validationList.Add(new FormValidationRule(new[] { RequiresCaptchaAttribute.InputName }, Localization.Captcha_Error));
+                    var form = new HttpContextWrapper(HttpContext.Current);
+
+                    requiresCaptchaAttr.Validate(form, validationList);
                 }
             }
 
@@ -308,30 +305,15 @@ namespace CompositeC1Contrib.FormBuilder
             return parts.Length >= 2 && parts.All(p => Regex.IsMatch(p, @"^[a-zA-Z0-9]+$"));
         }
 
-        private static IEnumerable<FormValidationRule> GetFormValidationResult(IEnumerable<FormValidationRule> rules, bool skipMultipleFieldsRules)
-        {
-            return rules.Where(r =>
-            {
-                if (skipMultipleFieldsRules)
-                {
-                    return r.AffectedFormIds.Count() == 1;
-                }
-
-                return true;
-            })
-            .Where(r => !r.Rule())
-            .ToList();
-        }
-
         private void EnsureRulesList()
         {
-            _ruleList = new Dictionary<FormField, IList<FormValidationRule>>();
+            _ruleList = new Dictionary<FormField, ValidationResultList>();
 
             foreach (var field in Fields)
             {
                 if (!_ruleList.ContainsKey(field))
                 {
-                    _ruleList.Add(field, new List<FormValidationRule>());
+                    _ruleList.Add(field, new ValidationResultList());
                 }
 
                 var list = _ruleList[field];

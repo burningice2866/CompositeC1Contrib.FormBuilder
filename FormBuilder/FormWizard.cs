@@ -16,7 +16,7 @@ namespace CompositeC1Contrib.FormBuilder
         public XhtmlDocument SuccessResponse { get; set; }
         public IList<FormWizardStep> Steps { get; private set; }
 
-        public IList<FormValidationRule> ValidationResult { get; private set; }
+        public ValidationResultList ValidationResult { get; private set; }
 
         public IList<FormField> Fields
         {
@@ -37,7 +37,7 @@ namespace CompositeC1Contrib.FormBuilder
             SuccessResponse = new XhtmlDocument();
             Steps = new List<FormWizardStep>();
 
-            ValidationResult = new List<FormValidationRule>();
+            ValidationResult = new ValidationResultList();
         }
 
         public bool ForceHttps
@@ -67,15 +67,14 @@ namespace CompositeC1Contrib.FormBuilder
                 var localFiles = MapLocal(files, stepPrepend);
 
                 model.MapValues(localValues, localFiles);
-                model.Validate();
             }
         }
 
-        public void Validate()
+        public void Validate(bool validateCaptcha)
         {
             foreach (var model in Steps.Select(s => s.FormModel))
             {
-                model.Validate();
+                model.Validate(validateCaptcha);
 
                 foreach (var result in model.ValidationResult)
                 {

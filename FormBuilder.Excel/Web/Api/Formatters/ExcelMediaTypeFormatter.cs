@@ -64,8 +64,15 @@ namespace CompositeC1Contrib.FormBuilder.Excel.Web.Api.Formatters
                 var form = list[0].OwningForm;
                 var table = GenerateDataTable(form, list);
 
+                var formName = form.Name.Substring(form.Name.LastIndexOf(".", StringComparison.Ordinal) + 1);
+
+                if (formName.Length > 31)
+                {
+                    formName = formName.Substring(0, 31);
+                }
+
                 var workbook = new XLWorkbook();
-                var worksheet = workbook.Worksheets.Add(list[0].OwningForm.Name);
+                var worksheet = workbook.Worksheets.Add(formName);
 
                 worksheet.Cell(1, 1).InsertTable(table);
                 worksheet.Range(2, 1, table.Rows.Count, table.Columns.Count).Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;

@@ -60,13 +60,23 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             FormRenderer.WriteRowStart(RequiresCaptchaAttribute.InputName, "captcha", FormRenderer.WriteErrorClass(RequiresCaptchaAttribute.InputName, model.ValidationResult), true, null, sb);
 
             FormRenderer.WriteLabelStart(false, RequiresCaptchaAttribute.InputName, sb);
-            FormRenderer.WriteLabelContent(true, Localization.Captcha_Label, String.Empty, false, sb);
+            FormRenderer.WriteLabelContent(true, Localization.Captcha_GoogleReCAPTCHA_Label, String.Empty, false, sb);
             FormRenderer.WriteLabelEnd(sb);
 
             using (new ControlsGroup(sb))
             {
+                if (!String.IsNullOrEmpty(Localization.Captcha_GoogleReCAPTCHA_Help))
+                {
+                    FormRenderer.WriteFieldHelpStart(sb);
+                }
+
                 sb.AppendFormat("<div class=\"g-recaptcha captcha-img\" data-sitekey=\"{0}\"></div>", _siteKey);
                 sb.AppendFormat("<script type=\"text/javascript\" src=\"https://www.google.com/recaptcha/api.js?hl={0}\"></script>", Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName);
+
+                if (!String.IsNullOrEmpty(Localization.Captcha_CompositeC1_Help))
+                {
+                    FormRenderer.WriteFieldHelpEnd(Localization.Captcha_GoogleReCAPTCHA_Help, sb);
+                }
             }
 
             FormRenderer.WriteRowEnd(sb);

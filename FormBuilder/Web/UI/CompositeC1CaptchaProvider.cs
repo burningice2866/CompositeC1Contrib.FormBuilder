@@ -28,7 +28,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var isValid = Captcha.Decrypt(EncryptedValue, out dt, out value) && value == ctx.Request.Form[HiddenFieldName];
             if (!isValid)
             {
-                validationMessages.Add(RequiresCaptchaAttribute.InputName, Localization.Captcha_Error);
+                validationMessages.Add(RequiresCaptchaAttribute.InputName, Localization.Captcha_CompositeC1_Error);
             }
         }
 
@@ -44,12 +44,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             FormRenderer.WriteRowStart(RequiresCaptchaAttribute.InputName, "captcha", FormRenderer.WriteErrorClass(RequiresCaptchaAttribute.InputName, model.ValidationResult), true, null, sb);
 
             FormRenderer.WriteLabelStart(false, RequiresCaptchaAttribute.InputName, sb);
-            FormRenderer.WriteLabelContent(true, Localization.Captcha_Label, String.Empty, false, sb);
+            FormRenderer.WriteLabelContent(true, Localization.Captcha_CompositeC1_Label, String.Empty, false, sb);
             FormRenderer.WriteLabelEnd(sb);
 
             using (new ControlsGroup(sb))
             {
-                if (!String.IsNullOrEmpty(Localization.Captcha_Help))
+                if (!String.IsNullOrEmpty(Localization.Captcha_CompositeC1_Help))
                 {
                     FormRenderer.WriteFieldHelpStart(sb);
                 }
@@ -59,13 +59,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 sb.AppendFormat("</div>");
 
                 sb.AppendFormat("<div class=\"captcha-img\">");
-                sb.AppendFormat("<img src=\"/Renderers/Captcha.ashx?value={0}\" />", EncryptedValue);
+                sb.AppendFormat("<img src=\"{0}\" />", Captcha.GetImageUrl(EncryptedValue));
                 sb.AppendFormat("</div>");
 
-
-                if (!String.IsNullOrEmpty(Localization.Captcha_Help))
+                if (!String.IsNullOrEmpty(Localization.Captcha_CompositeC1_Help))
                 {
-                    FormRenderer.WriteFieldHelpEnd(Localization.Captcha_Help, sb);
+                    FormRenderer.WriteFieldHelpEnd(Localization.Captcha_CompositeC1_Help, sb);
                 }
             }
 

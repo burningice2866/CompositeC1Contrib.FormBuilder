@@ -5,7 +5,11 @@
   
   <string key="Widgets.Dropdown.SelectLabel" value="Vælg" />
   
-  <string key="Captcha.Label" value="Captcha" />
-  <string key="Captcha.Help" value="Skriv teksten fra billedet" />
-  <string key="Captcha.Error" value="Teksten skal matche billedet" />
+  <string key="Captcha.CompositeC1.Label" value="Skriv teksten fra billedet" />
+  <string key="Captcha.CompositeC1.Help" value="Skriv teksten fra billedet" />
+  <string key="Captcha.CompositeC1.Error" value="Teksten skal matche billedet" />
+
+  <string key="Captcha.GoogleReCAPTCHA.Label" value="Sæt kryds her" />
+  <string key="Captcha.GoogleReCAPTCHA.Help" value="For at forhindre misbrug af denne blanket, skal du sætte kryds i feltet. Eventuelt bliver du bedt om at indtaste en tekst, der vises som et billede." />
+  <string key="Captcha.GoogleReCAPTCHA.Error" value="Du skal sætte kryds" />
 </strings>

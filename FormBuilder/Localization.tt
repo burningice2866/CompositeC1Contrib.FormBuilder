@@ -115,7 +115,7 @@ namespace CompositeC1Contrib.FormBuilder
 				}
 
 
-				output.Append(" /// <summary>%comment%</summary> \r\n"
+				output.Append(" /// <summary>&quot;%comment%&quot;</summary> \r\n"
 							   .Replace("%comment%", XmlEncode(value).Replace("\r\n", "\r\n ///")));
 
 
@@ -130,7 +130,7 @@ namespace CompositeC1Contrib.FormBuilder
 					string[] parametersReferences = new string[parametersCount];
 
 					for(int i=0; i<parametersCount; i++) {
-						parametersDefinitions[i] = "string parameter" + i;
+						parametersDefinitions[i] = "object parameter" + i;
 						parametersReferences[i] = "parameter" + i;
 					}
 

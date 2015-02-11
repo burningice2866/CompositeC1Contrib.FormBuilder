@@ -12,8 +12,6 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
     {
         private static readonly CaptchaProvider Provider;
 
-        public const string InputName = "__captchaValue";
-
         static RequiresCaptchaAttribute()
         {
             var captchaConfig = FormBuilderConfiguration.GetSection().Captcha;

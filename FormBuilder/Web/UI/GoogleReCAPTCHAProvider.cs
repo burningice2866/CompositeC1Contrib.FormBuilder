@@ -8,7 +8,6 @@ using System.Web;
 
 using Newtonsoft.Json;
 
-using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
@@ -24,8 +23,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             public string[] ErrorCodes { get; set; }
         }
 
-        private const string SiteVerifyUrl = "https://www.google.com/recaptcha/api/siteverify?";
+        private const string SiteVerifyUrl = "https://www.google.com/recaptcha/api/siteverify";
         private const string HiddenFieldName = "g-recaptcha-response";
+        private const string InputFieldName = "__captchaValue";
 
         private static readonly string Version = typeof(GoogleReCAPTCHAProvider).Name;
 
@@ -57,9 +57,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             var sb = new StringBuilder();
 
-            FormRenderer.WriteRowStart(RequiresCaptchaAttribute.InputName, "captcha", FormRenderer.WriteErrorClass(RequiresCaptchaAttribute.InputName, model.ValidationResult), true, null, sb);
+            FormRenderer.WriteRowStart(InputFieldName, "captcha", FormRenderer.WriteErrorClass(InputFieldName, model.ValidationResult), true, null, sb);
 
-            FormRenderer.WriteLabelStart(false, RequiresCaptchaAttribute.InputName, sb);
+            FormRenderer.WriteLabelStart(false, InputFieldName, sb);
             FormRenderer.WriteLabelContent(true, Localization.Captcha_GoogleReCAPTCHA_Label, String.Empty, false, sb);
             FormRenderer.WriteLabelEnd(sb);
 
@@ -88,7 +88,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             var response = ctx.Request.Form[HiddenFieldName];
             var ip = ctx.Request.UserHostAddress;
-            var url = String.Format("{0}secret={1}&remoteip={2}&v={3}&response={4}", SiteVerifyUrl, _secret, ip, Version, response);
+            var url = String.Format("{0}?secret={1}&remoteip={2}&v={3}&response={4}", SiteVerifyUrl, _secret, ip, Version, response);
 
             using (var client = new HttpClient())
             {
@@ -97,7 +97,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
                 if (!result.Success)
                 {
-                    validationMessages.Add(RequiresCaptchaAttribute.InputName, String.Join(", ", result.ErrorCodes));
+                    validationMessages.Add(InputFieldName, String.Join(", ", result.ErrorCodes));
                 }
             }
         }

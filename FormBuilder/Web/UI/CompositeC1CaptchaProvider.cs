@@ -4,46 +4,43 @@ using System.Web;
 
 using Composite.Core.WebClient.Captcha;
 
-using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public class CompositeC1CaptchaProvider : CaptchaProvider
     {
-        private readonly Lazy<string> _encryptedValue = new Lazy<string>(Captcha.CreateEncryptedValue);
-
         private const string HiddenFieldName = "__captchaEncrypted";
-
-        public string EncryptedValue
-        {
-            get { return _encryptedValue.Value; }
-        }
+        private const string InputFieldName = "__captchaValue";
 
         public override void Validate(HttpContextBase ctx, ValidationResultList validationMessages)
         {
             string value;
             DateTime dt;
 
-            var isValid = Captcha.Decrypt(EncryptedValue, out dt, out value) && value == ctx.Request.Form[HiddenFieldName];
+            var encryptedValue = ctx.Request.Form[HiddenFieldName];
+            var postedValue = ctx.Request.Form[InputFieldName];
+
+            var isValid = Captcha.Decrypt(encryptedValue, out dt, out value) && value == postedValue;
             if (!isValid)
             {
-                validationMessages.Add(RequiresCaptchaAttribute.InputName, Localization.Captcha_CompositeC1_Error);
+                validationMessages.Add(InputFieldName, Localization.Captcha_CompositeC1_Error);
             }
         }
 
         public override string Render(IFormModel model)
         {
             var sb = new StringBuilder();
+            var encryptedValue = Captcha.CreateEncryptedValue();
 
             sb.AppendFormat("<input type=\"hidden\" name=\"{0}\" id=\"{1}\" value=\"{2}\" />",
                 HttpUtility.HtmlAttributeEncode(HiddenFieldName),
                 HttpUtility.HtmlAttributeEncode(HiddenFieldName),
-                HttpUtility.HtmlAttributeEncode(EncryptedValue));
+                HttpUtility.HtmlAttributeEncode(encryptedValue));
 
-            FormRenderer.WriteRowStart(RequiresCaptchaAttribute.InputName, "captcha", FormRenderer.WriteErrorClass(RequiresCaptchaAttribute.InputName, model.ValidationResult), true, null, sb);
+            FormRenderer.WriteRowStart(InputFieldName, "captcha", FormRenderer.WriteErrorClass(InputFieldName, model.ValidationResult), true, null, sb);
 
-            FormRenderer.WriteLabelStart(false, RequiresCaptchaAttribute.InputName, sb);
+            FormRenderer.WriteLabelStart(false, InputFieldName, sb);
             FormRenderer.WriteLabelContent(true, Localization.Captcha_CompositeC1_Label, String.Empty, false, sb);
             FormRenderer.WriteLabelEnd(sb);
 
@@ -55,11 +52,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 }
 
                 sb.AppendFormat("<div class=\"captcha-input\">");
-                sb.AppendFormat("<input name=\"{0}\" id=\"{0}\" type=\"text\"  />", RequiresCaptchaAttribute.InputName);
+                sb.AppendFormat("<input name=\"{0}\" id=\"{0}\" type=\"text\"  />", InputFieldName);
                 sb.AppendFormat("</div>");
 
                 sb.AppendFormat("<div class=\"captcha-img\">");
-                sb.AppendFormat("<img src=\"{0}\" />", Captcha.GetImageUrl(EncryptedValue));
+                sb.AppendFormat("<img src=\"{0}\" />", Captcha.GetImageUrl(encryptedValue));
                 sb.AppendFormat("</div>");
 
                 if (!String.IsNullOrEmpty(Localization.Captcha_CompositeC1_Help))

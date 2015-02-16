@@ -29,14 +29,14 @@ namespace CompositeC1Contrib.FormBuilder
         public Action<FormValidationEventArgs> OnValidateHandler { get; set; }
         public Action<FormModel> SetDefaultValuesHandler { get; set; }
 
+        public bool DisableAntiForgery
+        {
+            get { return Attributes.OfType<DisableAntiForgeryAttribute>().Any(); }
+        }
+
         public bool ForceHttps
         {
-            get
-            {
-                var forceHttpsAttr = Attributes.OfType<ForceHttpsConnectionAttribute>().SingleOrDefault();
-
-                return forceHttpsAttr != null;
-            }
+            get { return Attributes.OfType<ForceHttpsConnectionAttribute>().Any(); }
         }
 
         public bool HasFileUpload

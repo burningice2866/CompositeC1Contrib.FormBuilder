@@ -3,5 +3,5 @@
 namespace CompositeC1Contrib.FormBuilder.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class ForceHttpsConnectionAttribute : Attribute { }
+    public class DisableAntiForgeryAttribute : Attribute { }
 }

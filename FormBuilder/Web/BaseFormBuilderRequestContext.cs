@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Helpers;
 
 using CompositeC1Contrib.FormBuilder.Web.UI;
 
@@ -21,7 +22,24 @@ namespace CompositeC1Contrib.FormBuilder.Web
 
         public bool IsSuccess
         {
-            get { return IsOwnSubmit && !RenderingModel.ValidationResult.Any(); }
+            get
+            {
+                if (!IsOwnSubmit)
+                {
+                    return false;
+                }
+
+                if (!RenderingModel.DisableAntiForgery)
+                {
+                    try
+                    {
+                        AntiForgery.Validate();
+                    }
+                    catch { return false; }
+                }
+
+                return !RenderingModel.ValidationResult.Any();
+            }
         }
 
         public abstract T RenderingModel { get; }

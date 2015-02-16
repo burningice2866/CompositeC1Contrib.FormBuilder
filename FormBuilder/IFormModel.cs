@@ -11,6 +11,7 @@ namespace CompositeC1Contrib.FormBuilder
         ValidationResultList ValidationResult { get; }
         IList<FormField> Fields { get; }
 
+        bool DisableAntiForgery { get; }
         bool ForceHttps { get; }
         bool HasFileUpload { get; }
 

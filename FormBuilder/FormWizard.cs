@@ -23,12 +23,19 @@ namespace CompositeC1Contrib.FormBuilder
             get { return Steps.Select(s => s.FormModel).SelectMany(m => m.Fields).ToList(); }
         }
 
+        public bool DisableAntiForgery
+        {
+            get { return Steps.Select(s => s.FormModel).Any(m => m.DisableAntiForgery); }
+        }
+
+        public bool ForceHttps
+        {
+            get { return Steps.Select(s => s.FormModel).Any(m => m.ForceHttps); }
+        }
+
         public bool HasFileUpload
         {
-            get
-            {
-                return Fields.Any(f => f.ValueType == typeof(FormFile) || f.ValueType == typeof(IEnumerable<FormFile>));
-            }
+            get { return Fields.Any(f => f.ValueType == typeof(FormFile) || f.ValueType == typeof(IEnumerable<FormFile>)); }
         }
 
         public FormWizard()
@@ -38,11 +45,6 @@ namespace CompositeC1Contrib.FormBuilder
             Steps = new List<FormWizardStep>();
 
             ValidationResult = new ValidationResultList();
-        }
-
-        public bool ForceHttps
-        {
-            get { return Steps.Select(s => s.FormModel).Any(m => m.ForceHttps); }
         }
 
         public virtual void Submit() { }

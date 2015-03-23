@@ -10,7 +10,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         public override void OnFinish(object sender, EventArgs e)
         {
             var formToken = (FormInstanceEntityToken)EntityToken;
-            var formName = GetBinding<string>("FormName");
+            var formName = GetBinding<string>("Name");
             var definition = DefinitionsFacade.GetDefinition(formToken.FormName);
 
             DefinitionsFacade.Copy(definition, formName);

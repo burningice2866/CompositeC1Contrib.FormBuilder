@@ -29,6 +29,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var name = GetBinding<string>("Name");
 
+            if (!name.Contains("."))
+            {
+                ShowFieldMessage("Name", "Name needs to contain one or more '.' (dot)");
+
+                return false;
+            }
+
             if (!FormModel.IsValidName(name))
             {
                 ShowFieldMessage("Name", "Name is invalid, only a-z and 0-9 is allowed");

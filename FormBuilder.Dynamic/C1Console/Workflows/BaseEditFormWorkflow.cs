@@ -143,7 +143,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             if (!FormModel.IsValidName(name))
             {
-                ShowFieldMessage("FormName", "Form name is invalid, only a-z and 0-9 is allowed");
+                ShowFieldMessage("Name", "Form name is invalid, only a-z and 0-9 is allowed");
 
                 return false;
             }
@@ -154,7 +154,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 return true;
             }
 
-            ShowFieldMessage("FormName", "Form name already exists");
+            ShowFieldMessage("Name", "Form name already exists");
 
             return false;
         }

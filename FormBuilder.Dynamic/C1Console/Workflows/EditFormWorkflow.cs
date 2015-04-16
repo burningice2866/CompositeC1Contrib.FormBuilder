@@ -16,7 +16,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public override void OnInitialize(object sender, EventArgs e)
         {
-            if (BindingExist("Name"))
+            if (BindingExist("BoundToken"))
             {
                 return;
             }
@@ -27,13 +27,15 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             Bindings.Add("RequiresCaptcha", definition.Model.Attributes.OfType<RequiresCaptchaAttribute>().Any());
             Bindings.Add("ForceHttpsConnection", definition.Model.ForceHttps);
             Bindings.Add("SubmitButtonLabel", definition.Model.SubmitButtonLabel);
-            
+
             SetupFormData(definition);
+
+            Bindings.Add("BoundToken", formToken);
         }
 
         public override void OnFinish(object sender, EventArgs e)
         {
-            var formToken = (FormInstanceEntityToken)EntityToken;
+            var formToken = GetBinding<FormInstanceEntityToken>("BoundToken");
             var definition = DynamicFormsFacade.GetFormByName(formToken.FormName);
 
             var submitButtonLabel = GetBinding<string>("SubmitButtonLabel");

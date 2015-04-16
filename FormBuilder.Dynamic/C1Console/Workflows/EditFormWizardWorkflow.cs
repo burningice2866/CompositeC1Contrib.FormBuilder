@@ -10,7 +10,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public override void OnInitialize(object sender, EventArgs e)
         {
-            if (BindingExist("Name"))
+            if (BindingExist("BoundToken"))
             {
                 return;
             }
@@ -21,11 +21,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             Bindings.Add("ForceHttpsConnection", wizard.ForceHttpSConnection);
 
             SetupFormData(wizard);
+
+            Bindings.Add("BoundToken", formToken);
         }
 
         public override void OnFinish(object sender, EventArgs e)
         {
-            var wizardToken = (FormInstanceEntityToken)EntityToken;
+            var wizardToken = GetBinding<FormInstanceEntityToken>("BoundToken");
             var wizard = DynamicFormWizardsFacade.GetWizard(wizardToken.FormName);
 
             var forceHttpsConnection = GetBinding<bool>("ForceHttpsConnection");

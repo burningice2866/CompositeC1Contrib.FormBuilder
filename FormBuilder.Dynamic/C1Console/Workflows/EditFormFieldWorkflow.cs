@@ -24,31 +24,35 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
     {
         public override void OnInitialize(object sender, EventArgs e)
         {
-            if (!BindingExist("FieldName"))
+            if (BindingExist("BoundToken"))
             {
-                var fieldToken = (FormFieldEntityToken)EntityToken;
-
-                var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
-                var field = definition.Model.Fields.Single(f => f.Name == fieldToken.FieldName);
-                var defaultValue = String.Empty;
-
-                XElement el;
-                if (definition.DefaultValues.TryGetValue(field.Name, out el))
-                {
-                    defaultValue = el.ToString();
-                }
-
-                Bindings.Add("FieldName", field.Name);
-                Bindings.Add("Label", field.Label == null ? String.Empty : field.Label.Label);
-                Bindings.Add("PlaceholderText", field.PlaceholderText);
-                Bindings.Add("Help", field.Help);
-                Bindings.Add("DefaultValue", defaultValue);
-                Bindings.Add("ValueType", field.ValueType);
-                Bindings.Add("InputElementType", field.InputElementType.GetType().AssemblyQualifiedName);
-                Bindings.Add("IsReadOnly", field.IsReadOnly);
-
-                SetupFormData(field);
+                return;
             }
+
+            var fieldToken = (FormFieldEntityToken)EntityToken;
+
+            var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
+            var field = definition.Model.Fields.Single(f => f.Name == fieldToken.FieldName);
+            var defaultValue = String.Empty;
+
+            XElement el;
+            if (definition.DefaultValues.TryGetValue(field.Name, out el))
+            {
+                defaultValue = el.ToString();
+            }
+
+            Bindings.Add("FieldName", field.Name);
+            Bindings.Add("Label", field.Label == null ? String.Empty : field.Label.Label);
+            Bindings.Add("PlaceholderText", field.PlaceholderText);
+            Bindings.Add("Help", field.Help);
+            Bindings.Add("DefaultValue", defaultValue);
+            Bindings.Add("ValueType", field.ValueType);
+            Bindings.Add("InputElementType", field.InputElementType.GetType().AssemblyQualifiedName);
+            Bindings.Add("IsReadOnly", field.IsReadOnly);
+
+            SetupFormData(field);
+
+            Bindings.Add("BoundToken", fieldToken);
         }
 
         private void FieldTypeChangedHandler(object sender, EventArgs e)
@@ -107,7 +111,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public override void OnFinish(object sender, EventArgs e)
         {
-            var fieldToken = (FormFieldEntityToken)EntityToken;
+            var fieldToken = GetBinding<FormFieldEntityToken>("BoundToken");
 
             var fieldName = GetBinding<string>("FieldName");
             var label = GetBinding<string>("Label");
@@ -115,16 +119,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var help = GetBinding<string>("Help");
             var defaultValue = GetBinding<string>("DefaultValue");
             var inputElementType = Type.GetType(GetBinding<string>("InputElementType"));
-            var isReadOnly = GetBinding<bool>("IsReadOnly");            
+            var isReadOnly = GetBinding<bool>("IsReadOnly");
 
             var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
             var field = definition.Model.Fields.Single(f => f.Name == fieldToken.FieldName);
 
-            if (field.Name != fieldName && RenderingLayoutFacade.HasCustomRenderingLayout(fieldToken.FormName))
+            var isNewName = field.Name != fieldName;
+
+            if (isNewName && RenderingLayoutFacade.HasCustomRenderingLayout(fieldToken.FormName))
             {
                 var layout = RenderingLayoutFacade.GetRenderingLayout(fieldToken.FormName);
                 var fieldElement = layout.Body.Descendants().SingleOrDefault(el => el.Name == Namespaces.Xhtml + "p" && el.Value.Trim() == "%" + field.Name + "%");
-                
+
                 if (fieldElement != null)
                 {
                     fieldElement.Value = String.Format("%{0}%", fieldName);
@@ -192,8 +198,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             DynamicFormsFacade.SaveForm(definition);
 
-            CreateSpecificTreeRefresher().PostRefreshMesseges(EntityToken);
-            SetSaveStatus(true);
+            if (isNewName)
+            {
+                fieldToken = new FormFieldEntityToken(definition.Model.Name, fieldName);
+
+                UpdateBinding("BoundToken", fieldToken);
+                SetSaveStatus(true, fieldToken);
+            }
+            else
+            {
+                SetSaveStatus(true);
+            }
+
+            CreateParentTreeRefresher().PostRefreshMesseges(EntityToken);
         }
 
         private void SaveExtraSettings(FormField field)

@@ -97,7 +97,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             foreach (var prop in settingsType.GetProperties())
             {
                 var value = prop.GetValue(settings, null);
-                
+
                 Bindings.Add(prop.Name, value);
             }
         }
@@ -133,7 +133,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public override bool Validate()
         {
-            var formToken = (FormInstanceEntityToken)EntityToken;
+            var formToken = GetBinding<FormInstanceEntityToken>("BoundToken");
             var name = GetBinding<string>("Name");
 
             if (name == formToken.FormName)
@@ -161,24 +161,31 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         protected void Save(IDynamicFormDefinition definition)
         {
-            var token = (FormInstanceEntityToken)EntityToken;
+            var token = GetBinding<FormInstanceEntityToken>("BoundToken");
             var name = GetBinding<string>("Name");
 
             SaveExtraSettings(definition);
 
-            if (name != token.FormName)
+            var isNewName = name != token.FormName;
+
+            if (isNewName)
             {
                 DefinitionsFacade.Copy(definition, name);
-
                 DefinitionsFacade.Delete(definition);
+
+                token = new FormInstanceEntityToken(token.Source, name);
+
+                UpdateBinding("BoundToken", token);
+                SetSaveStatus(true, token);
             }
             else
             {
                 DefinitionsFacade.Save(definition);
+
+                SetSaveStatus(true);
             }
 
-            CreateSpecificTreeRefresher().PostRefreshMesseges(new FormElementProviderEntityToken());
-            SetSaveStatus(true);
+            CreateParentTreeRefresher().PostRefreshMesseges(EntityToken);
         }
     }
 }

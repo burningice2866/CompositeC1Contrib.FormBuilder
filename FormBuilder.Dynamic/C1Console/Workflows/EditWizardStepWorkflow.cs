@@ -14,12 +14,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public override void OnInitialize(object sender, EventArgs e)
         {
-            if (BindingExist("StepName"))
+            if (BindingExist("BoundToken"))
             {
                 return;
             }
 
-            var wizardStepEntityToken = (FormWizardStepEntityToken) EntityToken;
+            var wizardStepEntityToken = (FormWizardStepEntityToken)EntityToken;
             var wizard = DynamicFormWizardsFacade.GetWizard(wizardStepEntityToken.WizardName);
             var step = wizard.Steps.Single(s => s.Name == wizardStepEntityToken.StepName);
 
@@ -28,17 +28,22 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             Bindings.Add("StepLabel", step.Label);
             Bindings.Add("NextButtonLabel", step.NextButtonLabel ?? String.Empty);
             Bindings.Add("PreviousButtonLabel", step.PreviousButtonLabel ?? String.Empty);
+
+            Bindings.Add("BoundToken", wizardStepEntityToken);
         }
 
         public override void OnFinish(object sender, EventArgs e)
         {
+            var stepToken = GetBinding<FormWizardStepEntityToken>("BoundToken");
+
             var stepName = GetBinding<string>("StepName");
             var formName = GetBinding<string>("FormName");
             var stepLabel = GetBinding<string>("StepLabel");
             var nextButtonLabel = GetBinding<string>("NextButtonLabel");
             var previousButtonLabel = GetBinding<string>("PreviousButtonLabel");
 
-            var stepToken = (FormWizardStepEntityToken)EntityToken;
+            var isNewName = stepName != stepToken.StepName;
+
             var wizard = DynamicFormWizardsFacade.GetWizard(stepToken.WizardName);
 
             var step = wizard.Steps.Single(s => s.Name == stepToken.StepName);
@@ -51,15 +56,24 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             DynamicFormWizardsFacade.SaveWizard(wizard);
 
-            var token = new FormInstanceEntityToken(typeof(FormBuilderElementProvider).Name, wizard.Name);
+            if (isNewName)
+            {
+                stepToken = new FormWizardStepEntityToken(wizard.Name, stepName);
 
-            CreateSpecificTreeRefresher().PostRefreshMesseges(token);
-            SetSaveStatus(true);
+                UpdateBinding("BoundToken", stepToken);
+                SetSaveStatus(true, stepToken);
+            }
+            else
+            {
+                SetSaveStatus(true);
+            }
+
+            CreateParentTreeRefresher().PostRefreshMesseges(EntityToken);
         }
 
         public override bool Validate()
         {
-            var stepToken = (FormWizardStepEntityToken)EntityToken;
+            var stepToken = GetBinding<FormWizardStepEntityToken>("BoundToken");
             var stepName = GetBinding<string>("StepName");
 
             if (stepName == stepToken.StepName)

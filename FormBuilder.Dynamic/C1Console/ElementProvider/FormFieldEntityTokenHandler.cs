@@ -53,7 +53,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 }
             };
 
-            var addValidatorActionToken = new WorkflowActionToken(typeof(AddFieldValidatorWorkflow), new[] { PermissionType.Administrate });
+            var addValidatorActionToken = new WorkflowActionToken(typeof(AddFieldValidatorWorkflow), new[] { PermissionType.Add });
             fieldValidatorsElement.AddAction(new ElementAction(new ActionHandle(addValidatorActionToken))
             {
                 VisualData = new ActionVisualizedData
@@ -100,7 +100,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 
             if (datasourceAttribute.GetType() == typeof(StringBasedDataSourceAttribute))
             {
-                var addActionToken = new WorkflowActionToken(typeof(AddStringBasedDataSourceEntryWorkflow), new[] { PermissionType.Administrate });
+                var addActionToken = new WorkflowActionToken(typeof(AddStringBasedDataSourceEntryWorkflow), new[] { PermissionType.Add });
                 fieldElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
                 {
                     VisualData = new ActionVisualizedData

@@ -15,7 +15,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Actions
 
         public override IEnumerable<PermissionType> PermissionTypes
         {
-            get { return new[] { PermissionType.Edit, PermissionType.Administrate }; }
+            get { return new[] { PermissionType.Read }; }
         }
 
         public DownloadSubmittedFormsActionToken(string formName, string extension)

@@ -49,20 +49,20 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     }
                 };
 
-                var addActionToken = new WorkflowActionToken(typeof(AddFormFieldWorkflow), new[] { PermissionType.Administrate });
+                var addActionToken = new WorkflowActionToken(typeof(AddFormFieldWorkflow), new[] { PermissionType.Add });
                 fieldElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
                 {
                     VisualData = new ActionVisualizedData
                     {
-                        Label = "Add",
-                        ToolTip = "Add",
+                        Label = "Add field",
+                        ToolTip = "Add field",
                         Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                         ActionLocation = FormBuilderElementProvider.ActionLocation
                     }
                 });
 
                 var url = String.Format("InstalledPackages/CompositeC1Contrib.FormBuilder.Dynamic/SortFormFields.aspx?formName={0}", token.FormName);
-                var sortActionToken = new UrlActionToken("Sort fields", UrlUtils.ResolveAdminUrl(url), new[] { PermissionType.Administrate });
+                var sortActionToken = new UrlActionToken("Sort fields", UrlUtils.ResolveAdminUrl(url), new[] { PermissionType.Edit });
                 fieldElement.AddAction(new ElementAction(new ActionHandle(sortActionToken))
                 {
                     VisualData = new ActionVisualizedData
@@ -92,20 +92,20 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     }
                 };
 
-                var addActionToken = new WorkflowActionToken(typeof(AddWizardStepWorkflow), new[] { PermissionType.Administrate });
+                var addActionToken = new WorkflowActionToken(typeof(AddWizardStepWorkflow), new[] { PermissionType.Add });
                 stepsFolderElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
                 {
                     VisualData = new ActionVisualizedData
                     {
-                        Label = "Add",
-                        ToolTip = "Add",
+                        Label = "Add step",
+                        ToolTip = "Add step",
                         Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                         ActionLocation = FormBuilderElementProvider.ActionLocation
                     }
                 });
 
                 var url = String.Format("InstalledPackages/CompositeC1Contrib.FormBuilder.Dynamic/SortWizardSteps.aspx?wizardName={0}", token.FormName);
-                var sortActionToken = new UrlActionToken("Sort fields", UrlUtils.ResolveAdminUrl(url), new[] { PermissionType.Administrate });
+                var sortActionToken = new UrlActionToken("Sort fields", UrlUtils.ResolveAdminUrl(url), new[] { PermissionType.Edit });
                 stepsFolderElement.AddAction(new ElementAction(new ActionHandle(sortActionToken))
                 {
                     VisualData = new ActionVisualizedData
@@ -133,13 +133,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 }
             };
 
-            var submitHandlerActionToken = new WorkflowActionToken(typeof(AddSubmitHandlerWorkflow), new[] { PermissionType.Administrate });
+            var submitHandlerActionToken = new WorkflowActionToken(typeof(AddSubmitHandlerWorkflow), new[] { PermissionType.Add });
             submitHandlersElement.AddAction(new ElementAction(new ActionHandle(submitHandlerActionToken))
             {
                 VisualData = new ActionVisualizedData
                 {
-                    Label = "Add",
-                    ToolTip = "Add",
+                    Label = "Add submit handler",
+                    ToolTip = "Add submit handler",
                     Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                     ActionLocation = FormBuilderElementProvider.ActionLocation
                 }

@@ -11,7 +11,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
     [ActionExecutor(typeof(DeleteFormActionExecutor))]
     public class DeleteFormActionToken : ActionToken
     {
-        private static readonly IEnumerable<PermissionType> _permissionTypes = new[] { PermissionType.Administrate };
+        private static readonly IEnumerable<PermissionType> _permissionTypes = new[] { PermissionType.Delete };
 
         public override IEnumerable<PermissionType> PermissionTypes
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Helpers;
 
 using Composite.AspNet.Razor;
 
@@ -75,6 +76,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             foreach (var field in model.Fields.Where(f => f.Label == null))
             {
                 RenderHiddenField(field.Name, field.Id, field.Value == null ? String.Empty : FormRenderer.GetValue(field));
+            }
+
+            if (!model.DisableAntiForgery)
+            {
+                page.WriteLiteral(AntiForgery.GetHtml());
             }
         }
 

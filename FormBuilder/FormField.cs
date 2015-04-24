@@ -156,5 +156,23 @@ namespace CompositeC1Contrib.FormBuilder
         {
             return DefaultElementType.ContainsKey(ValueType) ? DefaultElementType[ValueType] : new TextboxInputElementAttribute();
         }
+
+        public void EnsureValueType()
+        {
+            if (InputElementType is CheckboxInputElementAttribute)
+            {
+                ValueType = typeof(bool);
+            }
+
+            if (InputElementType is CheckboxInputElementAttribute && DataSource != null)
+            {
+                ValueType = typeof(IEnumerable<string>);
+            }
+
+            if (InputElementType is FileuploadInputElementAttribute)
+            {
+                ValueType = typeof(FormFile);
+            }
+        }
     }
 }

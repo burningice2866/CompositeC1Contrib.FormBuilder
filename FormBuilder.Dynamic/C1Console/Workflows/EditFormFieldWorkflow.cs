@@ -193,7 +193,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             inputTypeAttribute = (InputElementTypeAttribute)Activator.CreateInstance(inputElementType);
             field.Attributes.Add(inputTypeAttribute);
 
-            SetFieldValueType(field);
+            field.EnsureValueType();
+
             SaveExtraSettings(field);
 
             DynamicFormsFacade.SaveForm(definition);
@@ -262,24 +263,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
 
             return true;
-        }
-
-        public static void SetFieldValueType(FormField formField)
-        {
-            if (formField.InputElementType is CheckboxInputElementAttribute)
-            {
-                formField.ValueType = typeof(bool);
-            }
-
-            if (formField.InputElementType is CheckboxInputElementAttribute && formField.DataSource != null)
-            {
-                formField.ValueType = typeof(IEnumerable<string>);
-            }
-
-            if (formField.InputElementType is FileuploadInputElementAttribute)
-            {
-                formField.ValueType = typeof(FormFile);
-            }
         }
     }
 }

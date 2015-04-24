@@ -67,7 +67,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
                 if (valueTypeAttr == null)
                 {
-                    EditFormFieldWorkflow.SetFieldValueType(formField);
+                    formField.EnsureValueType();
                 }
 
                 model.Fields.Add(formField);

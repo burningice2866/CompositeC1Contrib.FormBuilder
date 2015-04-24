@@ -42,6 +42,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 
             field.Attributes.Remove(dataSourceAttribute);
 
+            field.EnsureValueType();
+
             DynamicFormsFacade.SaveForm(definition);
 
             new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(entityToken);

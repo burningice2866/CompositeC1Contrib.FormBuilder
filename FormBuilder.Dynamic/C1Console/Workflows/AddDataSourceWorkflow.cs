@@ -48,6 +48,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             field.Attributes.Add(attribute);
 
+            field.EnsureValueType();
+
             DynamicFormsFacade.SaveForm(definition);
 
             var treeRefresher = CreateSpecificTreeRefresher();

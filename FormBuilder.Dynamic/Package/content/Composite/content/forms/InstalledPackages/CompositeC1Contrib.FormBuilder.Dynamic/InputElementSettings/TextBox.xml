@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:f="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0">
-  <cms:bindings>
-    <cms:binding name="InputType" type="System.String" />
-  </cms:bindings>
+    <cms:bindings>
+        <cms:binding name="InputType" type="System.String" />
+        <cms:binding name="FormatString" type="System.String" />
+    </cms:bindings>
 
-  <cms:layout>
-    <FieldGroup>
-      <KeySelector Label="Select input type" OptionsKeyField="Key" OptionsLabelField="Value" Required="true">
-        <KeySelector.Options>
-          <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Dynamic.C1Console.TextBoxSettings, CompositeC1Contrib.FormBuilder.Dynamic" Method="GetInputTypes" />
-        </KeySelector.Options>
+    <cms:layout>
+        <FieldGroup>
+            <KeySelector Label="Select input type" OptionsKeyField="Key" OptionsLabelField="Value" Required="true">
+                <KeySelector.Options>
+                    <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Dynamic.C1Console.TextBoxSettings, CompositeC1Contrib.FormBuilder.Dynamic" Method="GetInputTypes" />
+                </KeySelector.Options>
 
-        <KeySelector.Selected>
-          <cms:bind source="InputType" />
-        </KeySelector.Selected>
-      </KeySelector>
-    </FieldGroup>
-  </cms:layout>
+                <KeySelector.Selected>
+                    <cms:bind source="InputType" />
+                </KeySelector.Selected>
+            </KeySelector>
+
+            <KeySelector Label="Select format" OptionsKeyField="Key" OptionsLabelField="Value" Required="false">
+                <KeySelector.Options>
+                    <f:StaticMethodCall Type="CompositeC1Contrib.FormBuilder.Dynamic.C1Console.TextBoxSettings, CompositeC1Contrib.FormBuilder.Dynamic" Method="GetFormatTypes" />
+                </KeySelector.Options>
+
+                <KeySelector.Selected>
+                    <cms:bind source="FormatString" />
+                </KeySelector.Selected>
+            </KeySelector>
+        </FieldGroup>
+    </cms:layout>
 </cms:formdefinition>

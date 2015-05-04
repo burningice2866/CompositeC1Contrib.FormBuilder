@@ -65,6 +65,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     formField.IsReadOnly = bool.Parse(isReadOnlyAttr.Value);
                 }
 
+                var formatAttribute = f.Attribute("format");
+                if (formatAttribute != null)
+                {
+                    formField.Attributes.Add(new DisplayFormatAttribute(formatAttribute.Value));
+                }
+
                 if (valueTypeAttr == null)
                 {
                     formField.EnsureValueType();
@@ -156,6 +162,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 if (field.IsReadOnly)
                 {
                     add.Add(new XAttribute("isReadOnly", true));
+                }
+
+                var formatAttribute = field.Attributes.OfType<DisplayFormatAttribute>().SingleOrDefault();
+                if (formatAttribute != null)
+                {
+                    add.Add(new XAttribute("format", formatAttribute.FormatString));
                 }
 
                 if (field.InputElementType != null)

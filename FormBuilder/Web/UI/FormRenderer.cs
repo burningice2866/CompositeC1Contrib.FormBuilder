@@ -347,28 +347,19 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 return String.Empty;
             }
 
-            var formatAttr = field.Attributes.OfType<DisplayFormatAttribute>().SingleOrDefault();
-
-            var underlyingType = Nullable.GetUnderlyingType(field.ValueType);
-            if (underlyingType != null && formatAttr != null)
+            if (field.ValueType == typeof(DateTime))
             {
-                var hasValue = (bool)field.ValueType.GetProperty("HasValue").GetValue(field.Value, null);
-                if (hasValue)
-                {
-                    var value = field.ValueType.GetProperty("Value").GetValue(field.Value, null) as IFormattable;
-                    if (value != null)
-                    {
-                        return value.ToString(formatAttr.FormatString, CultureInfo.CurrentUICulture);
-                    }
-                }
+                return ((DateTime)field.Value).ToString("yyyy-MM-dd");
             }
 
-            if (formatAttr == null || !(field.Value is IFormattable))
+            if (field.ValueType == typeof(DateTime?))
             {
-                return field.Value.ToString();
+                var dt = (DateTime?)field.Value;
+
+                return dt.Value.ToString("yyyy-MM-dd");
             }
 
-            return ((IFormattable)field.Value).ToString(formatAttr.FormatString, CultureInfo.CurrentUICulture);
+            return field.Value.ToString();
         }
 
         public static string GetLocalized(string text)

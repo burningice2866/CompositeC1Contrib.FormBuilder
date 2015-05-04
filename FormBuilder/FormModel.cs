@@ -131,16 +131,7 @@ namespace CompositeC1Contrib.FormBuilder
             ValueMappers.Add(typeof(DateTime), (f, val) =>
             {
                 DateTime dt;
-                var formatAttr = f.Attributes.OfType<DisplayFormatAttribute>().SingleOrDefault();
-
-                if (formatAttr != null)
-                {
-                    DateTime.TryParseExact(val, formatAttr.FormatString, CultureInfo.CurrentUICulture, DateTimeStyles.None, out dt);
-                }
-                else
-                {
-                    DateTime.TryParse(val, out dt);
-                }
+                DateTime.TryParse(val, out dt);
 
                 f.Value = dt;
             });
@@ -148,29 +139,14 @@ namespace CompositeC1Contrib.FormBuilder
             ValueMappers.Add(typeof(DateTime?), (f, val) =>
             {
                 DateTime dt;
-                var formatAttr = f.Attributes.OfType<DisplayFormatAttribute>().SingleOrDefault();
 
-                if (formatAttr != null)
+                if (DateTime.TryParse(val, out dt))
                 {
-                    if (DateTime.TryParseExact(val, formatAttr.FormatString, CultureInfo.CurrentUICulture, DateTimeStyles.None, out dt))
-                    {
-                        f.Value = dt;
-                    }
-                    else
-                    {
-                        f.Value = null;
-                    }
+                    f.Value = dt;
                 }
                 else
                 {
-                    if (DateTime.TryParse(val, out dt))
-                    {
-                        f.Value = dt;
-                    }
-                    else
-                    {
-                        f.Value = null;
-                    }
+                    f.Value = null;
                 }
             });
 

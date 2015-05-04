@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
@@ -10,6 +11,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
     public class TextBoxSettings : IInputTypeSettingsHandler
     {
         public string InputType { get; set; }
+        public string FormatString { get; set; }
 
         public static Dictionary<string, string> GetInputTypes()
         {
@@ -21,9 +23,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
             };
         }
 
+        public static Dictionary<string, string> GetFormatTypes()
+        {
+            var date = new DateTime(1900, 12, 31, 23, 59, 59);
+            var formatStrings = new[] { "D", "d" };
+
+            return formatStrings.ToDictionary(s => s, date.ToString);
+        }
+
         public void Load(FormField field)
         {
             InputType = GetInputType(field);
+            FormatString = GetFormatString(field);
         }
 
         public void Save(FormField field)
@@ -33,7 +44,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
                 case "Date":
 
                     RemoveValidatorAttribute<EmailFieldValidatorAttribute>(field);
-                    field.ValueType = typeof (DateTime);
+                    field.ValueType = typeof(DateTime);
 
                     break;
 
@@ -51,9 +62,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
                 default:
 
                     RemoveValidatorAttribute<EmailFieldValidatorAttribute>(field);
-                    field.ValueType = typeof (string);
+                    field.ValueType = typeof(string);
 
                     break;
+            }
+
+            RemoveAttribute<DisplayFormatAttribute>(field);
+
+            if (!String.IsNullOrEmpty(FormatString))
+            {
+                var formatAttribute = new DisplayFormatAttribute(FormatString);
+
+                field.Attributes.Add(formatAttribute);
             }
         }
 
@@ -73,12 +93,28 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
             return String.Empty;
         }
 
+        private static string GetFormatString(FormField field)
+        {
+            var formatAttr = field.Attributes.OfType<DisplayFormatAttribute>().SingleOrDefault();
+
+            return formatAttr == null ? String.Empty : formatAttr.FormatString;
+        }
+
         private static void RemoveValidatorAttribute<T>(FormField field) where T : Attribute
         {
             var existingValidator = field.ValidationAttributes.OfType<T>().FirstOrDefault();
             if (existingValidator != null)
             {
                 field.Attributes.Remove(existingValidator);
+            }
+        }
+
+        private static void RemoveAttribute<T>(FormField field) where T : Attribute
+        {
+            var existingAttribute = field.Attributes.OfType<T>().FirstOrDefault();
+            if (existingAttribute != null)
+            {
+                field.Attributes.Remove(existingAttribute);
             }
         }
     }

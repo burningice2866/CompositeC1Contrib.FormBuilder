@@ -80,7 +80,16 @@ namespace CompositeC1Contrib.FormBuilder
 
             foreach (var field in model.Fields.Where(f => f.Label != null && f.Value != null))
             {
-                var value = FormattingUtils.FormatFieldValue(field);
+                string value;
+
+                if (field.Value is DateTime)
+                {
+                    value = ((DateTime)field.Value).ToString("o", CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    value = FormattingUtils.FormatFieldValue(field);
+                }
 
                 fields.Add(new XElement("field",
                     new XAttribute("name", field.Name),

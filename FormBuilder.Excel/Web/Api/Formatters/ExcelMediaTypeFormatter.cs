@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -106,15 +107,20 @@ namespace CompositeC1Contrib.FormBuilder.Excel.Web.Api.Formatters
                         continue;
                     }
 
+                    var usableType = GetUsableFieldType(field);
+
+                    object val = null;
+
                     try
                     {
-                        var usableType = GetUsableFieldType(field);
-
-                        var val = Convert.ChangeType(value.Value, usableType);
-
-                        row[value.Key] = val;
+                        val = Convert.ChangeType(value.Value, usableType, CultureInfo.InvariantCulture);
                     }
-                    catch { }
+                    catch (FormatException)
+                    {
+                        val = TryParseBackwardCompatibleFormat(usableType, value);
+                    }
+
+                    row[value.Key] = val;
                 }
 
                 row["Submitted time"] = submit.Time;
@@ -123,6 +129,25 @@ namespace CompositeC1Contrib.FormBuilder.Excel.Web.Api.Formatters
             }
 
             return table;
+        }
+
+        private static object TryParseBackwardCompatibleFormat(Type usableType, SubmitField value)
+        {
+            if (usableType == typeof(DateTime))
+            {
+                var languagesToTry = new[] { new CultureInfo("en-US"), new CultureInfo("en-GB"), new CultureInfo("da-DK") };
+
+                foreach (var ci in languagesToTry)
+                {
+                    try
+                    {
+                        return DateTime.Parse(value.Value, ci);
+                    }
+                    catch { }
+                }
+            }
+
+            return null;
         }
 
         private static Type GetUsableFieldType(FormField field)

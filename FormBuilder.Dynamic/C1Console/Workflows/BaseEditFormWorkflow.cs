@@ -136,7 +136,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var formToken = GetBinding<FormInstanceEntityToken>("BoundToken");
             var name = GetBinding<string>("Name");
 
-            if (name == formToken.FormName)
+            if (name == formToken.Name)
             {
                 return true;
             }
@@ -166,8 +166,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             SaveExtraSettings(definition);
 
-            var isNewName = name != token.FormName;
-
+            var isNewName = name != token.Name;
             if (isNewName)
             {
                 DefinitionsFacade.Copy(definition, name);

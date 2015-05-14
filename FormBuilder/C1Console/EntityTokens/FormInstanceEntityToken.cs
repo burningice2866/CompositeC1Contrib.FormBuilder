@@ -26,15 +26,26 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
             get { return _id; }
         }
 
-        public string FormName
+        public string Name
         {
             get { return _id; }
         }
 
-        public FormInstanceEntityToken(string source, string formName)
+        public string Namespace
+        {
+            get
+            {
+                var parts = Name.Split(new[] { '.' });
+                var ns = String.Join(".", parts.Take(parts.Length - 1));
+
+                return ns;
+            }
+        }
+
+        public FormInstanceEntityToken(string source, string fullName)
         {
             _source = source;
-            _id = formName;
+            _id = fullName;
         }
 
         public override string Serialize()
@@ -64,10 +75,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
                 yield break;
             }
 
-            var parts = formInstanceToken.FormName.Split(new[] { '.' });
-            var ns = String.Join(".", parts.Take(parts.Length - 1));
-
-            yield return new NamespaceFolderEntityToken(formInstanceToken.Source, ns);
+            yield return new NamespaceFolderEntityToken(formInstanceToken.Source, formInstanceToken.Namespace);
         }
     }
 }

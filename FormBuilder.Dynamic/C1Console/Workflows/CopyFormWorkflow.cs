@@ -11,7 +11,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var formToken = (FormInstanceEntityToken)EntityToken;
             var formName = GetBinding<string>("Name");
-            var definition = DefinitionsFacade.GetDefinition(formToken.FormName);
+            var definition = DefinitionsFacade.GetDefinition(formToken.Name);
 
             DefinitionsFacade.Copy(definition, formName);
 

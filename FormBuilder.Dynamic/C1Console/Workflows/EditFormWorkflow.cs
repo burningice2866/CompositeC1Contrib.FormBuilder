@@ -22,7 +22,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
 
             var formToken = (FormInstanceEntityToken)EntityToken;
-            var definition = DynamicFormsFacade.GetFormByName(formToken.FormName);
+            var definition = DynamicFormsFacade.GetFormByName(formToken.Name);
 
             Bindings.Add("RequiresCaptcha", definition.Model.Attributes.OfType<RequiresCaptchaAttribute>().Any());
             Bindings.Add("ForceHttpsConnection", definition.Model.ForceHttps);
@@ -36,7 +36,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         public override void OnFinish(object sender, EventArgs e)
         {
             var formToken = GetBinding<FormInstanceEntityToken>("BoundToken");
-            var definition = DynamicFormsFacade.GetFormByName(formToken.FormName);
+            var definition = DynamicFormsFacade.GetFormByName(formToken.Name);
 
             var submitButtonLabel = GetBinding<string>("SubmitButtonLabel");
 

@@ -16,7 +16,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
 
             var formToken = (FormInstanceEntityToken)EntityToken;
-            var wizard = DynamicFormWizardsFacade.GetWizard(formToken.FormName);
+            var wizard = DynamicFormWizardsFacade.GetWizard(formToken.Name);
 
             Bindings.Add("ForceHttpsConnection", wizard.ForceHttpSConnection);
 
@@ -28,7 +28,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         public override void OnFinish(object sender, EventArgs e)
         {
             var wizardToken = GetBinding<FormInstanceEntityToken>("BoundToken");
-            var wizard = DynamicFormWizardsFacade.GetWizard(wizardToken.FormName);
+            var wizard = DynamicFormWizardsFacade.GetWizard(wizardToken.Name);
 
             var forceHttpsConnection = GetBinding<bool>("ForceHttpsConnection");
 

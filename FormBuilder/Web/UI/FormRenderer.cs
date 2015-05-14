@@ -24,14 +24,14 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             RendererImplementation = (IFormFormRenderer)Activator.CreateInstance(type);
         }
 
-        public static IHtmlString FieldFor(FormOptions options, FormField field)
+        public static IHtmlString FieldFor(FormOptions options, FormField field, ValidationResultList validationResult)
         {
-            return FieldFor(options, field, new Dictionary<string, string>());
+            return FieldFor(options, field, validationResult, new Dictionary<string, string>());
         }
 
-        public static IHtmlString FieldFor(FormOptions options, FormField field, Dictionary<string, string> htmlAttributes)
+        public static IHtmlString FieldFor(FormOptions options, FormField field, ValidationResultList validationResult, Dictionary<string, string> htmlAttributes)
         {
-            return WriteRow(options, field, htmlAttributes);
+            return WriteRow(options, field, validationResult, htmlAttributes);
         }
 
         public static IHtmlString InputFor(FormOptions options, FormField field, Dictionary<string, string> htmlAttributes)
@@ -48,10 +48,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new HtmlString(field.Name);
         }
 
-        public static IHtmlString WriteErrors(IFormModel model)
+        public static IHtmlString WriteErrors(IFormModel model, ValidationResultList validationResult)
         {
-            var validationResult = model.ValidationResult;
-
             return WriteErrors(validationResult);
         }
 
@@ -90,13 +88,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new HtmlString(sb.ToString());
         }
 
-        private static IHtmlString WriteRow(FormOptions options, FormField field, IDictionary<string, string> htmlAttributes)
+        private static IHtmlString WriteRow(FormOptions options, FormField field, ValidationResultList validationResult, IDictionary<string, string> htmlAttributes)
         {
             var fieldsRow = FieldsRow.Current;
 
             var sb = new StringBuilder();
             var includeLabel = ShowLabel(field);
-            var validationResult = field.OwningForm.ValidationResult;
 
             WriteRowStart(field.Name, field.InputElementType.ElementName,
                 WriteErrorClass(field.Name, validationResult), field.IsRequired,
@@ -367,7 +364,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return text.Contains("${") ? StringResourceSystemFacade.ParseString(text) : text;
         }
 
-        public static IHtmlString Captcha(FormModel model)
+        public static IHtmlString Captcha(FormModel model, ValidationResultList validationResult)
         {
             var requiresCaptchaAttr = model.Attributes.OfType<RequiresCaptchaAttribute>().SingleOrDefault();
             if (requiresCaptchaAttr == null)
@@ -375,7 +372,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 return null;
             }
 
-            var s = requiresCaptchaAttr.Render(model);
+            var s = requiresCaptchaAttr.Render(model, validationResult);
 
             return new HtmlString(s);
         }

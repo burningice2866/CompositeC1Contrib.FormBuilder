@@ -11,10 +11,10 @@ namespace CompositeC1Contrib.FormBuilder
     [Export(typeof(IFormModelsProvider))]
     public class POCOFormModelsProvider : IFormModelsProvider
     {
-        private static readonly IDictionary<string, Type> Types = new Dictionary<string, Type>();
-        private static readonly IDictionary<IPOCOForm, FormModel> Models = new Dictionary<IPOCOForm, FormModel>();
+        private readonly IDictionary<string, Type> _types = new Dictionary<string, Type>();
+        private readonly IDictionary<IPOCOForm, FormModel> _models = new Dictionary<IPOCOForm, FormModel>();
 
-        static POCOFormModelsProvider()
+        public POCOFormModelsProvider()
         {
             var forms = GetForms();
 
@@ -22,19 +22,24 @@ namespace CompositeC1Contrib.FormBuilder
             {
                 var model = POCOFormsFacade.FromInstance(instance);
 
-                Types.Add(model.Name, instance.GetType());
-                Models.Add(instance, model);
+                if (_types.ContainsKey(model.Name))
+                {
+                    throw new InvalidOperationException(String.Format("Form '{0}' has already been added", model.Name));
+        }
+
+                _types.Add(model.Name, instance.GetType());
+                _models.Add(instance, model);
             }
         }
 
-        public static IDictionary<IPOCOForm, FormModel> GetFormsAndModels()
+        public IDictionary<IPOCOForm, FormModel> GetFormsAndModels()
         {
-            return Models;
+            return _models;
         }
 
         public IEnumerable<IFormModel> GetModels()
         {
-            return Models.Select(e => e.Value);
+            return _models.Select(e => e.Value);
         }
 
         private static IEnumerable<IPOCOForm> GetForms()

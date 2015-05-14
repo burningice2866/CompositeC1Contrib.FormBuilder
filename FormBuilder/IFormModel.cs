@@ -8,7 +8,6 @@ namespace CompositeC1Contrib.FormBuilder
     public interface IFormModel
     {
         string Name { get; }
-        ValidationResultList ValidationResult { get; }
         IList<FormField> Fields { get; }
 
         bool DisableAntiForgery { get; }
@@ -17,6 +16,6 @@ namespace CompositeC1Contrib.FormBuilder
 
         void SetDefaultValues();
         void MapValues(NameValueCollection values, IEnumerable<FormFile> files);
-        void Validate(bool validateCaptcha);
+        ValidationResultList Validate(bool validateCaptcha);
     }
 }

@@ -19,9 +19,9 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
             Provider = (CaptchaProvider)captchaConfig.Providers[captchaConfig.DefaultProvider];
         }
 
-        public string Render(IFormModel model)
+        public string Render(IFormModel model, ValidationResultList validationResult)
         {
-            return Provider.Render(model);
+            return Provider.Render(model, validationResult);
         }
 
         public void Validate(HttpContextBase ctx, ValidationResultList validationMessages)

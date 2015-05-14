@@ -28,7 +28,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             }
         }
 
-        public override string Render(IFormModel model)
+        public override string Render(IFormModel model, ValidationResultList validationResult)
         {
             var sb = new StringBuilder();
             var encryptedValue = Captcha.CreateEncryptedValue();
@@ -38,7 +38,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 HttpUtility.HtmlAttributeEncode(HiddenFieldName),
                 HttpUtility.HtmlAttributeEncode(encryptedValue));
 
-            FormRenderer.WriteRowStart(InputFieldName, "captcha", FormRenderer.WriteErrorClass(InputFieldName, model.ValidationResult), true, null, sb);
+            FormRenderer.WriteRowStart(InputFieldName, "captcha", FormRenderer.WriteErrorClass(InputFieldName, validationResult), true, null, sb);
 
             FormRenderer.WriteLabelStart(false, InputFieldName, sb);
             FormRenderer.WriteLabelContent(true, Localization.Captcha_CompositeC1_Label, String.Empty, false, sb);

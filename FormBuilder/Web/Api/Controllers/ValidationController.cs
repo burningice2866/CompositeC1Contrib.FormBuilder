@@ -39,14 +39,15 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
 
             model.SetDefaultValues();
             model.MapValues(form, files);
-            model.Validate(false);
 
-            if (!model.ValidationResult.Any())
+            var validationResult = model.Validate(false);
+
+            if (!validationResult.Any())
             {
                 return Request.CreateResponse(HttpStatusCode.OK, true);
             }
 
-            var resultList = model.ValidationResult.Select(o => new ValidationError
+            var resultList = validationResult.Select(o => new ValidationError
             {
                 AffectedFields = o.AffectedFormIds,
                 Message = o.ValidationMessage

@@ -4,12 +4,15 @@ using System.Linq;
 using System.Web;
 using System.Web.Helpers;
 
+using CompositeC1Contrib.FormBuilder.Validation;
 using CompositeC1Contrib.FormBuilder.Web.UI;
 
 namespace CompositeC1Contrib.FormBuilder.Web
 {
     public abstract class BaseFormBuilderRequestContext<T> where T : IFormModel
     {
+        public ValidationResultList ValidationResult = new ValidationResultList();
+
         protected HttpContextBase HttpContext { get; private set; }
         protected string FormName { get; private set; }
 
@@ -38,7 +41,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
                     catch { return false; }
                 }
 
-                return !RenderingModel.ValidationResult.Any();
+                return !ValidationResult.Any();
             }
         }
 
@@ -56,9 +59,9 @@ namespace CompositeC1Contrib.FormBuilder.Web
 
             var request = HttpContext.Request;
 
-            if (!request.IsLocal && RenderingModel.ForceHttps && !request.IsSecureConnection)
+            if (!request.IsLocal && RenderingModel.ForceHttps && !request.IsSecureConnection && request.Url != null)
             {
-                string redirectUrl = request.Url.ToString().Replace("http:", "https:");
+                var redirectUrl = request.Url.ToString().Replace("http:", "https:");
 
                 HttpContext.Response.Redirect(redirectUrl, true);
             }
@@ -83,7 +86,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
 
                 if (f.ContentLength > 0)
                 {
-                    files.Add(new FormFile()
+                    files.Add(new FormFile
                     {
                         Key = requestFiles.AllKeys[i],
                         ContentLength = f.ContentLength,
@@ -96,7 +99,8 @@ namespace CompositeC1Contrib.FormBuilder.Web
 
             RenderingModel.MapValues(request.Form, files);
             OnMappedValues();
-            RenderingModel.Validate(true);
+
+            ValidationResult = RenderingModel.Validate(true);
         }
 
         public virtual void OnMappedValues() { }

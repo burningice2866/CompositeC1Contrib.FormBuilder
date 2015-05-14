@@ -9,6 +9,7 @@ using Composite.Core.Xml;
 using Composite.Functions;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
+using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
@@ -42,6 +43,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             get { return RenderingContext.IsSuccess; }
         }
 
+        public ValidationResultList ValidationResult
+        {
+            get { return RenderingContext.ValidationResult; }
+        }
+
         public IHtmlString EvaluateMarkup(XElement element)
         {
             if (element == null)
@@ -73,17 +79,15 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected IHtmlString WriteErrors()
         {
-            return RenderingContext.IsOwnSubmit ? FormRenderer.WriteErrors(RenderingContext.RenderingModel) : new HtmlString(String.Empty);
+            return RenderingContext.IsOwnSubmit ? FormRenderer.WriteErrors(RenderingModel, ValidationResult) : new HtmlString(String.Empty);
         }
 
         protected IHtmlString WriteAllFields()
         {
-            var model = RenderingContext.RenderingModel;
-
-            return RenderModelFields(model, Options);
+            return RenderModelFields(RenderingModel, ValidationResult, Options);
         }
 
-        public static IHtmlString RenderModelFields(IFormModel model, FormOptions options)
+        public static IHtmlString RenderModelFields(IFormModel model, ValidationResultList validationResult, FormOptions options)
         {
             var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(model.Name);
 
@@ -107,7 +111,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     fieldElement.AddBeforeSelf(XElement.Parse(text));
                 }
                 
-                var html = FormRenderer.FieldFor(options, field).ToString();
+                var html = FormRenderer.FieldFor(options, field, validationResult).ToString();
                 var newValue = XElement.Parse(html);
 
                 fieldElement.ReplaceWith(newValue);
@@ -118,7 +122,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected IHtmlString WriteCaptcha()
         {
-            return FormRenderer.Captcha(RenderingModel);
+            return FormRenderer.Captcha(RenderingModel, ValidationResult);
         }
 
         protected bool HasDependencyChecks()
@@ -161,10 +165,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new FieldsRow(this, includeLabels);
         }
 
-        protected string WriteErrorClass(string name)
+        protected string WriteErrorClass(string name, ValidationResultList validationResult)
         {
-            var validationResult = RenderingContext.RenderingModel.ValidationResult;
-
             return FormRenderer.WriteErrorClass(name, validationResult);
         }
     }

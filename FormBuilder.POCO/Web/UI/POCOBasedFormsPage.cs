@@ -13,7 +13,7 @@ using CompositeC1Contrib.FormBuilder.FunctionProviders;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
-    public abstract class POCOBasedFormsPage<T> : FormsPage where T : IPOCOForm
+    public abstract class POCOBasedFormsPage<T> : FormsPage where T : class, IPOCOForm 
     {
         protected T Form { get; private set; }
 
@@ -96,7 +96,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var field = GetField(fieldSelector);
             var dictionary = Functions.ObjectToDictionary(htmlAttributes).ToDictionary(t => t.Key, t => t.Value.ToString());
 
-            return FormRenderer.FieldFor(Options, field, dictionary);
+            return FormRenderer.FieldFor(Options, field, ValidationResult, dictionary);
         }
 
         protected IHtmlString NameFor(Expression<Func<T, object>> fieldSelector)

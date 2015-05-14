@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+using System.Linq;
 using Composite.Functions;
 using Composite.Functions.Plugins.FunctionProvider;
 
@@ -15,7 +15,9 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
         {
             get
             {
-                var models = POCOFormModelsProvider.GetFormsAndModels();
+                var provider = FormModelsFacade.Providers.OfType<POCOFormModelsProvider>().Single();
+                var models = provider.GetFormsAndModels();
+
                 foreach (var entry in models)
                 {
                     IFunction function;

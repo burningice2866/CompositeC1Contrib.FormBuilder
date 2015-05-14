@@ -23,7 +23,6 @@ namespace CompositeC1Contrib.FormBuilder
 
         public string Name { get; private set; }
         public IList<FormField> Fields { get; private set; }
-        public ValidationResultList ValidationResult { get; private set; }
         public IList<Attribute> Attributes { get; private set; }
 
         public Action<FormValidationEventArgs> OnValidateHandler { get; set; }
@@ -184,7 +183,6 @@ namespace CompositeC1Contrib.FormBuilder
             Name = name;
 
             Fields = new List<FormField>();
-            ValidationResult = new ValidationResultList();
             Attributes = new List<Attribute>();
         }
 
@@ -206,11 +204,13 @@ namespace CompositeC1Contrib.FormBuilder
             return true;
         }
 
-        public void Validate(bool validateCaptcha)
+        public ValidationResultList Validate(bool validateCaptcha)
         {
+            var validationList = new ValidationResultList();
+
             if (SubmittedValues == null || SubmittedValues.AllKeys.Length == 0)
             {
-                return;
+                return validationList;
             }
 
             if (OnValidateHandler != null)
@@ -221,13 +221,12 @@ namespace CompositeC1Contrib.FormBuilder
 
                 if (e.Cancel)
                 {
-                    return;
+                    return validationList;
                 }
             }
 
             EnsureRulesList();
 
-            var validationList = new ValidationResultList();
             foreach (var list in _ruleList.Values)
             {
                 var result = ValidationResultList.GetFormValidationResult(list, false);
@@ -246,7 +245,7 @@ namespace CompositeC1Contrib.FormBuilder
                 }
             }
 
-            ValidationResult = validationList;
+            return validationList;
         }
 
         public void SetDefaultValues()

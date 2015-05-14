@@ -10,7 +10,7 @@ namespace CompositeC1Contrib.FormBuilder
     {
         public static readonly string RootPath = HostingEnvironment.MapPath("~/App_Data/FormBuilder");
 
-        private static readonly IList<IFormModelsProvider> ModelProviders;
+        public static IEnumerable<IFormModelsProvider> Providers { get; private set; }
 
         static FormModelsFacade()
         {
@@ -20,7 +20,7 @@ namespace CompositeC1Contrib.FormBuilder
 
             container.Compose(batch);
 
-            ModelProviders = container.GetExportedValues<IFormModelsProvider>().ToList();
+            Providers = container.GetExportedValues<IFormModelsProvider>().ToList();
         }
 
         public static IFormModel GetModel(string name)
@@ -30,7 +30,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static IEnumerable<IFormModel> GetModels()
         {
-            return ModelProviders.SelectMany(provider => provider.GetModels());
+            return Providers.SelectMany(provider => provider.GetModels());
         }
     }
 }

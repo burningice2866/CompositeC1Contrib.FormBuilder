@@ -16,8 +16,6 @@ namespace CompositeC1Contrib.FormBuilder
         public XhtmlDocument SuccessResponse { get; set; }
         public IList<FormWizardStep> Steps { get; private set; }
 
-        public ValidationResultList ValidationResult { get; private set; }
-
         public IList<FormField> Fields
         {
             get { return Steps.Select(s => s.FormModel).SelectMany(m => m.Fields).ToList(); }
@@ -43,8 +41,6 @@ namespace CompositeC1Contrib.FormBuilder
             IntroText = new XhtmlDocument();
             SuccessResponse = new XhtmlDocument();
             Steps = new List<FormWizardStep>();
-
-            ValidationResult = new ValidationResultList();
         }
 
         public virtual void Submit() { }
@@ -72,17 +68,18 @@ namespace CompositeC1Contrib.FormBuilder
             }
         }
 
-        public void Validate(bool validateCaptcha)
+        public ValidationResultList Validate(bool validateCaptcha)
         {
+            var list = new ValidationResultList();
+
             foreach (var model in Steps.Select(s => s.FormModel))
             {
-                model.Validate(validateCaptcha);
+                var validationResult = model.Validate(validateCaptcha);
 
-                foreach (var result in model.ValidationResult)
-                {
-                    ValidationResult.Add(result);
+                list.AddRange(validationResult);
                 }
-            }
+
+            return list;
         }
 
         private static NameValueCollection MapLocal(NameValueCollection nvc, string step)

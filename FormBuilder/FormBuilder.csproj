@@ -94,12 +94,16 @@
     <Compile Include="C1Console\ElementProvider\IEntityTokenBasedElementProvider.cs" />
     <Compile Include="C1Console\EntityTokens\FormElementProviderEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\NamespaceFolderEntityToken.cs" />
-    <Compile Include="C1Console\EntityTokens\FormInstanceEntityToken.cs" />
     <Compile Include="Configuration\CaptchaConfiguration.cs" />
     <Compile Include="Configuration\FormBuilderConfiguration.cs" />
     <Compile Include="Configuration\FormBuilderConfigurationHandler.cs" />
     <Compile Include="Configuration\IPluginConfiguration.cs" />
     <Compile Include="Configuration\SubmitHandlerElement.cs" />
+    <Compile Include="Data\FormDataProvider.cs" />
+    <Compile Include="Data\Types\FormData.cs" />
+    <Compile Include="Data\Types\FormDataFacade.cs" />
+    <Compile Include="Data\Types\FormDataId.cs" />
+    <Compile Include="Data\Types\IForm.cs" />
     <Compile Include="FormattingUtils.cs" />
     <Compile Include="FormSubmit.cs" />
     <Compile Include="FormWizard.cs" />

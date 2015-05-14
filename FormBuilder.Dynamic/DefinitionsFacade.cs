@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
 
+using Composite.Core.IO;
+
 namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
     public class DefinitionsFacade
@@ -16,11 +18,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
         public static IEnumerable<IDynamicFormDefinition> GetDefinitions()
         {
-            var files = Directory.GetFiles(FormModelsFacade.RootPath, "DynamicDefinition.xml", SearchOption.AllDirectories);
+            var files = C1Directory.GetFiles(FormModelsFacade.RootPath, "DynamicDefinition.xml", SearchOption.AllDirectories);
             foreach (var file in files)
             {
                 var folder = Path.GetDirectoryName(file);
-                var name = new DirectoryInfo(folder).Name;
+                var name = new C1DirectoryInfo(folder).Name;
                 var xml = XElement.Load(file);
 
                 var serializer = XmlDefinitionSerializer.GetSerializer(xml);
@@ -32,7 +34,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         public static IDynamicFormDefinition GetDefinition(string name)
         {
             var file = Path.Combine(FormModelsFacade.RootPath, name, "DynamicDefinition.xml");
-            if (!File.Exists(file))
+            if (!C1File.Exists(file))
             {
                 return null;
             }
@@ -54,7 +56,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         {
             var dir = Path.Combine(FormModelsFacade.RootPath, definition.Name);
 
-            Directory.Delete(dir, true);
+            C1Directory.Delete(dir, true);
 
             foreach (var submithandler in definition.SubmitHandlers)
             {

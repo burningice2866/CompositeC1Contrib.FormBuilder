@@ -1,6 +1,8 @@
 using System;
 
-using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
+using Composite.Data;
+
+using CompositeC1Contrib.FormBuilder.Data.Types;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
@@ -15,20 +17,22 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 return;
             }
 
-            var formToken = (FormInstanceEntityToken)EntityToken;
-            var wizard = DynamicFormWizardsFacade.GetWizard(formToken.Name);
+            var form = (IForm)((DataEntityToken)EntityToken).Data;
+            var wizard = DynamicFormWizardsFacade.GetWizard(form.Name);
 
             Bindings.Add("ForceHttpsConnection", wizard.ForceHttpSConnection);
 
             SetupFormData(wizard);
 
-            Bindings.Add("BoundToken", formToken);
+            Bindings.Add("BoundToken", EntityToken);
         }
 
         public override void OnFinish(object sender, EventArgs e)
         {
-            var wizardToken = GetBinding<FormInstanceEntityToken>("BoundToken");
-            var wizard = DynamicFormWizardsFacade.GetWizard(wizardToken.Name);
+            var wizardToken = GetBinding<DataEntityToken>("BoundToken");
+            var form = (IForm)wizardToken.Data;
+
+            var wizard = DynamicFormWizardsFacade.GetWizard(form.Name);
 
             var forceHttpsConnection = GetBinding<bool>("ForceHttpsConnection");
 

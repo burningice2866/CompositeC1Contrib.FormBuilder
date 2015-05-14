@@ -13,6 +13,7 @@ using Composite.Data.Types;
 using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.C1Console.Workflows;
+using CompositeC1Contrib.FormBuilder.Data.Types;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
@@ -88,7 +89,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         formName = ns + "." + formName;
                     }
 
-                    var elementHandle = context.CreateElementHandle(new FormInstanceEntityToken(typeof(FormBuilderElementProvider).Name, formName));
+                    var form = FormDataFacade.GetFormData(formName);
+                    var token = form.GetDataEntityToken();
+
+                    var elementHandle = context.CreateElementHandle(token);
                     var formElement = new Element(elementHandle)
                     {
                         VisualData = new ElementVisualizedData

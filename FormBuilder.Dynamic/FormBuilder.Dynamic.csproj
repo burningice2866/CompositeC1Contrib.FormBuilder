@@ -79,7 +79,7 @@
     <Compile Include="C1Console\ElementProvider\NamespaceFolderEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormFieldEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormFolderEntityTokenHandler.cs" />
-    <Compile Include="C1Console\ElementProvider\FormInstanceEntityTokenHandler.cs" />
+    <Compile Include="C1Console\ElementProvider\DataEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormElementProviderEntityTokenHandler.cs" />
     <Compile Include="C1Console\EntityTokens\FieldValidatorsEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormSubmitHandlerEntityToken.cs" />

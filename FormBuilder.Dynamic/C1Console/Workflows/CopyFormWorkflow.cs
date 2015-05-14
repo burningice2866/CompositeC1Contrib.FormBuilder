@@ -1,7 +1,9 @@
 using System;
 
+using Composite.Data;
+
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider;
+using CompositeC1Contrib.FormBuilder.Data.Types;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
@@ -9,13 +11,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
     {
         public override void OnFinish(object sender, EventArgs e)
         {
-            var formToken = (FormInstanceEntityToken)EntityToken;
-            var formName = GetBinding<string>("Name");
-            var definition = DefinitionsFacade.GetDefinition(formToken.Name);
+            var form = (IForm)((DataEntityToken)EntityToken).Data;
+            var newName = GetBinding<string>("Name");
+            var definition = DefinitionsFacade.GetDefinition(form.Name);
 
-            DefinitionsFacade.Copy(definition, formName);
+            DefinitionsFacade.Copy(definition, newName);
 
-            CreateAddNewTreeRefresher(EntityToken).PostRefreshMesseges(new FormInstanceEntityToken(typeof(FormBuilderElementProvider).Name, formName));
+            CreateSpecificTreeRefresher().PostRefreshMesseges(new FormElementProviderEntityToken());
         }
     }
 }

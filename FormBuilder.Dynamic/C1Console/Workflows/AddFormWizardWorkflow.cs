@@ -2,9 +2,9 @@ using System;
 using System.Linq;
 
 using Composite.C1Console.Workflow;
+using Composite.Data;
 
-using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider;
+using CompositeC1Contrib.FormBuilder.Data.Types;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
@@ -23,10 +23,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             DynamicFormWizardsFacade.SaveWizard(wizard);
 
-            var token = new FormInstanceEntityToken(typeof(FormBuilderElementProvider).Name, wizard.Name);
+            var data = FormDataFacade.GetFormData(name);
+            var token = data.GetDataEntityToken();
+
             var workflowToken = new WorkflowActionToken(typeof(EditFormWizardWorkflow));
 
-            CreateAddNewTreeRefresher(EntityToken).PostRefreshMesseges(token);
+            CreateSpecificTreeRefresher().PostRefreshMesseges(EntityToken);
             ExecuteAction(token, workflowToken);
         }
 

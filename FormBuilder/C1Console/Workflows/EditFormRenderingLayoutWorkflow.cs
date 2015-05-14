@@ -2,8 +2,9 @@ using System;
 
 using Composite.C1Console.Workflow;
 using Composite.Core.Xml;
+using Composite.Data;
 
-using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
+using CompositeC1Contrib.FormBuilder.Data.Types;
 using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
@@ -17,7 +18,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
         {
             if (!BindingExist("Title"))
             {
-                var formToken = (FormInstanceEntityToken)EntityToken;
+                var formToken = (IForm)((DataEntityToken)EntityToken).Data;
                 var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(formToken.Name);
 
                 Bindings.Add("Title", formToken.Name + " rendering layout");
@@ -27,7 +28,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
 
         public override void OnFinish(object sender, EventArgs e)
         {
-            var formToken = (FormInstanceEntityToken)EntityToken;
+            var formToken = (IForm)((DataEntityToken)EntityToken).Data;
             var renderingMarkup = GetBinding<string>("RenderingMarkup");
 
             RenderingLayoutFacade.SaveRenderingLayout(formToken.Name, XhtmlDocument.Parse(renderingMarkup));

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 
 using Composite.C1Console.Security;
-using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider;
+using Composite.Data;
+
+using CompositeC1Contrib.FormBuilder.Data.Types;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens
 {
@@ -67,7 +68,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens
             var fieldToken = entityToken as FormWizardStepEntityToken;
             if (fieldToken != null)
             {
-                var token = new FormInstanceEntityToken(typeof(FormBuilderElementProvider).Name, fieldToken.WizardName);
+                var data = FormDataFacade.GetFormData(fieldToken.WizardName);
+                var token = data.GetDataEntityToken();
 
                 yield return token;
             }

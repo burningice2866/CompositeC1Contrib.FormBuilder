@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 using Composite.C1Console.Actions;
 using Composite.C1Console.Security;
+using Composite.Data;
 
-using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
+using CompositeC1Contrib.FormBuilder.Data.Types;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 {
@@ -33,8 +34,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
     {
         public FlowToken Execute(EntityToken entityToken, ActionToken actionToken, FlowControllerServicesContainer flowControllerServicesContainer)
         {
-            var fieldToken = (FormInstanceEntityToken)entityToken;
-            var definition = DefinitionsFacade.GetDefinition(fieldToken.Name);
+            var form = (IForm)((DataEntityToken)entityToken).Data;
+            var definition = DefinitionsFacade.GetDefinition(form.Name);
 
             DefinitionsFacade.Delete(definition);
 

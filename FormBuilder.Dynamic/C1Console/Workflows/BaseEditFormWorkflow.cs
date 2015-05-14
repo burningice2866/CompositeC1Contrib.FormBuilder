@@ -6,9 +6,10 @@ using Composite.C1Console.Actions;
 using Composite.C1Console.Forms;
 using Composite.C1Console.Forms.DataServices;
 using Composite.Core.Xml;
+using Composite.Data;
 
-using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Configuration;
+using CompositeC1Contrib.FormBuilder.Data.Types;
 using CompositeC1Contrib.FormBuilder.Dynamic.Configuration;
 using CompositeC1Contrib.Workflows;
 
@@ -133,10 +134,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public override bool Validate()
         {
-            var formToken = GetBinding<FormInstanceEntityToken>("BoundToken");
+            var token = GetBinding<DataEntityToken>("BoundToken");
+            var form = (IForm)token.Data;
+
             var name = GetBinding<string>("Name");
 
-            if (name == formToken.Name)
+            if (name == form.Name)
             {
                 return true;
             }
@@ -161,18 +164,21 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         protected void Save(IDynamicFormDefinition definition)
         {
-            var token = GetBinding<FormInstanceEntityToken>("BoundToken");
+            var token = GetBinding<DataEntityToken>("BoundToken");
+            var form = (IForm)token.Data;
+
             var name = GetBinding<string>("Name");
 
             SaveExtraSettings(definition);
 
-            var isNewName = name != token.Name;
+            var isNewName = name != form.Name;
             if (isNewName)
             {
                 DefinitionsFacade.Copy(definition, name);
                 DefinitionsFacade.Delete(definition);
 
-                token = new FormInstanceEntityToken(token.Source, name);
+                form = FormDataFacade.GetFormData(name);
+                token = form.GetDataEntityToken();
 
                 UpdateBinding("BoundToken", token);
                 SetSaveStatus(true, token);

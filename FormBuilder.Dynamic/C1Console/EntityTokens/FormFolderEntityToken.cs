@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 
 using Composite.C1Console.Security;
+using Composite.Data;
 
-using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider;
+using CompositeC1Contrib.FormBuilder.Data.Types;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens
 {
@@ -75,7 +75,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens
             var fieldFolderToken = entityToken as FormFolderEntityToken;
             if (fieldFolderToken != null)
             {
-                yield return new FormInstanceEntityToken(typeof(FormBuilderElementProvider).Name, fieldFolderToken.Id);
+                var data = FormDataFacade.GetFormData(fieldFolderToken.Id);
+                var token = data.GetDataEntityToken();
+
+                yield return token;
             }
         }
     }

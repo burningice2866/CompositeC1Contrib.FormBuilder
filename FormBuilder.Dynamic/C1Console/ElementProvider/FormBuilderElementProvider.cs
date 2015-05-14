@@ -9,14 +9,16 @@ using Composite.C1Console.Elements.Plugins.ElementProvider;
 using Composite.C1Console.Security;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
+using Composite.Data;
 
 using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
+using CompositeC1Contrib.FormBuilder.Data.Types;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 {
-    public class FormBuilderElementProvider : IHooklessElementProvider
+    public class FormBuilderElementProvider : IHooklessElementProvider, IAuxiliarySecurityAncestorProvider
     {
         private static readonly ActionGroup ActionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
         private static readonly IEnumerable<PermissionType> AddPermissions = new[] { PermissionType.Add };
@@ -102,6 +104,33 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     ActionLocation = ActionLocation
                 }
             });
+        }
+
+        public Dictionary<EntityToken, IEnumerable<EntityToken>> GetParents(IEnumerable<EntityToken> entityTokens)
+        {
+            var dictionary = new Dictionary<EntityToken, IEnumerable<EntityToken>>();
+
+            foreach (var token in entityTokens)
+            {
+                var dataToken = token as DataEntityToken;
+                if (dataToken == null)
+                {
+                    continue;
+                }
+
+                var form = dataToken.Data as IForm;
+                if (form == null)
+                {
+                    continue;
+                }
+
+                var parts = form.Name.Split(new[] { '.' });
+                var ns = String.Join(".", parts.Take(parts.Length - 1));
+
+                dictionary.Add(token, new[] { new NamespaceFolderEntityToken(typeof(FormBuilderElementProvider).Name, ns) });
+            }
+
+            return dictionary;
         }
     }
 }

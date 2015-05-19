@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -11,8 +10,8 @@ using Composite.Core.ResourceSystem;
 using Composite.Core.Xml;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
+using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Configuration;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.Configuration;
 using CompositeC1Contrib.FormBuilder.Web.UI;
 using CompositeC1Contrib.Workflows;

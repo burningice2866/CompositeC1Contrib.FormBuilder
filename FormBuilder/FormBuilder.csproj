@@ -14,7 +14,7 @@
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>16e8f573</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>2c4015a2</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -91,8 +91,15 @@
     <Compile Include="Attributes\FormNameAttribute.cs" />
     <Compile Include="Attributes\DataSourceAttribute.cs" />
     <Compile Include="C1Console\Actions\DownloadSubmittedFormsActionToken.cs" />
+    <Compile Include="C1Console\ElementProvider\FormFolderEntityTokenHandler.cs" />
+    <Compile Include="C1Console\ElementProvider\FormBuilderElementProvider.cs" />
+    <Compile Include="C1Console\ElementProvider\FormElementProviderEntityTokenHandler.cs" />
+    <Compile Include="C1Console\ElementProvider\IElementActionProvider.cs" />
     <Compile Include="C1Console\ElementProvider\IEntityTokenBasedElementProvider.cs" />
+    <Compile Include="C1Console\ElementProvider\NamespaceFolderEntityTokenHandler.cs" />
     <Compile Include="C1Console\EntityTokens\FormElementProviderEntityToken.cs" />
+    <Compile Include="C1Console\EntityTokens\FormFieldEntityToken.cs" />
+    <Compile Include="C1Console\EntityTokens\FormFolderEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\NamespaceFolderEntityToken.cs" />
     <Compile Include="Configuration\CaptchaConfiguration.cs" />
     <Compile Include="Configuration\FormBuilderConfiguration.cs" />
@@ -113,6 +120,7 @@
     <Compile Include="FunctionProviders\DumpSubmittedWizardValues.cs" />
     <Compile Include="FunctionProviders\FormWizardFunction.cs" />
     <Compile Include="IFormModel.cs" />
+    <Compile Include="ProviderModelContainer.cs" />
     <Compile Include="SafeDirectoryCatalog.cs" />
     <Compile Include="SerializableMailTemplate.cs" />
     <Compile Include="Validation\BaseFileValidatorAttribute.cs" />
@@ -249,7 +257,6 @@ del "$(ProjectDir)\Package\package.zip"
 
 "$(ProjectDir)..\.vendor\7z.exe" a "$(ProjectDir)\Package\package.zip" -tzip -r "$(ProjectDir)\Package\*"</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

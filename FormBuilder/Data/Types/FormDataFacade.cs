@@ -12,7 +12,6 @@ namespace CompositeC1Contrib.FormBuilder.Data.Types
             {
                 return data.Get<IForm>().SingleOrDefault(f => f.Name == name);
             }
-
         }
     }
 }

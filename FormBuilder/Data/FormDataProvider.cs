@@ -38,16 +38,18 @@ namespace CompositeC1Contrib.FormBuilder.Data
 
         public IQueryable<T> GetData<T>() where T : class, IData
         {
-            var models = FormModelsFacade.GetModels().Select(f =>
+            var models = FormModelsFacade.GetModels().Select(c =>
             {
                 var dataId = new FormDataId
                 {
-                    Name = f.Name
+                    Source = c.Source.Name,
+                    Type = c.Type,
+                    Name = c.Model.Name
                 };
 
                 var dataSourceId = _context.CreateDataSourceId(dataId, typeof(IForm));
 
-                return new FormData(f, dataSourceId);
+                return new FormData(c.Model, dataSourceId);
             });
 
 

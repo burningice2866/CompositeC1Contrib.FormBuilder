@@ -13,14 +13,14 @@ using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
-namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
+namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider.EntityTokenHandlers
 {
     [Export(typeof(IEntityTokenBasedElementProvider))]
     public class FieldValidatorsEntityTokenHandler : IEntityTokenBasedElementProvider
     {
-        public Type EntityTokenType
+        public bool IsProviderFor(EntityToken token)
         {
-            get { return typeof(FieldValidatorsEntityToken); }
+            return token is FieldValidatorsEntityToken;
         }
 
         public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)

@@ -68,25 +68,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="C1Console\ActionProviders\FormElementActionProvider.cs" />
+    <Compile Include="C1Console\ActionProviders\FormFieldElementActionProvider.cs" />
+    <Compile Include="C1Console\ActionProviders\SubmitHandlerElementActionProvider.cs" />
     <Compile Include="C1Console\Actions\DeleteFieldValidatorActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteFormWizardStepActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteSubmitHandlerActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteDataSourceActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteFormActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteStringBasedDataSourceEntryActionToken.cs" />
+    <Compile Include="C1Console\ActionProviders\RootElementActionProvider.cs" />
+    <Compile Include="C1Console\ElementProvider\DataEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FieldValidatorsEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\DataSourceEntityTokenHandler.cs" />
-    <Compile Include="C1Console\ElementProvider\NamespaceFolderEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormFieldEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormFolderEntityTokenHandler.cs" />
-    <Compile Include="C1Console\ElementProvider\DataEntityTokenHandler.cs" />
-    <Compile Include="C1Console\ElementProvider\FormElementProviderEntityTokenHandler.cs" />
     <Compile Include="C1Console\EntityTokens\FieldValidatorsEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormSubmitHandlerEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormWizardStepEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\StringBasedDataSourceEntryEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\DataSourceEntityToken.cs" />
-    <Compile Include="C1Console\EntityTokens\FormFieldEntityToken.cs" />
     <Compile Include="C1Console\Workflows\AddFormWizardWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -130,7 +131,6 @@
     <Compile Include="C1Console\Workflows\EditFormWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="C1Console\Workflows\IActionProvider.cs" />
     <Compile Include="C1Console\Workflows\EditWorkflowAttribute.cs" />
     <Compile Include="CompositeFormRendererConverter.cs" />
     <Compile Include="Configuration\DynamicFormBuilderConfiguration.cs" />
@@ -182,9 +182,7 @@
     </Compile>
     <Compile Include="DynamicFormsFacade.cs" />
     <Compile Include="C1Console\Actions\DeleteFormFieldActionToken.cs" />
-    <Compile Include="C1Console\EntityTokens\FormFolderEntityToken.cs" />
     <Compile Include="C1Console\PermissionTypeExtensionMethods.cs" />
-    <Compile Include="C1Console\ElementProvider\FormBuilderElementProvider.cs" />
     <Compile Include="C1Console\FormBuilderActionProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="C1Console\Workflows\AddStringBasedDataSourceEntryWorkflow.cs">

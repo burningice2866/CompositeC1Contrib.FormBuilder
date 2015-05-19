@@ -25,10 +25,10 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static IFormModel GetModel(string name)
         {
-            return GetModels().SingleOrDefault(m => m.Name == name);
+            return GetModels().Select(c => c.Model).SingleOrDefault(m => m.Name == name);
         }
 
-        public static IEnumerable<IFormModel> GetModels()
+        public static IEnumerable<ProviderModelContainer> GetModels()
         {
             return Providers.SelectMany(provider => provider.GetModels());
         }

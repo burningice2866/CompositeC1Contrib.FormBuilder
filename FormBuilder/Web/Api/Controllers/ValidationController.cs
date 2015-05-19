@@ -85,7 +85,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
         private static IFormModel CreateFormModel(NameValueCollection form)
         {
             var name = form["__type"];
-            var model = FormModelsFacade.GetModels().Single(f => f.Name == name);
+            var model = FormModelsFacade.GetModels().Select(c => c.Model).Single(f => f.Name == name);
 
             return model;
         }

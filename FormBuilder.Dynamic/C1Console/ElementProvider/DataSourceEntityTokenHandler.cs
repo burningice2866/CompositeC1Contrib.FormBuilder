@@ -12,14 +12,14 @@ using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 
-namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
+namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider.EntityTokenHandlers
 {
     [Export(typeof(IEntityTokenBasedElementProvider))]
     public class DataSourceEntityTokenHandler : IEntityTokenBasedElementProvider
     {
-        public Type EntityTokenType
+        public bool IsProviderFor(EntityToken token)
         {
-            get { return typeof(DataSourceEntityToken); }
+            return token is DataSourceEntityToken;
         }
 
         public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)

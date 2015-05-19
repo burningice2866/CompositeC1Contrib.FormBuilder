@@ -3,17 +3,14 @@ using System.Collections.Generic;
 
 using Composite.C1Console.Security;
 
-using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
-
-namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens
+namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
 {
-    [SecurityAncestorProvider(typeof(FormSubmitHandlerAncestorProvider))]
-    public class FormSubmitHandlerEntityToken : EntityToken
+    [SecurityAncestorProvider(typeof(FormFieldAncestorProvider))]
+    public class FormFieldEntityToken : EntityToken
     {
-        private readonly string _type;
         public override string Type
         {
-            get { return _type; }
+            get { return String.Empty; }
         }
 
         private readonly string _source;
@@ -30,19 +27,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens
 
         public string FormName
         {
-            get { return _source; }
+            get { return Source; }
         }
 
-        public string Name
+        public string FieldName
         {
-            get { return _id; }
+            get { return Id; }
         }
 
-        public FormSubmitHandlerEntityToken(Type type, string formName, string name)
+        public FormFieldEntityToken(string formName, string fieldName)
         {
-            _type = type.AssemblyQualifiedName;
             _source = formName;
-            _id = name;
+            _id = fieldName;
         }
 
         public override string Serialize()
@@ -58,18 +54,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens
 
             DoDeserialize(serializedEntityToken, out type, out source, out id);
 
-            return new FormSubmitHandlerEntityToken(System.Type.GetType(type), source, id);
+            return new FormFieldEntityToken(source, id);
         }
     }
 
-    public class FormSubmitHandlerAncestorProvider : ISecurityAncestorProvider
+    public class FormFieldAncestorProvider : ISecurityAncestorProvider
     {
         public IEnumerable<EntityToken> GetParents(EntityToken entityToken)
         {
-            var dataSourceToken = entityToken as FormSubmitHandlerEntityToken;
-            if (dataSourceToken != null)
+            var fieldToken = entityToken as FormFieldEntityToken;
+            if (fieldToken != null)
             {
-                yield return new FormFolderEntityToken(dataSourceToken.FormName, "SubmitHandlers");
+                yield return new FormFolderEntityToken(fieldToken.FormName, "Fields");
             }
         }
     }

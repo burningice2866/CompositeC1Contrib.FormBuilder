@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
 
-using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.Workflows;
 

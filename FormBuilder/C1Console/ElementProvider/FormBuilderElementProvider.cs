@@ -7,24 +7,22 @@ using System.Web;
 using Composite.C1Console.Elements;
 using Composite.C1Console.Elements.Plugins.ElementProvider;
 using Composite.C1Console.Security;
-using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 using Composite.Data;
 
-using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Data.Types;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
-namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
+namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
 {
     public class FormBuilderElementProvider : IHooklessElementProvider, IAuxiliarySecurityAncestorProvider
     {
         private static readonly ActionGroup ActionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
-        private static readonly IEnumerable<PermissionType> AddPermissions = new[] { PermissionType.Add };
 
-        private static readonly IDictionary<Type, IEntityTokenBasedElementProvider> EntityTokenHandlers = new Dictionary<Type, IEntityTokenBasedElementProvider>();
+        private static readonly IList<IEntityTokenBasedElementProvider> EntityTokenHandlers = new List<IEntityTokenBasedElementProvider>();
+        private static readonly IList<IElementActionProvider> ElementActionProviders = new List<IElementActionProvider>();
 
+        public static readonly IEnumerable<PermissionType> AddPermissions = new[] { PermissionType.Add };
         public static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = true, ActionGroup = ActionGroup };
 
         private ElementProviderContext _context;
@@ -41,19 +39,30 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 
             container.Compose(batch);
 
-            var any = container.GetExportedValues<IEntityTokenBasedElementProvider>().ToDictionary(o => o.EntityTokenType, o => o);
+            var elementProviders = container.GetExportedValues<IEntityTokenBasedElementProvider>().ToList();
+            var actionProviders = container.GetExportedValues<IElementActionProvider>().ToList();
 
-            EntityTokenHandlers = any.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            EntityTokenHandlers = elementProviders;
+            ElementActionProviders = actionProviders;
         }
 
         public IEnumerable<Element> GetChildren(EntityToken entityToken, SearchToken searchToken)
         {
-            var elements = Enumerable.Empty<Element>();
+            var elements = new List<Element>();
 
-            IEntityTokenBasedElementProvider handler;
-            if (EntityTokenHandlers.TryGetValue(entityToken.GetType(), out handler))
+            foreach (var handler in EntityTokenHandlers.Where(h => h.IsProviderFor(entityToken)))
             {
-                elements = handler.Handle(_context, entityToken);
+                elements.AddRange(handler.Handle(_context, entityToken));
+            }
+
+            foreach (var el in elements)
+            {
+                var token = el.ElementHandle.EntityToken;
+
+                foreach (var provider in ElementActionProviders.Where(p => p.IsProviderFor(token)))
+                {
+                    provider.AddActions(el);
+                }
             }
 
             return elements;
@@ -74,36 +83,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 }
             };
 
-            ConfigureFolderActions(rootElement);
+            foreach (var provider in ElementActionProviders.Where(p => p.IsProviderFor(rootElement.ElementHandle.EntityToken)))
+            {
+                provider.AddActions(rootElement);
+            }
 
             return new[] { rootElement };
-        }
-
-        public static void ConfigureFolderActions(Element element)
-        {
-            var addFormActionToken = new WorkflowActionToken(typeof(AddFormWorkflow), AddPermissions);
-            element.AddAction(new ElementAction(new ActionHandle(addFormActionToken))
-            {
-                VisualData = new ActionVisualizedData
-                {
-                    Label = "Add form",
-                    ToolTip = "Add form",
-                    Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                    ActionLocation = ActionLocation
-                }
-            });
-
-            var addWizardActionToken = new WorkflowActionToken(typeof(AddFormWizardWorkflow), AddPermissions);
-            element.AddAction(new ElementAction(new ActionHandle(addWizardActionToken))
-            {
-                VisualData = new ActionVisualizedData
-                {
-                    Label = "Add wizard",
-                    ToolTip = "Add wizard",
-                    Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                    ActionLocation = ActionLocation
-                }
-            });
         }
 
         public Dictionary<EntityToken, IEnumerable<EntityToken>> GetParents(IEnumerable<EntityToken> entityTokens)

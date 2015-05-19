@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Composite.C1Console.Workflow;
+using Composite.Data;
 
+using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
+using CompositeC1Contrib.FormBuilder.Data.Types;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.Workflows;
 
@@ -15,7 +18,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public static Dictionary<string, string> GetFormNames()
         {
-            return FormModelsFacade.GetModels().ToDictionary(m => m.Name, m => m.Name);
+            using (var data = new DataConnection())
+            {
+                return data.Get<IForm>().ToDictionary(f => f.Name, f => f.Name);
+            }
         }
 
         public override void OnInitialize(object sender, EventArgs e)
@@ -40,7 +46,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             {
                 Name = stepName,
                 FormName = formName,
-                Label =  stepName,
+                Label = stepName,
                 LocalOrdering = wizard.Steps.Count + 1
             };
 

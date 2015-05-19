@@ -10,6 +10,7 @@ using Composite.Core.ResourceSystem;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
+using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
@@ -19,9 +20,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
     [Export(typeof(IEntityTokenBasedElementProvider))]
     public class FormFieldEntityTokenHandler : IEntityTokenBasedElementProvider
     {
-        public Type EntityTokenType
+        public bool IsProviderFor(EntityToken token)
         {
-            get { return typeof(FormFieldEntityToken); }
+            return token is FormFieldEntityToken;
         }
 
         public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)

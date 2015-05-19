@@ -10,10 +10,10 @@ using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
 
-namespace CompositeC1Contrib.FormBuilder.Excel.C1Console.ActionProviders
+namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ActionProviders
 {
     [Export(typeof(IElementActionProvider))]
-    public class ExcelActionProvider : IElementActionProvider
+    public class SubmitHandlerElementActionProvider : IElementActionProvider
     {
         public bool IsProviderFor(EntityToken entityToken)
         {
@@ -32,19 +32,17 @@ namespace CompositeC1Contrib.FormBuilder.Excel.C1Console.ActionProviders
         {
             var token = (FormSubmitHandlerEntityToken)element.ElementHandle.EntityToken;
 
-            var downloadActionToken = new DownloadSubmittedFormsActionToken(token.FormName, ".xlsx");
-            var downloadAction = new ElementAction(new ActionHandle(downloadActionToken))
+            var downloadActionToken = new DownloadSubmittedFormsActionToken(token.FormName, ".csv");
+            element.AddAction(new ElementAction(new ActionHandle(downloadActionToken))
             {
                 VisualData = new ActionVisualizedData
                 {
-                    Label = "Download saved forms as Excel",
-                    ToolTip = "Download saved forms as Excel",
+                    Label = "Download saved forms",
+                    ToolTip = "Download saved forms",
                     Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
                     ActionLocation = FormBuilderElementProvider.ActionLocation
                 }
-            };
-
-            element.AddAction(downloadAction);
+            });
         }
     }
 }

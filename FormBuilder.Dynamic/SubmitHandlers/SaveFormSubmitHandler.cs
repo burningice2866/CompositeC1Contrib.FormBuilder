@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Xml.Linq;
 
-using Composite.C1Console.Elements;
-using Composite.Core.ResourceSystem;
-
-using CompositeC1Contrib.FormBuilder.C1Console.Actions;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
-
 namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
 {
     [Serializable]
-    public class SaveFormSubmitHandler : FormSubmitHandler, IActionPrivider
+    public class SaveFormSubmitHandler : FormSubmitHandler
     {
         public bool IncludeAttachments { get; set; }
 
@@ -23,21 +16,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
         public override void Save(IDynamicFormDefinition definition, XElement handler)
         {
             handler.Add(new XAttribute("IncludeAttachments", IncludeAttachments));
-        }
-
-        public void AddActions(IDynamicFormDefinition definition, Element element)
-        {
-            var downloadActionToken = new DownloadSubmittedFormsActionToken(definition.Name, ".csv");
-            element.AddAction(new ElementAction(new ActionHandle(downloadActionToken))
-            {
-                VisualData = new ActionVisualizedData
-                {
-                    Label = "Download saved forms",
-                    ToolTip = "Download saved forms",
-                    Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                    ActionLocation = FormBuilderElementProvider.ActionLocation
-                }
-            });
         }
     }
 }

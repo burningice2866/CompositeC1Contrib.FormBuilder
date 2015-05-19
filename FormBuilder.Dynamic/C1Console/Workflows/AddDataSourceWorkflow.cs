@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
+using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows

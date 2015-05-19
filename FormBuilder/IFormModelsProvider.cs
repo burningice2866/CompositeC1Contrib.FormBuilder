@@ -4,6 +4,6 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public interface IFormModelsProvider
     {
-        IEnumerable<IFormModel> GetModels();
+        IEnumerable<ProviderModelContainer> GetModels();
     }
 }

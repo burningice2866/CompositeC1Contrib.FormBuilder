@@ -5,7 +5,7 @@
 
   <mi:PackageInformation name="Contribution.CompositeC1Contrib.FormBuilder.Excel"
                          groupName="Contribution.CompositeC1Contrib"
-                         version="0.9.0" author="@burningice" website="http://compositec1contrib.codeplex.com"
+                         version="0.9.1" author="@burningice" website="http://compositec1contrib.codeplex.com"
                          readMoreUrl="http://compositec1contrib.codeplex.com"
                          id="627f59da-a157-44f2-80ad-0671aa0a6e90"
                          canBeUninstalled="true"
@@ -20,12 +20,6 @@
       <Files>
         <File sourceFilename="~\Bin\CompositeC1Contrib.FormBuilder.Excel.dll" targetFilename="~\Bin\CompositeC1Contrib.FormBuilder.Excel.dll" allowOverwrite="true" />
       </Files>
-    </mi:Add>
-
-    <mi:Add installerType="Composite.Core.PackageSystem.PackageFragmentInstallers.XmlFileMergePackageFragmentInstaller, Composite" uninstallerType="Composite.Core.PackageSystem.PackageFragmentInstallers.XmlFileMergePackageFragmentUninstaller, Composite">
-      <XmlFileMerges>
-        <XmlFileMerge changeDefinitionPath="~\config\App_Data\Composite\composite.config" targetFilePath="~\App_Data\Composite\composite.config" />
-      </XmlFileMerges>
     </mi:Add>
   </mi:PackageFragmentInstallers>
 </mi:PackageInstaller>

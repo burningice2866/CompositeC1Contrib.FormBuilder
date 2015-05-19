@@ -10,8 +10,8 @@ using Composite.Core.WebClient;
 using Composite.Data;
 
 using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
+using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Data.Types;
-using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
@@ -19,32 +19,29 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
     [Export(typeof(IEntityTokenBasedElementProvider))]
     public class DataEntityTokenHandler : IEntityTokenBasedElementProvider
     {
-        public Type EntityTokenType
+        public bool IsProviderFor(EntityToken token)
         {
-            get { return typeof(DataEntityToken); }
+            return token is DataEntityToken;
         }
 
         public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)
         {
-            var folders = getFormFolders(context, (DataEntityToken)token);
-
-            return folders;
-        }
-
-        private IEnumerable<Element> getFormFolders(ElementProviderContext context, DataEntityToken token)
-        {
-            var form = (IForm)(token).Data;
+            var form = (IForm)((DataEntityToken)token).Data;
             if (form == null)
             {
                 yield break;
             }
 
             var def = DefinitionsFacade.GetDefinition(form.Name);
+            if (def == null)
+            {
+                yield break;
+            }
 
             if (def is DynamicFormDefinition)
             {
-                var fieldsElementHandle = context.CreateElementHandle(new FormFolderEntityToken(form.Name, FormFolderType.Fields));
-                var fieldElement = new Element(fieldsElementHandle)
+                var fieldsElementHandle = context.CreateElementHandle(new FormFolderEntityToken(form.Name, "Fields"));
+                var fieldsElement = new Element(fieldsElementHandle)
                 {
                     VisualData = new ElementVisualizedData
                     {
@@ -57,7 +54,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 };
 
                 var addActionToken = new WorkflowActionToken(typeof(AddFormFieldWorkflow), new[] { PermissionType.Add });
-                fieldElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
+                fieldsElement.AddAction(new ElementAction(new ActionHandle(addActionToken))
                 {
                     VisualData = new ActionVisualizedData
                     {
@@ -70,7 +67,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 
                 var url = String.Format("InstalledPackages/CompositeC1Contrib.FormBuilder.Dynamic/SortFormFields.aspx?formName={0}", form.Name);
                 var sortActionToken = new UrlActionToken("Sort fields", UrlUtils.ResolveAdminUrl(url), new[] { PermissionType.Edit });
-                fieldElement.AddAction(new ElementAction(new ActionHandle(sortActionToken))
+                fieldsElement.AddAction(new ElementAction(new ActionHandle(sortActionToken))
                 {
                     VisualData = new ActionVisualizedData
                     {
@@ -81,12 +78,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     }
                 });
 
-                yield return fieldElement;
+                yield return fieldsElement;
             }
 
             if (def is DynamicFormWizard)
             {
-                var stepsFolderElementHandle = context.CreateElementHandle(new FormFolderEntityToken(form.Name, FormFolderType.Steps));
+                var stepsFolderElementHandle = context.CreateElementHandle(new FormFolderEntityToken(form.Name, "Steps"));
                 var stepsFolderElement = new Element(stepsFolderElementHandle)
                 {
                     VisualData = new ElementVisualizedData
@@ -127,7 +124,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 yield return stepsFolderElement;
             }
 
-            var submitHandlersElementHandle = context.CreateElementHandle(new FormFolderEntityToken(form.Name, FormFolderType.SubmitHandlers));
+            var submitHandlersElementHandle = context.CreateElementHandle(new FormFolderEntityToken(form.Name, "SubmitHandlers"));
             var submitHandlersElement = new Element(submitHandlersElementHandle)
             {
                 VisualData = new ElementVisualizedData

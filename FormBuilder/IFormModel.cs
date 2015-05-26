@@ -11,6 +11,7 @@ namespace CompositeC1Contrib.FormBuilder
         IList<FormField> Fields { get; }
 
         bool DisableAntiForgery { get; }
+        bool RequiresCaptcha { get; }
         bool ForceHttps { get; }
         bool HasFileUpload { get; }
 

@@ -24,9 +24,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             _formFile = formFile;
         }
 
-        protected void SetupFormData(IDynamicFormDefinition definition)
+        protected void SetupFormData(IDynamicFormDefinition definition, IFormModel model)
         {
             Bindings.Add("Name", definition.Name);
+
+            Bindings.Add("RequiresCaptcha", model.RequiresCaptcha);
+            Bindings.Add("ForceHttpsConnection", model.ForceHttps);
+
             Bindings.Add("IntroText", definition.IntroText.ToString());
             Bindings.Add("SuccessResponse", definition.SuccessResponse.ToString());
 

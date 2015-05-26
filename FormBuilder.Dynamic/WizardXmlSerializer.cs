@@ -9,10 +9,16 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         {
             var wizard = new DynamicFormWizard { Name = name };
 
+            var requiresCaptchaAttribute = xml.Attribute("requiresCaptcha");
+            if (requiresCaptchaAttribute != null)
+            {
+                wizard.RequiresCaptcha = bool.Parse(requiresCaptchaAttribute.Value);
+            }
+
             var forceHttpsConnectionAttribute = xml.Attribute("forceHttpsConnection");
             if (forceHttpsConnectionAttribute != null)
             {
-                wizard.ForceHttpSConnection = bool.Parse(forceHttpsConnectionAttribute.Value);
+                wizard.ForceHttps = bool.Parse(forceHttpsConnectionAttribute.Value);
             }
 
             var stepsElement = xml.Element("Steps");
@@ -62,7 +68,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
             var root = new XElement("FormBuilder.Wizard",
                 new XAttribute("name", wizard.Name),
-                new XAttribute("forceHttpsConnection", wizard.ForceHttpSConnection));
+                new XAttribute("requiresCaptcha", wizard.RequiresCaptcha),
+                new XAttribute("forceHttpsConnection", wizard.ForceHttps));
 
             var layout = new XElement("Layout");
 

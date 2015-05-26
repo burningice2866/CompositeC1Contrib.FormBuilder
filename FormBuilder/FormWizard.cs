@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Web;
 
 using Composite.Core.Xml;
 
+using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder
@@ -11,7 +13,8 @@ namespace CompositeC1Contrib.FormBuilder
     public class FormWizard : IFormModel
     {
         public string Name { get; set; }
-        public bool ForceHttpSConnection { get; set; }
+        public bool RequiresCaptcha { get; set; }
+        public bool ForceHttps { get; set; }
         public XhtmlDocument IntroText { get; set; }
         public XhtmlDocument SuccessResponse { get; set; }
         public IList<FormWizardStep> Steps { get; private set; }
@@ -24,11 +27,6 @@ namespace CompositeC1Contrib.FormBuilder
         public bool DisableAntiForgery
         {
             get { return Steps.Select(s => s.FormModel).Any(m => m.DisableAntiForgery); }
-        }
-
-        public bool ForceHttps
-        {
-            get { return Steps.Select(s => s.FormModel).Any(m => m.ForceHttps); }
         }
 
         public bool HasFileUpload
@@ -74,10 +72,18 @@ namespace CompositeC1Contrib.FormBuilder
 
             foreach (var model in Steps.Select(s => s.FormModel))
             {
-                var validationResult = model.Validate(validateCaptcha);
+                var validationResult = model.Validate(false);
 
                 list.AddRange(validationResult);
-                }
+            }
+
+            if (validateCaptcha && RequiresCaptcha)
+            {
+                var requiresCaptchaAttr = new RequiresCaptchaAttribute();
+                var form = new HttpContextWrapper(HttpContext.Current);
+
+                requiresCaptchaAttr.Validate(form, list);
+            }
 
             return list;
         }

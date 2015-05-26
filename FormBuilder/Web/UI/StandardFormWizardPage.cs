@@ -116,13 +116,20 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     sb.AppendFormat("<button class=\"btn btn-primary btn-prev\" data-nextstep=\"{0}\">{1}</button>", stepNumber - 1, previousButtonLabel);
                 }
 
-                if (i < (steps.Count - 1))
+                if (HasMoreSteps(i, steps.Count))
                 {
                     sb.AppendFormat("<button class=\"btn btn-primary btn-next\" data-nextstep=\"{0}\">{1}</button>", stepNumber + 1, nextButtonLabel);
                 }
 
-                if (i == (steps.Count - 1))
+                if (IsLastStep(i, steps.Count))
                 {
+                    if (Wizard.RequiresCaptcha)
+                    {
+                        var html = FormRenderer.Captcha(RenderingContext.RenderingModel, RenderingContext.ValidationResult);
+
+                        sb.Append(html);
+                    }
+
                     sb.AppendFormat("<input class=\"btn btn-primary\" type=\"submit\" value=\"{0}\" />", nextButtonLabel);
                 }
 
@@ -162,6 +169,16 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             }
 
             return new HtmlString(xelement.ToString());
+        }
+
+        private static bool HasMoreSteps(int ix, int count)
+        {
+            return ix < (count - 1);
+        }
+
+        private static bool IsLastStep(int ix, int count)
+        {
+            return ix == (count - 1);
         }
     }
 }

@@ -2,6 +2,7 @@
 <cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:f="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0">
   <cms:bindings>
     <cms:binding name="Name" type="System.String" />
+    <cms:binding name="RequiresCaptcha" type="System.Boolean" />
     <cms:binding name="ForceHttpsConnection" type="System.Boolean" />
     <cms:binding name="IntroText" type="System.String" />
     <cms:binding name="SuccessResponse" type="System.String" />
@@ -20,6 +21,10 @@
               <cms:bind source="Name" />
             </TextBox.Text>
           </TextBox>
+
+          <CheckBox Label="Requires captcha">
+            <cms:bind source="RequiresCaptcha" />
+          </CheckBox>
 
           <CheckBox Label="Force https connection">
             <cms:bind source="ForceHttpsConnection" />

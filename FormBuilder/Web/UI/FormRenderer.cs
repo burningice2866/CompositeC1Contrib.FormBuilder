@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -364,14 +363,14 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return text.Contains("${") ? StringResourceSystemFacade.ParseString(text) : text;
         }
 
-        public static IHtmlString Captcha(FormModel model, ValidationResultList validationResult)
+        public static IHtmlString Captcha(IFormModel model, ValidationResultList validationResult)
         {
-            var requiresCaptchaAttr = model.Attributes.OfType<RequiresCaptchaAttribute>().SingleOrDefault();
-            if (requiresCaptchaAttr == null)
+            if (!model.RequiresCaptcha)
             {
                 return null;
             }
 
+            var requiresCaptchaAttr = new RequiresCaptchaAttribute();
             var s = requiresCaptchaAttr.Render(model, validationResult);
 
             return new HtmlString(s);

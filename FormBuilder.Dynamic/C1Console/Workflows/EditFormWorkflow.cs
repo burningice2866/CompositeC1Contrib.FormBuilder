@@ -25,12 +25,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var form = (IForm)((DataEntityToken)EntityToken).Data;
             var definition = DynamicFormsFacade.GetFormByName(form.Name);
 
-            Bindings.Add("RequiresCaptcha", definition.Model.Attributes.OfType<RequiresCaptchaAttribute>().Any());
-            Bindings.Add("ForceHttpsConnection", definition.Model.ForceHttps);
+            SetupFormData(definition, definition.Model);
+
             Bindings.Add("SubmitButtonLabel", definition.Model.SubmitButtonLabel);
-
-            SetupFormData(definition);
-
             Bindings.Add("BoundToken", EntityToken);
         }
 

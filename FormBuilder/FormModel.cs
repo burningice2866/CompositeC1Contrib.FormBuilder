@@ -33,6 +33,11 @@ namespace CompositeC1Contrib.FormBuilder
             get { return Attributes.OfType<DisableAntiForgeryAttribute>().Any(); }
         }
 
+        public bool RequiresCaptcha
+        {
+            get { return Attributes.OfType<RequiresCaptchaAttribute>().Any(); }
+        }
+
         public bool ForceHttps
         {
             get { return Attributes.OfType<ForceHttpsConnectionAttribute>().Any(); }

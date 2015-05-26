@@ -20,9 +20,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var form = (IForm)((DataEntityToken)EntityToken).Data;
             var wizard = DynamicFormWizardsFacade.GetWizard(form.Name);
 
-            Bindings.Add("ForceHttpsConnection", wizard.ForceHttpSConnection);
-
-            SetupFormData(wizard);
+            SetupFormData(wizard, wizard);
 
             Bindings.Add("BoundToken", EntityToken);
         }
@@ -34,9 +32,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             var wizard = DynamicFormWizardsFacade.GetWizard(form.Name);
 
+            var requiresCaptcha = GetBinding<bool>("RequiresCaptcha");
             var forceHttpsConnection = GetBinding<bool>("ForceHttpsConnection");
 
-            wizard.ForceHttpSConnection = forceHttpsConnection;
+            wizard.RequiresCaptcha = requiresCaptcha;
+            wizard.ForceHttps = forceHttpsConnection;
 
             Save(wizard);
         }

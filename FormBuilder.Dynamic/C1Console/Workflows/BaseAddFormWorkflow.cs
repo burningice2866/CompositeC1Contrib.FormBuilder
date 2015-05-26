@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Linq;
+
+using Composite.Data;
 
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
+using CompositeC1Contrib.FormBuilder.Data.Types;
 using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
@@ -49,6 +53,17 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 if (!name.StartsWith(folderToken.Namespace + "."))
                 {
                     ShowFieldMessage("Name", "Name needs to start with " + folderToken.Namespace + ".");
+
+                    return false;
+                }
+            }
+
+            using (var data = new DataConnection())
+            {
+                var isNameInUse = data.Get<IForm>().Any(f => f.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+                if (isNameInUse)
+                {
+                    ShowFieldMessage("Name", "Name already exists");
 
                     return false;
                 }

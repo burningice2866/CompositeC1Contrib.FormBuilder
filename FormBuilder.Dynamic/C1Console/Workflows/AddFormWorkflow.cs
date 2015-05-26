@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 
 using Composite.C1Console.Workflow;
 using Composite.Data;
@@ -26,27 +25,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             CreateSpecificTreeRefresher().PostRefreshMesseges(EntityToken);
             ExecuteAction(token, workflowToken);
-        }
-
-        public override bool Validate()
-        {
-            var name = GetBinding<string>("Name");
-
-            var valid = base.Validate();
-            if (!valid)
-            {
-                return false;
-            }
-
-            var isNameInUse = DefinitionsFacade.GetDefinitions().Any(m => m.Name == name);
-            if (isNameInUse)
-            {
-                ShowFieldMessage("Name", "Form name already exists");
-
-                return false;
-            }
-
-            return true;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Globalization;
+using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -9,13 +9,14 @@ using System.Web;
 using Composite;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
+using CompositeC1Contrib.FormBuilder.Data;
 using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder
 {
     public sealed class FormModel : IFormModel
     {
-        private static readonly IDictionary<Type, Action<FormField, string>> ValueMappers = new Dictionary<Type, Action<FormField, string>>();
+        private static readonly IDictionary<Type, IValueMapper> ValueMappers;
 
         private IDictionary<FormField, ValidationResultList> _ruleList;
 
@@ -69,116 +70,13 @@ namespace CompositeC1Contrib.FormBuilder
 
         static FormModel()
         {
-            ValueMappers.Add(typeof(int), (f, val) =>
-            {
-                int i;
-                int.TryParse(val, out i);
+            var batch = new CompositionBatch();
+            var catalog = new SafeDirectoryCatalog(HttpRuntime.BinDirectory);
+            var container = new CompositionContainer(catalog);
 
-                f.Value = i;
-            });
+            container.Compose(batch);
 
-            ValueMappers.Add(typeof(int?), (f, val) =>
-            {
-                int i;
-                if (int.TryParse(val, out i))
-                {
-                    f.Value = i;
-                }
-                else
-                {
-                    f.Value = null;
-                }
-            });
-
-            ValueMappers.Add(typeof(decimal), (f, val) =>
-            {
-                decimal d;
-                decimal.TryParse(val, out d);
-
-                f.Value = d;
-            });
-
-            ValueMappers.Add(typeof(decimal?), (f, val) =>
-            {
-                decimal d;
-                if (decimal.TryParse(val, out d))
-                {
-                    f.Value = d;
-                }
-                else
-                {
-                    f.Value = null;
-                }
-            });
-
-            ValueMappers.Add(typeof(Guid), (f, val) =>
-            {
-                Guid g;
-                Guid.TryParse(val, out g);
-
-                f.Value = g;
-            });
-
-            ValueMappers.Add(typeof(Guid?), (f, val) =>
-            {
-                Guid g;
-                if (Guid.TryParse(val, out g))
-                {
-                    f.Value = g;
-                }
-                else
-                {
-                    f.Value = null;
-                }
-            });
-
-            ValueMappers.Add(typeof(DateTime), (f, val) =>
-            {
-                DateTime dt;
-                DateTime.TryParse(val, out dt);
-
-                f.Value = dt;
-            });
-
-            ValueMappers.Add(typeof(DateTime?), (f, val) =>
-            {
-                DateTime dt;
-
-                if (DateTime.TryParse(val, out dt))
-                {
-                    f.Value = dt;
-                }
-                else
-                {
-                    f.Value = null;
-                }
-            });
-
-            ValueMappers.Add(typeof(bool), (f, val) =>
-            {
-                bool b;
-
-                if (val == "on")
-                {
-                    b = true;
-                }
-                else
-                {
-                    bool.TryParse(val, out b);
-                }
-
-                f.Value = b;
-            });
-
-            ValueMappers.Add(typeof(string), (f, val) =>
-            {
-                f.Value = val;
-            });
-
-            ValueMappers.Add(typeof(IEnumerable<string>), (f, val) =>
-            {
-                f.Value = val.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            });
+            ValueMappers = container.GetExportedValues<IValueMapper>().ToDictionary(m => m.ValueMapperFor);
         }
 
         public FormModel(string name)
@@ -350,11 +248,10 @@ namespace CompositeC1Contrib.FormBuilder
 
         private static void MapValueToField(FormField field, string val)
         {
-            Action<FormField, string> mapper;
-
+            IValueMapper mapper;
             if (ValueMappers.TryGetValue(field.ValueType, out mapper))
             {
-                mapper(field, val);
+                mapper.MapValue(field, val);
             }
         }
 

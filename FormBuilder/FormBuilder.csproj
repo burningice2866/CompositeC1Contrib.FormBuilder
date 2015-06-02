@@ -106,7 +106,20 @@
     <Compile Include="Configuration\FormBuilderConfigurationHandler.cs" />
     <Compile Include="Configuration\IPluginConfiguration.cs" />
     <Compile Include="Configuration\SubmitHandlerElement.cs" />
+    <Compile Include="Data\BoolValueMapper.cs" />
+    <Compile Include="Data\DateTimeValueMapper.cs" />
+    <Compile Include="Data\DecimalValueMapper.cs" />
+    <Compile Include="Data\EnumerableStringValueMapper.cs" />
     <Compile Include="Data\FormDataProvider.cs" />
+    <Compile Include="Data\GuidValueMapper.cs" />
+    <Compile Include="Data\IntValueMapper.cs" />
+    <Compile Include="Data\IValueMapper.cs" />
+    <Compile Include="Data\NullableBoolValueMapper.cs" />
+    <Compile Include="Data\NullableDateTimeValueMapper.cs" />
+    <Compile Include="Data\NullableDecimalValueMapper.cs" />
+    <Compile Include="Data\NullableGuidValueMapper.cs" />
+    <Compile Include="Data\NullableIntValueMapper.cs" />
+    <Compile Include="Data\StringValueMapper.cs" />
     <Compile Include="Data\Types\FormData.cs" />
     <Compile Include="Data\Types\FormDataFacade.cs" />
     <Compile Include="Data\Types\FormDataId.cs" />
@@ -243,9 +256,7 @@
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Package\content\App_Data\Composite\DynamicTypeForms\CompositeC1Contrib\FormBuilder\Data\Types\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>del "$(ProjectDir)Package\Bin\"

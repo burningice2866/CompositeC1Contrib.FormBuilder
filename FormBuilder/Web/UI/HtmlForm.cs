@@ -7,6 +7,7 @@ using System.Web.Helpers;
 using Composite.AspNet.Razor;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
+using Newtonsoft.Json;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
@@ -15,7 +16,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         private readonly FormsPage _page;
         private bool _disposed;
 
-        public HtmlForm(FormsPage page, FormModel model, object htmlAttributes)
+        public HtmlForm(FormsPage page, object htmlAttributes)
         {
             _page = page;
 
@@ -25,12 +26,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     "class", new List<string> 
                     {
                         "form",
-                        "formbuilder-" + model.Name.ToLowerInvariant()
+                        "formbuilder-" + page.RenderingModel.Name.ToLowerInvariant()
                     }
                 }
             };
 
-            var htmlElementAttributes = model.Attributes.OfType<HtmlTagAttribute>();
+            var htmlElementAttributes = page.RenderingModel.Attributes.OfType<HtmlTagAttribute>();
             var action = String.Empty;
 
             foreach (var attr in htmlElementAttributes)
@@ -83,21 +84,25 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 page.WriteLiteral("\"");
             }
 
-            if (model.HasFileUpload)
+            if (page.RenderingModel.HasFileUpload)
             {
                 page.WriteLiteral(" enctype=\"multipart/form-data\"");
             }
 
+            var formRendererSettings = JsonConvert.SerializeObject(page.Options.FormRenderer);
+
+            page.WriteLiteral(" data-renderersettings=\"" + formRendererSettings.Replace("\"", "&quot;") + "\"");
+
             page.WriteLiteral(">");
 
-            page.WriteLiteral("<input type=\"hidden\" name=\"__type\" value=\"" + HttpUtility.HtmlAttributeEncode(model.Name) + "\" />");
+            page.WriteLiteral("<input type=\"hidden\" name=\"__type\" value=\"" + HttpUtility.HtmlAttributeEncode(page.RenderingModel.Name) + "\" />");
 
-            foreach (var field in model.Fields.Where(f => f.Label == null))
+            foreach (var field in page.RenderingModel.Fields.Where(f => f.Label == null))
             {
                 RenderHiddenField(field.Name, field.Id, field.Value == null ? String.Empty : FormRenderer.GetValue(field));
             }
 
-            if (!model.DisableAntiForgery)
+            if (!page.RenderingModel.DisableAntiForgery)
             {
                 page.WriteLiteral(AntiForgery.GetHtml());
             }

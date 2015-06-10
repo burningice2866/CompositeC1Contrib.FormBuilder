@@ -18,7 +18,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var sb = new StringBuilder();
             var htmlAttributesDictionary = MapHtmlTagAttributes(field, htmlAttributes);
 
-            if (!String.IsNullOrEmpty(FormRenderer.RendererImplementation.FormControlClass))
+            if (!String.IsNullOrEmpty(options.FormRenderer.FormControlClass))
             {
                 IList<string> list;
                 if (!htmlAttributesDictionary.TryGetValue("class", out list))
@@ -28,7 +28,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     htmlAttributesDictionary.Add("class", list);
                 }
 
-                list.Add(FormRenderer.RendererImplementation.FormControlClass);
+                list.Add(options.FormRenderer.FormControlClass);
             }
 
             sb.AppendFormat("<select name=\"{0}\" id=\"{1}\"",

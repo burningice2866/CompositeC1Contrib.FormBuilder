@@ -11,7 +11,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             _page = page;
 
-            var cssClass = FormRenderer.RendererImplementation.ParentGroupClass + "-group";
+            var cssClass = page.Options.FormRenderer.ParentGroupClass + "-group";
             if (!String.IsNullOrEmpty(extraClass))
             {
                 cssClass += " " + extraClass;
@@ -24,7 +24,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             if (!_disposed)
             {
-                _page.WriteLiteral(String.Format("</div>"));
+                _page.WriteLiteral("</div>");
 
                 _disposed = true;
             }

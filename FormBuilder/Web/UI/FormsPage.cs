@@ -23,12 +23,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         [FunctionParameter(Label = "Success response", DefaultValue = null)]
         public XhtmlDocument SuccessResponse { get; set; }
 
-        protected FormOptions Options
+        public FormOptions Options
         {
             get { return RenderingContext.Options; }
         }
 
-        protected FormModel RenderingModel
+        public FormModel RenderingModel
         {
             get { return RenderingContext.RenderingModel; }
         }
@@ -79,7 +79,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected IHtmlString WriteErrors()
         {
-            return RenderingContext.IsOwnSubmit ? FormRenderer.WriteErrors(RenderingModel, ValidationResult) : new HtmlString(String.Empty);
+            return RenderingContext.IsOwnSubmit ? FormRenderer.WriteErrors(ValidationResult, Options) : new HtmlString(String.Empty);
         }
 
         protected IHtmlString WriteAllFields()
@@ -122,7 +122,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected IHtmlString WriteCaptcha()
         {
-            return FormRenderer.Captcha(RenderingModel, ValidationResult);
+            return FormRenderer.Captcha(RenderingContext);
         }
 
         protected bool HasDependencyChecks()
@@ -137,7 +137,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected HtmlForm BeginForm(object htmlAttributes)
         {
-            return new HtmlForm(this, RenderingContext.RenderingModel, htmlAttributes);
+            return new HtmlForm(this, htmlAttributes);
         }
 
         protected FieldsGroup BeginGroup()
@@ -165,9 +165,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new FieldsRow(this, includeLabels);
         }
 
-        protected string WriteErrorClass(string name, ValidationResultList validationResult)
+        protected string WriteErrorClass(string name, ValidationResultList validationResult, FormOptions options)
         {
-            return FormRenderer.WriteErrorClass(name, validationResult);
+            return FormRenderer.WriteErrorClass(name, validationResult, options);
         }
     }
 }

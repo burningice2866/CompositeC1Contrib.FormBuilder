@@ -30,7 +30,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             _page = page;
             IncludeLabels = includeLabels;
 
-            page.WriteLiteral(String.Format("<div class=\"{0} controls-row\">", FormRenderer.RendererImplementation.FieldGroupClass));
+            page.WriteLiteral(String.Format("<div class=\"{0} controls-row\">", page.Options.FormRenderer.FieldGroupClass));
         }
 
         protected virtual void Dispose(bool disposing)

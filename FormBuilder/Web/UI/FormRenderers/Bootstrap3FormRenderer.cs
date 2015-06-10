@@ -11,7 +11,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.FormRenderers
 
         public string ErrorClass
         {
-            get { return "error"; }
+            get { return "has-error"; }
         }
 
         public string ParentGroupClass

@@ -25,7 +25,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
                 foreach (var item in field.DataSource)
                 {
-                    sb.AppendFormat("<label class=\"{0}\">", FormRenderer.RendererImplementation.FormControlLabelClass(this));
+                    sb.AppendFormat("<label class=\"{0}\">", options.FormRenderer.FormControlLabelClass(this));
 
                     sb.AppendFormat("<input type=\"{0}\" name=\"{2}\" id=\"{3}\" value=\"{4}\" title=\"{1}\" {5}",
                         ElementName,

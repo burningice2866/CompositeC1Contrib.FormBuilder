@@ -66,7 +66,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
                     foreach (var item in checkboxListOptions)
                     {
-                        sb.AppendFormat("<label class=\"{0}\">", FormRenderer.RendererImplementation.FormControlLabelClass(this));
+                        sb.AppendFormat("<label class=\"{0}\">", options.FormRenderer.FormControlLabelClass(this));
 
                         sb.AppendFormat("<input type=\"checkbox\" name=\"{1}\" id=\"{2}\" value=\"{3}\" title=\"{0}\" {4}",
                             HttpUtility.HtmlAttributeEncode(item.Value),

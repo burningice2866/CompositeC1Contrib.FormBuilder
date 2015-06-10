@@ -7,22 +7,12 @@ using System.Web;
 using Composite.Core.ResourceSystem;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
-using CompositeC1Contrib.FormBuilder.Configuration;
 using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public static class FormRenderer
     {
-        public static readonly IFormFormRenderer RendererImplementation;
-
-        static FormRenderer()
-        {
-            var type = FormBuilderConfiguration.GetSection().RendererImplementation;
-
-            RendererImplementation = (IFormFormRenderer)Activator.CreateInstance(type);
-        }
-
         public static IHtmlString FieldFor(FormOptions options, FormField field, ValidationResultList validationResult)
         {
             return FieldFor(options, field, validationResult, new Dictionary<string, string>());
@@ -47,12 +37,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new HtmlString(field.Name);
         }
 
-        public static IHtmlString WriteErrors(IFormModel model, ValidationResultList validationResult)
-        {
-            return WriteErrors(validationResult);
-        }
-
-        public static IHtmlString WriteErrors(ValidationResultList validationResult)
+        public static IHtmlString WriteErrors(ValidationResultList validationResult, FormOptions options)
         {
             if (!validationResult.Any())
             {
@@ -61,7 +46,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             var sb = new StringBuilder();
 
-            sb.Append("<div class=\"" + RendererImplementation.ErrorNotificationClass + "\">");
+            sb.Append("<div class=\"" + options.FormRenderer.ErrorNotificationClass + "\">");
 
             if (!String.IsNullOrEmpty(Localization.Validation_ErrorNotification_Header))
             {
@@ -95,8 +80,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var includeLabel = ShowLabel(field);
 
             WriteRowStart(field.Name, field.InputElementType.ElementName,
-                WriteErrorClass(field.Name, validationResult), field.IsRequired,
-                builder => DependencyAttributeFor(field, builder), sb);
+                WriteErrorClass(field.Name, validationResult, options), field.IsRequired,
+                builder => DependencyAttributeFor(field, builder), sb, options);
 
             if (fieldsRow == null || fieldsRow.IncludeLabels)
             {
@@ -113,7 +98,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 }
             }
 
-            using (new ControlsGroup(sb))
+            using (new ControlsGroup(sb, options))
             {
                 if (fieldsRow == null || fieldsRow.IncludeLabels)
                 {
@@ -141,14 +126,14 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new HtmlString(sb.ToString());
         }
 
-        public static void WriteRowStart(string name, string elementName, string errorClass, bool isRequired, Action<StringBuilder> extraAttributesRenderer, StringBuilder sb)
+        public static void WriteRowStart(string name, string elementName, string errorClass, bool isRequired, Action<StringBuilder> extraAttributesRenderer, StringBuilder sb, FormOptions options)
         {
             if (FieldsRow.Current != null)
             {
                 return;
             }
 
-            sb.AppendFormat("<div id=\"form-field-{0}\" class=\"" + RendererImplementation.ParentGroupClass + "-group control-{1} {2} {3} \"", name, elementName, errorClass, isRequired ? "required" : String.Empty);
+            sb.AppendFormat("<div id=\"form-field-{0}\" class=\"" + options.FormRenderer.ParentGroupClass + "-group control-{1} {2} {3} \"", name, elementName, errorClass, isRequired ? "required" : String.Empty);
 
             if (extraAttributesRenderer != null)
             {
@@ -331,9 +316,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             WriteLabelContent(field.IsRequired, field.Label.Label, field.Label.Link, field.Label.OpenLinkInNewWindow, sb);
         }
 
-        public static string WriteErrorClass(string name, ValidationResultList validationResult)
+        public static string WriteErrorClass(string name, ValidationResultList validationResult, FormOptions options)
         {
-            return validationResult.Any(el => el.AffectedFormIds.Contains(name)) ? RendererImplementation.ErrorClass : String.Empty;
+            return validationResult.Any(el => el.AffectedFormIds.Contains(name)) ? options.FormRenderer.ErrorClass : String.Empty;
         }
 
         public static string GetValue(FormField field)
@@ -363,15 +348,15 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return text.Contains("${") ? StringResourceSystemFacade.ParseString(text) : text;
         }
 
-        public static IHtmlString Captcha(IFormModel model, ValidationResultList validationResult)
+        public static IHtmlString Captcha<T>(BaseFormBuilderRequestContext<T> renderingContext) where T : class, IFormModel
         {
-            if (!model.RequiresCaptcha)
+            if (!renderingContext.RenderingModel.RequiresCaptcha)
             {
                 return null;
             }
 
             var requiresCaptchaAttr = new RequiresCaptchaAttribute();
-            var s = requiresCaptchaAttr.Render(model, validationResult);
+            var s = requiresCaptchaAttr.Render(renderingContext.ValidationResult, renderingContext.Options);
 
             return new HtmlString(s);
         }

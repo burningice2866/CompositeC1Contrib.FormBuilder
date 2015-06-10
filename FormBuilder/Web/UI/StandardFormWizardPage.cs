@@ -68,7 +68,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected IHtmlString WriteErrors()
         {
-            return RenderingContext.IsOwnSubmit ? FormRenderer.WriteErrors(RenderingContext.ValidationResult) : new HtmlString(String.Empty);
+            return RenderingContext.IsOwnSubmit ? FormRenderer.WriteErrors(RenderingContext.ValidationResult, RenderingContext.Options) : new HtmlString(String.Empty);
         }
 
         protected IHtmlString WriteSteps()
@@ -125,7 +125,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 {
                     if (Wizard.RequiresCaptcha)
                     {
-                        var html = FormRenderer.Captcha(RenderingContext.RenderingModel, RenderingContext.ValidationResult);
+                        var html = FormRenderer.Captcha(RenderingContext);
 
                         sb.Append(html);
                     }

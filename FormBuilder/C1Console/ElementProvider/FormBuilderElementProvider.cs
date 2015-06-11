@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
 using System.Linq;
-using System.Web;
 
 using Composite.C1Console.Elements;
 using Composite.C1Console.Elements.Plugins.ElementProvider;
@@ -33,14 +31,8 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
 
         static FormBuilderElementProvider()
         {
-            var batch = new CompositionBatch();
-            var catalog = new SafeDirectoryCatalog(HttpRuntime.BinDirectory);
-            var container = new CompositionContainer(catalog);
-
-            container.Compose(batch);
-
-            var elementProviders = container.GetExportedValues<IEntityTokenBasedElementProvider>().ToList();
-            var actionProviders = container.GetExportedValues<IElementActionProvider>().ToList();
+            var elementProviders = CompositionContainerFacade.GetExportedValues<IEntityTokenBasedElementProvider>().ToList();
+            var actionProviders = CompositionContainerFacade.GetExportedValues<IElementActionProvider>().ToList();
 
             EntityTokenHandlers = elementProviders;
             ElementActionProviders = actionProviders;

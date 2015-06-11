@@ -18,7 +18,7 @@ namespace FormBuilder.Test.Validation
         [TestCase("application/pdf", "application/pdf", "application/pdf")]
         public void ValidFilesSucceeds(params string[] mimeTypes)
         {
-            var files = mimeTypes.Select(m => new FormFile() { ContentType = m });
+            var files = mimeTypes.Select(m => new FormFile { ContentType = m });
             var rule = CreateRule(files);
 
             Assert.That(rule.Rule(), Is.True);
@@ -29,7 +29,7 @@ namespace FormBuilder.Test.Validation
         [TestCase("application/pdf", "application/gif")]
         public void InvalidFileFails(params string[] mimeTypes)
         {
-            var files = mimeTypes.Select(m => new FormFile() { ContentType = m });
+            var files = mimeTypes.Select(m => new FormFile { ContentType = m });
             var rule = CreateRule(files);
 
             Assert.That(rule.Rule(), Is.False);

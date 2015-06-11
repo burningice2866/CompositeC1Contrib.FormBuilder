@@ -11,9 +11,7 @@ namespace CompositeC1Contrib.FormBuilder
     {
         private readonly AggregateCatalog _catalog = new AggregateCatalog();
 
-        public SafeDirectoryCatalog(string directory) : this(directory, null) { }
-
-        public SafeDirectoryCatalog(string directory, ReflectionContext reflectionContext)
+        public SafeDirectoryCatalog(string directory, ReflectionContext reflectionContext = null)
         {
             Initialize(directory, reflectionContext);
         }

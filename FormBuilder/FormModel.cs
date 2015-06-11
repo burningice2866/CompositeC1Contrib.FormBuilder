@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -70,13 +69,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         static FormModel()
         {
-            var batch = new CompositionBatch();
-            var catalog = new SafeDirectoryCatalog(HttpRuntime.BinDirectory);
-            var container = new CompositionContainer(catalog);
-
-            container.Compose(batch);
-
-            ValueMappers = container.GetExportedValues<IValueMapper>().ToDictionary(m => m.ValueMapperFor);
+            ValueMappers = CompositionContainerFacade.GetExportedValues<IValueMapper>().ToDictionary(m => m.ValueMapperFor);
         }
 
         public FormModel(string name)

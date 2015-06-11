@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.Registration;
 using System.Linq;
-using System.Web;
 
 using Composite.C1Console.Workflow;
 
@@ -18,13 +16,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public static Dictionary<string, string> GetValidatorTypes()
         {
-            var formValidationAttributeType = typeof(FormValidationAttribute);
+            var formValidationAttributeType = typeof (FormValidationAttribute);
 
-            var registrationBuilder = new RegistrationBuilder();
-            registrationBuilder.ForTypesMatching(t => t != formValidationAttributeType && formValidationAttributeType.IsAssignableFrom(t) && t.GetConstructor(new[] { typeof(string) }) != null).Export<FormValidationAttribute>();
-
-            var catalog = new SafeDirectoryCatalog(HttpRuntime.BinDirectory, registrationBuilder);
-            var types = MefHelper.GetExportedTypes<FormValidationAttribute>(catalog);
+            var types = CompositionContainerFacade.GetExportedTypes<FormValidationAttribute>(b =>
+                b.ForTypesMatching(t => t != formValidationAttributeType
+                                        && formValidationAttributeType.IsAssignableFrom(t)
+                                        && t.GetConstructor(new[] {typeof (string)}) != null)
+                    .Export<FormValidationAttribute>());
 
             return types.ToDictionary(t => t.AssemblyQualifiedName, t => t.Name);
         }

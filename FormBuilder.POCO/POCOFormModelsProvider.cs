@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Registration;
 using System.Linq;
-using System.Web;
 
 namespace CompositeC1Contrib.FormBuilder.POCO
 {
@@ -49,16 +46,11 @@ namespace CompositeC1Contrib.FormBuilder.POCO
 
         private static IEnumerable<IPOCOForm> GetForms()
         {
-            var registrationBuilder = new RegistrationBuilder();
-            registrationBuilder.ForTypesMatching(t => t.IsClass && !t.IsAbstract && typeof(IPOCOForm).IsAssignableFrom(t)).Export<IPOCOForm>();
-
-            var batch = new CompositionBatch();
-            var catalog = new SafeDirectoryCatalog(HttpRuntime.BinDirectory, registrationBuilder);
-            var container = new CompositionContainer(catalog);
-
-            container.Compose(batch);
-
-            return container.GetExportedValues<IPOCOForm>();
+            return CompositionContainerFacade.GetExportedValues<IPOCOForm>(b =>
+                b.ForTypesMatching(t => t.IsClass
+                                        && !t.IsAbstract
+                                        && typeof(IPOCOForm).IsAssignableFrom(t))
+                    .Export<IPOCOForm>());
         }
     }
 }

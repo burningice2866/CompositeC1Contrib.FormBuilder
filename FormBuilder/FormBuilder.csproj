@@ -56,6 +56,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.Composition.Registration" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
@@ -63,6 +64,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Reflection.Context" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -101,6 +103,7 @@
     <Compile Include="C1Console\EntityTokens\FormFieldEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormFolderEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\NamespaceFolderEntityToken.cs" />
+    <Compile Include="CompositionContainerFacade.cs" />
     <Compile Include="Configuration\CaptchaConfiguration.cs" />
     <Compile Include="Configuration\FormBuilderConfiguration.cs" />
     <Compile Include="Configuration\FormBuilderConfigurationHandler.cs" />
@@ -153,7 +156,6 @@
     <Compile Include="FunctionProviders\FormBuilderFunctionProvider.cs" />
     <Compile Include="FunctionProviders\FormBuilderFunctionEntityToken.cs" />
     <Compile Include="IFormModelsProvider.cs" />
-    <Compile Include="MefHelper.cs" />
     <Compile Include="RenderingLayoutFacade.cs" />
     <Compile Include="SaveFormSubmitFacade.cs" />
     <Compile Include="Validation\CredentialsValidatorAttribute.cs" />

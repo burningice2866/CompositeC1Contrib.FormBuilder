@@ -19,7 +19,7 @@ namespace CompositeC1Contrib.FormBuilder
         {
             var appDomain = AppDomain.CurrentDomain;
 
-            BinDir = Path.Combine(appDomain.BaseDirectory, appDomain.RelativeSearchPath);
+            BinDir = Path.Combine(appDomain.BaseDirectory, appDomain.RelativeSearchPath ?? String.Empty);
             GlobalContainer = BuildContainer();
         }
 

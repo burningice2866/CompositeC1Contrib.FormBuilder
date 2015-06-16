@@ -40,7 +40,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             FormRenderer.WriteRowStart(InputFieldName, "captcha", FormRenderer.WriteErrorClass(InputFieldName, validationResult, options), true, null, sb, options);
 
-            FormRenderer.WriteLabelStart(false, InputFieldName, sb);
+            FormRenderer.WriteLabelStart(false, InputFieldName, options, sb);
             FormRenderer.WriteLabelContent(true, Localization.Captcha_CompositeC1_Label, String.Empty, false, sb);
             FormRenderer.WriteLabelEnd(sb);
 

@@ -258,9 +258,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return obj.ToString() == value;
         }
 
-        public static void WriteLabelStart(bool hide, string id, StringBuilder sb)
+        public static void WriteLabelStart(bool hide, string id, FormOptions options, StringBuilder sb)
         {
-            sb.AppendFormat("<label class=\"control-label {0}\" for=\"{1}\">", hide ? "hide-text " : String.Empty, id);
+            sb.AppendFormat("<label class=\"control-label {0}\" for=\"{1}\">", hide ? options.FormRenderer.HideLabelClass + " " : String.Empty, id);
         }
 
         public static void WriteLabelEnd(StringBuilder sb)
@@ -276,7 +276,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 hide = false;
             }
 
-            WriteLabelStart(hide, field.Id, sb);
+            WriteLabelStart(hide, field.Id, options, sb);
             WriteLabelContent(field, sb);
             WriteLabelEnd(sb);
         }

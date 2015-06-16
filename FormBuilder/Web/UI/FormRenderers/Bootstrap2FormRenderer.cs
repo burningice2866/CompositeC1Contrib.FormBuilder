@@ -24,11 +24,16 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.FormRenderers
             get { return "controls"; }
         }
 
+        public string HideLabelClass
+        {
+            get { return "hide-text"; }
+        }
+
         public string FormControlClass
         {
             get { return String.Empty; }
         }
-        
+
         public string FormControlLabelClass(InputElementTypeAttribute inputElement)
         {
             return inputElement.ElementName;

@@ -117,7 +117,13 @@ namespace CompositeC1Contrib.FormBuilder
 
         public IEnumerable<FormValidationAttribute> ValidationAttributes
         {
-            get { return Attributes.OfType<FormValidationAttribute>(); }
+            get
+            {
+                var required = Attributes.OfType<RequiredFieldAttribute>();
+                var theRest = Attributes.OfType<FormValidationAttribute>().Where(a => !(a is RequiredFieldAttribute));
+
+                return required.Concat(theRest).Distinct();
+            }
         }
 
         public IEnumerable<FormDependencyAttribute> DependencyAttributes

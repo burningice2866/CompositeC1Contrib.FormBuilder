@@ -2,39 +2,39 @@
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI.FormRenderers
 {
-    public class Bootstrap3FormRenderer : IFormFormRenderer
+    public class Bootstrap3FormRenderer : FormRendererBase
     {
-        public string ErrorNotificationClass
+        public override string ValidationSummaryClass
         {
             get { return "error-notification"; }
         }
 
-        public string ErrorClass
+        public override string ErrorClass
         {
             get { return "has-error"; }
         }
 
-        public string ParentGroupClass
+        public override string ParentGroupClass
         {
             get { return "form"; }
         }
 
-        public string FieldGroupClass
+        public override string FieldGroupClass
         {
             get { return String.Empty; }
         }
 
-        public string HideLabelClass
+        public override string HideLabelClass
         {
             get { return "sr-only"; }
         }
 
-        public string FormControlClass
+        public override string FormControlClass
         {
             get { return "form-control"; }
         }
 
-        public string FormControlLabelClass(InputElementTypeAttribute inputElement)
+        public override string FormControlLabelClass(InputElementTypeAttribute inputElement)
         {
             return String.Empty;
         }

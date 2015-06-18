@@ -7,7 +7,6 @@ using System.Web.Helpers;
 using Composite.AspNet.Razor;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
-using Newtonsoft.Json;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
@@ -89,12 +88,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 page.WriteLiteral(" enctype=\"multipart/form-data\"");
             }
 
-            var formRendererSettings = JsonConvert.SerializeObject(page.Options.FormRenderer);
-
-            page.WriteLiteral(" data-renderersettings=\"" + formRendererSettings.Replace("\"", "&quot;") + "\"");
-
+            page.WriteLiteral(" data-renderer=\"" + page.Options.FormRenderer.GetType().AssemblyQualifiedName + "\"");
             page.WriteLiteral(">");
-
             page.WriteLiteral("<input type=\"hidden\" name=\"__type\" value=\"" + HttpUtility.HtmlAttributeEncode(page.RenderingModel.Name) + "\" />");
 
             foreach (var field in page.RenderingModel.Fields.Where(f => f.Label == null))
@@ -133,11 +128,6 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             Dispose(true);
 
             GC.SuppressFinalize(this);
-        }
-
-        public void EndForm()
-        {
-            Dispose(true);
         }
     }
 }

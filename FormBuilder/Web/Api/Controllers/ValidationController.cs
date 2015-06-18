@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -15,7 +14,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
     public class ValidationController : ApiController
     {
         [HttpPost]
-        public HttpResponseMessage Post()
+        public IHttpActionResult Post()
         {
             if (Request.Content.IsMimeMultipartContent())
             {
@@ -33,7 +32,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
             return CreateAndValidateForm(formData, Enumerable.Empty<FormFile>());
         }
 
-        private HttpResponseMessage CreateAndValidateForm(NameValueCollection form, IEnumerable<FormFile> files)
+        private IHttpActionResult CreateAndValidateForm(NameValueCollection form, IEnumerable<FormFile> files)
         {
             var model = CreateFormModel(form);
 
@@ -44,7 +43,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
 
             if (!validationResult.Any())
             {
-                return Request.CreateResponse(HttpStatusCode.OK, true);
+                return Ok(true);
             }
 
             var resultList = validationResult.Select(o => new ValidationError
@@ -53,7 +52,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
                 Message = o.ValidationMessage
             });
 
-            return Request.CreateResponse(HttpStatusCode.OK, resultList);
+            return Ok(resultList);
         }
 
         private static IEnumerable<FormFile> ParsePostedFiles(MultipartFileStreamProvider multipartData)
@@ -85,7 +84,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
         private static IFormModel CreateFormModel(NameValueCollection form)
         {
             var name = form["__type"];
-            var model = FormModelsFacade.GetModels().Select(c => c.Model).Single(f => f.Name == name);
+            var model = FormModelsFacade.GetModel(name);
 
             return model;
         }

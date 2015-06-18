@@ -144,8 +144,10 @@
     <Compile Include="Validation\ValidationResultList.cs" />
     <Compile Include="Web\Api\C1ConsoleAuthorizeAttribute.cs" />
     <Compile Include="Web\Api\Controllers\FormSubmitsController.cs" />
+    <Compile Include="Web\Api\Controllers\RendererController.cs" />
     <Compile Include="Web\Api\Formatters\CsvMediaTypeFormatter.cs" />
     <Compile Include="SubmitField.cs" />
+    <Compile Include="Web\Api\Models\ValidationSummaryModel.cs" />
     <Compile Include="Web\Api\RequireSessionStateControllerHandler.cs" />
     <Compile Include="Web\BaseFormBuilderRequestContext.cs" />
     <Compile Include="Web\UI\CompositeC1CaptchaProvider.cs" />
@@ -173,6 +175,7 @@
     <Compile Include="Web\OwinExtensions.cs" />
     <Compile Include="Web\UI\ControlsGroup.cs" />
     <Compile Include="Web\UI\FieldsGroup.cs" />
+    <Compile Include="Web\UI\FormRenderers\FormRendererBase.cs" />
     <Compile Include="Web\UI\FormRenderers\Bootstrap3FormRenderer.cs" />
     <Compile Include="Web\UI\FormRenderers\Bootstrap2FormRenderer.cs" />
     <Compile Include="Web\UI\GoogleReCAPTCHAProvider.cs" />

@@ -17,8 +17,9 @@ namespace CompositeC1Contrib.FormBuilder.Web
         {
             var routes = RouteTable.Routes;
 
+            routes.MapHttpRoute("Renderer", "formbuilder/renderer/{action}", new { controller = "renderer" });
+            routes.MapHttpRoute("Submits", "formbuilder/{name}/submits.{ext}", new { controller = "formsubmits" });
             routes.MapHttpRoute("Validation", "formbuilder/validation", new { controller = "validation" }).RouteHandler = new RequireSessionStateControllerRouteHandler();
-            routes.MapHttpRoute("Submit", "formbuilder/{name}/submits.{ext}", new { controller = "formsubmits" }).RouteHandler = new RequireSessionStateControllerRouteHandler();
 
             config.Formatters.Add(new CsvMediaTypeFormatter());
 
@@ -30,11 +31,11 @@ namespace CompositeC1Contrib.FormBuilder.Web
             if (!C1Directory.Exists(FormModelsFacade.RootPath))
             {
                 C1Directory.CreateDirectory(FormModelsFacade.RootPath);
-    }
+            }
 
             MoveRenderingLayoutToFormsFolder(FormModelsFacade.RootPath);
             MoveSubfoldersToRoot(FormModelsFacade.RootPath);
-}
+        }
 
         private static void MoveRenderingLayoutToFormsFolder(string baseFolder)
         {

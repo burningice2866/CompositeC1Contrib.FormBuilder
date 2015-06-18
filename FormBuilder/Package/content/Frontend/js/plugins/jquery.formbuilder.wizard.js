@@ -1,17 +1,17 @@
-﻿(function ($, formbuilder, window, document, undefined) {
-    var validation = function (form, step) {
+﻿(function($, formbuilder, window, document, undefined) {
+    var validation = function(form, step) {
         var formSerialized = form.serializeArray();
         var formData = [];
 
-        $.each(formSerialized, function (i, itm) {
-            var name = itm.name;
+        $.each(formSerialized, function() {
+            var name = this.name;
             var stepPrepend = 'step-' + step + '-';
 
             if (name.indexOf(stepPrepend) === 0) {
                 var stepPrependLength = stepPrepend.length;
 
-                itm.name = name.substr(stepPrependLength, name.length - stepPrependLength);
-                formData.push(itm);
+                this.name = name.substr(stepPrependLength, name.length - stepPrependLength);
+                formData.push(this);
             }
         });
 
@@ -24,15 +24,16 @@
         formbuilder.validate(form, formData);
     };
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         var forms = $('form.formwizard');
 
         if (window.Ladda) {
-            $.each(forms, function (ix, form) {
+            $.each(forms, function() {
+                var form = $(this);
                 var submitButtons = $('input[type="submit"]:not([data-nextstep])', form);
 
-                $.each(submitButtons, function (ix, btn) {
-                    btn = $(btn);
+                $.each(submitButtons, function() {
+                    var btn = $(this);
                     var val = btn.val();
                     var html = '<button class="ladda-button btn btn-primary" data-style="expand-right" type="submit" name="SubmitForm" value="' + val + '">' + val + '</button>';
 
@@ -41,7 +42,7 @@
             });
         }
 
-        $('.formwizard').on('click', 'input[type="submit"], button', function (e) {
+        $('.formwizard').on('click', 'input[type="submit"], button', function(e) {
             e.preventDefault();
 
             var button = $(this);

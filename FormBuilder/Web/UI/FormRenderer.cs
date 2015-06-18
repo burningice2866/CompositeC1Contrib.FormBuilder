@@ -8,6 +8,7 @@ using Composite.Core.ResourceSystem;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Validation;
+using CompositeC1Contrib.FormBuilder.Web.Api.Models;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
@@ -44,32 +45,13 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 return new HtmlString(String.Empty);
             }
 
-            var sb = new StringBuilder();
-
-            sb.Append("<div class=\"" + options.FormRenderer.ErrorNotificationClass + "\">");
-
-            if (!String.IsNullOrEmpty(Localization.Validation_ErrorNotification_Header))
+            var s = options.FormRenderer.ValidationSummary(validationResult.Select(r => new ValidationError
             {
-                sb.Append("<p>" + HttpUtility.HtmlEncode(Localization.Validation_ErrorNotification_Header) + "</p>");
-            }
+                AffectedFields = r.AffectedFormIds,
+                Message = r.ValidationMessage
+            }));
 
-            sb.Append("<ul>");
-
-            foreach (var el in validationResult)
-            {
-                sb.Append("<li>" + el.ValidationMessage + "</li>");
-            }
-
-            sb.Append("</ul>");
-
-            if (!String.IsNullOrEmpty(Localization.Validation_ErrorNotification_Footer))
-            {
-                sb.Append("<p>" + HttpUtility.HtmlEncode(Localization.Validation_ErrorNotification_Footer) + "</p>");
-            }
-
-            sb.Append("</div>");
-
-            return new HtmlString(sb.ToString());
+            return new HtmlString(s);
         }
 
         private static IHtmlString WriteRow(FormOptions options, FormField field, ValidationResultList validationResult, IDictionary<string, string> htmlAttributes)

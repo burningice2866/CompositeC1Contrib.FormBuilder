@@ -1,68 +1,71 @@
 ﻿(function($, window, document, undefined) {
-    window.formbuilder = window.formbuilder || {};
-
-    formbuilder.validate = function(form, formSerialized, callback) {
-        var rendererSettings = $(form).data('renderersettings');
+    var getRendererSettings = function(form) {
+        var renderer = form.data('renderer');
+        var settings;
 
         $.ajax({
-            type: 'POST',
-            url: '/formbuilder/validation',
-            data: formSerialized,
+            type: 'GET',
+            url: '/formbuilder/renderer/settings?type=' + renderer,
             dataType: 'json',
             async: false,
             success: function(data) {
-                var errors = data;
-                if (errors.length > 0) {
-                    form.data('error', true);
-
-                    var errorDiv = '<div class="' + rendererSettings.ErrorNotificationClass + '"><p>Du mangler at udfylde nogle felter</p><ul>';
-
-                    $.each(errors, function(i, itm) {
-                        var fields = itm.AffectedFields || itm.affectedFields;
-                        var message = itm.Message || itm.message;
-
-                        $.each(fields, function(i, field) {
-                            var el = $('[name="' + field + '"]', form);
-
-                            el.parents('.' + rendererSettings.ParentGroupClass + '-group').addClass(rendererSettings.ErrorClass);
-                        });
-
-                        errorDiv += '<li>' + message + '</li>';
-                    });
-
-                    errorDiv += '</ul><p>Udfyld venligst felterne og send igen.</p></div>';
-
-                    form.prepend($(errorDiv));
-
-                    if (typeof callback === 'function') {
-                        callback();
-                    }
-                }
+                settings = $.parseJSON(data);
             }
         });
+
+        return settings;
     };
 
-    formbuilder.clearErrors = function(form) {
-        var rendererSettings = $(form).data('renderersettings');
+    var getValidationSummary = function(form, errors) {
+        var data = {
+            renderer: form.data('renderer'),
+            errors: errors
+        };
 
-        $('.' + rendererSettings.ParentGroupClass + '-group', form).removeClass(rendererSettings.ErrorClass);
-        $('.' + rendererSettings.ErrorNotificationClass, form).remove();
+        var summary;
 
-        form.data('error', false);
+        $.ajax({
+            type: 'POST',
+            url: '/formbuilder/renderer/validationsummary',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            async: false,
+
+            success: function(data) {
+                summary = $(data);
+            },
+
+            failure: function() {
+                var rendererSettings = getRendererSettings(form);
+                var errorDiv = $('<div />').addClass(rendererSettings.ErrorNotificationClass);
+                var errorList = $('<ul>').appendTo(errorDiv);
+
+                $.each(errors, function() {
+                    var message = this.Message || this.message;
+
+                    errorList.append('<li>' + message + '</li>');
+                });
+
+                summary = errorDiv;
+            }
+        });
+
+        return summary;
     };
 
-    var validation = function(form, callback) {
+    var validation = function(form, options) {
         var fileElements = $('input[type=file]', form);
         if (fileElements.length > 0) {
             return;
         }
 
         formbuilder.clearErrors(form);
-        formbuilder.validate(form, form.serializeArray(), callback);
+        formbuilder.validate(form, form.serializeArray(), options);
     };
 
     var getFormFieldValue = function(form, fieldName) {
-        var rendererSettings = $(form).data('renderersettings');
+        var rendererSettings = getRendererSettings(form);
 
         var field = $('[name="' + fieldName + '"]');
 
@@ -106,12 +109,12 @@
     var showFunction = function(form, json) {
         var show = false;
 
-        $.each(json, function(ix, itm) {
-            var field = itm.field;
+        $.each(json, function() {
+            var field = this.field;
             var fieldValid = false;
 
-            $.each(itm.value, function(ix, itm) {
-                fieldValid = fieldValid || isMatch(form, field, itm);
+            $.each(this.value, function() {
+                fieldValid = fieldValid || isMatch(form, field, this);
             });
 
             if (!fieldValid) {
@@ -132,14 +135,14 @@
         // the next control, which is hidden during the first run.
         for (var i = 0; i < 2; i++) {
             $('[data-dependency]', form).each(function() {
-                var $itm = $(this);
-                var json = $itm.data('dependency');
+                var itm = $(this);
+                var json = itm.data('dependency');
                 var show = showFunction(form, json);
 
                 if (!show) {
-                    $itm.hide();
+                    itm.hide();
                 } else {
-                    $itm.show();
+                    itm.show();
                 }
             });
         }
@@ -163,11 +166,11 @@
         var btnSelector = 'input[type=submit]';
 
         if (window.Ladda) {
-            $.each(forms, function(ix, form) {
-                var submitButtons = $(btnSelector, form);
+            $.each(forms, function() {
+                var submitButtons = $(btnSelector, this);
 
-                $.each(submitButtons, function(ix, btn) {
-                    btn = $(btn);
+                $.each(submitButtons, function() {
+                    var btn = $(this);
                     var val = btn.val();
                     var html = '<button class="ladda-button btn btn-primary" data-style="expand-right" type="submit" name="SubmitForm" value="' + val + '">' + val + '</button>';
 
@@ -203,6 +206,7 @@
             }).appendTo(form);
 
             var l = undefined;
+
             if (window.Ladda) {
                 setTimeout(function() {
                     if (clickedButton.is(":disabled")) {
@@ -213,18 +217,91 @@
                 }, 500);
             }
 
-            validation(form, function() {
-                clickedButton.attr('disabled', false);
-                hiddenField.remove();
+            validation(form, {
+                onError: function() {
+                    clickedButton.attr('disabled', false);
+                    hiddenField.remove();
 
-                if (l !== undefined) {
-                    l.stop();
+                    if (l !== undefined) {
+                        l.stop();
+                    }
+
+                    window.scrollTo(0, 0);
+
+                    e.preventDefault();
                 }
-
-                window.scrollTo(0, 0);
-
-                e.preventDefault();
             });
         });
     });
+
+    window.formbuilder = window.formbuilder || {};
+
+    formbuilder.validate = function(form, formSerialized, options) {
+        options = $.extend({}, options);
+
+        var validateEvent = $.Event('formbuilder.validate');
+        validateEvent.options = options;
+
+        form.trigger(validateEvent);
+
+        if (validateEvent.isDefaultPrevented()) {
+            return;
+        }
+
+        var rendererSettings = getRendererSettings(form);
+
+        $.ajax({
+            type: 'POST',
+            url: '/formbuilder/validation',
+            data: formSerialized,
+            dataType: 'json',
+            async: false,
+
+            success: function(data) {
+                var validatedEvent = $.Event('formbuilder.validated');
+                validatedEvent.errors = data;
+
+                if (validatedEvent.errors.length > 0) {
+                    var validationSummary = getValidationSummary(form, validatedEvent.errors);
+
+                    form.data('error', true);
+
+                    $.each(validatedEvent.errors, function() {
+                        var fields = this.AffectedFields || this.affectedFields;
+
+                        $.each(fields, function() {
+                            var el = $('[name="' + this + '"]', form);
+
+                            el.parents('.' + rendererSettings.ParentGroupClass + '-group').addClass(rendererSettings.ErrorClass);
+                        });
+                    });
+
+                    var validationSummaryShowingEvent = $.Event('formbuilder.validationsummary.showing');
+                    validationSummaryShowingEvent.errors = validatedEvent.errors;
+                    validationSummaryShowingEvent.summary = validationSummary;
+
+                    form.trigger(validationSummaryShowingEvent);
+
+                    if (!validationSummaryShowingEvent.isDefaultPrevented()) {
+                        form.prepend(validationSummary);
+                    }
+
+                    if (typeof options.onError === 'function') {
+                        options.onError();
+                    }
+                }
+
+                form.trigger(validatedEvent);
+            }
+        });
+    };
+
+    formbuilder.clearErrors = function(form) {
+        var rendererSettings = getRendererSettings(form);
+
+        $('.' + rendererSettings.ParentGroupClass + '-group', form).removeClass(rendererSettings.ErrorClass);
+        $('.' + rendererSettings.ErrorNotificationClass, form).remove();
+
+        form.data('error', false);
+    };
 })(jQuery, window, document);

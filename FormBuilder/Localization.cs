@@ -12,10 +12,6 @@
  
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Composite.Core.ResourceSystem;
 
 namespace CompositeC1Contrib.FormBuilder
@@ -25,7 +21,7 @@ namespace CompositeC1Contrib.FormBuilder
     /// </summary>
     /// <exclude />
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)] 
-	internal static class Localization
+	public static class Localization
 	{
 		 /// <summary>&quot;You need to fill in some fields&quot;</summary> 
  public static string Validation_ErrorNotification_Header { get { return T("Validation.ErrorNotification.Header"); } } 

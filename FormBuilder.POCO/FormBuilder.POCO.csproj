@@ -8,7 +8,7 @@
     <ProjectGuid>{0DF78956-95A8-40BD-A826-7698126FBD4A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CompositeC1Contrib.FormBuilder.POCO</RootNamespace>
+    <RootNamespace>CompositeC1Contrib.FormBuilder</RootNamespace>
     <AssemblyName>CompositeC1Contrib.FormBuilder.POCO</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -51,12 +51,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormNameAttribute.cs" />
     <Compile Include="C1Console\ElementProvider\DataEntityTokenHandler.cs" />
+    <Compile Include="ExcludeFieldAttribute.cs" />
     <Compile Include="ImportSubmittedValuesAttribute.cs" />
     <Compile Include="Web\POCOFormBuilderRequestContext.cs" />
     <Compile Include="POCOFormModelsProvider.cs" />
     <Compile Include="POCOFormsFacade.cs" />
-    <Compile Include="FunctionProviders\POCOFormFunctionProvider.cs" />
     <Compile Include="IPOCOForm.cs" />
     <Compile Include="IProvidesDefaultValues.cs" />
     <Compile Include="IValidationHandler.cs" />
@@ -65,9 +66,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Package\config\App_Data\Composite\composite.config">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Package\install.xml">

@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-
-using CompositeC1Contrib.FormBuilder.Attributes;
+using System.Reflection;
 
 namespace CompositeC1Contrib.FormBuilder
 {
@@ -33,7 +33,7 @@ namespace CompositeC1Contrib.FormBuilder
                 model.Attributes.Add(itm);
             }
 
-            foreach (var prop in formType.GetProperties().Where(p => p.CanRead))
+            foreach (var prop in GetFieldProps(formType).Where(p => p.CanRead))
             {
                 var attributes = prop.GetCustomAttributes(true).Cast<Attribute>().ToList();
                 var field = new FormField(model, prop.Name, prop.PropertyType, attributes)
@@ -54,7 +54,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static void MapValues(IPOCOForm instance, FormModel model)
         {
-            foreach (var prop in instance.GetType().GetProperties().Where(p => p.CanWrite))
+            foreach (var prop in GetFieldProps(instance).Where(p => p.CanWrite))
             {
                 var field = model.Fields.SingleOrDefault(f => f.Name == prop.Name);
                 if (field != null && field.ValueType == prop.PropertyType)
@@ -72,14 +72,29 @@ namespace CompositeC1Contrib.FormBuilder
                 defaultValuesProvider.SetDefaultValues();
             }
 
-            foreach (var prop in instance.GetType().GetProperties().Where(p => p.CanRead))
+            foreach (var prop in GetFieldProps(instance).Where(p => p.CanRead))
             {
+                if (prop.GetCustomAttribute<ExcludeFieldAttribute>() != null)
+                {
+                    continue;
+                }
+
                 var field = model.Fields.SingleOrDefault(f => f.Name == prop.Name);
                 if (field != null && field.ValueType == prop.PropertyType)
                 {
                     field.Value = prop.GetValue(instance, null);
                 }
             }
+        }
+
+        private static IEnumerable<PropertyInfo> GetFieldProps(IPOCOForm instance)
+        {
+            return GetFieldProps(instance.GetType());
+        }
+
+        private static IEnumerable<PropertyInfo> GetFieldProps(Type type)
+        {
+            return type.GetProperties().Where(p => p.GetCustomAttribute<ExcludeFieldAttribute>() == null);
         }
     }
 }

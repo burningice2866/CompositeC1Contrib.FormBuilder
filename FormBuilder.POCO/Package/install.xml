@@ -5,7 +5,7 @@
 
   <mi:PackageInformation name="Contribution.CompositeC1Contrib.FormBuilder.POCO"
                          groupName="Contribution.CompositeC1Contrib"
-                         version="0.9.3" author="@burningice" website="http://compositec1contrib.codeplex.com"
+                         version="0.9.4" author="@burningice" website="http://compositec1contrib.codeplex.com"
                          readMoreUrl="http://compositec1contrib.codeplex.com"
                          id="95d4c3e6-9dbe-463f-b735-d4d48bb7cecc"
                          canBeUninstalled="true"
@@ -20,12 +20,6 @@
       <Files>
         <File sourceFilename="~\Bin\CompositeC1Contrib.FormBuilder.POCO.dll" targetFilename="~\Bin\CompositeC1Contrib.FormBuilder.POCO.dll" allowOverwrite="true" />
       </Files>
-    </mi:Add>
-
-    <mi:Add installerType="Composite.Core.PackageSystem.PackageFragmentInstallers.XmlFileMergePackageFragmentInstaller, Composite" uninstallerType="Composite.Core.PackageSystem.PackageFragmentInstallers.XmlFileMergePackageFragmentUninstaller, Composite">
-      <XmlFileMerges>
-        <XmlFileMerge changeDefinitionPath="~\config\App_Data\Composite\composite.config" targetFilePath="~\App_Data\Composite\composite.config" />
-      </XmlFileMerges>
     </mi:Add>
   </mi:PackageFragmentInstallers>
 </mi:PackageInstaller>

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
-namespace CompositeC1Contrib.FormBuilder.POCO
+using CompositeC1Contrib.FormBuilder.FunctionProviders;
+using CompositeC1Contrib.FormBuilder.Web;
+
+namespace CompositeC1Contrib.FormBuilder
 {
     [Export(typeof(IFormModelsProvider))]
     public class POCOFormModelsProvider : IFormModelsProvider
@@ -40,7 +43,8 @@ namespace CompositeC1Contrib.FormBuilder.POCO
             {
                 Source = typeof(POCOFormModelsProvider),
                 Type = "StaticForm",
-                Model = e.Value
+                Model = e.Value,
+                Function = new StandardFormFunction<POCOFormBuilderRequestContext>(e.Value.Name)
             });
         }
 

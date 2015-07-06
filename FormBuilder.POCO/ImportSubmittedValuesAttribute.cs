@@ -1,8 +1,7 @@
 ﻿using System;
 
-namespace CompositeC1Contrib.FormBuilder.POCO
+namespace CompositeC1Contrib.FormBuilder
 {
-    public class ImportSubmittedValuesAttribute : Attribute
-    {
-    }
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
+    public class ImportSubmittedValuesAttribute : Attribute { }
 }

@@ -64,6 +64,8 @@ namespace CompositeC1Contrib.FormBuilder.Web
                 var redirectUrl = request.Url.ToString().Replace("http:", "https:");
 
                 HttpContext.Response.Redirect(redirectUrl, true);
+
+                return;
             }
 
             RenderingModel.SetDefaultValues();

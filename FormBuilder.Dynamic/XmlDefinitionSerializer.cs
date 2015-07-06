@@ -37,7 +37,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
         public virtual void Save(IDynamicFormDefinition form)
         {
-            DefinitionsFacade.NotifyFormChanges();
+            FormModelsFacade.NotifyFormChanges();
         }
 
         public abstract IDynamicFormDefinition Load(string name, XElement xml);

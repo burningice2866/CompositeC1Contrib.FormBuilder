@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
+using CompositeC1Contrib.FormBuilder.FunctionProviders;
+using CompositeC1Contrib.FormBuilder.Web;
+
 namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
     [Export(typeof(IFormModelsProvider))]
@@ -18,7 +21,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     {
                         Source = typeof(DynamicFormModelsProvider),
                         Type = "DynamicForm",
-                        Model = form.Model
+                        Model = form.Model,
+                        Function = new StandardFormFunction<DynamicFormBuilderRequestContext>(def.Name, def.IntroText, def.SuccessResponse)
                     };
                 }
 
@@ -29,7 +33,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     {
                         Source = typeof(DynamicFormModelsProvider),
                         Type = "DynamicWizard",
-                        Model = wizard
+                        Model = wizard,
+                        Function = new FormWizardFunction<DynamicFormWizardRequestContext>(def.Name, def.IntroText, def.SuccessResponse)
                     };
                 }
             }

@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 using System.Reflection;
 
-using CompositeC1Contrib.FormBuilder.POCO;
-
 namespace CompositeC1Contrib.FormBuilder.Web
 {
     public class POCOFormBuilderRequestContext : FormBuilderRequestContext

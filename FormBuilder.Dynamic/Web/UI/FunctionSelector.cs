@@ -35,7 +35,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Web.UI
             btnDefaultValueFunctionMarkup.Attributes["url"] =
                 "${root}/content/dialogs/functions/editFunctionCall.aspx?zip_type="
                 + UrlUtils.ZipContent(TypeManager.SerializeType(ReturnType))
-                + "&dialoglabel=" + HttpUtility.UrlEncodeUnicode("Select default value")
+                + "&dialoglabel=" + HttpUtility.UrlEncode("Select default value")
                 + "&multimode=false&functionmarkup=";
 
             base.Render(writer);

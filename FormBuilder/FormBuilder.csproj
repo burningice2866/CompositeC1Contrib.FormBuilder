@@ -90,7 +90,6 @@
     <Compile Include="Attributes\RequiresCaptchaAttribute.cs" />
     <Compile Include="Attributes\PlaceholderTextAttribute.cs" />
     <Compile Include="Attributes\ForceHttpsConnectionAttribute.cs" />
-    <Compile Include="Attributes\FormNameAttribute.cs" />
     <Compile Include="Attributes\DataSourceAttribute.cs" />
     <Compile Include="C1Console\Actions\DownloadSubmittedFormsActionToken.cs" />
     <Compile Include="C1Console\ElementProvider\FormFolderEntityTokenHandler.cs" />
@@ -112,16 +111,10 @@
     <Compile Include="Data\BoolValueMapper.cs" />
     <Compile Include="Data\DateTimeValueMapper.cs" />
     <Compile Include="Data\DecimalValueMapper.cs" />
-    <Compile Include="Data\EnumerableStringValueMapper.cs" />
     <Compile Include="Data\FormDataProvider.cs" />
     <Compile Include="Data\GuidValueMapper.cs" />
     <Compile Include="Data\IntValueMapper.cs" />
     <Compile Include="Data\IValueMapper.cs" />
-    <Compile Include="Data\NullableBoolValueMapper.cs" />
-    <Compile Include="Data\NullableDateTimeValueMapper.cs" />
-    <Compile Include="Data\NullableDecimalValueMapper.cs" />
-    <Compile Include="Data\NullableGuidValueMapper.cs" />
-    <Compile Include="Data\NullableIntValueMapper.cs" />
     <Compile Include="Data\StringValueMapper.cs" />
     <Compile Include="Data\Types\FormData.cs" />
     <Compile Include="Data\Types\FormDataFacade.cs" />
@@ -185,7 +178,6 @@
     <Compile Include="Attributes\MethodBasedDataSourceAttribute.cs" />
     <Compile Include="Attributes\StringBasedDataSourceAttribute.cs" />
     <Compile Include="Attributes\SubmitButtonLabelAttribute.cs" />
-    <Compile Include="Attributes\TextBeforeAttribute.cs" />
     <Compile Include="Attributes\DependsOnConstantAttribute.cs" />
     <Compile Include="Attributes\FormDependencyAttribute.cs" />
     <Compile Include="FormField.cs" />

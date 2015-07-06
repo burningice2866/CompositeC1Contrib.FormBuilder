@@ -8,7 +8,6 @@ using Composite.Core.WebClient.Renderings.Page;
 using Composite.Core.Xml;
 using Composite.Functions;
 
-using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
@@ -99,18 +98,6 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     continue;
                 }
 
-                var textBefore = field.Attributes.OfType<TextBeforeAttribute>().SingleOrDefault();
-                if (textBefore != null)
-                {
-                    var text = textBefore.Text;
-                    if (!text.StartsWith("<"))
-                    {
-                        text = "<p>" + text + "</p>";
-                    }
-
-                    fieldElement.AddBeforeSelf(XElement.Parse(text));
-                }
-                
                 var html = FormRenderer.FieldFor(options, field, validationResult).ToString();
                 var newValue = XElement.Parse(html);
 

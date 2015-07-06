@@ -103,7 +103,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             root.Add(steps);
 
             SaveMetaData(form, root);
-
             SaveDefinitionFile(form.Name, root);
 
             base.Save(form);

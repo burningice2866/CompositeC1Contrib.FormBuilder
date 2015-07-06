@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
 
@@ -9,13 +8,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
     public class DefinitionsFacade
     {
-        private static readonly IList<Action> FormChangeNotifications = new List<Action>();
-
-        public static void SubscribeToFormChanges(Action notify)
-        {
-            FormChangeNotifications.Add(notify);
-        }
-
         public static IEnumerable<IDynamicFormDefinition> GetDefinitions()
         {
             var files = C1Directory.GetFiles(FormModelsFacade.RootPath, "DynamicDefinition.xml", SearchOption.AllDirectories);
@@ -63,7 +55,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 submithandler.Delete(definition);
             }
 
-            NotifyFormChanges();
+            FormModelsFacade.NotifyFormChanges();
         }
 
         public static void Copy(IDynamicFormDefinition definition, string newName)
@@ -75,14 +67,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             var serializer = XmlDefinitionSerializer.GetSerializer(definition.Name);
 
             serializer.Save(def);
-        }
-
-        public static void NotifyFormChanges()
-        {
-            foreach (var action in FormChangeNotifications)
-            {
-                action();
-            }
         }
     }
 }

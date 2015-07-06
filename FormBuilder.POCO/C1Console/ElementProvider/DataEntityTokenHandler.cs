@@ -6,11 +6,10 @@ using Composite.C1Console.Security;
 using Composite.Core.ResourceSystem;
 using Composite.Data;
 
-using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Data.Types;
 
-namespace CompositeC1Contrib.FormBuilder.POCO.C1Console.ElementProvider
+namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
 {
     [Export(typeof(IEntityTokenBasedElementProvider))]
     public class DataEntityTokenHandler : IEntityTokenBasedElementProvider

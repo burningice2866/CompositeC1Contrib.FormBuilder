@@ -1,24 +1,27 @@
 ﻿(function($, window, document, undefined) {
     var getRendererSettings = function(form) {
         var renderer = form.data('renderer');
-        var settings;
 
-        $.ajax({
-            type: 'GET',
-            url: '/formbuilder/renderer/settings?type=' + renderer,
-            dataType: 'json',
-            async: false,
-            success: function(data) {
-                settings = $.parseJSON(data);
-            }
-        });
+        if (typeof renderer === 'string') {
+            $.ajax({
+                type: 'GET',
+                url: '/formbuilder/renderer/settings?type=' + renderer,
+                dataType: 'json',
+                async: false,
+                success: function(data) {
+                    renderer = $.parseJSON(data);
 
-        return settings;
+                    form.data('renderer', renderer);
+                }
+            });
+        }
+
+        return renderer;
     };
 
     var getValidationSummary = function(form, errors) {
         var data = {
-            renderer: form.data('renderer'),
+            renderer: form.attr('data-renderer'),
             errors: errors
         };
 

@@ -256,8 +256,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>del "$(ProjectDir)Package\Bin\"
-mkdir "$(ProjectDir)Package\Bin\"
+    <PostBuildEvent>del "$(ProjectDir)Package\bin\"
+mkdir "$(ProjectDir)Package\bin\"
 
 copy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)Package\Bin\$(TargetFileName)"
 

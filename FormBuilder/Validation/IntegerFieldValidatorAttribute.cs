@@ -1,4 +1,6 @@
-﻿namespace CompositeC1Contrib.FormBuilder.Validation
+﻿using System;
+
+namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class IntegerFieldValidatorAttribute : FormValidationAttribute
     {
@@ -11,11 +13,15 @@
                 Rule = () =>
                 {
                     var s = field.OwningForm.SubmittedValues[field.Name];
-                    var i = 0;
-
-                    if (!int.TryParse(s, out i))
+                    if (String.IsNullOrEmpty(s))
                     {
                         return !field.IsRequired;
+                    }
+
+                    int i;
+                    if (!int.TryParse(s, out i))
+                    {
+                        return false;
                     }
 
                     return true;

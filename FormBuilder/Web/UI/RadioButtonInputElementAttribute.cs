@@ -13,7 +13,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             get { return "radio"; }
         }
 
-        public override IHtmlString GetHtmlString(FormOptions options, FormField field, IDictionary<string, string> htmlAttributes)
+        public override IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
 
@@ -25,7 +25,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
                 foreach (var item in field.DataSource)
                 {
-                    sb.AppendFormat("<label class=\"{0}\">", options.FormRenderer.FormControlLabelClass(this));
+                    sb.AppendFormat("<label class=\"{0}\">", context.Options.FormRenderer.FormControlLabelClass(this));
 
                     sb.AppendFormat("<input type=\"{0}\" name=\"{2}\" id=\"{3}\" value=\"{4}\" title=\"{1}\" {5}",
                         ElementName,

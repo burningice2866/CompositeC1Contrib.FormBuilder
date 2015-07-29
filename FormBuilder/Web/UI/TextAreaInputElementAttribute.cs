@@ -29,12 +29,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             Rows = rows;
         }
 
-        public override IHtmlString GetHtmlString(FormOptions options, FormField field, IDictionary<string, string> htmlAttributes)
+        public override IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
             var placeholderText = field.PlaceholderText;
 
-            if (String.IsNullOrEmpty(placeholderText) && options.HideLabels)
+            if (String.IsNullOrEmpty(placeholderText) && context.Options.HideLabels)
             {
                 placeholderText = field.Label.Label;
             }
@@ -46,7 +46,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 Rows,
                 Cols);
 
-            AddHtmlAttribute("class", options.FormRenderer.FormControlClass, htmlAttributes);
+            AddHtmlAttribute("class", context.Options.FormRenderer.FormControlClass, htmlAttributes);
 
             AddReadOnlyAttribute(field, htmlAttributes);
             AddMaxLengthAttribute(field, htmlAttributes);

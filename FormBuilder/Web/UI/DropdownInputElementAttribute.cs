@@ -13,12 +13,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             get { return "selectbox"; }
         }
 
-        public override IHtmlString GetHtmlString(FormOptions options, FormField field, IDictionary<string, string> htmlAttributes)
+        public override IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
             var htmlAttributesDictionary = MapHtmlTagAttributes(field, htmlAttributes);
 
-            if (!String.IsNullOrEmpty(options.FormRenderer.FormControlClass))
+            if (!String.IsNullOrEmpty(context.Options.FormRenderer.FormControlClass))
             {
                 IList<string> list;
                 if (!htmlAttributesDictionary.TryGetValue("class", out list))
@@ -28,7 +28,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     htmlAttributesDictionary.Add("class", list);
                 }
 
-                list.Add(options.FormRenderer.FormControlClass);
+                list.Add(context.Options.FormRenderer.FormControlClass);
             }
 
             sb.AppendFormat("<select name=\"{0}\" id=\"{1}\"",
@@ -47,7 +47,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             if (field.DataSource != null && field.DataSource.Any())
             {
                 var value = field.Value;
-                var selectLabel = options.HideLabels ? field.Label.Label : Localization.Widgets_Dropdown_SelectLabel;
+                var selectLabel = context.Options.HideLabels ? field.Label.Label : Localization.Widgets_Dropdown_SelectLabel;
 
                 sb.AppendFormat("<option value=\"\" selected=\"selected\" disabled=\"disabled\">{0}</option>", HttpUtility.HtmlEncode(selectLabel));
 

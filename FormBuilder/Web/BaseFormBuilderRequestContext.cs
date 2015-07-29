@@ -9,19 +9,28 @@ using CompositeC1Contrib.FormBuilder.Web.UI;
 
 namespace CompositeC1Contrib.FormBuilder.Web
 {
-    public abstract class BaseFormBuilderRequestContext<T> where T : IFormModel
+    public abstract class BaseFormBuilderRequestContext
     {
         public ValidationResultList ValidationResult = new ValidationResultList();
 
-        protected HttpContextBase HttpContext { get; private set; }
         protected string FormName { get; private set; }
 
         public FormOptions Options { get; private set; }
 
-        public bool IsOwnSubmit
+        protected BaseFormBuilderRequestContext(string name)
         {
-            get { return HttpContext.Request.RequestType == "POST" && HttpContext.Request.Form["__type"] == RenderingModel.Name; }
+            FormName = name;
+            Options = new FormOptions();
         }
+
+        public virtual void OnMappedValues() { }
+        public virtual void Submit() { }
+    }
+
+    public abstract class BaseFormBuilderRequestContext<T> : BaseFormBuilderRequestContext where T : IFormModel
+    {
+        protected HttpContextBase HttpContext { get; private set; }
+        public abstract T RenderingModel { get; }
 
         public bool IsSuccess
         {
@@ -45,13 +54,12 @@ namespace CompositeC1Contrib.FormBuilder.Web
             }
         }
 
-        public abstract T RenderingModel { get; }
-
-        protected BaseFormBuilderRequestContext(string name)
+        public bool IsOwnSubmit
         {
-            FormName = name;
-            Options = new FormOptions();
+            get { return HttpContext.Request.RequestType == "POST" && HttpContext.Request.Form["__type"] == RenderingModel.Name; }
         }
+
+        protected BaseFormBuilderRequestContext(string name) : base(name) { }
 
         public virtual void Execute(HttpContextBase context)
         {
@@ -104,8 +112,5 @@ namespace CompositeC1Contrib.FormBuilder.Web
 
             ValidationResult = RenderingModel.Validate(true);
         }
-
-        public virtual void OnMappedValues() { }
-        public virtual void Submit() { }
     }
 }

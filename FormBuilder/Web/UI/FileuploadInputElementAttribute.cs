@@ -14,7 +14,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             get { return "file"; }
         }
 
-        public override IHtmlString GetHtmlString(FormOptions options, FormField field, IDictionary<string, string> htmlAttributes)
+        public override IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
             var htmlAttributesDictionary = MapHtmlTagAttributes(field, htmlAttributes);

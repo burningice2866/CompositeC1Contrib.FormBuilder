@@ -14,21 +14,21 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public static class FormRenderer
     {
-        public static IHtmlString FieldFor(FormOptions options, FormField field, ValidationResultList validationResult)
+        public static IHtmlString FieldFor(BaseFormBuilderRequestContext context, FormField field)
         {
-            return FieldFor(options, field, validationResult, new Dictionary<string, string>());
+            return FieldFor(context, field, new Dictionary<string, string>());
         }
 
-        public static IHtmlString FieldFor(FormOptions options, FormField field, ValidationResultList validationResult, Dictionary<string, string> htmlAttributes)
+        public static IHtmlString FieldFor(BaseFormBuilderRequestContext context, FormField field, Dictionary<string, string> htmlAttributes)
         {
-            return WriteRow(options, field, validationResult, htmlAttributes);
+            return WriteRow(context, field, htmlAttributes);
         }
 
-        public static IHtmlString InputFor(FormOptions options, FormField field, Dictionary<string, string> htmlAttributes)
+        public static IHtmlString InputFor(BaseFormBuilderRequestContext context, FormField field, Dictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
 
-            WriteField(options, field, sb, htmlAttributes);
+            WriteField(context, field, sb, htmlAttributes);
 
             return new HtmlString(sb.ToString());
         }
@@ -54,7 +54,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new HtmlString(s);
         }
 
-        private static IHtmlString WriteRow(FormOptions options, FormField field, ValidationResultList validationResult, IDictionary<string, string> htmlAttributes)
+        private static IHtmlString WriteRow(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes)
         {
             var fieldsRow = FieldsRow.Current;
 
@@ -62,8 +62,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var includeLabel = ShowLabel(field);
 
             WriteRowStart(field.Name, field.InputElementType.ElementName,
-                WriteErrorClass(field.Name, validationResult, options), field.IsRequired,
-                builder => DependencyAttributeFor(field, builder), sb, options);
+                WriteErrorClass(field.Name, context), field.IsRequired,
+                builder => DependencyAttributeFor(field, builder), sb, context.Options);
 
             if (fieldsRow == null || fieldsRow.IncludeLabels)
             {
@@ -71,7 +71,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 {
                     if (includeLabel)
                     {
-                        WriteLabel(options, field, sb);
+                        WriteLabel(context.Options, field, sb);
                     }
                     else
                     {
@@ -80,7 +80,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 }
             }
 
-            using (new ControlsGroup(sb, options))
+            using (new ControlsGroup(sb, context.Options))
             {
                 if (fieldsRow == null || fieldsRow.IncludeLabels)
                 {
@@ -90,7 +90,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     }
                 }
 
-                WriteField(options, field, sb, htmlAttributes);
+                WriteField(context, field, sb, htmlAttributes);
 
                 if (fieldsRow == null || fieldsRow.IncludeLabels)
                 {
@@ -164,9 +164,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             sb.Append("</div>");
         }
 
-        private static void WriteField(FormOptions options, FormField field, StringBuilder sb, IDictionary<string, string> htmlAttributes)
+        private static void WriteField(BaseFormBuilderRequestContext context, FormField field, StringBuilder sb, IDictionary<string, string> htmlAttributes)
         {
-            var str = field.InputElementType.GetHtmlString(options, field, htmlAttributes);
+            var str = field.InputElementType.GetHtmlString(context, field, htmlAttributes);
 
             if (!String.IsNullOrWhiteSpace(field.Help))
             {
@@ -298,9 +298,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             WriteLabelContent(field.IsRequired, field.Label.Label, field.Label.Link, field.Label.OpenLinkInNewWindow, sb);
         }
 
-        public static string WriteErrorClass(string name, ValidationResultList validationResult, FormOptions options)
+        public static string WriteErrorClass(string name, BaseFormBuilderRequestContext context)
         {
-            return validationResult.Any(el => el.AffectedFormIds.Contains(name)) ? options.FormRenderer.ErrorClass : String.Empty;
+            return context.ValidationResult.Any(el => el.AffectedFormIds.Contains(name)) ? context.Options.FormRenderer.ErrorClass : String.Empty;
         }
 
         public static string GetValue(FormField field)
@@ -330,15 +330,15 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return text.Contains("${") ? StringResourceSystemFacade.ParseString(text) : text;
         }
 
-        public static IHtmlString Captcha<T>(BaseFormBuilderRequestContext<T> renderingContext) where T : class, IFormModel
+        public static IHtmlString Captcha<T>(BaseFormBuilderRequestContext<T> context) where T : class, IFormModel
         {
-            if (!renderingContext.RenderingModel.RequiresCaptcha)
+            if (!context.RenderingModel.RequiresCaptcha)
             {
                 return null;
             }
 
             var requiresCaptchaAttr = new RequiresCaptchaAttribute();
-            var s = requiresCaptchaAttr.Render(renderingContext.ValidationResult, renderingContext.Options);
+            var s = requiresCaptchaAttr.Render(context);
 
             return new HtmlString(s);
         }

@@ -8,7 +8,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
 {
     public abstract class CaptchaProvider : ProviderBase
     {
-        public abstract string Render(ValidationResultList validationResult, FormOptions options);
+        public abstract string Render(BaseFormBuilderRequestContext context);
         public abstract void Validate(HttpContextBase ctx, ValidationResultList validationMessages);
     }
 }

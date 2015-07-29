@@ -83,7 +83,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var field = GetField(fieldSelector);
             var dictionary = Functions.ObjectToDictionary(htmlAttributes).ToDictionary(t => t.Key, t => t.Value.ToString());
 
-            return FormRenderer.InputFor(Options, field, dictionary);
+            return FormRenderer.InputFor(RenderingContext, field, dictionary);
         }
 
         protected IHtmlString FieldFor(Expression<Func<T, object>> fieldSelector)
@@ -96,7 +96,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var field = GetField(fieldSelector);
             var dictionary = Functions.ObjectToDictionary(htmlAttributes).ToDictionary(t => t.Key, t => t.Value.ToString());
 
-            return FormRenderer.FieldFor(Options, field, ValidationResult, dictionary);
+            return FormRenderer.FieldFor(RenderingContext, field, dictionary);
         }
 
         protected IHtmlString NameFor(Expression<Func<T, object>> fieldSelector)

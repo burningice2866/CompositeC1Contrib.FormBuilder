@@ -28,7 +28,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             }
         }
 
-        public override string Render(ValidationResultList validationResult, FormOptions options)
+        public override string Render(BaseFormBuilderRequestContext context)
         {
             var sb = new StringBuilder();
             var encryptedValue = Captcha.CreateEncryptedValue();
@@ -38,13 +38,13 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 HttpUtility.HtmlAttributeEncode(HiddenFieldName),
                 HttpUtility.HtmlAttributeEncode(encryptedValue));
 
-            FormRenderer.WriteRowStart(InputFieldName, "captcha", FormRenderer.WriteErrorClass(InputFieldName, validationResult, options), true, null, sb, options);
+            FormRenderer.WriteRowStart(InputFieldName, "captcha", FormRenderer.WriteErrorClass(InputFieldName, context), true, null, sb, context.Options);
 
-            FormRenderer.WriteLabelStart(false, InputFieldName, options, sb);
+            FormRenderer.WriteLabelStart(false, InputFieldName, context.Options, sb);
             FormRenderer.WriteLabelContent(true, Localization.Captcha_CompositeC1_Label, String.Empty, false, sb);
             FormRenderer.WriteLabelEnd(sb);
 
-            using (new ControlsGroup(sb, options))
+            using (new ControlsGroup(sb, context.Options))
             {
                 if (!String.IsNullOrEmpty(Localization.Captcha_CompositeC1_Help))
                 {

@@ -15,7 +15,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
     {
         abstract public string ElementName { get; }
 
-        abstract public IHtmlString GetHtmlString(FormOptions options, FormField field, IDictionary<string, string> htmlAttributes);
+        abstract public IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes);
 
         protected void AddReadOnlyAttribute(FormField field, IDictionary<string, string> htmlAttributes)
         {

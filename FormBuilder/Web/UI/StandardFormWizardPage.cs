@@ -154,7 +154,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var options = new FormOptions();
 
             var model = step.FormModel;
-            var html = FormsPage.RenderModelFields(model, RenderingContext.ValidationResult, options).ToString();
+            var html = FormsPage.RenderModelFields(model, RenderingContext).ToString();
             var xelement = XElement.Parse(html);
 
             foreach (var element in xelement.Descendants())

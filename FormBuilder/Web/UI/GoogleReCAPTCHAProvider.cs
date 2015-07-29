@@ -53,17 +53,17 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             base.Initialize(name, config);
         }
 
-        public override string Render(ValidationResultList validationResult, FormOptions options)
+        public override string Render(BaseFormBuilderRequestContext context)
         {
             var sb = new StringBuilder();
 
-            FormRenderer.WriteRowStart(InputFieldName, "captcha", FormRenderer.WriteErrorClass(InputFieldName, validationResult, options), true, null, sb, options);
+            FormRenderer.WriteRowStart(InputFieldName, "captcha", FormRenderer.WriteErrorClass(InputFieldName, context), true, null, sb, context.Options);
 
-            FormRenderer.WriteLabelStart(false, InputFieldName, options, sb);
+            FormRenderer.WriteLabelStart(false, InputFieldName, context.Options, sb);
             FormRenderer.WriteLabelContent(true, Localization.Captcha_GoogleReCAPTCHA_Label, String.Empty, false, sb);
             FormRenderer.WriteLabelEnd(sb);
 
-            using (new ControlsGroup(sb, options))
+            using (new ControlsGroup(sb, context.Options))
             {
                 if (!String.IsNullOrEmpty(Localization.Captcha_GoogleReCAPTCHA_Help))
                 {

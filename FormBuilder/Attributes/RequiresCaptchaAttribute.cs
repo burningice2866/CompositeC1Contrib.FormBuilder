@@ -4,7 +4,6 @@ using System.Web;
 using CompositeC1Contrib.FormBuilder.Configuration;
 using CompositeC1Contrib.FormBuilder.Validation;
 using CompositeC1Contrib.FormBuilder.Web;
-using CompositeC1Contrib.FormBuilder.Web.UI;
 
 namespace CompositeC1Contrib.FormBuilder.Attributes
 {
@@ -20,9 +19,9 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
             Provider = (CaptchaProvider)captchaConfig.Providers[captchaConfig.DefaultProvider];
         }
 
-        public string Render(ValidationResultList validationResult, FormOptions options)
+        public string Render(BaseFormBuilderRequestContext context)
         {
-            return Provider.Render(validationResult, options);
+            return Provider.Render(context);
         }
 
         public void Validate(HttpContextBase ctx, ValidationResultList validationMessages)

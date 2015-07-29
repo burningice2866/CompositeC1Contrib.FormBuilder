@@ -83,10 +83,10 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected IHtmlString WriteAllFields()
         {
-            return RenderModelFields(RenderingModel, ValidationResult, Options);
+            return RenderModelFields(RenderingModel, RenderingContext);
         }
 
-        public static IHtmlString RenderModelFields(IFormModel model, ValidationResultList validationResult, FormOptions options)
+        public static IHtmlString RenderModelFields(IFormModel model, BaseFormBuilderRequestContext context)
         {
             var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(model.Name);
 
@@ -98,7 +98,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     continue;
                 }
 
-                var html = FormRenderer.FieldFor(options, field, validationResult).ToString();
+                var html = FormRenderer.FieldFor(context, field).ToString();
                 var newValue = XElement.Parse(html);
 
                 fieldElement.ReplaceWith(newValue);
@@ -152,9 +152,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new FieldsRow(this, includeLabels);
         }
 
-        protected string WriteErrorClass(string name, ValidationResultList validationResult, FormOptions options)
+        protected string WriteErrorClass(string name, BaseFormBuilderRequestContext context)
         {
-            return FormRenderer.WriteErrorClass(name, validationResult, options);
+            return FormRenderer.WriteErrorClass(name, context);
         }
     }
 }

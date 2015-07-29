@@ -53,9 +53,19 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
                 foreach (var item in field.DataSource)
                 {
+                    bool checkedValue;
+                    if (field.ValueType == typeof(IEnumerable<string>))
+                    {
+                        checkedValue = ((IEnumerable<string>)field.Value ?? new String[] { }).Contains(item.Key);
+                    }
+                    else
+                    {
+                        checkedValue = item.Key == (value ?? String.Empty).ToString();
+                    }
+
                     sb.AppendFormat("<option value=\"{0}\" {1}>{2}</option>",
                         HttpUtility.HtmlAttributeEncode(item.Key),
-                        FormRenderer.WriteChecked(item.Key == (value ?? String.Empty).ToString(), "selected"),
+                        FormRenderer.WriteChecked(checkedValue, "selected"),
                         HttpUtility.HtmlEncode(item.Value));
                 }
             }

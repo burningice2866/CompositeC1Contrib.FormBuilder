@@ -18,11 +18,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             return DefinitionsFacade.GetDefinitions().OfType<DynamicFormDefinition>();
         }
 
-        public static void SetDefaultValues(IFormModel model)
+        public static void SetDefaultValues(IModelInstance instance)
         {
-            var def = GetFormByName(model.Name);
+            var def = GetFormByName(instance.Name);
 
-            foreach (var field in model.Fields)
+            foreach (var field in instance.Fields)
             {
                 XElement defaultValueSetter;
                 if (!def.DefaultValues.TryGetValue(field.Name, out defaultValueSetter))
@@ -36,7 +36,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
         }
 
-        public static void SaveForm(IDynamicFormDefinition definition)
+        public static void SaveForm(IDynamicDefinition definition)
         {
             var serializer = new FormXmlSerializer();
 

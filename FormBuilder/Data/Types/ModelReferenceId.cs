@@ -2,7 +2,7 @@
 
 namespace CompositeC1Contrib.FormBuilder.Data.Types
 {
-    public class FormDataId : IDataId
+    public class ModelReferenceId : IDataId
     {
         public string Source { get; set; }
         public string Type { get; set; }

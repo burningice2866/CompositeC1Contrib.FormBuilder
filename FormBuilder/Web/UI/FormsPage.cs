@@ -14,7 +14,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public abstract class FormsPage : RazorFunction
     {
-        protected abstract FormBuilderRequestContext RenderingContext { get; }
+        protected abstract FormRequestContext RequestContext { get; }
 
         [FunctionParameter(Label = "Intro text", DefaultValue = null)]
         public XhtmlDocument IntroText { get; set; }
@@ -24,27 +24,27 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public FormOptions Options
         {
-            get { return RenderingContext.Options; }
+            get { return RequestContext.Options; }
         }
 
-        public FormModel RenderingModel
+        public Form Form
         {
-            get { return RenderingContext.RenderingModel; }
+            get { return RequestContext.ModelInstance; }
         }
 
         protected bool IsOwnSubmit
         {
-            get { return RenderingContext.IsOwnSubmit; }
+            get { return RequestContext.IsOwnSubmit; }
         }
 
         protected bool IsSuccess
         {
-            get { return RenderingContext.IsSuccess; }
+            get { return RequestContext.IsSuccess; }
         }
 
         public ValidationResultList ValidationResult
         {
-            get { return RenderingContext.ValidationResult; }
+            get { return RequestContext.ValidationResult; }
         }
 
         public IHtmlString EvaluateMarkup(XElement element)
@@ -63,7 +63,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public override void ExecutePageHierarchy()
         {
-            if (RenderingContext.IsSuccess)
+            if (RequestContext.IsSuccess)
             {
                 HandleSubmit();
             }
@@ -73,24 +73,24 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public virtual void HandleSubmit()
         {
-            RenderingContext.Submit();
+            RequestContext.Submit();
         }
 
         protected IHtmlString WriteErrors()
         {
-            return RenderingContext.IsOwnSubmit ? FormRenderer.WriteErrors(ValidationResult, Options) : new HtmlString(String.Empty);
+            return RequestContext.IsOwnSubmit ? FormRenderer.WriteErrors(ValidationResult, Options) : new HtmlString(String.Empty);
         }
 
         protected IHtmlString WriteAllFields()
         {
-            return RenderModelFields(RenderingModel, RenderingContext);
+            return RenderModelFields(Form, RequestContext);
         }
 
-        public static IHtmlString RenderModelFields(IFormModel model, BaseFormBuilderRequestContext context)
+        public static IHtmlString RenderModelFields(IModelInstance instance, BaseFormBuilderRequestContext context)
         {
-            var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(model.Name);
+            var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(instance.Name);
 
-            foreach (var field in model.Fields.Where(f => f.Label != null))
+            foreach (var field in instance.Fields.Where(f => f.Label != null))
             {
                 var fieldElement = renderingMarkup.Body.Descendants().SingleOrDefault(el => el.Name == Namespaces.Xhtml + "p" && el.Value.Trim() == "%" + field.Name + "%");
                 if (fieldElement == null)
@@ -109,12 +109,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected IHtmlString WriteCaptcha()
         {
-            return FormRenderer.Captcha(RenderingContext);
+            return FormRenderer.Captcha(RequestContext);
         }
 
         protected bool HasDependencyChecks()
         {
-            return RenderingContext.RenderingModel.Fields.Select(f => f.DependencyAttributes).Any();
+            return RequestContext.ModelInstance.Fields.Select(f => f.DependencyAttributes).Any();
         }
 
         protected HtmlForm BeginForm()

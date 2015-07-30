@@ -25,12 +25,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     "class", new List<string> 
                     {
                         "form",
-                        "formbuilder-" + page.RenderingModel.Name.ToLowerInvariant()
+                        "formbuilder-" + page.Form.Name.ToLowerInvariant()
                     }
                 }
             };
 
-            var htmlElementAttributes = page.RenderingModel.Attributes.OfType<HtmlTagAttribute>();
+            var htmlElementAttributes = page.Form.Attributes.OfType<HtmlTagAttribute>();
             var action = String.Empty;
 
             foreach (var attr in htmlElementAttributes)
@@ -83,21 +83,21 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 page.WriteLiteral("\"");
             }
 
-            if (page.RenderingModel.HasFileUpload)
+            if (page.Form.HasFileUpload)
             {
                 page.WriteLiteral(" enctype=\"multipart/form-data\"");
             }
 
             page.WriteLiteral(" data-renderer=\"" + page.Options.FormRenderer.GetType().AssemblyQualifiedName + "\"");
             page.WriteLiteral(">");
-            page.WriteLiteral("<input type=\"hidden\" name=\"__type\" value=\"" + HttpUtility.HtmlAttributeEncode(page.RenderingModel.Name) + "\" />");
+            page.WriteLiteral("<input type=\"hidden\" name=\"__type\" value=\"" + HttpUtility.HtmlAttributeEncode(page.Form.Name) + "\" />");
 
-            foreach (var field in page.RenderingModel.Fields.Where(f => f.Label == null))
+            foreach (var field in page.Form.Fields.Where(f => f.Label == null))
             {
                 RenderHiddenField(field.Name, field.Id, field.Value == null ? String.Empty : FormRenderer.GetValue(field));
             }
 
-            if (!page.RenderingModel.DisableAntiForgery)
+            if (!page.Form.DisableAntiForgery)
             {
                 page.WriteLiteral(AntiForgery.GetHtml());
             }

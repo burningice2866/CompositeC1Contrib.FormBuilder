@@ -8,9 +8,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
     public class DefinitionsFacade
     {
-        public static IEnumerable<IDynamicFormDefinition> GetDefinitions()
+        public static IEnumerable<IDynamicDefinition> GetDefinitions()
         {
-            var files = C1Directory.GetFiles(FormModelsFacade.RootPath, "DynamicDefinition.xml", SearchOption.AllDirectories);
+            var files = C1Directory.GetFiles(ModelsFacade.RootPath, "DynamicDefinition.xml", SearchOption.AllDirectories);
             foreach (var file in files)
             {
                 var folder = Path.GetDirectoryName(file);
@@ -23,9 +23,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
         }
 
-        public static IDynamicFormDefinition GetDefinition(string name)
+        public static IDynamicDefinition GetDefinition(string name)
         {
-            var file = Path.Combine(FormModelsFacade.RootPath, name, "DynamicDefinition.xml");
+            var file = Path.Combine(ModelsFacade.RootPath, name, "DynamicDefinition.xml");
             if (!C1File.Exists(file))
             {
                 return null;
@@ -37,16 +37,16 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             return seralizer.Load(name, xml);
         }
 
-        public static void Save(IDynamicFormDefinition definition)
+        public static void Save(IDynamicDefinition definition)
         {
             var serializer = XmlDefinitionSerializer.GetSerializer(definition.Name);
 
             serializer.Save(definition);
         }
 
-        public static void Delete(IDynamicFormDefinition definition)
+        public static void Delete(IDynamicDefinition definition)
         {
-            var dir = Path.Combine(FormModelsFacade.RootPath, definition.Name);
+            var dir = Path.Combine(ModelsFacade.RootPath, definition.Name);
 
             C1Directory.Delete(dir, true);
 
@@ -55,10 +55,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 submithandler.Delete(definition);
             }
 
-            FormModelsFacade.NotifyFormChanges();
+            ModelsFacade.NotifyFormChanges();
         }
 
-        public static void Copy(IDynamicFormDefinition definition, string newName)
+        public static void Copy(IDynamicDefinition definition, string newName)
         {
             var def = GetDefinition(definition.Name);
 

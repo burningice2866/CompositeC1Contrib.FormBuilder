@@ -4,13 +4,13 @@ using Composite.Data;
 
 namespace CompositeC1Contrib.FormBuilder.Data.Types
 {
-    public class FormDataFacade
+    public class ModelReferenceFacade
     {
-        public static IForm GetFormData(string name)
+        public static IModelReference GetModelReference(string name)
         {
             using (var data = new DataConnection())
             {
-                return data.Get<IForm>().SingleOrDefault(f => f.Name == name);
+                return data.Get<IModelReference>().SingleOrDefault(f => f.Name == name);
             }
         }
     }

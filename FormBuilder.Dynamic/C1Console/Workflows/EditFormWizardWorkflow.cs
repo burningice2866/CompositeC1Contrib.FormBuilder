@@ -17,10 +17,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 return;
             }
 
-            var form = (IForm)((DataEntityToken)EntityToken).Data;
-            var wizard = DynamicFormWizardsFacade.GetWizard(form.Name);
+            var modelReference = (IModelReference)((DataEntityToken)EntityToken).Data;
+            var wizard = DynamicWizardsFacade.GetWizard(modelReference.Name);
 
-            SetupFormData(wizard, wizard);
+            SetupFormData(wizard, wizard.Model);
 
             Bindings.Add("BoundToken", EntityToken);
         }
@@ -28,15 +28,15 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         public override void OnFinish(object sender, EventArgs e)
         {
             var wizardToken = GetBinding<DataEntityToken>("BoundToken");
-            var form = (IForm)wizardToken.Data;
+            var modelReference = (IModelReference)wizardToken.Data;
 
-            var wizard = DynamicFormWizardsFacade.GetWizard(form.Name);
+            var wizard = DynamicWizardsFacade.GetWizard(modelReference.Name);
 
             var requiresCaptcha = GetBinding<bool>("RequiresCaptcha");
             var forceHttpsConnection = GetBinding<bool>("ForceHttpsConnection");
 
-            wizard.RequiresCaptcha = requiresCaptcha;
-            wizard.ForceHttps = forceHttpsConnection;
+            wizard.Model.RequiresCaptcha = requiresCaptcha;
+            wizard.Model.ForceHttps = forceHttpsConnection;
 
             Save(wizard);
         }

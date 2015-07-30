@@ -34,13 +34,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
 
         private IHttpActionResult CreateAndValidateForm(NameValueCollection form, IEnumerable<FormFile> files)
         {
-            var model = CreateFormModel(form);
+            var instance = CreateFormInstance(form);
 
-            model.SetDefaultValues();
-            model.MapValues(form, files);
+            instance.SetDefaultValues();
+            instance.MapValues(form, files);
 
-            var validationResult = model.Validate(false);
-
+            var validationResult = instance.Validate(false);
             if (!validationResult.Any())
             {
                 return Ok(true);
@@ -81,12 +80,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
             return Task.Run(async () => await action).Result;
         }
 
-        private static IFormModel CreateFormModel(NameValueCollection form)
+        private static IModelInstance CreateFormInstance(NameValueCollection form)
         {
             var name = form["__type"];
-            var model = FormModelsFacade.GetModel(name);
+            var model = ModelsFacade.GetModel<FormModel>(name);
 
-            return model;
+            return new Form(model);
         }
     }
 }

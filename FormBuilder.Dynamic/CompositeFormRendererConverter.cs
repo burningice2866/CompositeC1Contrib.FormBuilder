@@ -155,8 +155,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                                 for (int i = 0; i < instances.Count; i++)
                                 {
                                     var instance = instances[i];
+                                    var form = new Form(dfd.Model);
 
-                                    foreach (var field in dfd.Model.Fields)
+                                    foreach (var field in form.Fields)
                                     {
                                         var prop = instance.GetType().GetProperty(field.Name);
                                         if (prop == null)
@@ -167,7 +168,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                                         field.Value = prop.GetValue(instance, null);
                                     }
 
-                                    SaveFormSubmitFacade.SaveSubmit(dfd.Model, false, now.AddSeconds(i));
+                                    SaveSubmitFacade.SaveSubmit(form, false, now.AddSeconds(i));
                                 }
                             }
 
@@ -194,7 +195,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         {
             foreach (var element in formXml.Descendants())
             {
-                FormField field = null;
+                FormFieldModel field = null;
 
                 if (element.Name == Namespaces.BindingFormsStdUiControls10 + "TextBox")
                 {
@@ -209,34 +210,34 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
                     if (fieldType == TextBoxType.Password.ToString())
                     {
-                        field = new FormField(dfd.Model, fieldName, typeof(string), new List<Attribute>());
+                        field = new FormFieldModel(dfd.Model, fieldName, typeof(string), new List<Attribute>());
 
                         field.Attributes.Add(new PasswordInputElementAttribute());
                     }
                     else if (fieldType == TextBoxType.Integer.ToString())
                     {
-                        field = new FormField(dfd.Model, fieldName, typeof(int), new List<Attribute>());
+                        field = new FormFieldModel(dfd.Model, fieldName, typeof(int), new List<Attribute>());
 
                         field.Attributes.Add(new TextboxInputElementAttribute());
                         field.Attributes.Add(new IntegerFieldValidatorAttribute("skal være et tal"));
                     }
                     else if (fieldType == TextBoxType.Decimal.ToString())
                     {
-                        field = new FormField(dfd.Model, fieldName, typeof(decimal), new List<Attribute>());
+                        field = new FormFieldModel(dfd.Model, fieldName, typeof(decimal), new List<Attribute>());
 
                         field.Attributes.Add(new TextboxInputElementAttribute());
                         field.Attributes.Add(new DecimalFieldValidatorAttribute("skal være et decimal tal"));
                     }
                     else if (fieldType == TextBoxType.ReadOnly.ToString())
                     {
-                        field = new FormField(dfd.Model, fieldName, typeof(string), new List<Attribute>());
+                        field = new FormFieldModel(dfd.Model, fieldName, typeof(string), new List<Attribute>());
 
                         field.Attributes.Add(new TextboxInputElementAttribute());
                         field.IsReadOnly = true;
                     }
                     else
                     {
-                        field = new FormField(dfd.Model, fieldName, typeof(string), new List<Attribute>());
+                        field = new FormFieldModel(dfd.Model, fieldName, typeof(string), new List<Attribute>());
 
                         field.Attributes.Add(new TextboxInputElementAttribute());
                     }
@@ -251,7 +252,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                         continue;
                     }
 
-                    field = new FormField(dfd.Model, fieldName, typeof(string), new List<Attribute>());
+                    field = new FormFieldModel(dfd.Model, fieldName, typeof(string), new List<Attribute>());
 
                     field.Attributes.Add(new TextAreaInputElementAttribute());
                 }
@@ -264,7 +265,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                         continue;
                     }
 
-                    field = new FormField(dfd.Model, fieldName, typeof(DateTime), new List<Attribute>());
+                    field = new FormFieldModel(dfd.Model, fieldName, typeof(DateTime), new List<Attribute>());
 
                     field.Attributes.Add(new TextboxInputElementAttribute());
                 }
@@ -277,7 +278,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                         continue;
                     }
 
-                    field = new FormField(dfd.Model, fieldName, typeof(string), new List<Attribute>());
+                    field = new FormFieldModel(dfd.Model, fieldName, typeof(string), new List<Attribute>());
 
                     field.Attributes.Add(new RadioButtonInputElementAttribute());
                     field.Attributes.Add(new StringBasedDataSourceAttribute(element.Attribute("TrueLabel").Value, element.Attribute("FalseLabel").Value));
@@ -291,7 +292,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                         continue;
                     }
 
-                    field = new FormField(dfd.Model, fieldName, typeof(string), new List<Attribute>());
+                    field = new FormFieldModel(dfd.Model, fieldName, typeof(string), new List<Attribute>());
 
                     field.Attributes.Add(new CheckboxInputElementAttribute());
 
@@ -348,7 +349,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
         }
 
-        private static void ImportDefaultValue(DynamicFormDefinition dfd, FormField field, DataFieldDescriptor datatypeField)
+        private static void ImportDefaultValue(DynamicFormDefinition dfd, FormFieldModel field, DataFieldDescriptor datatypeField)
         {
             XElement defaultvalue = null;
 

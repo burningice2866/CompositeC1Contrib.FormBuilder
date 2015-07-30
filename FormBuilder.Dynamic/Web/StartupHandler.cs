@@ -9,8 +9,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Web
     {
         public static void OnBeforeInitialize()
         {
-            MoveDefinitionFilesToFolders(FormModelsFacade.RootPath);
-            RenameDefinitionFile(FormModelsFacade.RootPath);
+            MoveDefinitionFilesToFolders(ModelsFacade.RootPath);
+            RenameDefinitionFile(ModelsFacade.RootPath);
         }
 
         private static void MoveDefinitionFilesToFolders(string baseFolder)

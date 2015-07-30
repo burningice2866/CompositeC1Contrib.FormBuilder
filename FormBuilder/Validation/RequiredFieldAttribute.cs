@@ -17,9 +17,18 @@ namespace CompositeC1Contrib.FormBuilder.Validation
             {
                 Rule = () =>
                 {
+                    if (value == null)
+                    {
+                        return false;
+                    }
+
                     if (valueType == typeof(string))
                     {
                         return !String.IsNullOrWhiteSpace((string)value);
+                    }
+                    if (valueType == typeof(IEnumerable<string>))
+                    {
+                        return ((IEnumerable<string>)value).Any(f => !String.IsNullOrWhiteSpace(f));
                     }
 
                     if (valueType == typeof(bool))
@@ -53,11 +62,6 @@ namespace CompositeC1Contrib.FormBuilder.Validation
                     if (valueType == typeof(IEnumerable<FormFile>))
                     {
                         return ((IEnumerable<FormFile>)value).Any(f => f.ContentLength > 0);
-                    }
-
-                    if (valueType == typeof(IEnumerable<string>))
-                    {
-                        return ((IEnumerable<string>)value).Any(f => !String.IsNullOrWhiteSpace(f));
                     }
 
                     return value != null;

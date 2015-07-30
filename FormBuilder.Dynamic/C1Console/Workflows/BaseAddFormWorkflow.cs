@@ -60,7 +60,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             using (var data = new DataConnection())
             {
-                var isNameInUse = data.Get<IForm>().Any(f => f.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+                var isNameInUse = data.Get<IModelReference>().Any(f => f.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
                 if (isNameInUse)
                 {
                     ShowFieldMessage("Name", "Name already exists");

@@ -35,12 +35,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
         public FlowToken Execute(EntityToken entityToken, ActionToken actionToken, FlowControllerServicesContainer flowControllerServicesContainer)
         {
             var token = (FormWizardStepEntityToken)entityToken;
-            var wizard = DynamicFormWizardsFacade.GetWizard(token.WizardName);
-            var step = wizard.Steps.Single(h => h.Name == token.StepName);
+            var wizard = DynamicWizardsFacade.GetWizard(token.WizardName);
+            var step = wizard.Model.Steps.Single(h => h.Name == token.StepName);
 
-            wizard.Steps.Remove(step);
+            wizard.Model.Steps.Remove(step);
 
-            DynamicFormWizardsFacade.SaveWizard(wizard);
+            DynamicWizardsFacade.SaveWizard(wizard);
 
             new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(entityToken);
 

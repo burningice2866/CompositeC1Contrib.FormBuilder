@@ -11,7 +11,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
     public class FormXmlSerializer : XmlDefinitionSerializer
     {
-        public override IDynamicFormDefinition Load(string name, XElement xml)
+        public override IDynamicDefinition Load(string name, XElement xml)
         {
             var model = new FormModel(name)
             {
@@ -56,7 +56,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 var valueTypeAttr = f.Attribute("valueType");
                 var valueType = valueTypeAttr != null ? Type.GetType(valueTypeAttr.Value) : typeof(string);
 
-                var formField = new FormField(model, fieldName, valueType, attrs);
+                var formField = new FormFieldModel(model, fieldName, valueType, attrs);
 
                 var isReadOnlyAttr = f.Attribute("isReadOnly");
                 if (isReadOnlyAttr != null)
@@ -85,7 +85,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             return definition;
         }
 
-        public override void Save(IDynamicFormDefinition form)
+        public override void Save(IDynamicDefinition form)
         {
             var definition = (DynamicFormDefinition)form;
             var model = definition.Model;
@@ -188,7 +188,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     foreach (var rule in field.ValidationAttributes)
                     {
                         var ruleType = rule.GetType();
-                        var ruleElement = new XElement("Add", new XAttribute("type", ruleType.AssemblyQualifiedName));
+                        var ruleElement = new XElement("Add",
+                            new XAttribute("type", ruleType.AssemblyQualifiedName));
 
                         SerializeInstanceWithArgument(rule, ruleElement);
 
@@ -217,7 +218,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 var dataSourceAttribute = field.Attributes.OfType<DataSourceAttribute>().FirstOrDefault();
                 if (dataSourceAttribute != null)
                 {
-                    var datasource = new XElement("DataSource", new XAttribute("type", dataSourceAttribute.GetType().AssemblyQualifiedName));
+                    var datasource = new XElement("DataSource",
+                        new XAttribute("type", dataSourceAttribute.GetType().AssemblyQualifiedName));
 
                     var stringBasedDataSourceAttribute = dataSourceAttribute as StringBasedDataSourceAttribute;
                     if (stringBasedDataSourceAttribute != null)
@@ -226,7 +228,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
                         foreach (var s in stringBasedDataSourceAttribute.Values)
                         {
-                            values.Add(new XElement("item", new XAttribute("value", s)));
+                            values.Add(new XElement("item",
+                                new XAttribute("value", s)));
                         }
 
                         datasource.Add(values);
@@ -248,6 +251,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         private static void ParseInputElement(XElement xml, IList<Attribute> attrs)
         {
             var type = Type.GetType(xml.Attribute("type").Value);
+            if (type == null)
+            {
+                return;
+            }
+
             var inputElementAttr = (InputElementTypeAttribute)XElementHelper.DeserializeInstanceWithArgument(type, xml);
 
             attrs.Add(inputElementAttr);
@@ -338,7 +346,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             foreach (var rule in rules)
             {
                 var typeString = rule.Attribute("type").Value;
+
                 var type = Type.GetType(typeString);
+                if (type == null)
+                {
+                    continue;
+                }
 
                 var ruleAttribute = (FormValidationAttribute)XElementHelper.DeserializeInstanceWithArgument(type, rule);
 

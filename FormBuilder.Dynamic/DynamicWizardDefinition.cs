@@ -1,20 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Composite.Core.Xml;
+
 using CompositeC1Contrib.FormBuilder.Configuration;
 using CompositeC1Contrib.FormBuilder.Dynamic.Configuration;
 using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
-    public class DynamicFormWizard : FormWizard, IDynamicFormDefinition
+    public class DynamicWizardDefinition : IDynamicDefinition
     {
+        public WizardModel Model { get; private set; }
+
+        public string Name { get; set; }
+
         public IList<FormSubmitHandler> SubmitHandlers { get; private set; }
+
+        public XhtmlDocument IntroText { get; set; }
+        public XhtmlDocument SuccessResponse { get; set; }
+
         public IFormSettings Settings { get; set; }
 
-        public DynamicFormWizard()
+        public DynamicWizardDefinition(string name) : this(new WizardModel(name)) { }
+
+        public DynamicWizardDefinition(WizardModel model)
         {
+            Model = model;
+
+            Name = model.Name;
+
             SubmitHandlers = new List<FormSubmitHandler>();
+
+            IntroText = new XhtmlDocument();
+            SuccessResponse = new XhtmlDocument();
 
             var config = FormBuilderConfiguration.GetSection();
             var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
@@ -24,16 +43,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             {
                 Settings = (IFormSettings)Activator.CreateInstance(settingsType);
             }
-        }
-
-        public override void Submit()
-        {
-            foreach (var handler in SubmitHandlers)
-            {
-                handler.Submit(this);
-            }
-
-            base.Submit();
         }
     }
 }

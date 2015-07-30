@@ -7,7 +7,7 @@ using Composite.Core.IO;
 
 namespace CompositeC1Contrib.FormBuilder
 {
-    public static class FormModelsFacade
+    public static class ModelsFacade
     {
         private static readonly object Lock = new object();
         private static IDictionary<string, ProviderModelContainer> _cachedList;
@@ -16,11 +16,11 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static event EventHandler FormChanges;
 
-        public static IEnumerable<IFormModelsProvider> Providers { get; private set; }
+        public static IEnumerable<IModelsProvider> Providers { get; private set; }
 
-        static FormModelsFacade()
+        static ModelsFacade()
         {
-            Providers = CompositionContainerFacade.GetExportedValues<IFormModelsProvider>().ToList();
+            Providers = CompositionContainerFacade.GetExportedValues<IModelsProvider>().ToList();
 
             if (!C1Directory.Exists(RootPath))
             {
@@ -28,7 +28,18 @@ namespace CompositeC1Contrib.FormBuilder
             }
         }
 
-        public static IFormModel GetModel(string name)
+        public static T GetModel<T>(string name) where T : class, IModel
+        {
+            var model = GetModel(name) as T;
+            if (model == null)
+            {
+                throw new InvalidOperationException(name + " is of the wrong model type");
+            }
+
+            return model;
+        }
+
+        public static IModel GetModel(string name)
         {
             ProviderModelContainer container;
 

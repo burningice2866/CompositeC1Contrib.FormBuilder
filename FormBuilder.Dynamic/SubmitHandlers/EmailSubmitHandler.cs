@@ -21,11 +21,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
         public SerializableMailTemplate MailTemplate { get; private set; }
         public bool IncludeAttachments { get; set; }
 
-        protected IEnumerable<FormFile> GetFiles(IFormModel model)
+        protected IEnumerable<FormFile> GetFiles(IModelInstance instance)
         {
             var files = new List<FormFile>();
 
-            foreach (var field in model.Fields)
+            foreach (var field in instance.Fields)
             {
                 if (field.ValueType == typeof(FormFile) && field.Value != null)
                 {
@@ -51,7 +51,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
             }
         }
 
-        public override void Load(IDynamicFormDefinition definition, XElement handler)
+        public override void Load(IDynamicDefinition definition, XElement handler)
         {
             using (var data = new DataConnection())
             {
@@ -81,7 +81,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
             base.Load(definition, handler);
         }
 
-        public override void Save(IDynamicFormDefinition definition, XElement handler)
+        public override void Save(IDynamicDefinition definition, XElement handler)
         {
             handler.Add(new XAttribute("IncludeAttachments", IncludeAttachments));
 
@@ -125,7 +125,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
             base.Save(definition, handler);
         }
 
-        public override void Delete(IDynamicFormDefinition definition)
+        public override void Delete(IDynamicDefinition definition)
         {
             using (var data = new DataConnection())
             {
@@ -137,17 +137,17 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
             base.Delete(definition);
         }
 
-        public override void Submit(IFormModel model)
+        public override void Submit(IModelInstance instance)
         {
             using (var data = new DataConnection())
             {
-                var templateKey = model.Name + "." + Name;
+                var templateKey = instance.Name + "." + Name;
                 var template = data.Get<IMailTemplate>().Single(t => t.Key == templateKey);
-                var builder = new FormModelMailMessageBuilder(template, model);
+                var builder = new FormModelMailMessageBuilder(template, instance);
 
-                if (IncludeAttachments && model.HasFileUpload)
+                if (IncludeAttachments && instance.HasFileUpload)
                 {
-                    var files = GetFiles(model);
+                    var files = GetFiles(instance);
 
                     AddFilesToMessage(files, builder);
                 }

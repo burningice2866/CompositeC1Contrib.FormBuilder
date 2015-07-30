@@ -13,52 +13,38 @@ using CompositeC1Contrib.FormBuilder.FunctionProviders;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
-    public abstract class POCOBasedFormsPage<T> : FormsPage where T : class, IPOCOForm 
+    public abstract class POCOBasedFormsPage<T> : FormsPage where T : class, IPOCOForm
     {
-        protected T Form { get; private set; }
+        protected new T Form { get; private set; }
 
-        private readonly FormBuilderRequestContext _context;
-        protected override FormBuilderRequestContext RenderingContext
+        private FormRequestContext _requestContext;
+        protected override FormRequestContext RequestContext
         {
-            get { return _context; }
+            get { return _requestContext; }
         }
 
         protected POCOBasedFormsPage()
         {
-            var ctors = typeof(T).GetConstructors(BindingFlags.Instance | BindingFlags.Public);
-            foreach (var ctor in ctors)
-            {
-                var parameters = ctor.GetParameters();
+            var model = POCOModelsFacade.FromType(typeof(T));
+            var context = new POCOFormBuilderRequestContext(model.Name);
 
-                if (parameters.Length == 0)
-                {
-                    Form = Activator.CreateInstance<T>();
-                }
-            }
-
-            if (Form == null)
-            {
-                throw new InvalidOperationException("No parameterless constructor on form");
-            }
-
-            var model = POCOFormsFacade.FromType(Form);
-
-            _context = new POCOFormBuilderRequestContext(model.Name, Form);
+            _requestContext = context;
+            Form = (T)context.Instance;
         }
 
         public override void ExecutePageHierarchy()
         {
             var functionContext = new FunctionContextContainer(FunctionContextContainer, new Dictionary<string, object>
             {
-                { BaseFormFunction.RenderingContextKey, RenderingContext },
-                { BaseFormFunction.FormModelKey, RenderingContext.RenderingModel }
+                { BaseFormFunction.RequestContextKey, RequestContext },
+                { BaseFormFunction.InstanceKey, RequestContext.ModelInstance }
             });
 
             var functionContextField = typeof(RazorHelper).GetField("PageContext_FunctionContextContainer", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
 
             PageData[functionContextField] = functionContext;
 
-            _context.Execute(Context);
+            RequestContext.Execute(Context);
 
             base.ExecutePageHierarchy();
         }
@@ -83,7 +69,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var field = GetField(fieldSelector);
             var dictionary = Functions.ObjectToDictionary(htmlAttributes).ToDictionary(t => t.Key, t => t.Value.ToString());
 
-            return FormRenderer.InputFor(RenderingContext, field, dictionary);
+            return FormRenderer.InputFor(RequestContext, field, dictionary);
         }
 
         protected IHtmlString FieldFor(Expression<Func<T, object>> fieldSelector)
@@ -96,13 +82,13 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var field = GetField(fieldSelector);
             var dictionary = Functions.ObjectToDictionary(htmlAttributes).ToDictionary(t => t.Key, t => t.Value.ToString());
 
-            return FormRenderer.FieldFor(RenderingContext, field, dictionary);
+            return FormRenderer.FieldFor(RequestContext, field, dictionary);
         }
 
         protected IHtmlString NameFor(Expression<Func<T, object>> fieldSelector)
         {
             var prop = GetProperty(fieldSelector);
-            var field = RenderingContext.RenderingModel.Fields.Single(f => f.Name == prop.Name);
+            var field = RequestContext.ModelInstance.Fields.Single(f => f.Name == prop.Name);
 
             return FormRenderer.NameFor(field);
         }
@@ -111,7 +97,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             var prop = GetProperty(fieldSelector);
 
-            return RenderingContext.RenderingModel.Fields.Single(f => f.Name == prop.Name);
+            return RequestContext.ModelInstance.Fields.Single(f => f.Name == prop.Name);
         }
 
         public PropertyInfo GetProperty(string name)

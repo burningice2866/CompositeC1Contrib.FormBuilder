@@ -3,50 +3,47 @@ using System.Reflection;
 
 namespace CompositeC1Contrib.FormBuilder.Web
 {
-    public class POCOFormBuilderRequestContext : FormBuilderRequestContext
+    public class POCOFormBuilderRequestContext : FormRequestContext
     {
-        private readonly FormModel _model;
         private readonly IPOCOForm _instance;
-
-        public override FormModel RenderingModel
+        public IPOCOForm Instance
         {
-            get { return _model; }
+            get { return _instance; }
         }
 
-        public POCOFormBuilderRequestContext(string formName, IPOCOForm instance)
+        public POCOFormBuilderRequestContext(string formName)
             : base(formName)
         {
-            _instance = instance;
-            _model = POCOFormsFacade.FromInstance(_instance);
+            _instance = (IPOCOForm)ModelInstance.FormData["PocoInstance"];
         }
 
         public override void OnMappedValues()
         {
-            POCOFormsFacade.MapValues(_instance, _model);
+            POCOModelsFacade.MapValues(Instance, ModelInstance);
         }
 
         public override void Submit()
         {
-            var importSubmittedValuesProperties = _instance.GetType()
+            var importSubmittedValuesProperties = Instance.GetType()
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                 .Where(p => p.CanWrite && p.GetCustomAttribute<ImportSubmittedValuesAttribute>() != null);
 
             foreach (var prop in importSubmittedValuesProperties)
             {
-                prop.SetValue(_instance, _model.SubmittedValues);
+                prop.SetValue(Instance, ModelInstance.SubmittedValues);
             }
 
-            var importSubmittedValuesFields = _instance.GetType()
+            var importSubmittedValuesFields = Instance.GetType()
                 .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                 .Where(f => f.GetCustomAttribute<ImportSubmittedValuesAttribute>() != null);
 
             foreach (var field in importSubmittedValuesFields)
             {
-                field.SetValue(_instance, _model.SubmittedValues);
+                field.SetValue(Instance, ModelInstance.SubmittedValues);
             }
 
-            _instance.Submit();
-            
+            Instance.Submit();
+
             base.Submit();
         }
     }

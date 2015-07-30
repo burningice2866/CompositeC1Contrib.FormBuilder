@@ -2,18 +2,20 @@
 
 namespace CompositeC1Contrib.FormBuilder.Web
 {
-    public class DynamicFormWizardRequestContext : FormWizardRequestContext
+    public class DynamicFormWizardRequestContext : WizardRequestContext
     {
-        private readonly DynamicFormWizard _wizard;
+        public DynamicFormWizardRequestContext(string name) : base(name) { }
 
-        public override FormWizard RenderingModel
+        public override void Submit()
         {
-            get { return _wizard; }
-        }
+            var def = DynamicWizardsFacade.GetWizard(ModelInstance.Name);
 
-        public DynamicFormWizardRequestContext(string name) : base(name)
-        {
-            _wizard = DynamicFormWizardsFacade.GetWizard(name);
+            foreach (var handler in def.SubmitHandlers)
+            {
+                handler.Submit(ModelInstance);
+            }
+
+            base.Submit();
         }
     }
 }

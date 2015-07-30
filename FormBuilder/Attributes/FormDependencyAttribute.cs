@@ -14,7 +14,7 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
             this.ReadFromFieldName = readFromFieldName;
         }
 
-        public abstract bool DependencyMet(FormModel model);
+        public abstract bool DependencyMet(Form form);
         public abstract string[] RequiredFieldValues();
     }
 }

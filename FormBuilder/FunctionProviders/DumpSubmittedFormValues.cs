@@ -14,9 +14,9 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
         {
             var doc = new XhtmlDocument();
             var useRenderingLayout = parameters.GetParameter<bool>("UseRenderingLayout");
-            var formModel = (FormModel)context.GetParameterValue(BaseFormFunction.FormModelKey, typeof(FormModel));
+            var instance = (Form)context.GetParameterValue(BaseFormFunction.InstanceKey, typeof(Form));
 
-            DumpModelValues(formModel, doc, useRenderingLayout);
+            DumpModelValues(instance, doc, useRenderingLayout);
 
             return doc;
         }

@@ -8,12 +8,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
     {
         public bool IncludeAttachments { get; set; }
 
-        public override void Submit(IFormModel model)
+        public override void Submit(IModelInstance instance)
         {
-            SaveFormSubmitFacade.SaveSubmit(model, IncludeAttachments);
+            SaveSubmitFacade.SaveSubmit(instance, IncludeAttachments);
         }
 
-        public override void Save(IDynamicFormDefinition definition, XElement handler)
+        public override void Save(IDynamicDefinition definition, XElement handler)
         {
             handler.Add(new XAttribute("IncludeAttachments", IncludeAttachments));
         }

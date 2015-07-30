@@ -14,15 +14,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         public override void OnFinish(object sender, EventArgs e)
         {
             var name = GetBinding<string>("Name");
+            var wizard = new DynamicWizardDefinition(name);
 
-            var wizard = new DynamicFormWizard
-            {
-                Name = name
-            };
+            DynamicWizardsFacade.SaveWizard(wizard);
 
-            DynamicFormWizardsFacade.SaveWizard(wizard);
-
-            var data = FormDataFacade.GetFormData(name);
+            var data = ModelReferenceFacade.GetModelReference(name);
             var token = data.GetDataEntityToken();
 
             var workflowToken = new WorkflowActionToken(typeof(EditFormWizardWorkflow));

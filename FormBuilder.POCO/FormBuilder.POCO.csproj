@@ -56,8 +56,8 @@
     <Compile Include="ExcludeFieldAttribute.cs" />
     <Compile Include="ImportSubmittedValuesAttribute.cs" />
     <Compile Include="Web\POCOFormBuilderRequestContext.cs" />
-    <Compile Include="POCOFormModelsProvider.cs" />
-    <Compile Include="POCOFormsFacade.cs" />
+    <Compile Include="POCOModelsProvider.cs" />
+    <Compile Include="POCOModelsFacade.cs" />
     <Compile Include="IPOCOForm.cs" />
     <Compile Include="IProvidesDefaultValues.cs" />
     <Compile Include="IValidationHandler.cs" />

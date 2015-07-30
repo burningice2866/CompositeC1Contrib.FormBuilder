@@ -18,7 +18,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
         {
             if (!BindingExist("Title"))
             {
-                var formToken = (IForm)((DataEntityToken)EntityToken).Data;
+                var formToken = (IModelReference)((DataEntityToken)EntityToken).Data;
                 var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(formToken.Name);
 
                 Bindings.Add("Title", formToken.Name + " rendering layout");
@@ -28,7 +28,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
 
         public override void OnFinish(object sender, EventArgs e)
         {
-            var formToken = (IForm)((DataEntityToken)EntityToken).Data;
+            var formToken = (IModelReference)((DataEntityToken)EntityToken).Data;
             var renderingMarkup = GetBinding<string>("RenderingMarkup");
 
             RenderingLayoutFacade.SaveRenderingLayout(formToken.Name, XhtmlDocument.Parse(renderingMarkup));

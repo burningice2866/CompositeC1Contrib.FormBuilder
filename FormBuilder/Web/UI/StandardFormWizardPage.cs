@@ -14,30 +14,41 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public abstract class StandardFormWizardPage : RazorFunction
     {
-        protected FormWizard Wizard
-        {
-            get { return RenderingContext.Wizard; }
-        }
-
-        protected bool IsSuccess
-        {
-            get { return RenderingContext.IsSuccess; }
-        }
-
-        protected FormWizardRequestContext RenderingContext
-        {
-            get { return (FormWizardRequestContext)FunctionContextContainer.GetParameterValue(BaseFormFunction.RenderingContextKey, typeof(FormWizardRequestContext)); }
-        }
-
         [FunctionParameter(Label = "Intro text", DefaultValue = null)]
         public XhtmlDocument IntroText { get; set; }
 
         [FunctionParameter(Label = "Success response", DefaultValue = null)]
         public XhtmlDocument SuccessResponse { get; set; }
 
+        protected Wizard Wizard
+        {
+            get { return RequestContext.Wizard; }
+        }
+
+        public FormOptions Options
+        {
+            get { return RequestContext.Options; }
+        }
+
+        protected bool IsSuccess
+        {
+            get { return RequestContext.IsSuccess; }
+        }
+
+        protected WizardRequestContext RequestContext
+        {
+            get { return (WizardRequestContext)FunctionContextContainer.GetParameterValue(BaseFormFunction.RequestContextKey, typeof(WizardRequestContext)); }
+        }
+
+        [Obsolete("Use 'RequestContext'")]
+        protected WizardRequestContext RenderingContext
+        {
+            get { return RequestContext; }
+        }
+
         public override void ExecutePageHierarchy()
         {
-            if (RenderingContext.IsSuccess)
+            if (RequestContext.IsSuccess)
             {
                 HandleSubmit();
             }
@@ -49,7 +60,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public virtual void HandleSubmit()
         {
-            RenderingContext.Submit();
+            RequestContext.Submit();
         }
 
         public IHtmlString EvaluateMarkup(XElement element)
@@ -68,7 +79,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected IHtmlString WriteErrors()
         {
-            return RenderingContext.IsOwnSubmit ? FormRenderer.WriteErrors(RenderingContext.ValidationResult, RenderingContext.Options) : new HtmlString(String.Empty);
+            return RequestContext.IsOwnSubmit ? FormRenderer.WriteErrors(RequestContext.ValidationResult, RequestContext.Options) : new HtmlString(String.Empty);
         }
 
         protected IHtmlString WriteSteps()
@@ -125,7 +136,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 {
                     if (Wizard.RequiresCaptcha)
                     {
-                        var html = FormRenderer.Captcha(RenderingContext);
+                        var html = FormRenderer.Captcha(RequestContext);
 
                         sb.Append(html);
                     }
@@ -146,15 +157,15 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected WizardHtmlForm BeginForm(object htmlAttributes)
         {
-            return new WizardHtmlForm(this, RenderingContext.RenderingModel, htmlAttributes);
+            return new WizardHtmlForm(this, RequestContext.ModelInstance, htmlAttributes);
         }
 
-        protected IHtmlString RenderFormField(FormWizardStep step)
+        protected IHtmlString RenderFormField(WizardStep step)
         {
             var options = new FormOptions();
 
-            var model = step.FormModel;
-            var html = FormsPage.RenderModelFields(model, RenderingContext).ToString();
+            var form = step.Form;
+            var html = FormsPage.RenderModelFields(form, RequestContext).ToString();
             var xelement = XElement.Parse(html);
 
             foreach (var element in xelement.Descendants())

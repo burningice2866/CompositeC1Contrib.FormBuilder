@@ -28,7 +28,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Formatters
 
         public override bool CanWriteType(Type type)
         {
-            return type == typeof(IEnumerable<FormSubmit>);
+            return type == typeof(IEnumerable<ModelSubmit>);
         }
 
         public override Task WriteToStreamAsync(Type type, object value, Stream writeStream, HttpContent content, TransportContext transportContext)
@@ -37,7 +37,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Formatters
             {
                 using (var writer = new StreamWriter(writeStream))
                 {
-                    var itm = value as IEnumerable<FormSubmit>;
+                    var itm = value as IEnumerable<ModelSubmit>;
                     if (itm == null)
                     {
                         throw new InvalidOperationException("Cannot serialize type");
@@ -60,7 +60,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Formatters
             writer.Write("\xfeff");
         }
 
-        private static void WriteHeader(IEnumerable<FormSubmit> submits, TextWriter writer)
+        private static void WriteHeader(IEnumerable<ModelSubmit> submits, TextWriter writer)
         {
             var distinctFieldNames = submits.SelectMany(s => s.Values).Select(v => v.Key).Distinct().ToList();
 
@@ -71,7 +71,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Formatters
             writer.WriteLine(header);
         }
 
-        private static void WriteItem(FormSubmit submit, TextWriter writer)
+        private static void WriteItem(ModelSubmit submit, TextWriter writer)
         {
             var values = submit.Values.Select(s => String.IsNullOrEmpty(s.Value) ? String.Empty : Escape(s.Value)).ToList();
 

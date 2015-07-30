@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
+using Composite;
+
 namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
     public class XElementHelper
     {
         public static object DeserializeInstanceWithArgument(Type type, XElement element)
         {
+            Verify.ArgumentNotNull(type, "type");
+
             var ctors = type.GetConstructors().ToDictionary(ctor => ctor, ctor => ctor.GetParameters()).Where(o => o.Value.Any()).OrderByDescending(o => o.Value.Count());
 
             foreach (var kvp in ctors)

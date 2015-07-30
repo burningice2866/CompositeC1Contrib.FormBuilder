@@ -31,13 +31,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
             return formatStrings.ToDictionary(s => s, date.ToString);
         }
 
-        public void Load(FormField field)
+        public void Load(FormFieldModel field)
         {
             InputType = GetInputType(field);
             FormatString = GetFormatString(field);
         }
 
-        public void Save(FormField field)
+        public void Save(FormFieldModel field)
         {
             switch (InputType)
             {
@@ -77,7 +77,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
             }
         }
 
-        private static string GetInputType(FormField field)
+        private static string GetInputType(FormFieldModel field)
         {
             if (field.ValueType == typeof(DateTime))
             {
@@ -93,14 +93,14 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
             return String.Empty;
         }
 
-        private static string GetFormatString(FormField field)
+        private static string GetFormatString(FormFieldModel field)
         {
             var formatAttr = field.Attributes.OfType<DisplayFormatAttribute>().SingleOrDefault();
 
             return formatAttr == null ? String.Empty : formatAttr.FormatString;
         }
 
-        private static void RemoveValidatorAttribute<T>(FormField field) where T : Attribute
+        private static void RemoveValidatorAttribute<T>(FormFieldModel field) where T : Attribute
         {
             var existingValidator = field.ValidationAttributes.OfType<T>().FirstOrDefault();
             if (existingValidator != null)
@@ -109,7 +109,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
             }
         }
 
-        private static void RemoveAttribute<T>(FormField field) where T : Attribute
+        private static void RemoveAttribute<T>(FormFieldModel field) where T : Attribute
         {
             var existingAttribute = field.Attributes.OfType<T>().FirstOrDefault();
             if (existingAttribute != null)

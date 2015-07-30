@@ -22,8 +22,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 return;
             }
 
-            var form = (IForm)((DataEntityToken)EntityToken).Data;
-            var definition = DynamicFormsFacade.GetFormByName(form.Name);
+            var modelReference = (IModelReference)((DataEntityToken)EntityToken).Data;
+            var definition = DynamicFormsFacade.GetFormByName(modelReference.Name);
 
             SetupFormData(definition, definition.Model);
 
@@ -34,9 +34,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         public override void OnFinish(object sender, EventArgs e)
         {
             var formToken = GetBinding<DataEntityToken>("BoundToken");
-            var form = (IForm)formToken.Data;
+            var modelReference = (IModelReference)formToken.Data;
 
-            var definition = DynamicFormsFacade.GetFormByName(form.Name);
+            var definition = DynamicFormsFacade.GetFormByName(modelReference.Name);
 
             var submitButtonLabel = GetBinding<string>("SubmitButtonLabel");
 

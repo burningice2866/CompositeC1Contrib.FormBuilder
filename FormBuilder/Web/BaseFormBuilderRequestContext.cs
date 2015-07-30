@@ -27,10 +27,10 @@ namespace CompositeC1Contrib.FormBuilder.Web
         public virtual void Submit() { }
     }
 
-    public abstract class BaseFormBuilderRequestContext<T> : BaseFormBuilderRequestContext where T : IFormModel
+    public abstract class BaseFormBuilderRequestContext<T> : BaseFormBuilderRequestContext where T : IModelInstance
     {
         protected HttpContextBase HttpContext { get; private set; }
-        public abstract T RenderingModel { get; }
+        public T ModelInstance { get; protected set; }
 
         public bool IsSuccess
         {
@@ -41,7 +41,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
                     return false;
                 }
 
-                if (!RenderingModel.DisableAntiForgery)
+                if (!ModelInstance.DisableAntiForgery)
                 {
                     try
                     {
@@ -56,7 +56,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
 
         public bool IsOwnSubmit
         {
-            get { return HttpContext.Request.RequestType == "POST" && HttpContext.Request.Form["__type"] == RenderingModel.Name; }
+            get { return HttpContext.Request.RequestType == "POST" && HttpContext.Request.Form["__type"] == ModelInstance.Name; }
         }
 
         protected BaseFormBuilderRequestContext(string name) : base(name) { }
@@ -67,7 +67,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
 
             var request = HttpContext.Request;
 
-            if (!request.IsLocal && RenderingModel.ForceHttps && !request.IsSecureConnection && request.Url != null)
+            if (!request.IsLocal && ModelInstance.ForceHttps && !request.IsSecureConnection && request.Url != null)
             {
                 var redirectUrl = request.Url.ToString().Replace("http:", "https:");
 
@@ -76,7 +76,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
                 return;
             }
 
-            RenderingModel.SetDefaultValues();
+            ModelInstance.SetDefaultValues();
 
             if (!IsOwnSubmit)
             {
@@ -107,10 +107,10 @@ namespace CompositeC1Contrib.FormBuilder.Web
                 }
             }
 
-            RenderingModel.MapValues(request.Form, files);
+            ModelInstance.MapValues(request.Form, files);
             OnMappedValues();
 
-            ValidationResult = RenderingModel.Validate(true);
+            ValidationResult = ModelInstance.Validate(true);
         }
     }
 }

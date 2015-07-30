@@ -95,13 +95,13 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
                     continue;
                 }
 
-                var form = dataToken.Data as IForm;
-                if (form == null)
+                var modelReference = dataToken.Data as IModelReference;
+                if (modelReference == null)
                 {
                     continue;
                 }
 
-                var parts = form.Name.Split(new[] { '.' });
+                var parts = modelReference.Name.Split(new[] { '.' });
                 var ns = String.Join(".", parts.Take(parts.Length - 1));
 
                 dictionary.Add(token, new[] { new NamespaceFolderEntityToken(typeof(FormBuilderElementProvider).Name, ns) });

@@ -27,9 +27,9 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
             _requiredValues = requiredValue;
         }
 
-        public override bool DependencyMet(FormModel model)
+        public override bool DependencyMet(Form form)
         {
-            var actualValue = model.Fields.Single(f => f.Name == ReadFromFieldName).Value; 
+            var actualValue = form.Fields.Single(f => f.Name == ReadFromFieldName).Value; 
 
             foreach (var obj in _requiredValues)
             {

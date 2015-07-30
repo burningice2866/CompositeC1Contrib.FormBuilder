@@ -19,37 +19,37 @@ namespace CompositeC1Contrib.FormBuilder.Data
 
         public T GetData<T>(IDataId dataId) where T : class, IData
         {
-            var formId = dataId as FormDataId;
+            var formId = dataId as ModelReferenceId;
             if (formId == null)
             {
                 throw new InvalidOperationException();
             }
 
-            var form = FormModelsFacade.GetModel(formId.Name);
-            if (form == null)
+            var model = ModelsFacade.GetModel(formId.Name);
+            if (model == null)
             {
                 return null;
             }
 
-            var dataSource = _context.CreateDataSourceId(dataId, typeof(IForm));
+            var dataSource = _context.CreateDataSourceId(dataId, typeof(IModelReference));
 
-            return new FormData(form, dataSource) as T;
+            return new ModelReference(model, dataSource) as T;
         }
 
         public IQueryable<T> GetData<T>() where T : class, IData
         {
-            var models = FormModelsFacade.GetModels().Select(c =>
+            var models = ModelsFacade.GetModels().Select(c =>
             {
-                var dataId = new FormDataId
+                var dataId = new ModelReferenceId
                 {
                     Source = c.Source.Name,
                     Type = c.Type,
                     Name = c.Model.Name
                 };
 
-                var dataSourceId = _context.CreateDataSourceId(dataId, typeof(IForm));
+                var dataSourceId = _context.CreateDataSourceId(dataId, typeof(IModelReference));
 
-                return new FormData(c.Model, dataSourceId);
+                return new ModelReference(c.Model, dataSourceId);
             });
 
 
@@ -58,7 +58,7 @@ namespace CompositeC1Contrib.FormBuilder.Data
 
         public IEnumerable<Type> GetSupportedInterfaces()
         {
-            return new[] { typeof(IForm) };
+            return new[] { typeof(IModelReference) };
         }
     }
 }

@@ -11,23 +11,23 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
     public class FormModelMailMessageBuilder : MailMessageBuilder
     {
-        private readonly IFormModel _model;
+        private readonly IModelInstance _instance;
 
-        public FormModelMailMessageBuilder(IMailTemplate template, IFormModel model) : base(template)
+        public FormModelMailMessageBuilder(IMailTemplate template, IModelInstance instance) : base(template)
         {
-            _model = model;
+            _instance = instance;
         }
 
         protected override IDictionary<string, object> GetDictionaryFromModel()
         {
-            return _model.Fields.Where(f => f.Value != null).ToDictionary(f => f.Name, f => f.Value);
+            return _instance.Fields.Where(f => f.Value != null).ToDictionary(f => f.Name, f => f.Value);
         }
 
         protected override string ResolveHtml(string body)
         {
             var functionContextContainer = new FunctionContextContainer(new Dictionary<string, object>
             {
-                { BaseFormFunction.FormModelKey, _model }
+                { BaseFormFunction.InstanceKey, _instance }
             });
 
             return ResolveHtml(body, functionContextContainer, ResolveText);

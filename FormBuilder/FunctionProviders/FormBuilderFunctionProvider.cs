@@ -16,7 +16,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                 yield return new DumpSubmittedFormValues();
                 yield return new DumpSubmittedWizardValues();
 
-                foreach (var entry in FormModelsFacade.GetModels())
+                foreach (var entry in ModelsFacade.GetModels())
                 {
                     IFunction function;
                     if (!FunctionFacade.TryGetFunction(out function, entry.Model.Name))
@@ -29,7 +29,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
         public FormBuilderFunctionProvider()
         {
-            FormModelsFacade.FormChanges += (sender, args) =>
+            ModelsFacade.FormChanges += (sender, args) =>
             {
                 if (FunctionNotifier != null)
                 {

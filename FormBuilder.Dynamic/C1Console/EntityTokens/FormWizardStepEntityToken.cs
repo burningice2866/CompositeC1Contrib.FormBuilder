@@ -68,7 +68,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens
             var fieldToken = entityToken as FormWizardStepEntityToken;
             if (fieldToken != null)
             {
-                var data = FormDataFacade.GetFormData(fieldToken.WizardName);
+                var data = ModelReferenceFacade.GetModelReference(fieldToken.WizardName);
                 var token = data.GetDataEntityToken();
 
                 yield return token;

@@ -13,7 +13,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
     {
         public static XmlDefinitionSerializer GetSerializer(string name)
         {
-            var file = Path.Combine(FormModelsFacade.RootPath, name, "DynamicDefinition.xml");
+            var file = Path.Combine(ModelsFacade.RootPath, name, "DynamicDefinition.xml");
             if (!File.Exists(file))
             {
                 throw new InvalidOperationException("Can't get serializer of a form that hasn't previously been saved");
@@ -35,16 +35,16 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             throw new NotSupportedException("Unrecognized form type, cannot seralize it");
         }
 
-        public virtual void Save(IDynamicFormDefinition form)
+        public virtual void Save(IDynamicDefinition form)
         {
-            FormModelsFacade.NotifyFormChanges();
+            ModelsFacade.NotifyFormChanges();
         }
 
-        public abstract IDynamicFormDefinition Load(string name, XElement xml);
+        public abstract IDynamicDefinition Load(string name, XElement xml);
 
         protected void SaveDefinitionFile(string name, XElement xml)
         {
-            var dir = Path.Combine(FormModelsFacade.RootPath, name);
+            var dir = Path.Combine(ModelsFacade.RootPath, name);
             var file = Path.Combine(dir, "DynamicDefinition.xml");
 
             if (!Directory.Exists(dir))
@@ -55,7 +55,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             xml.Save(file);
         }
 
-        protected void SaveMetaData(IDynamicFormDefinition definition, XElement root)
+        protected void SaveMetaData(IDynamicDefinition definition, XElement root)
         {
             if (definition.SubmitHandlers.Any())
             {
@@ -96,7 +96,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
         }
 
-        protected void SaveLayout(IDynamicFormDefinition definition, XElement root)
+        protected void SaveLayout(IDynamicDefinition definition, XElement root)
         {
             if (definition.IntroText != null)
             {
@@ -109,7 +109,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
         }
 
-        protected void ParseLayout(XElement layout, IDynamicFormDefinition definition)
+        protected void ParseLayout(XElement layout, IDynamicDefinition definition)
         {
             var introText = layout.Element("introText");
             if (introText != null)
@@ -134,7 +134,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
         }
 
-        protected void ParseSubmitHandlers(XElement root, IDynamicFormDefinition definition)
+        protected void ParseSubmitHandlers(XElement root, IDynamicDefinition definition)
         {
             var submitHandlersElement = root.Element("SubmitHandlers");
             if (submitHandlersElement == null)
@@ -155,15 +155,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     }
                 }
 
+                if (type == null)
+                {
+                    continue;
+                }
+
                 var instance = (FormSubmitHandler)XElementHelper.DeserializeInstanceWithArgument(type, handler);
 
                 instance.Load(definition, handler);
-
                 definition.SubmitHandlers.Add(instance);
             }
         }
 
-        protected void ParseFormSettings(XElement metaData, IDynamicFormDefinition definition)
+        protected void ParseFormSettings(XElement metaData, IDynamicDefinition definition)
         {
             var formSettingsElement = metaData.Element("FormSettings");
             if (formSettingsElement == null)
@@ -172,7 +176,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
 
             var typeString = formSettingsElement.Attribute("Type").Value;
+
             var type = Type.GetType(typeString);
+            if (type == null)
+            {
+                return;
+            }
 
             var instance = (IFormSettings)XElementHelper.DeserializeInstanceWithArgument(type, formSettingsElement);
 

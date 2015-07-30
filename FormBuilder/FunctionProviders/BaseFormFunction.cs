@@ -20,8 +20,8 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
         private readonly XhtmlDocument _intoText;
         private readonly XhtmlDocument _successResponse;
 
-        public const string FormModelKey = "FormModel";
-        public const string RenderingContextKey = "RenderingContext";
+        public const string InstanceKey = "Instance";
+        public const string RequestContextKey = "RequestContext";
 
         public abstract object Execute(ParameterList parameters, FunctionContextContainer context);
 
@@ -50,14 +50,14 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             {
                 var list = new List<ParameterProfile>
                 {
-                    new ParameterProfile("IntroText", typeof (XhtmlDocument), false,
+                    new ParameterProfile("IntroText", typeof(XhtmlDocument), false,
                         new ConstantValueProvider(_intoText ?? new XhtmlDocument()),
-                        StandardWidgetFunctions.GetDefaultWidgetFunctionProviderByType(typeof (XhtmlDocument)),
+                        StandardWidgetFunctions.GetDefaultWidgetFunctionProviderByType(typeof(XhtmlDocument)),
                         "Intro text", new HelpDefinition("Intro text")),
 
-                    new ParameterProfile("SuccessResponse", typeof (XhtmlDocument), false,
+                    new ParameterProfile("SuccessResponse", typeof(XhtmlDocument), false,
                         new ConstantValueProvider(_successResponse ?? new XhtmlDocument()),
-                        StandardWidgetFunctions.GetDefaultWidgetFunctionProviderByType(typeof (XhtmlDocument)),
+                        StandardWidgetFunctions.GetDefaultWidgetFunctionProviderByType(typeof(XhtmlDocument)),
                         "Success response", new HelpDefinition("Success response"))
                 };
 
@@ -81,9 +81,9 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
         }
     }
 
-    public abstract class BaseFormFunction<TRequestContext, TFormModel> : BaseFormFunction
-        where TRequestContext : BaseFormBuilderRequestContext<TFormModel>
-        where TFormModel : IFormModel
+    public abstract class BaseFormFunction<TRequestContext, TInstance> : BaseFormFunction
+        where TRequestContext : BaseFormBuilderRequestContext<TInstance>
+        where TInstance : IModelInstance
     {
         protected BaseFormFunction(string name) : this(name, null, null) { }
         protected BaseFormFunction(string name, XhtmlDocument introText, XhtmlDocument successResponse) : base(name, introText, successResponse) { }
@@ -113,15 +113,15 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
         public override object Execute(ParameterList parameters, FunctionContextContainer context)
         {
-            var renderingContext = (BaseFormBuilderRequestContext<TFormModel>)Activator.CreateInstance(typeof(TRequestContext), new object[] { Namespace + "." + Name });
+            var requestContext = (BaseFormBuilderRequestContext<TInstance>)Activator.CreateInstance(typeof(TRequestContext), new object[] { Namespace + "." + Name });
             var httpContext = new HttpContextWrapper(HttpContext.Current);
 
-            renderingContext.Execute(httpContext);
+            requestContext.Execute(httpContext);
 
             var newContext = new FunctionContextContainer(context, new Dictionary<string, object>
             {
-                { RenderingContextKey, renderingContext },
-                { FormModelKey, renderingContext.RenderingModel }
+                { RequestContextKey, requestContext },
+                { InstanceKey, requestContext.ModelInstance }
             });
 
             var formExecutorFunction = StandardFormExecutor;

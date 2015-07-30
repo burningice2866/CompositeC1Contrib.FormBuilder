@@ -8,16 +8,16 @@ using System.Xml.Linq;
 
 namespace CompositeC1Contrib.FormBuilder
 {
-    public class SaveFormSubmitFacade
+    public class SaveSubmitFacade
     {
-        public static void SaveSubmitDebug(IFormModel model)
+        public static void SaveSubmitDebug(IModelInstance instance)
         {
             var ctx = HttpContext.Current;
             var utcTime = DateTime.UtcNow;
             var timeStamp = utcTime.ToString("yyyy-MM-dd HH.mm.ss", CultureInfo.InvariantCulture);
-            var dir = Path.Combine(FormModelsFacade.RootPath, model.Name, "Debug");
+            var dir = Path.Combine(ModelsFacade.RootPath, instance.Name, "Debug");
             var file = Path.Combine(dir, timeStamp + ".xml");
-            var xml = GenerateBasicSubmitDocument(model, utcTime);
+            var xml = GenerateBasicSubmitDocument(instance, utcTime);
 
             if (!Directory.Exists(dir))
             {
@@ -32,29 +32,29 @@ namespace CompositeC1Contrib.FormBuilder
             xml.AddFirst(debugData);
 
             xml.Save(EnsureUniqueFileName(file));
-            SaveAttachments(model, dir, timeStamp);
+            SaveAttachments(instance, dir, timeStamp);
         }
 
-        public static IEnumerable<FormSubmit> LoadSubmits(string name)
+        public static IEnumerable<ModelSubmit> LoadSubmits(string name)
         {
-            var form = FormModelsFacade.GetModel(name);
-            var dir = Path.Combine(FormModelsFacade.RootPath, name, "Submits");
+            var model = ModelsFacade.GetModel(name);
+            var dir = Path.Combine(ModelsFacade.RootPath, name, "Submits");
             var files = Directory.GetFiles(dir, "*.xml");
 
-            return files.Select(XElement.Load).Select(f => FormSubmit.Parse(form, f));
+            return files.Select(XElement.Load).Select(f => ModelSubmit.Parse(model, f));
         }
 
-        public static void SaveSubmit(IFormModel model, bool includeAttachments)
+        public static void SaveSubmit(IModelInstance instance, bool includeAttachments)
         {
-            SaveSubmit(model, includeAttachments, DateTime.UtcNow);
+            SaveSubmit(instance, includeAttachments, DateTime.UtcNow);
         }
 
-        public static void SaveSubmit(IFormModel model, bool includeAttachments, DateTime utcTime)
+        public static void SaveSubmit(IModelInstance instance, bool includeAttachments, DateTime utcTime)
         {
             var timeStamp = utcTime.ToString("yyyy-MM-dd HH.mm.ss", CultureInfo.InvariantCulture);
-            var dir = Path.Combine(FormModelsFacade.RootPath, model.Name, "Submits");
+            var dir = Path.Combine(ModelsFacade.RootPath, instance.Name, "Submits");
             var file = Path.Combine(dir, timeStamp + ".xml");
-            var xml = GenerateBasicSubmitDocument(model, utcTime);
+            var xml = GenerateBasicSubmitDocument(instance, utcTime);
 
             if (!Directory.Exists(dir))
             {
@@ -63,22 +63,22 @@ namespace CompositeC1Contrib.FormBuilder
 
             xml.Save(EnsureUniqueFileName(file));
 
-            if (!includeAttachments || !model.HasFileUpload)
+            if (!includeAttachments || !instance.HasFileUpload)
             {
                 return;
             }
 
-            SaveAttachments(model, dir, timeStamp);
+            SaveAttachments(instance, dir, timeStamp);
         }
 
-        private static XElement GenerateBasicSubmitDocument(IFormModel model, DateTime utcTime)
+        private static XElement GenerateBasicSubmitDocument(IModelInstance instance, DateTime utcTime)
         {
             var xml = new XElement("formSubmit",
                 new XAttribute("time", utcTime.ToString("o", CultureInfo.InvariantCulture)));
 
             var fields = new XElement("fields");
 
-            foreach (var field in model.Fields.Where(f => f.Label != null && f.Value != null))
+            foreach (var field in instance.Fields.Where(f => f.Label != null && f.Value != null))
             {
                 string value;
 
@@ -102,11 +102,11 @@ namespace CompositeC1Contrib.FormBuilder
             return xml;
         }
 
-        private static void SaveAttachments(IFormModel model, string dir, string timeStamp)
+        private static void SaveAttachments(IModelInstance instance, string dir, string timeStamp)
         {
             var formFiles = new List<FormFile>();
 
-            foreach (var field in model.Fields)
+            foreach (var field in instance.Fields)
             {
                 if (field.ValueType == typeof(FormFile) && field.Value != null)
                 {

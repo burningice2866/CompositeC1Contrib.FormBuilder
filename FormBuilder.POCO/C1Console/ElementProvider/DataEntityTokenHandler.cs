@@ -21,19 +21,19 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
 
         public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)
         {
-            var form = (IForm)((DataEntityToken)token).Data;
-            if (form == null)
+            var modelReference = (IModelReference)((DataEntityToken)token).Data;
+            if (modelReference == null)
             {
                 yield break;
             }
 
-            var dataId = (FormDataId)form.DataSourceId.DataId;
-            if (dataId.Source != typeof(POCOFormModelsProvider).Name)
+            var dataId = (ModelReferenceId)modelReference.DataSourceId.DataId;
+            if (dataId.Source != typeof(POCOModelsProvider).Name)
             {
                 yield break;
             }
 
-            var fieldsElementHandle = context.CreateElementHandle(new FormFolderEntityToken(form.Name, "Fields"));
+            var fieldsElementHandle = context.CreateElementHandle(new FormFolderEntityToken(modelReference.Name, "Fields"));
             var fieldsElement = new Element(fieldsElementHandle)
             {
                 VisualData = new ElementVisualizedData

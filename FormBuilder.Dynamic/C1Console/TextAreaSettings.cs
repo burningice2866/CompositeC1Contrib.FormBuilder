@@ -13,7 +13,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
         public int Cols { get; set; }
         public int Rows { get; set; }
 
-        public void Load(FormField field)
+        public void Load(FormFieldModel field)
         {
             var existingValidator = field.ValidationAttributes.OfType<MaxFieldLengthAttribute>().FirstOrDefault();
             if (existingValidator != null)
@@ -29,7 +29,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console
             }
         }
 
-        public void Save(FormField field)
+        public void Save(FormFieldModel field)
         {
             var existingValidator = field.ValidationAttributes.OfType<MaxFieldLengthAttribute>().FirstOrDefault();
             if (existingValidator != null)

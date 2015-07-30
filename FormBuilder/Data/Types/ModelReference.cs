@@ -2,12 +2,12 @@
 
 namespace CompositeC1Contrib.FormBuilder.Data.Types
 {
-    public class FormData : IForm
+    public class ModelReference : IModelReference
     {
         public DataSourceId DataSourceId { get; private set; }
         public string Name { get; private set; }
 
-        public FormData(IFormModel formModel, DataSourceId dataSourceId)
+        public ModelReference(IModel formModel, DataSourceId dataSourceId)
         {
             Name = formModel.Name;
             DataSourceId = dataSourceId;

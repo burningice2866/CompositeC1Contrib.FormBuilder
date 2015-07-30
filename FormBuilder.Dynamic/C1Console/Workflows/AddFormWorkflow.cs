@@ -18,7 +18,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             DynamicFormsFacade.SaveForm(model);
 
-            var data = FormDataFacade.GetFormData(name);
+            var data = ModelReferenceFacade.GetModelReference(name);
             var token = data.GetDataEntityToken();
 
             var workflowToken = new WorkflowActionToken(typeof(EditFormWorkflow));

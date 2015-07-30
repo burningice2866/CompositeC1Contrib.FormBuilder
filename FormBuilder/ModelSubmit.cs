@@ -5,20 +5,20 @@ using System.Xml.Linq;
 
 namespace CompositeC1Contrib.FormBuilder
 {
-    public class FormSubmit
+    public class ModelSubmit
     {
-        public IFormModel OwningForm { get; set; }
+        public IModel OwningForm { get; set; }
         public DateTime Time { get; set; }
         public IList<SubmitField> Values { get; set; }
 
-        public FormSubmit()
+        public ModelSubmit()
         {
             Values = new List<SubmitField>();
         }
 
-        public static FormSubmit Parse(IFormModel owner, XElement el)
+        public static ModelSubmit Parse(IModel owner, XElement el)
         {
-            var submit = new FormSubmit
+            var submit = new ModelSubmit
             {
                 OwningForm = owner
             };

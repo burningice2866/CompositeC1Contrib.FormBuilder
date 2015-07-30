@@ -12,7 +12,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Web.UI
         [WebMethod]
         public static void UpdateOrder(string wizardName, string consoleId, string entityToken, string serializedOrder)
         {
-            var def = DynamicFormWizardsFacade.GetWizard(wizardName);
+            var def = DynamicWizardsFacade.GetWizard(wizardName);
 
             UpdateOrder(def, serializedOrder);
 
@@ -26,12 +26,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Web.UI
         protected override void OnLoad(EventArgs e)
         {
             var wizardName = Request.QueryString["wizardName"];
-            var def = DynamicFormWizardsFacade.GetWizard(wizardName);
+            var def = DynamicWizardsFacade.GetWizard(wizardName);
 
             Master.CustomJsonDataName = "wizardName";
             Master.CustomJsonDataValue = Request.QueryString["wizardName"];
 
-            Master.SortableItems = def.Steps.Select(i => new SortableItem
+            Master.SortableItems = def.Model.Steps.Select(i => new SortableItem
             {
                 Id = i.Name,
                 Name = i.Name
@@ -40,19 +40,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Web.UI
             base.OnLoad(e);
         }
 
-        private static void UpdateOrder(DynamicFormWizard def, string serializedOrder)
+        private static void UpdateOrder(DynamicWizardDefinition def, string serializedOrder)
         {
             var newOrder = ParseNewOrder(serializedOrder);
-            var tmpList = newOrder.OrderBy(i => i.Value).Select(itm => def.Steps.Single(f => f.Name == itm.Key)).ToList();
+            var tmpList = newOrder.OrderBy(i => i.Value).Select(itm => def.Model.Steps.Single(f => f.Name == itm.Key)).ToList();
 
-            def.Steps.Clear();
+            def.Model.Steps.Clear();
 
             foreach (var s in tmpList)
             {
-                def.Steps.Add(s);
+                def.Model.Steps.Add(s);
             }
 
-            DynamicFormWizardsFacade.SaveWizard(def);
+            DynamicWizardsFacade.SaveWizard(def);
         }
     }
 }

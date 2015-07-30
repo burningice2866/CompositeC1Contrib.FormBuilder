@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using CompositeC1Contrib.FormBuilder;
 using CompositeC1Contrib.FormBuilder.Validation;
 
+using System.Linq;
+
 using NUnit.Framework;
 
 namespace FormBuilder.Test.Validation
 {
     public abstract class BaseValidatorTest<T>
     {
-        private FormField _field;
+        private FormFieldModel _field;
         private readonly FormValidationAttribute _validator;
 
         protected BaseValidatorTest(Func<FormValidationAttribute> validatorCreator)
@@ -21,16 +23,19 @@ namespace FormBuilder.Test.Validation
         [TestFixtureSetUp]
         public void Init()
         {
-            var form = new FormModel("test.test");
+            var model = new FormModel("test.test");
 
-            _field = new FormField(form, "test", typeof(T), new List<Attribute>());
+            _field = new FormFieldModel(model, "test", typeof(T), new List<Attribute>());
         }
 
         protected FormValidationRule CreateRule(T value)
         {
-            _field.Value = value;
+            var form = new Form(_field.OwningForm);
+            var field = form.Fields.Single(f => f.Name == _field.Name);
+            
+            field.Value = value;
 
-            return _validator.CreateRule(_field);
+            return _validator.CreateRule(field);
         }
     }
 }

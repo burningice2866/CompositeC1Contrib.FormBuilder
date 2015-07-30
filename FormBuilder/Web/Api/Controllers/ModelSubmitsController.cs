@@ -4,11 +4,11 @@ using System.Web.Http;
 namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
 {
     [C1ConsoleAuthorize]
-    public class FormSubmitsController : ApiController
+    public class ModelSubmitsController : ApiController
     {
-        public IEnumerable<FormSubmit> Get(string name)
+        public IEnumerable<ModelSubmit> Get(string name)
         {
-            return SaveFormSubmitFacade.LoadSubmits(name);
+            return SaveSubmitFacade.LoadSubmits(name);
         }
     }
 }

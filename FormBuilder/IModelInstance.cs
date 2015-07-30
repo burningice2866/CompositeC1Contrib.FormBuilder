@@ -5,7 +5,7 @@ using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder
 {
-    public interface IFormModel
+    public interface IModelInstance
     {
         string Name { get; }
         IList<FormField> Fields { get; }

@@ -34,8 +34,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
     {
         public FlowToken Execute(EntityToken entityToken, ActionToken actionToken, FlowControllerServicesContainer flowControllerServicesContainer)
         {
-            var form = (IForm)((DataEntityToken)entityToken).Data;
-            var definition = DefinitionsFacade.GetDefinition(form.Name);
+            var modelReference = (IModelReference)((DataEntityToken)entityToken).Data;
+            var definition = DefinitionsFacade.GetDefinition(modelReference.Name);
 
             DefinitionsFacade.Delete(definition);
 

@@ -31,7 +31,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
         {
             using (var data = new DataConnection())
             {
-                var allForms = data.Get<IForm>();
+                var allModelReferences = data.Get<IModelReference>();
 
                 var folders = new List<string>();
                 var formElements = new List<Element>();
@@ -48,12 +48,12 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
                 }
                 else
                 {
-                    allForms = allForms.Where(def => def.Name.StartsWith(ns + "."));
+                    allModelReferences = allModelReferences.Where(def => def.Name.StartsWith(ns + "."));
                 }
 
-                foreach (var form in allForms)
+                foreach (var modelReference in allModelReferences)
                 {
-                    var label = form.Name;
+                    var label = modelReference.Name;
 
                     if (!String.IsNullOrEmpty(ns))
                     {
@@ -72,7 +72,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
                     }
                     else if (split.Length == 1)
                     {
-                        var token = form.GetDataEntityToken();
+                        var token = modelReference.GetDataEntityToken();
 
                         var elementHandle = context.CreateElementHandle(token);
                         var formElement = new Element(elementHandle)

@@ -25,7 +25,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
                 yield break;
             }
 
-            var form = FormModelsFacade.GetModel(folder.FormName);
+            var form = ModelsFacade.GetModel(folder.FormName);
             if (form == null)
             {
                 yield break;

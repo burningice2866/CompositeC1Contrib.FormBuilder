@@ -66,7 +66,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
             var fieldFolderToken = entityToken as FormFolderEntityToken;
             if (fieldFolderToken != null)
             {
-                var data = FormDataFacade.GetFormData(fieldFolderToken.Id);
+                var data = ModelReferenceFacade.GetModelReference(fieldFolderToken.Id);
                 var token = data.GetDataEntityToken();
 
                 yield return token;

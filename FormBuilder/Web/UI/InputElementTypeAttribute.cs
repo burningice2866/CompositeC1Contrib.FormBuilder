@@ -17,6 +17,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         abstract public IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes);
 
+        public virtual Type ResolveValueType(FormFieldModel field)
+        {
+            return null;
+        }
+
         protected void AddReadOnlyAttribute(FormField field, IDictionary<string, string> htmlAttributes)
         {
             if (field.IsReadOnly)

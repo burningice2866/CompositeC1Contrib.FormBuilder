@@ -5,20 +5,20 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
     public class WizardXmlSerializer : XmlDefinitionSerializer
     {
-        public override IDynamicFormDefinition Load(string name, XElement xml)
+        public override IDynamicDefinition Load(string name, XElement xml)
         {
-            var wizard = new DynamicFormWizard { Name = name };
+            var wizard = new DynamicWizardDefinition(name);
 
             var requiresCaptchaAttribute = xml.Attribute("requiresCaptcha");
             if (requiresCaptchaAttribute != null)
             {
-                wizard.RequiresCaptcha = bool.Parse(requiresCaptchaAttribute.Value);
+                wizard.Model.RequiresCaptcha = bool.Parse(requiresCaptchaAttribute.Value);
             }
 
             var forceHttpsConnectionAttribute = xml.Attribute("forceHttpsConnection");
             if (forceHttpsConnectionAttribute != null)
             {
-                wizard.ForceHttps = bool.Parse(forceHttpsConnectionAttribute.Value);
+                wizard.Model.ForceHttps = bool.Parse(forceHttpsConnectionAttribute.Value);
             }
 
             var stepsElement = xml.Element("Steps");
@@ -26,7 +26,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             {
                 var labelAttr = stepElement.Attribute("Label");
 
-                var wizardStep = new FormWizardStep
+                var wizardStep = new WizardStepModel
                 {
                     Name = stepElement.Attribute("Name").Value,
                     FormName = stepElement.Attribute("FormName").Value,
@@ -47,7 +47,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     wizardStep.PreviousButtonLabel = previousButtonLabelAttribute.Value;
                 }
 
-                wizard.Steps.Add(wizardStep);
+                wizard.Model.Steps.Add(wizardStep);
             }
 
             var layoutElement = xml.Element("Layout");
@@ -62,14 +62,14 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             return wizard;
         }
 
-        public override void Save(IDynamicFormDefinition form)
+        public override void Save(IDynamicDefinition form)
         {
-            var wizard = (DynamicFormWizard)form;
+            var wizard = (DynamicWizardDefinition)form;
 
             var root = new XElement("FormBuilder.Wizard",
                 new XAttribute("name", wizard.Name),
-                new XAttribute("requiresCaptcha", wizard.RequiresCaptcha),
-                new XAttribute("forceHttpsConnection", wizard.ForceHttps));
+                new XAttribute("requiresCaptcha", wizard.Model.RequiresCaptcha),
+                new XAttribute("forceHttpsConnection", wizard.Model.ForceHttps));
 
             var layout = new XElement("Layout");
 
@@ -79,7 +79,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
             var steps = new XElement("Steps");
 
-            foreach (var step in wizard.Steps)
+            foreach (var step in wizard.Model.Steps)
             {
                 var stepElement = new XElement("Step",
                     new XAttribute("Name", step.Name),

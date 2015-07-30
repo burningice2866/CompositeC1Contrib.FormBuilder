@@ -3,30 +3,39 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
 
-using Composite.Core.Xml;
-
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder
 {
-    public class FormWizard : IFormModel
+    public class Wizard : IModelInstance
     {
-        public string Name { get; set; }
-        public bool RequiresCaptcha { get; set; }
-        public bool ForceHttps { get; set; }
-        public XhtmlDocument IntroText { get; set; }
-        public XhtmlDocument SuccessResponse { get; set; }
-        public IList<FormWizardStep> Steps { get; private set; }
+        public WizardModel Model { get; private set; }
+        public IList<WizardStep> Steps { get; private set; }
+
+        public string Name
+        {
+            get { return Model.Name; }
+        }
+
+        public bool RequiresCaptcha
+        {
+            get { return Model.RequiresCaptcha; }
+        }
+
+        public bool ForceHttps
+        {
+            get { return Model.ForceHttps; }
+        }
 
         public IList<FormField> Fields
         {
-            get { return Steps.Select(s => s.FormModel).SelectMany(m => m.Fields).ToList(); }
+            get { return Steps.Select(s => s.Form).SelectMany(m => m.Fields).ToList(); }
         }
 
         public bool DisableAntiForgery
         {
-            get { return Steps.Select(s => s.FormModel).Any(m => m.DisableAntiForgery); }
+            get { return Steps.Select(s => s.Form).Any(m => m.DisableAntiForgery); }
         }
 
         public bool HasFileUpload
@@ -34,20 +43,17 @@ namespace CompositeC1Contrib.FormBuilder
             get { return Fields.Any(f => f.ValueType == typeof(FormFile) || f.ValueType == typeof(IEnumerable<FormFile>)); }
         }
 
-        public FormWizard()
+        public Wizard(WizardModel model)
         {
-            IntroText = new XhtmlDocument();
-            SuccessResponse = new XhtmlDocument();
-            Steps = new List<FormWizardStep>();
+            Model = model;
+            Steps = Model.Steps.Select(s => new WizardStep(s)).ToList();
         }
-
-        public virtual void Submit() { }
 
         public void SetDefaultValues()
         {
-            foreach (var model in Steps.Select(s => s.FormModel))
+            foreach (var form in Steps.Select(s => s.Form))
             {
-                model.SetDefaultValues();
+                form.SetDefaultValues();
             }
         }
 
@@ -56,13 +62,13 @@ namespace CompositeC1Contrib.FormBuilder
             for (int i = 0; i < Steps.Count; i++)
             {
                 var step = Steps[i];
-                var model = step.FormModel;
+                var form = step.Form;
                 var stepPrepend = "step-" + (i + 1) + "-";
 
                 var localValues = MapLocal(values, stepPrepend);
                 var localFiles = MapLocal(files, stepPrepend);
 
-                model.MapValues(localValues, localFiles);
+                form.MapValues(localValues, localFiles);
             }
         }
 
@@ -70,9 +76,9 @@ namespace CompositeC1Contrib.FormBuilder
         {
             var list = new ValidationResultList();
 
-            foreach (var model in Steps.Select(s => s.FormModel))
+            foreach (var form in Steps.Select(s => s.Form))
             {
-                var validationResult = model.Validate(false);
+                var validationResult = form.Validate(false);
 
                 list.AddRange(validationResult);
             }

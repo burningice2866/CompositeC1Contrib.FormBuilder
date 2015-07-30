@@ -111,7 +111,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             return (EmailSubmitHandler)definition.SubmitHandlers.Single(h => h.Name == token.Name);
         }
 
-        private IDynamicFormDefinition GetDefinition()
+        private IDynamicDefinition GetDefinition()
         {
             var token = (FormSubmitHandlerEntityToken)EntityToken;
 

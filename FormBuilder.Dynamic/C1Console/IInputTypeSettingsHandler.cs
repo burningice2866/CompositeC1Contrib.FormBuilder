@@ -2,7 +2,7 @@
 {
     public interface IInputTypeSettingsHandler
     {
-        void Load(FormField field);
-        void Save(FormField field);
+        void Load(FormFieldModel field);
+        void Save(FormFieldModel field);
     }
 }

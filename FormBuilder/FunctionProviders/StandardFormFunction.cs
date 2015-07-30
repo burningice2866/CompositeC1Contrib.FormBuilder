@@ -5,7 +5,7 @@ using CompositeC1Contrib.FormBuilder.Web;
 
 namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 {
-    public class StandardFormFunction<T> : BaseFormFunction<T, FormModel> where T : FormBuilderRequestContext
+    public class StandardFormFunction<T> : BaseFormFunction<T, Form> where T : FormRequestContext
     {
         protected override string StandardFormExecutor
         {

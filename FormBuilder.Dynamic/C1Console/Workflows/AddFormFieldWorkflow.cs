@@ -54,7 +54,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var fieldName = GetBinding<string>("FieldName");
             var addFieldToRenderingLayout = GetBinding<bool>("AddFieldToRenderingLayout");
             var definition = DynamicFormsFacade.GetFormByName(folderToken.FormName);
-            var field = new FormField(definition.Model, fieldName, typeof(string), new List<Attribute>());
+            var field = new FormFieldModel(definition.Model, fieldName, typeof(string), new List<Attribute>());
 
             var elementType = Type.GetType(GetBinding<string>("InputElementType"));
             var inputTypeAttribute = (InputElementTypeAttribute)Activator.CreateInstance(elementType);
@@ -84,7 +84,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var fieldName = GetBinding<string>("FieldName");
 
-            if (!FormField.IsValidName(fieldName))
+            if (!FormFieldModel.IsValidName(fieldName))
             {
                 ShowFieldMessage("FieldName", "Field name is invalid, only a-z and 0-9 is allowed");
 

@@ -48,14 +48,14 @@ namespace CompositeC1Contrib.FormBuilder.Excel.Web.Api.Formatters
 
         public override bool CanWriteType(Type type)
         {
-            return type == typeof(IEnumerable<FormSubmit>);
+            return type == typeof(IEnumerable<ModelSubmit>);
         }
 
         public override Task WriteToStreamAsync(Type type, object value, Stream writeStream, HttpContent content, TransportContext transportContext)
         {
             return Task.Factory.StartNew(() =>
             {
-                var itm = value as IEnumerable<FormSubmit>;
+                var itm = value as IEnumerable<ModelSubmit>;
                 if (itm == null)
                 {
                     throw new InvalidOperationException("Cannot serialize type");
@@ -82,11 +82,11 @@ namespace CompositeC1Contrib.FormBuilder.Excel.Web.Api.Formatters
             });
         }
 
-        private static DataTable GenerateDataTable(IFormModel form, IEnumerable<FormSubmit> submits)
+        private static DataTable GenerateDataTable(IModel model, IEnumerable<ModelSubmit> submits)
         {
             var table = new DataTable();
 
-            foreach (var field in form.Fields)
+            foreach (var field in model.Fields)
             {
                 var usableType = GetUsableFieldType(field);
 
@@ -101,7 +101,7 @@ namespace CompositeC1Contrib.FormBuilder.Excel.Web.Api.Formatters
 
                 foreach (var value in submit.Values)
                 {
-                    var field = form.Fields.SingleOrDefault(f => f.Name == value.Key);
+                    var field = model.Fields.SingleOrDefault(f => f.Name == value.Key);
                     if (field == null)
                     {
                         continue;
@@ -150,7 +150,7 @@ namespace CompositeC1Contrib.FormBuilder.Excel.Web.Api.Formatters
             return null;
         }
 
-        private static Type GetUsableFieldType(FormField field)
+        private static Type GetUsableFieldType(FormFieldModel field)
         {
             return !UsableFieldTypes.Contains(field.ValueType) ? typeof(string) : field.ValueType;
         }

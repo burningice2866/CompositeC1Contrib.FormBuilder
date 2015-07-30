@@ -330,9 +330,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return text.Contains("${") ? StringResourceSystemFacade.ParseString(text) : text;
         }
 
-        public static IHtmlString Captcha<T>(BaseFormBuilderRequestContext<T> context) where T : class, IFormModel
+        public static IHtmlString Captcha<T>(BaseFormBuilderRequestContext<T> context) where T : class, IModelInstance
         {
-            if (!context.RenderingModel.RequiresCaptcha)
+            if (!context.ModelInstance.RequiresCaptcha)
             {
                 return null;
             }

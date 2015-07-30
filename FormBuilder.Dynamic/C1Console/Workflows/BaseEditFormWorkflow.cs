@@ -24,7 +24,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             _formFile = formFile;
         }
 
-        protected void SetupFormData(IDynamicFormDefinition definition, IFormModel model)
+        protected void SetupFormData(IDynamicDefinition definition, IModel model)
         {
             Bindings.Add("Name", definition.Name);
 
@@ -63,7 +63,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             DeliverFormData("EditForm", StandardUiContainerTypes.Document, formDocument.ToString(), Bindings, BindingsValidationRules);
         }
 
-        private void LoadExtraSettings(IDynamicFormDefinition definition, XElement bindingsXElement, XElement lastTabElement)
+        private void LoadExtraSettings(IDynamicDefinition definition, XElement bindingsXElement, XElement lastTabElement)
         {
             var config = FormBuilderConfiguration.GetSection();
             var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
@@ -107,7 +107,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        protected void SaveExtraSettings(IDynamicFormDefinition definition)
+        protected void SaveExtraSettings(IDynamicDefinition definition)
         {
             var introText = GetBinding<string>("IntroText");
             var successResponse = GetBinding<string>("SuccessResponse");
@@ -139,11 +139,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         public override bool Validate()
         {
             var token = GetBinding<DataEntityToken>("BoundToken");
-            var form = (IForm)token.Data;
+            var modelReference = (IModelReference)token.Data;
 
             var name = GetBinding<string>("Name");
 
-            if (name == form.Name)
+            if (name == modelReference.Name)
             {
                 return true;
             }
@@ -166,23 +166,23 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             return false;
         }
 
-        protected void Save(IDynamicFormDefinition definition)
+        protected void Save(IDynamicDefinition definition)
         {
             var token = GetBinding<DataEntityToken>("BoundToken");
-            var form = (IForm)token.Data;
+            var modelReference = (IModelReference)token.Data;
 
             var name = GetBinding<string>("Name");
 
             SaveExtraSettings(definition);
 
-            var isNewName = name != form.Name;
+            var isNewName = name != modelReference.Name;
             if (isNewName)
             {
                 DefinitionsFacade.Copy(definition, name);
                 DefinitionsFacade.Delete(definition);
 
-                form = FormDataFacade.GetFormData(name);
-                token = form.GetDataEntityToken();
+                modelReference = ModelReferenceFacade.GetModelReference(name);
+                token = modelReference.GetDataEntityToken();
 
                 UpdateBinding("BoundToken", token);
                 SetSaveStatus(true, token);

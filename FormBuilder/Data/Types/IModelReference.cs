@@ -11,7 +11,7 @@ namespace CompositeC1Contrib.FormBuilder.Data.Types
     [Title("Formbuilder form")]
     [LabelPropertyName("Name")]
     [DataAncestorProvider(typeof(NoAncestorDataAncestorProvider))]
-    public interface IForm : IData
+    public interface IModelReference : IData
     {
         [StoreFieldType(PhysicalStoreFieldType.String, 255)]
         [ImmutableFieldId("ea4ba3bd-1953-47cd-9f6b-3885c24bb972")]

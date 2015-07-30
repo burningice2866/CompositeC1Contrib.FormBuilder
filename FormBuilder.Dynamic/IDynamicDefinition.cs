@@ -6,7 +6,7 @@ using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
-    public interface IDynamicFormDefinition
+    public interface IDynamicDefinition
     {
         string Name { get; set; }
         IList<FormSubmitHandler> SubmitHandlers { get; }

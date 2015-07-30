@@ -20,7 +20,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             using (var data = new DataConnection())
             {
-                return data.Get<IForm>().ToDictionary(f => f.Name, f => f.Name);
+                return data.Get<IModelReference>().ToDictionary(f => f.Name, f => f.Name);
             }
         }
 
@@ -41,18 +41,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var stepName = GetBinding<string>("StepName");
             var formName = GetBinding<string>("FormName");
 
-            var wizard = DynamicFormWizardsFacade.GetWizard(folderToken.FormName);
-            var step = new FormWizardStep
+            var wizard = DynamicWizardsFacade.GetWizard(folderToken.FormName);
+            var step = new WizardStepModel
             {
                 Name = stepName,
                 FormName = formName,
                 Label = stepName,
-                LocalOrdering = wizard.Steps.Count + 1
+                LocalOrdering = wizard.Model.Steps.Count + 1
             };
 
-            wizard.Steps.Add(step);
+            wizard.Model.Steps.Add(step);
 
-            DynamicFormWizardsFacade.SaveWizard(wizard);
+            DynamicWizardsFacade.SaveWizard(wizard);
 
             var wizardStepToken = new FormWizardStepEntityToken(wizard.Name, step.Name);
             var workflowToken = new WorkflowActionToken(typeof(EditWizardStepWorkflow));
@@ -65,7 +65,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var stepName = GetBinding<string>("StepName");
 
-            if (!FormField.IsValidName(stepName))
+            if (!FormFieldModel.IsValidName(stepName))
             {
                 ShowFieldMessage("StepName", "Step name is invalid, only a-z and 0-9 is allowed");
 
@@ -73,9 +73,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
 
             var folderToken = (FormFolderEntityToken)EntityToken;
-            var wizard = DynamicFormWizardsFacade.GetWizard(folderToken.FormName);
+            var wizard = DynamicWizardsFacade.GetWizard(folderToken.FormName);
 
-            var step = wizard.Steps.SingleOrDefault(s => s.Name == stepName);
+            var step = wizard.Model.Steps.SingleOrDefault(s => s.Name == stepName);
             if (step == null)
             {
                 return true;

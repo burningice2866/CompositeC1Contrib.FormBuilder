@@ -2,28 +2,17 @@
 
 namespace CompositeC1Contrib.FormBuilder.Web
 {
-    public class DynamicFormBuilderRequestContext : FormBuilderRequestContext
+    public class DynamicFormBuilderRequestContext : FormRequestContext
     {
-        private readonly FormModel _model;
-
-        public override FormModel RenderingModel
-        {
-            get { return _model; }
-        }
-
-        public DynamicFormBuilderRequestContext(string formName)
-            : base(formName)
-        {
-            _model = DynamicFormsFacade.GetFormByName(formName).Model;
-        }
+        public DynamicFormBuilderRequestContext(string name) : base(name) { }
 
         public override void Submit()
         {
-            var def = DynamicFormsFacade.GetFormByName(_model.Name);
+            var def = DynamicFormsFacade.GetFormByName(ModelInstance.Name);
 
             foreach (var handler in def.SubmitHandlers)
             {
-                handler.Submit(_model);
+                handler.Submit(ModelInstance);
             }
 
             base.Submit();

@@ -13,7 +13,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         private readonly StandardFormWizardPage _page;
         private bool _disposed;
 
-        public WizardHtmlForm(StandardFormWizardPage page, FormWizard model, object htmlAttributes)
+        public WizardHtmlForm(StandardFormWizardPage page, Wizard wizard, object htmlAttributes)
         {
             _page = page;
 
@@ -57,28 +57,29 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 page.WriteLiteral("\"");
             }
 
-            if (model.HasFileUpload)
+            if (wizard.HasFileUpload)
             {
                 page.WriteLiteral(" enctype=\"multipart/form-data\"");
             }
 
+            page.WriteLiteral(" data-renderer=\"" + page.Options.FormRenderer.GetType().AssemblyQualifiedName + "\"");
             page.WriteLiteral(">");
 
-            page.WriteLiteral("<input type=\"hidden\" name=\"__type\" value=\"" + HttpUtility.HtmlAttributeEncode(model.Name) + "\" />");
+            page.WriteLiteral("<input type=\"hidden\" name=\"__type\" value=\"" + HttpUtility.HtmlAttributeEncode(wizard.Name) + "\" />");
 
-            for (int i = 0; i < model.Steps.Count; i++)
+            for (int i = 0; i < wizard.Steps.Count; i++)
             {
-                var step = model.Steps[i];
+                var step = wizard.Steps[i];
 
                 RenderHiddenField("step_" + (i + 1), "step_" + (i + 1), step.FormName);
             }
 
-            foreach (var field in model.Fields.Where(f => f.Label == null))
+            foreach (var field in wizard.Fields.Where(f => f.Label == null))
             {
                 RenderHiddenField(field.Name, field.Id, field.Value == null ? String.Empty : FormRenderer.GetValue(field));
             }
 
-            if (!model.DisableAntiForgery)
+            if (!wizard.DisableAntiForgery)
             {
                 page.WriteLiteral(AntiForgery.GetHtml());
             }

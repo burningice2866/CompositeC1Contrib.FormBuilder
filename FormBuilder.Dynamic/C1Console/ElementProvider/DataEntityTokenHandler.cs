@@ -26,13 +26,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 
         public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)
         {
-            var form = (IForm)((DataEntityToken)token).Data;
-            if (form == null)
+            var modelReference = (IModelReference)((DataEntityToken)token).Data;
+            if (modelReference == null)
             {
                 yield break;
             }
 
-            var def = DefinitionsFacade.GetDefinition(form.Name);
+            var def = DefinitionsFacade.GetDefinition(modelReference.Name);
             if (def == null)
             {
                 yield break;
@@ -40,7 +40,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 
             if (def is DynamicFormDefinition)
             {
-                var fieldsElementHandle = context.CreateElementHandle(new FormFolderEntityToken(form.Name, "Fields"));
+                var fieldsElementHandle = context.CreateElementHandle(new FormFolderEntityToken(modelReference.Name, "Fields"));
                 var fieldsElement = new Element(fieldsElementHandle)
                 {
                     VisualData = new ElementVisualizedData
@@ -65,7 +65,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     }
                 });
 
-                var url = String.Format("InstalledPackages/CompositeC1Contrib.FormBuilder.Dynamic/SortFormFields.aspx?formName={0}", form.Name);
+                var url = String.Format("InstalledPackages/CompositeC1Contrib.FormBuilder.Dynamic/SortFormFields.aspx?formName={0}", modelReference.Name);
                 var sortActionToken = new UrlActionToken("Sort fields", UrlUtils.ResolveAdminUrl(url), new[] { PermissionType.Edit });
                 fieldsElement.AddAction(new ElementAction(new ActionHandle(sortActionToken))
                 {
@@ -81,9 +81,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 yield return fieldsElement;
             }
 
-            if (def is DynamicFormWizard)
+            if (def is DynamicWizardDefinition)
             {
-                var stepsFolderElementHandle = context.CreateElementHandle(new FormFolderEntityToken(form.Name, "Steps"));
+                var stepsFolderElementHandle = context.CreateElementHandle(new FormFolderEntityToken(modelReference.Name, "Steps"));
                 var stepsFolderElement = new Element(stepsFolderElementHandle)
                 {
                     VisualData = new ElementVisualizedData
@@ -108,7 +108,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     }
                 });
 
-                var url = String.Format("InstalledPackages/CompositeC1Contrib.FormBuilder.Dynamic/SortWizardSteps.aspx?wizardName={0}", form.Name);
+                var url = String.Format("InstalledPackages/CompositeC1Contrib.FormBuilder.Dynamic/SortWizardSteps.aspx?wizardName={0}", modelReference.Name);
                 var sortActionToken = new UrlActionToken("Sort fields", UrlUtils.ResolveAdminUrl(url), new[] { PermissionType.Edit });
                 stepsFolderElement.AddAction(new ElementAction(new ActionHandle(sortActionToken))
                 {
@@ -124,7 +124,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 yield return stepsFolderElement;
             }
 
-            var submitHandlersElementHandle = context.CreateElementHandle(new FormFolderEntityToken(form.Name, "SubmitHandlers"));
+            var submitHandlersElementHandle = context.CreateElementHandle(new FormFolderEntityToken(modelReference.Name, "SubmitHandlers"));
             var submitHandlersElement = new Element(submitHandlersElementHandle)
             {
                 VisualData = new ElementVisualizedData

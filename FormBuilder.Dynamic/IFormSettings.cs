@@ -2,6 +2,6 @@
 {
     public interface IFormSettings
     {
-        string GetFormExecutor(IDynamicFormDefinition definition);
+        string GetFormExecutor(IDynamicDefinition definition);
     }
 }

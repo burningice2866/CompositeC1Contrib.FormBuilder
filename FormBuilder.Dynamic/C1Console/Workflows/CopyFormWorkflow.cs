@@ -11,9 +11,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
     {
         public override void OnFinish(object sender, EventArgs e)
         {
-            var form = (IForm)((DataEntityToken)EntityToken).Data;
+            var modelReference = (IModelReference)((DataEntityToken)EntityToken).Data;
             var newName = GetBinding<string>("Name");
-            var definition = DefinitionsFacade.GetDefinition(form.Name);
+            var definition = DefinitionsFacade.GetDefinition(modelReference.Name);
 
             DefinitionsFacade.Copy(definition, newName);
 

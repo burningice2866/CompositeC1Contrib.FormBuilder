@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -42,6 +43,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             sb.Append(" />");
 
             return new HtmlString(sb.ToString());
+        }
+
+        public override Type ResolveValueType(FormFieldModel field)
+        {
+            return typeof(FormFile);
         }
     }
 }

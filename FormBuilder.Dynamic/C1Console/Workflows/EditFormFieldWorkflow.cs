@@ -59,7 +59,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             RerenderView();
         }
 
-        private void SetupFormData(FormField field)
+        private void SetupFormData(FormFieldModel field)
         {
             var markupProvider = new FormDefinitionFileMarkupProvider("\\InstalledPackages\\CompositeC1Contrib.FormBuilder.Dynamic\\EditFormFieldWorkflow.xml");
             var formDocument = XDocument.Load(markupProvider.GetReader());
@@ -74,7 +74,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             DeliverFormData("EditFormField", StandardUiContainerTypes.Document, formDocument.ToString(), Bindings, BindingsValidationRules);
         }
 
-        private void LoadExtraSettings(FormField field, XElement bindingsXElement, XElement lastTabElement)
+        private void LoadExtraSettings(FormFieldModel field, XElement bindingsXElement, XElement lastTabElement)
         {
             var config = FormBuilderConfiguration.GetSection();
             var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
@@ -213,7 +213,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             CreateParentTreeRefresher().PostRefreshMesseges(EntityToken);
         }
 
-        private void SaveExtraSettings(FormField field)
+        private void SaveExtraSettings(FormFieldModel field)
         {
             var config = FormBuilderConfiguration.GetSection();
             var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
@@ -243,7 +243,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             if (fieldName != fieldToken.FieldName)
             {
-                if (!FormField.IsValidName(fieldName))
+                if (!FormFieldModel.IsValidName(fieldName))
                 {
                     ShowFieldMessage("FieldName", "Field name is invalid, only a-z and 0-9 is allowed");
 

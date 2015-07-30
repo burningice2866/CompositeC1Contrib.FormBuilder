@@ -86,5 +86,15 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             return new HtmlString(sb.ToString());
         }
+
+        public override Type ResolveValueType(FormFieldModel field)
+        {
+            if (field.DataSource != null)
+            {
+                return typeof(IEnumerable<string>);
+            }
+
+            return typeof(bool);
+        }
     }
 }

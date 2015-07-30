@@ -54,16 +54,16 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
         public abstract object Execute(ParameterList parameters, FunctionContextContainer context);
 
-        public static void DumpModelValues(IFormModel model, XhtmlDocument doc)
+        public static void DumpModelValues(IModelInstance instance, XhtmlDocument doc)
         {
-            DumpModelValues(model, doc, false);
+            DumpModelValues(instance, doc, false);
         }
 
-        public static void DumpModelValues(IFormModel model, XhtmlDocument doc, bool useRenderingLayout)
+        public static void DumpModelValues(IModelInstance instance, XhtmlDocument doc, bool useRenderingLayout)
         {
             if (useRenderingLayout)
             {
-                var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(model.Name);
+                var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(instance.Name);
 
                 var elements = new List<XElement>();
                 var fields = new List<FormField>();
@@ -76,7 +76,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                     {
                         value = value.Substring(1, value.Length - 2);
 
-                        var field = model.Fields.FirstOrDefault(f => f.Label != null && f.Name == value);
+                        var field = instance.Fields.FirstOrDefault(f => f.Label != null && f.Name == value);
                         if (field == null)
                         {
                             continue;
@@ -97,7 +97,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             }
             else
             {
-                var fields = model.Fields.Where(f => f.Label != null && f.Value != null);
+                var fields = instance.Fields.Where(f => f.Label != null && f.Value != null);
                 var table = GetFieldsTable(fields);
 
                 doc.Body.Add(table);

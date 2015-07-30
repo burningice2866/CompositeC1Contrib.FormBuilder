@@ -10,12 +10,15 @@ using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
-    public class DynamicFormDefinition : IDynamicFormDefinition
+    public class DynamicFormDefinition : IDynamicDefinition
     {
-        public string Name { get; set; }
         public FormModel Model { get; private set; }
+
+        public string Name { get; set; }
+        
         public IDictionary<string, XElement> DefaultValues { get; private set; }
         public IList<FormSubmitHandler> SubmitHandlers { get; private set; }
+
         public XhtmlDocument IntroText { get; set; }
         public XhtmlDocument SuccessResponse { get; set; }
 
@@ -26,9 +29,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
         public DynamicFormDefinition(FormModel model)
         {
             Model = model;
+
             Name = model.Name;
+
             DefaultValues = new Dictionary<string, XElement>();
             SubmitHandlers = new List<FormSubmitHandler>();
+            
             IntroText = new XhtmlDocument();
             SuccessResponse = new XhtmlDocument();
 

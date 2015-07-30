@@ -25,8 +25,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ActionProviders
                 return false;
             }
 
-            var form = dataToken.Data as IForm;
-            if (form == null)
+            var modelReference = dataToken.Data as IModelReference;
+            if (modelReference == null)
             {
                 return false;
             }
@@ -36,15 +36,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ActionProviders
 
         public void AddActions(Element element)
         {
-            var form = (IForm)((DataEntityToken)element.ElementHandle.EntityToken).Data;
+            var modelReference = (IModelReference)((DataEntityToken)element.ElementHandle.EntityToken).Data;
 
-            var def = DefinitionsFacade.GetDefinition(form.Name);
+            var def = DefinitionsFacade.GetDefinition(modelReference.Name);
             if (def == null)
             {
                 return;
             }
-
-
 
             if (def is DynamicFormDefinition)
             {
@@ -73,7 +71,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ActionProviders
                 });
             }
 
-            if (def is DynamicFormWizard)
+            if (def is DynamicWizardDefinition)
             {
                 var editActionToken = new WorkflowActionToken(typeof(EditFormWizardWorkflow));
                 element.AddAction(new ElementAction(new ActionHandle(editActionToken))
@@ -88,7 +86,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ActionProviders
                 });
             }
 
-            var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + form.Name, typeof(DeleteFormActionToken));
+            var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + modelReference.Name, typeof(DeleteFormActionToken));
             element.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
             {
                 VisualData = new ActionVisualizedData

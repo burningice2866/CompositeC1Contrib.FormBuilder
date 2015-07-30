@@ -25,7 +25,19 @@
     };
 
     $(document).ready(function() {
-        var forms = $('form.formwizard');
+        var forms = $('form[class^="form formwizard-"]');
+
+        $(document).on('change', 'form[class^="form formwizard-"] :input', function() {
+            var form = $(this).parents('form');
+
+            formbuilder.dependecyFunction(form);
+        });
+
+        forms.each(function() {
+            var form = $(this);
+
+            formbuilder.dependecyFunction(form);
+        });
 
         if (window.Ladda) {
             $.each(forms, function() {
@@ -42,7 +54,7 @@
             });
         }
 
-        $('.formwizard').on('click', 'input[type="submit"], button', function(e) {
+        forms.on('click', 'input[type="submit"], button', function(e) {
             e.preventDefault();
 
             var button = $(this);
@@ -75,22 +87,22 @@
                 window.scrollTo(0, 0);
             }
         });
-
-        window.formbuilderWizard = window.formbuilderWizard || {};
-
-        window.formbuilderWizard.navigateTo = function(nextStep, form) {
-            var containers = $('.js-formwizard-step[data-step]', form);
-            var nextStepContainer = $('.js-formwizard-step[data-step=' + nextStep + ']', form);
-
-            containers.hide();
-            nextStepContainer.show();
-
-            window.scrollTo(0, 0);
-
-            var event = $.Event('formbuilder.wizard.navigate.success');
-            event.nextStep = nextStep;
-
-            form.trigger(event);
-        }
     });
+
+    window.formbuilderWizard = window.formbuilderWizard || {};
+
+    window.formbuilderWizard.navigateTo = function(nextStep, form) {
+        var containers = $('.js-formwizard-step[data-step]', form);
+        var nextStepContainer = $('.js-formwizard-step[data-step=' + nextStep + ']', form);
+
+        containers.hide();
+        nextStepContainer.show();
+
+        window.scrollTo(0, 0);
+
+        var event = $.Event('formbuilder.wizard.navigate.success');
+        event.nextStep = nextStep;
+
+        form.trigger(event);
+    }
 })(jQuery, window.formbuilder, window, document);

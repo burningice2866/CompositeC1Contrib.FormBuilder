@@ -205,11 +205,22 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
                     foreach (var dep in field.DependencyAttributes)
                     {
-                        var values = String.Join(",", dep.RequiredFieldValues());
+                        var dependency = new XElement("Add",
+                            new XAttribute("type", dep.GetType().AssemblyQualifiedName),
+                            new XAttribute("field", dep.ReadFromFieldName));
 
-                        dependencies.Add(new XElement("Add",
-                            new XAttribute("field", dep.ReadFromFieldName),
-                            new XAttribute("value", values)));
+                        var values = new XElement("values");
+
+                        foreach (var value in dep.ResolveRequiredFieldValues())
+                        {
+                            values.Add(new XElement("item",
+                                new XAttribute("type", value.GetType().AssemblyQualifiedName),
+                                new XAttribute("value", value)));
+                        }
+
+                        dependency.Add(values);
+
+                        dependencies.Add(dependency);
                     }
 
                     add.Add(dependencies);
@@ -226,10 +237,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     {
                         var values = new XElement("values");
 
-                        foreach (var s in stringBasedDataSourceAttribute.Values)
+                        foreach (var value in stringBasedDataSourceAttribute.Values)
                         {
                             values.Add(new XElement("item",
-                                new XAttribute("value", s)));
+                                new XAttribute("value", value)));
                         }
 
                         datasource.Add(values);
@@ -316,9 +327,26 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             var dependencies = el.Elements("Add");
             foreach (var dep in dependencies)
             {
+                var typeString = dep.Attribute("type").Value;
+                var type = Type.GetType(typeString);
+
+                if (!typeof(DependsOnConstantAttribute).IsAssignableFrom(type))
+                {
+                    return;
+                }
+
                 var field = dep.Attribute("field").Value;
-                var value = dep.Attribute("value").Value;
-                var attribute = new DependsOnConstantAttribute(field, value);
+                var valuesElement = dep.Element("values") ?? dep;
+
+                var values = valuesElement.Elements("item").Select(itm =>
+                {
+                    var value = itm.Attribute("value").Value;
+                    var typeAttr = itm.Attribute("type");
+
+                    return Convert.ChangeType(value, typeAttr != null ? Type.GetType(typeAttr.Value) : typeof(string));
+                }).ToArray();
+
+                var attribute = (Attribute)Activator.CreateInstance(type, new object[] { field, values });
 
                 attrs.Add(attribute);
             }
@@ -334,7 +362,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 return;
             }
 
-            var values = el.Element("values").Elements("item").Select(itm => itm.Attribute("value").Value).ToArray();
+            var valuesElement = el.Element("values");
+            if (valuesElement == null)
+            {
+                return;
+            }
+
+            var values = valuesElement.Elements("item").Select(itm => itm.Attribute("value").Value).ToArray();
             var attribute = (Attribute)Activator.CreateInstance(type, new object[] { values });
 
             attrs.Add(attribute);

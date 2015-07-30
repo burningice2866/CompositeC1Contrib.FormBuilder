@@ -1,7 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-
-using CompositeC1Contrib.FormBuilder.Web.UI;
 
 namespace CompositeC1Contrib.FormBuilder.Attributes
 {
@@ -13,26 +12,27 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public class DependsOnConstantAttribute : FormDependencyAttribute
     {
-        private object[] _requiredValues;
+        public IList<object> RequiredFieldValues { get; private set; }
 
-        public DependsOnConstantAttribute(string readFromFieldName, object requiredValue)
+        public DependsOnConstantAttribute(string readFromFieldName, params object[] requiredFieldValues)
             : base(readFromFieldName)
         {
-            _requiredValues = new[] { requiredValue };
-        }
-
-        public DependsOnConstantAttribute(string readFromFieldName, params object[] requiredValue)
-            : base(readFromFieldName)
-        {
-            _requiredValues = requiredValue;
+            RequiredFieldValues = requiredFieldValues.ToList();
         }
 
         public override bool DependencyMet(Form form)
         {
-            var actualValue = form.Fields.Single(f => f.Name == ReadFromFieldName).Value; 
+            var field = form.Fields.Single(f => f.Name == ReadFromFieldName);
+            var actualValue = field.Value;
 
-            foreach (var obj in _requiredValues)
+            foreach (var obj in RequiredFieldValues)
             {
+                var actualValueList = actualValue as IEnumerable<string>;
+                if (actualValueList != null)
+                {
+                    return actualValueList.Any(f => obj.Equals(f));
+                }
+
                 if (obj.Equals(actualValue))
                 {
                     return true;
@@ -42,9 +42,9 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
             return false;
         }
 
-        public override string[] RequiredFieldValues()
+        public override object[] ResolveRequiredFieldValues()
         {
-            return _requiredValues.Select(s => s.ToString()).ToArray();
+            return RequiredFieldValues.ToArray();
         }
     }
 }

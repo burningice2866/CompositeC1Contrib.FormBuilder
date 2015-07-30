@@ -15,6 +15,6 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
         }
 
         public abstract bool DependencyMet(Form form);
-        public abstract string[] RequiredFieldValues();
+        public abstract object[] ResolveRequiredFieldValues();
     }
 }

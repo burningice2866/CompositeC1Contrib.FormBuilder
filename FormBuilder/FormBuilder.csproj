@@ -111,6 +111,7 @@
     <Compile Include="Data\BoolValueMapper.cs" />
     <Compile Include="Data\DateTimeValueMapper.cs" />
     <Compile Include="Data\DecimalValueMapper.cs" />
+    <Compile Include="Data\DependencyModel.cs" />
     <Compile Include="Data\FormDataProvider.cs" />
     <Compile Include="Data\GuidValueMapper.cs" />
     <Compile Include="Data\IntValueMapper.cs" />

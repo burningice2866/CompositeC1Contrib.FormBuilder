@@ -92,16 +92,36 @@
         }
 
         if (field.is(':checkbox')) {
-            return field.is(':checked').toString();
+            if (field.length > 1) {
+                return $.map(field.filter(":checked"), function(itm) {
+                    return $(itm).val();
+                });
+            } else {
+                return field.is(':checked').toString();
+            }
         }
 
         return field.val();
     };
 
+    var escapeRegExp = function(str) {
+        return str.toString().replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+    }
+
     var isMatch = function(form, field, itm) {
         var fieldValue = getFormFieldValue(form, field);
         if (fieldValue) {
-            var regexp = new RegExp('^' + itm + '$', 'i');
+            var regexp = new RegExp('^' + escapeRegExp(itm) + '$', 'i');
+
+            if (fieldValue instanceof Array) {
+                var match = false;
+
+                $.each(fieldValue, function() {
+                    match = match || regexp.test(this);
+                });
+
+                return match;
+            }
 
             return regexp.test(fieldValue);
         }
@@ -132,38 +152,19 @@
         return show;
     };
 
-    var dependecyFunction = function(form) {
-        // We loop this function twice so controls that are depenent on eachother on the same "level" gets 
-        // shown correctly. If we don't do this, we risk a control not showing up because its depentent on 
-        // the next control, which is hidden during the first run.
-        for (var i = 0; i < 2; i++) {
-            $('[data-dependency]', form).each(function() {
-                var itm = $(this);
-                var json = itm.data('dependency');
-                var show = showFunction(form, json);
-
-                if (!show) {
-                    itm.hide();
-                } else {
-                    itm.show();
-                }
-            });
-        }
-    };
-
     $(document).ready(function() {
         var forms = $('form[class^="form formbuilder-"]');
 
         $(document).on('change', 'form[class^="form formbuilder-"] :input', function() {
             var form = $(this).parents('form');
 
-            dependecyFunction(form);
+            formbuilder.dependecyFunction(form);
         });
 
         forms.each(function() {
             var form = $(this);
 
-            dependecyFunction(form);
+            formbuilder.dependecyFunction(form);
         });
 
         var btnSelector = 'input[type=submit]';
@@ -306,5 +307,24 @@
         $('.' + rendererSettings.ErrorNotificationClass, form).remove();
 
         form.data('error', false);
+    };
+
+    formbuilder.dependecyFunction = function(form) {
+        // We loop this function twice so controls that are depenent on eachother on the same "level" gets 
+        // shown correctly. If we don't do this, we risk a control not showing up because its depentent on 
+        // the next control, which is hidden during the first run.
+        for (var i = 0; i < 2; i++) {
+            $('[data-dependency]', form).each(function() {
+                var itm = $(this);
+                var json = itm.data('dependency');
+                var show = showFunction(form, json);
+
+                if (!show) {
+                    itm.hide();
+                } else {
+                    itm.show();
+                }
+            });
+        }
     };
 })(jQuery, window, document);

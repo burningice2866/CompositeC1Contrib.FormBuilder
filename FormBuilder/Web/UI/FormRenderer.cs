@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Web;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
 using Composite.Core.ResourceSystem;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
+using CompositeC1Contrib.FormBuilder.Data;
 using CompositeC1Contrib.FormBuilder.Validation;
 using CompositeC1Contrib.FormBuilder.Web.Api.Models;
 
@@ -185,43 +189,10 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             if (field.DependencyAttributes.Any())
             {
-                var dependencyObj = new StringBuilder();
-                var attrs = field.DependencyAttributes.ToList();
+                var dependencies = field.DependencyAttributes.Select(d => new DependencyModel { Field = d.ReadFromFieldName, Value = d.ResolveRequiredFieldValues() });
+                var json = JsonConvert.SerializeObject(dependencies, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
-                dependencyObj.Append("[ ");
-
-                for (int i = 0; i < attrs.Count; i++)
-                {
-                    var dependencyAttribute = attrs[i];
-                    var values = dependencyAttribute.RequiredFieldValues();
-
-                    dependencyObj.Append("{ &quot;field&quot;: &quot;" + dependencyAttribute.ReadFromFieldName + "&quot;, &quot;value&quot;:");
-
-                    dependencyObj.Append("[ ");
-
-                    for (int j = 0; j < values.Length; j++)
-                    {
-                        dependencyObj.Append("&quot;" + values[j] + "&quot;");
-
-                        if (j < (values.Length - 1))
-                        {
-                            dependencyObj.Append(",");
-                        }
-                    }
-
-                    dependencyObj.Append(" ]");
-
-                    dependencyObj.Append(" }");
-
-                    if (i < (attrs.Count - 1))
-                    {
-                        dependencyObj.Append(", ");
-                    }
-                }
-
-                dependencyObj.Append(" ]");
-
-                sb.AppendFormat(" data-dependency=\"{0}\"", dependencyObj);
+                sb.AppendFormat(" data-dependency=\"{0}\"", HttpUtility.HtmlAttributeEncode(json));
             }
         }
 

@@ -23,7 +23,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     "class", new List<string> 
                     {
                         "form",
-                        "formwizard"
+                        "formwizard-" + wizard.Name.ToLowerInvariant(),
                     }
                 }
             };

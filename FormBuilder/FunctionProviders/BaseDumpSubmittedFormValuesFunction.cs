@@ -54,16 +54,16 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
         public abstract object Execute(ParameterList parameters, FunctionContextContainer context);
 
-        public static void DumpModelValues(IModelInstance instance, XhtmlDocument doc)
+        public static void DumpModelValues(Form form, XhtmlDocument doc)
         {
-            DumpModelValues(instance, doc, false);
+            DumpModelValues(form, doc, false);
         }
 
-        public static void DumpModelValues(IModelInstance instance, XhtmlDocument doc, bool useRenderingLayout)
+        public static void DumpModelValues(Form form, XhtmlDocument doc, bool useRenderingLayout)
         {
             if (useRenderingLayout)
             {
-                var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(instance.Name);
+                var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(form.Name);
 
                 var elements = new List<XElement>();
                 var fields = new List<FormField>();
@@ -76,14 +76,18 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                     {
                         value = value.Substring(1, value.Length - 2);
 
-                        var field = instance.Fields.FirstOrDefault(f => f.Label != null && f.Name == value);
+                        var field = form.Fields.FirstOrDefault(f => f.Label != null && f.Name == value);
                         if (field == null)
                         {
                             continue;
                         }
 
                         elements.Add(el);
-                        fields.Add(field);
+
+                        if (form.IsDependencyMetRecursive(field))
+                        {
+                            fields.Add(field);
+                        }
                     }
                     else
                     {
@@ -97,7 +101,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             }
             else
             {
-                var fields = instance.Fields.Where(f => f.Label != null && f.Value != null);
+                var fields = form.Fields.Where(f => f.Label != null && f.Value != null && form.IsDependencyMetRecursive(f));
                 var table = GetFieldsTable(fields);
 
                 doc.Body.Add(table);
@@ -108,17 +112,22 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
         {
             if (!fields.Any())
             {
-                return;
+                foreach (var element in elements)
+                {
+                    element.Remove();
+                }
             }
-
-            var table = GetFieldsTable(fields);
-
-            for (int i = 0; i < elements.Count - 1; i++)
+            else
             {
-                elements[i].Remove();
-            }
+                var table = GetFieldsTable(fields);
 
-            elements.Last().ReplaceWith(table);
+                for (var i = 0; i < elements.Count - 1; i++)
+                {
+                    elements[i].Remove();
+                }
+
+                elements.Last().ReplaceWith(table);
+            }
 
             elements.Clear();
             fields.Clear();

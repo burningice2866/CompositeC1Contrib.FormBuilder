@@ -48,7 +48,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 {
                     Label = "Validators",
                     ToolTip = "Validators",
-                    HasChildren = true,
+                    HasChildren = field.ValidationAttributes.Any(),
                     Icon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-closed-root"),
                     OpenedIcon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-opened-root")
                 }
@@ -67,6 +67,33 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
             });
 
             yield return fieldValidatorsElement;
+
+            var fieldDependencyElementHandle = context.CreateElementHandle(new FieldDependencyEntityToken(form.Name, field.Name));
+            var fieldDependencyElement = new Element(fieldDependencyElementHandle)
+            {
+                VisualData = new ElementVisualizedData
+                {
+                    Label = "Dependencies",
+                    ToolTip = "Dependencies",
+                    HasChildren = field.DependencyAttributes.Any(),
+                    Icon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-closed-root"),
+                    OpenedIcon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-opened-root")
+                }
+            };
+
+            var addDependencyActionToken = new WorkflowActionToken(typeof (AddFieldDependencyWorkflow), new[] {PermissionType.Add});
+            fieldDependencyElement.AddAction(new ElementAction(new ActionHandle(addDependencyActionToken))
+            {
+                VisualData = new ActionVisualizedData
+                {
+                    Label = "Add dependency",
+                    ToolTip = "Add dependency",
+                    Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
+                    ActionLocation = FormBuilderElementProvider.ActionLocation
+                }
+            });
+
+            yield return fieldDependencyElement;
 
             var datasourceAttribute = field.Attributes.OfType<DataSourceAttribute>().FirstOrDefault();
             if (datasourceAttribute == null)

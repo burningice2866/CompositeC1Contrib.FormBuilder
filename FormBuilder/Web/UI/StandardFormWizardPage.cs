@@ -3,11 +3,15 @@ using System.Text;
 using System.Web;
 using System.Xml.Linq;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
 using Composite.AspNet.Razor;
 using Composite.Core.WebClient.Renderings.Page;
 using Composite.Core.Xml;
 using Composite.Functions;
 
+using CompositeC1Contrib.FormBuilder.Data;
 using CompositeC1Contrib.FormBuilder.FunctionProviders;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
@@ -38,12 +42,6 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         protected WizardRequestContext RequestContext
         {
             get { return (WizardRequestContext)FunctionContextContainer.GetParameterValue(BaseFormFunction.RequestContextKey, typeof(WizardRequestContext)); }
-        }
-
-        [Obsolete("Use 'RequestContext'")]
-        protected WizardRequestContext RenderingContext
-        {
-            get { return RequestContext; }
         }
 
         public override void ExecutePageHierarchy()
@@ -176,6 +174,22 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     var stepIndex = Wizard.Steps.IndexOf(step) + 1;
 
                     nameAttr.Value = String.Format("step-{0}-{1}", stepIndex, nameAttr.Value);
+                }
+
+                var depAttr = element.Attribute("data-dependency");
+                if (depAttr != null)
+                {
+                    var stepIndex = Wizard.Steps.IndexOf(step) + 1;
+
+                    var dependencies = JsonConvert.DeserializeObject<DependencyModel[]>(depAttr.Value);
+                    foreach (var dep in dependencies)
+                    {
+                        dep.Field = String.Format("step-{0}-{1}", stepIndex, dep.Field);
+                    }
+
+                    var json = JsonConvert.SerializeObject(dependencies, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+
+                    depAttr.Value = json;
                 }
             }
 

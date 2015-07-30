@@ -71,6 +71,8 @@
     <Compile Include="C1Console\ActionProviders\FormElementActionProvider.cs" />
     <Compile Include="C1Console\ActionProviders\FormFieldElementActionProvider.cs" />
     <Compile Include="C1Console\ActionProviders\SubmitHandlerElementActionProvider.cs" />
+    <Compile Include="C1Console\Actions\DeleteFieldDependencyActionToken.cs" />
+    <Compile Include="C1Console\Actions\DeleteFieldDependencyValueActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteFieldValidatorActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteFormWizardStepActionToken.cs" />
     <Compile Include="C1Console\Actions\DeleteSubmitHandlerActionToken.cs" />
@@ -79,15 +81,24 @@
     <Compile Include="C1Console\Actions\DeleteStringBasedDataSourceEntryActionToken.cs" />
     <Compile Include="C1Console\ActionProviders\RootElementActionProvider.cs" />
     <Compile Include="C1Console\ElementProvider\DataEntityTokenHandler.cs" />
+    <Compile Include="C1Console\ElementProvider\FieldDependencyEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FieldValidatorsEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\DataSourceEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormFieldEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormFolderEntityTokenHandler.cs" />
+    <Compile Include="C1Console\EntityTokens\FieldDependencyEntityToken.cs" />
+    <Compile Include="C1Console\EntityTokens\FieldDependencyValueEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FieldValidatorsEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormSubmitHandlerEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormWizardStepEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\StringBasedDataSourceEntryEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\DataSourceEntityToken.cs" />
+    <Compile Include="C1Console\Workflows\AddFieldDependencyValueWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="C1Console\Workflows\AddFieldDependencyWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="C1Console\Workflows\AddFormWizardWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -95,6 +106,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="C1Console\Workflows\BaseAddFormWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="C1Console\Workflows\EditFieldDependencyWorkflow.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="C1Console\Workflows\EditFormWizardWorkflow.cs">
@@ -162,8 +176,11 @@
     <Compile Include="WizardXmlSerializer.cs" />
     <Compile Include="XElementHelper.cs" />
     <Compile Include="XmlDefinitionSerializer.cs" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\AddFieldDependencyValueWorkflow.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\AddFieldDependencyWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\AddFormWizardWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\AddWizardStepWorkflow.xml" />
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditFieldDependencyWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditFormWizardWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditWizardStepWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\InputElementSettings\TextBox.xml" />

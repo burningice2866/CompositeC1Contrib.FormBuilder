@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System;
+using System.Xml.Linq;
 
 using Composite.Core.Xml;
 using Composite.Functions;
@@ -22,7 +23,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             {
                 if (!useRenderingLayout)
                 {
-                    doc.Body.Add(XElement.Parse("<h3>" + step.Name + "</h3>"));
+                    doc.Body.Add(XElement.Parse("<h3>" + (String.IsNullOrEmpty(step.Label) ? step.Name : step.Label) + "</h3>"));
                 }
 
                 DumpModelValues(step.Form, doc, useRenderingLayout);

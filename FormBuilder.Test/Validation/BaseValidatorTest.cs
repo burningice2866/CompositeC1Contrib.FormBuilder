@@ -31,8 +31,8 @@ namespace FormBuilder.Test.Validation
         protected FormValidationRule CreateRule(T value)
         {
             var form = new Form(_field.OwningForm);
-            var field = form.Fields.Single(f => f.Name == _field.Name);
-            
+            var field = new FormField(_field, form);
+
             field.Value = value;
 
             return _validator.CreateRule(field);

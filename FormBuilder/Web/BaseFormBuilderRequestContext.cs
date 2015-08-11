@@ -110,7 +110,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
             ModelInstance.MapValues(request.Form, files);
             OnMappedValues();
 
-            ValidationResult = ModelInstance.Validate(true);
+            ValidationResult = ModelInstance.Validate(new ValidationOptions());
         }
     }
 }

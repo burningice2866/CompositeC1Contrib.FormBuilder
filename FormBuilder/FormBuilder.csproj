@@ -125,6 +125,7 @@
     <Compile Include="FormField.cs" />
     <Compile Include="Form.cs" />
     <Compile Include="ModelSubmit.cs" />
+    <Compile Include="Validation\ValidationOptions.cs" />
     <Compile Include="Wizard.cs" />
     <Compile Include="WizardModel.cs" />
     <Compile Include="WizardStep.cs" />

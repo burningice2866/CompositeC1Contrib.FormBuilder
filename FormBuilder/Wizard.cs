@@ -72,18 +72,22 @@ namespace CompositeC1Contrib.FormBuilder
             }
         }
 
-        public ValidationResultList Validate(bool validateCaptcha)
+        public ValidationResultList Validate(ValidationOptions options)
         {
             var list = new ValidationResultList();
 
             foreach (var form in Steps.Select(s => s.Form))
             {
-                var validationResult = form.Validate(false);
+                var validationResult = form.Validate(new ValidationOptions
+                {
+                    ValidateFiles = options.ValidateFiles,
+                    ValidateCaptcha = false
+                });
 
                 list.AddRange(validationResult);
             }
 
-            if (validateCaptcha && RequiresCaptcha)
+            if (options.ValidateCaptcha && RequiresCaptcha)
             {
                 var requiresCaptchaAttr = new RequiresCaptchaAttribute();
                 var form = new HttpContextWrapper(HttpContext.Current);

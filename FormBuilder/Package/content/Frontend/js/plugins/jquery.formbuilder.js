@@ -31,7 +31,7 @@
             type: 'POST',
             url: '/formbuilder/renderer/validationsummary',
             data: JSON.stringify(data),
-            contentType: "application/json; charset=utf-8",
+            contentType: 'application/json; charset=utf-8',
             dataType: 'json',
             async: false,
 
@@ -58,11 +58,6 @@
     };
 
     var validation = function(form, options) {
-        var fileElements = $('input[type=file]', form);
-        if (fileElements.length > 0) {
-            return;
-        }
-
         formbuilder.clearErrors(form);
         formbuilder.validate(form, form.serializeArray(), options);
     };
@@ -73,7 +68,7 @@
         var field = $('[name="' + fieldName + '"]');
 
         if (field.is(':radio')) {
-            field = field.filter(":checked");
+            field = field.filter(':checked');
         }
 
         var element = field.eq(0);
@@ -93,7 +88,7 @@
 
         if (field.is(':checkbox')) {
             if (field.length > 1) {
-                return $.map(field.filter(":checked"), function(itm) {
+                return $.map(field.filter(':checked'), function(itm) {
                     return $(itm).val();
                 });
             } else {
@@ -147,6 +142,8 @@
             }
 
             show = fieldValid;
+
+            return true;
         });
 
         return show;
@@ -213,7 +210,7 @@
 
             if (window.Ladda) {
                 setTimeout(function() {
-                    if (clickedButton.is(":disabled")) {
+                    if (clickedButton.is(':disabled')) {
                         l = window.Ladda.create(clickedButton[0]);
 
                         l.start();

@@ -17,6 +17,6 @@ namespace CompositeC1Contrib.FormBuilder
 
         void SetDefaultValues();
         void MapValues(NameValueCollection values, IEnumerable<FormFile> files);
-        ValidationResultList Validate(bool validateCaptcha);
+        ValidationResultList Validate(ValidationOptions options);
     }
 }

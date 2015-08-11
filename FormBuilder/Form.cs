@@ -74,7 +74,7 @@ namespace CompositeC1Contrib.FormBuilder
             }
         }
 
-        public bool IsValid(string[] fieldNames)
+        public bool IsValid(IEnumerable<string> fieldNames)
         {
             EnsureRulesList();
 
@@ -150,7 +150,7 @@ namespace CompositeC1Contrib.FormBuilder
             }
         }
 
-        public ValidationResultList Validate(bool validateCaptcha)
+        public ValidationResultList Validate(ValidationOptions options)
         {
             var validationList = new ValidationResultList();
 
@@ -173,14 +173,24 @@ namespace CompositeC1Contrib.FormBuilder
 
             EnsureRulesList();
 
-            foreach (var list in _ruleList.Values)
+            foreach (var kvp in _ruleList)
             {
-                var result = ValidationResultList.GetFormValidationResult(list, false);
+                if (!options.ValidateFiles)
+                {
+                    var valueType = kvp.Key.ValueType;
+
+                    if (valueType == typeof(FormFile) || valueType == typeof(IEnumerable<FormFile>))
+                    {
+                        continue;
+                    }
+                }
+
+                var result = ValidationResultList.GetFormValidationResult(kvp.Value, false);
 
                 validationList.AddRange(result);
             }
 
-            if (validateCaptcha)
+            if (options.ValidateCaptcha)
             {
                 var requiresCaptchaAttr = Attributes.OfType<RequiresCaptchaAttribute>().SingleOrDefault();
                 if (requiresCaptchaAttr != null)

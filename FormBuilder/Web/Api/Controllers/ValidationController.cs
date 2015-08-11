@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 
+using CompositeC1Contrib.FormBuilder.Validation;
 using CompositeC1Contrib.FormBuilder.Web.Api.Models;
 
 namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
@@ -39,7 +40,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
             instance.SetDefaultValues();
             instance.MapValues(form, files);
 
-            var validationResult = instance.Validate(false);
+            var validationResult = instance.Validate(new ValidationOptions
+            {
+                ValidateFiles = false,
+                ValidateCaptcha = false
+            });
+
             if (!validationResult.Any())
             {
                 return Ok(true);

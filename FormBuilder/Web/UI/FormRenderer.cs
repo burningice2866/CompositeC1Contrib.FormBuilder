@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.Mvc;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -112,21 +113,32 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new HtmlString(sb.ToString());
         }
 
-        public static void WriteRowStart(string name, string elementName, string errorClass, bool isRequired, Action<StringBuilder> extraAttributesRenderer, StringBuilder sb, FormOptions options)
+        public static void WriteRowStart(string name, string elementName, string errorClass, bool isRequired, Action<TagBuilder> extraAttributesRenderer, StringBuilder sb, FormOptions options)
         {
             if (FieldsRow.Current != null)
             {
                 return;
             }
 
-            sb.AppendFormat("<div id=\"form-field-{0}\" class=\"" + options.FormRenderer.ParentGroupClass + "-group control-{1} {2} {3} \"", name, elementName, errorClass, isRequired ? "required" : String.Empty);
+            var tagBuilder = new TagBuilder("div");
+
+            tagBuilder.GenerateId("form-field-" + name);
+
+            tagBuilder.AddCssClass(options.FormRenderer.ParentGroupClass + "-group");
+            tagBuilder.AddCssClass("control-" + elementName);
+            tagBuilder.AddCssClass(errorClass);
+
+            if (isRequired)
+            {
+                tagBuilder.AddCssClass("required");
+            }
 
             if (extraAttributesRenderer != null)
             {
-                extraAttributesRenderer(sb);
+                extraAttributesRenderer(tagBuilder);
             }
 
-            sb.Append(">");
+            sb.Append(tagBuilder.ToString(TagRenderMode.StartTag));
         }
 
         public static void WriteRowEnd(StringBuilder sb)
@@ -185,14 +197,21 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             }
         }
 
-        public static void DependencyAttributeFor(FormField field, StringBuilder sb)
+        public static void DependencyAttributeFor(FormField field, TagBuilder tagBuilder)
         {
-            if (field.DependencyAttributes.Any())
+            if (!field.DependencyAttributes.Any())
             {
-                var dependencies = field.DependencyAttributes.Select(d => new DependencyModel { Field = d.ReadFromFieldName, Value = d.ResolveRequiredFieldValues() });
-                var json = JsonConvert.SerializeObject(dependencies, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                return;
+            }
 
-                sb.AppendFormat(" data-dependency=\"{0}\"", HttpUtility.HtmlAttributeEncode(json));
+            var dependencies = field.DependencyAttributes.Select(d => new DependencyModel { Field = d.ReadFromFieldName, Value = d.ResolveRequiredFieldValues() });
+            var json = JsonConvert.SerializeObject(dependencies, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+
+            tagBuilder.MergeAttribute("data-dependency", json);
+
+            if (!field.IsDependencyMetRecursive())
+            {
+                tagBuilder.AddCssClass("hide");
             }
         }
 
@@ -213,7 +232,18 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public static void WriteLabelStart(bool hide, string id, FormOptions options, StringBuilder sb)
         {
-            sb.AppendFormat("<label class=\"control-label {0}\" for=\"{1}\">", hide ? options.FormRenderer.HideLabelClass + " " : String.Empty, id);
+            var tagBuilder = new TagBuilder("label");
+
+            tagBuilder.AddCssClass("control-label");
+
+            if (hide)
+            {
+                tagBuilder.AddCssClass(options.FormRenderer.HideLabelClass);
+            }
+
+            tagBuilder.MergeAttribute("for", id);
+
+            sb.AppendFormat(tagBuilder.ToString(TagRenderMode.StartTag));
         }
 
         public static void WriteLabelEnd(StringBuilder sb)

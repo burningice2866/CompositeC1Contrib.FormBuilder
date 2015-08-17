@@ -84,5 +84,10 @@ namespace CompositeC1Contrib.FormBuilder
             Model = model;
             OwningForm = instance;
         }
+
+        public bool IsDependencyMetRecursive()
+        {
+            return OwningForm.IsDependencyMetRecursive(this);
+        }
     }
 }

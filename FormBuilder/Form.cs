@@ -109,8 +109,8 @@ namespace CompositeC1Contrib.FormBuilder
                 }
 
                 var dependencyField = Fields.Single(f => f.Name == dependencyAttribute.ReadFromFieldName);
-                isValid = IsDependencyMetRecursive(dependencyField);
 
+                isValid = IsDependencyMetRecursive(dependencyField);
                 if (!isValid)
                 {
                     return false;
@@ -218,8 +218,7 @@ namespace CompositeC1Contrib.FormBuilder
                 var list = _ruleList[field];
                 var attributes = field.ValidationAttributes;
 
-                var validateField = IsDependencyMetRecursive(field);
-                if (!validateField)
+                if (!IsDependencyMetRecursive(field))
                 {
                     continue;
                 }

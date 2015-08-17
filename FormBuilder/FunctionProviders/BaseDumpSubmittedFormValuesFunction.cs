@@ -84,7 +84,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
                         elements.Add(el);
 
-                        if (form.IsDependencyMetRecursive(field))
+                        if (field.IsDependencyMetRecursive())
                         {
                             fields.Add(field);
                         }
@@ -101,7 +101,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
             }
             else
             {
-                var fields = form.Fields.Where(f => f.Label != null && f.Value != null && form.IsDependencyMetRecursive(f));
+                var fields = form.Fields.Where(f => f.Label != null && f.Value != null && f.IsDependencyMetRecursive());
                 var table = GetFieldsTable(fields);
 
                 doc.Body.Add(table);

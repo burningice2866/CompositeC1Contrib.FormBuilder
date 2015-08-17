@@ -152,14 +152,8 @@
     $(document).ready(function() {
         var forms = $('form[class^="form formbuilder-"]');
 
-        $(document).on('change', 'form[class^="form formbuilder-"] :input', function() {
+        forms.on('change', ':input', function() {
             var form = $(this).parents('form');
-
-            formbuilder.dependecyFunction(form);
-        });
-
-        forms.each(function() {
-            var form = $(this);
 
             formbuilder.dependecyFunction(form);
         });
@@ -317,9 +311,9 @@
                 var show = showFunction(form, json);
 
                 if (!show) {
-                    itm.hide();
+                    itm.addClass('hide');
                 } else {
-                    itm.show();
+                    itm.removeClass('hide');
                 }
             });
         }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using System.Web;
 
 using Composite.AspNet.Razor;
@@ -17,7 +16,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
     {
         protected new T Form { get; private set; }
 
-        private FormRequestContext _requestContext;
+        private readonly FormRequestContext _requestContext;
         protected override FormRequestContext RequestContext
         {
             get { return _requestContext; }
@@ -49,14 +48,14 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             base.ExecutePageHierarchy();
         }
 
-        protected IHtmlString DependencyAttributeFor(Expression<Func<T, object>> fieldSelector)
+        protected DependencySection<T> BeginDependencySection(Expression<Func<T, object>> fieldSelector)
         {
-            var sb = new StringBuilder();
-            var field = GetField(fieldSelector);
+            return new DependencySection<T>(this, fieldSelector, null);
+        }
 
-            FormRenderer.DependencyAttributeFor(field, sb);
-
-            return new HtmlString(sb.ToString().Trim());
+        protected DependencySection<T> BeginDependencySection(Expression<Func<T, object>> fieldSelector, string cssClass)
+        {
+            return new DependencySection<T>(this, fieldSelector, cssClass);
         }
 
         protected IHtmlString InputFor(Expression<Func<T, object>> fieldSelector)

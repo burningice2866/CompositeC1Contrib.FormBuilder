@@ -41,7 +41,7 @@
 
             failure: function() {
                 var rendererSettings = getRendererSettings(form);
-                var errorDiv = $('<div />').addClass(rendererSettings.ErrorNotificationClass);
+                var errorDiv = $('<div />').addClass(rendererSettings.ValidationSummaryClass);
                 var errorList = $('<ul>').appendTo(errorDiv);
 
                 $.each(errors, function() {
@@ -295,7 +295,7 @@
         var rendererSettings = getRendererSettings(form);
 
         $('.' + rendererSettings.ParentGroupClass + '-group', form).removeClass(rendererSettings.ErrorClass);
-        $('.' + rendererSettings.ErrorNotificationClass, form).remove();
+        $('.' + rendererSettings.ValidationSummaryClass, form).remove();
 
         form.data('error', false);
     };

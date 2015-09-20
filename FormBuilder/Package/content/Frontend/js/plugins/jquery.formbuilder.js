@@ -1,31 +1,15 @@
 ﻿(function($, window, document, undefined) {
     var getRendererSettings = function(form) {
-        var renderer = form.data('renderer');
-
-        if (typeof renderer === 'string') {
-            $.ajax({
-                type: 'GET',
-                url: '/formbuilder/renderer/settings?type=' + renderer,
-                dataType: 'json',
-                async: false,
-                success: function(data) {
-                    renderer = $.parseJSON(data);
-
-                    form.data('renderer', renderer);
-                }
-            });
-        }
-
-        return renderer;
+        return form.data('renderer').Settings;
     };
 
     var getValidationSummary = function(form, errors) {
+        var dfd = $.Deferred();
+
         var data = {
-            renderer: form.attr('data-renderer'),
+            renderer: form.data('renderer').Type,
             errors: errors
         };
-
-        var summary;
 
         $.ajax({
             type: 'POST',
@@ -33,14 +17,16 @@
             data: JSON.stringify(data),
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
-            async: false,
 
             success: function(data) {
-                summary = $(data);
+                var el = $(data);
+
+                dfd.resolve(el);
             },
 
             failure: function() {
                 var rendererSettings = getRendererSettings(form);
+
                 var errorDiv = $('<div />').addClass(rendererSettings.ValidationSummaryClass);
                 var errorList = $('<ul>').appendTo(errorDiv);
 
@@ -50,16 +36,25 @@
                     errorList.append('<li>' + message + '</li>');
                 });
 
-                summary = errorDiv;
+                dfd.resolve(errorDiv);
             }
         });
 
-        return summary;
+        return dfd.promise();
     };
 
-    var validation = function(form, options) {
+    var validation = function(form) {
+        var dfd = $.Deferred();
+
         formbuilder.clearErrors(form);
-        formbuilder.validate(form, form.serializeArray(), options);
+
+        formbuilder.validate(form, form.serializeArray()).fail(function() {
+            dfd.reject();
+        }).done(function() {
+            dfd.resolve();
+        });
+
+        return dfd.promise();
     };
 
     var getFormFieldValue = function(form, fieldName) {
@@ -188,15 +183,18 @@
             var form = btn.parents('form');
             var submitButtons = $(btnSelector, form);
 
-            submitButtons.removeAttr('clicked');
-            btn.attr('clicked', true);
+            submitButtons.removeData('clicked');
+            btn.data('clicked', true);
         });
 
         forms.on('submit', function(e) {
             var form = $(this);
-            var clickedButton = $(btnSelector + '[clicked=true]', form);
 
-            clickedButton.attr('disabled', true);
+            var clickedButton = $(btnSelector, form).filter(function() {
+                return $(this).data('clicked') === true;
+            });
+
+            clickedButton.attr('disabled', 'disabled');
 
             var clickedButtonName = clickedButton.attr('name');
             var clickedButtonValue = clickedButton.val();
@@ -219,83 +217,90 @@
                 }, 500);
             }
 
-            validation(form, {
-                onError: function() {
-                    clickedButton.attr('disabled', false);
-                    hiddenField.remove();
+            if (form.data('validated') === true) {
+                return;
+            }
 
-                    if (l !== undefined) {
-                        l.stop();
-                    }
+            e.preventDefault();
 
-                    window.scrollTo(0, 0);
+            validation(form).fail(function() {
+                clickedButton.removeAttr('disabled');
+                hiddenField.remove();
 
-                    e.preventDefault();
+                if (l !== undefined) {
+                    l.stop();
                 }
+
+                window.scrollTo(0, 0);
+            }).done(function() {
+                form.data('validated', true);
+
+                form.submit();
             });
         });
     });
 
     window.formbuilder = window.formbuilder || {};
 
-    formbuilder.validate = function(form, formSerialized, options) {
-        options = $.extend({}, options);
+    formbuilder.validate = function(form, formSerialized) {
+        var dfd = $.Deferred();
 
         var validateEvent = $.Event('formbuilder.validate');
-        validateEvent.options = options;
 
         form.trigger(validateEvent);
 
         if (validateEvent.isDefaultPrevented()) {
-            return;
-        }
+            dfd.resolve();
+        } else {
+            var rendererSettings = getRendererSettings(form);
 
-        var rendererSettings = getRendererSettings(form);
+            $.ajax({
+                type: 'POST',
+                url: '/formbuilder/validation',
+                data: formSerialized,
+                dataType: 'json',
 
-        $.ajax({
-            type: 'POST',
-            url: '/formbuilder/validation',
-            data: formSerialized,
-            dataType: 'json',
-            async: false,
+                success: function(data) {
+                    var validatedEvent = $.Event('formbuilder.validated');
+                    validatedEvent.errors = data;
 
-            success: function(data) {
-                var validatedEvent = $.Event('formbuilder.validated');
-                validatedEvent.errors = data;
+                    form.trigger(validatedEvent);
 
-                if (validatedEvent.errors.length > 0) {
-                    var validationSummary = getValidationSummary(form, validatedEvent.errors);
+                    if (validatedEvent.errors.length > 0) {
+                        form.data('error', true);
 
-                    form.data('error', true);
+                        $.each(validatedEvent.errors, function() {
+                            var fields = this.AffectedFields || this.affectedFields;
 
-                    $.each(validatedEvent.errors, function() {
-                        var fields = this.AffectedFields || this.affectedFields;
+                            $.each(fields, function() {
+                                var el = $('[name="' + this + '"]', form);
 
-                        $.each(fields, function() {
-                            var el = $('[name="' + this + '"]', form);
-
-                            el.parents('.' + rendererSettings.ParentGroupClass + '-group').addClass(rendererSettings.ErrorClass);
+                                el.parents('.' + rendererSettings.ParentGroupClass + '-group').addClass(rendererSettings.ErrorClass);
+                            });
                         });
-                    });
 
-                    var validationSummaryShowingEvent = $.Event('formbuilder.validationsummary.showing');
-                    validationSummaryShowingEvent.errors = validatedEvent.errors;
-                    validationSummaryShowingEvent.summary = validationSummary;
+                        var validationSummaryShowingEvent = $.Event('formbuilder.validationsummary.showing');
+                        validationSummaryShowingEvent.errors = validatedEvent.errors;
 
-                    form.trigger(validationSummaryShowingEvent);
+                        getValidationSummary(form, validatedEvent.errors).then(function(summary) {
+                            validationSummaryShowingEvent.summary = summary;
 
-                    if (!validationSummaryShowingEvent.isDefaultPrevented()) {
-                        form.prepend(validationSummary);
-                    }
+                            form.trigger(validationSummaryShowingEvent);
 
-                    if (typeof options.onError === 'function') {
-                        options.onError();
+                            if (!validationSummaryShowingEvent.isDefaultPrevented()) {
+                                form.prepend(summary);
+                            }
+
+                            dfd.reject();
+                        });
+                    } else {
+                        dfd.resolve();
                     }
                 }
+            });
+        }
 
-                form.trigger(validatedEvent);
-            }
-        });
+        return dfd.promise();
     };
 
     formbuilder.clearErrors = function(form) {

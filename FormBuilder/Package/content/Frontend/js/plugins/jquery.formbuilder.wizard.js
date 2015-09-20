@@ -1,5 +1,7 @@
 ﻿(function($, formbuilder, window, document, undefined) {
     var validation = function(form, step) {
+        var dfd = $.Deferred();
+
         var formSerialized = form.serializeArray();
         var formData = [];
 
@@ -21,7 +23,14 @@
         });
 
         formbuilder.clearErrors(form);
-        formbuilder.validate(form, formData);
+
+        formbuilder.validate(form, formData).fail(function() {
+            dfd.reject();
+        }).done(function() {
+            dfd.resolve();
+        });
+
+        return dfd.promise();
     };
 
     $(document).ready(function() {
@@ -60,31 +69,30 @@
             var button = $(this);
             var container = button.closest('[data-step]');
             var form = container.closest('form');
-            var step = container.data('step');
-            var nextStep = button.data('nextstep');
 
             formbuilder.clearErrors(form);
 
+            var step = container.data('step');
+            var nextStep = button.data('nextstep');
+
             if (nextStep === undefined || nextStep > step) {
-                validation(form, step);
-            }
+                validation(form, step).fail(function() {
+                    window.scrollTo(0, 0);
+                }).done(function() {
+                    if (nextStep !== undefined) {
+                        window.formbuilderWizard.navigateTo(nextStep, form);
+                    } else {
+                        if (window.Ladda && button.hasClass('ladda-button')) {
+                            setTimeout(function() {
+                                var l = window.Ladda.create(button[0]);
 
-            if (form.data('error') === false) {
-                if (nextStep !== undefined) {
-                    window.formbuilderWizard.navigateTo(nextStep, form);
-                } else {
-                    if (window.Ladda && button.hasClass('ladda-button')) {
-                        setTimeout(function() {
-                            var l = window.Ladda.create(button[0]);
+                                l.start();
+                            }, 500);
+                        }
 
-                            l.start();
-                        }, 500);
+                        form.submit();
                     }
-
-                    form.submit();
-                }
-            } else {
-                window.scrollTo(0, 0);
+                });
             }
         });
     });

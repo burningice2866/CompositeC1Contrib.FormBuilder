@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Helpers;
 
+using Newtonsoft.Json;
+
 using Composite.AspNet.Razor;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
@@ -88,13 +90,14 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 page.WriteLiteral(" enctype=\"multipart/form-data\"");
             }
 
-            page.WriteLiteral(" data-renderer=\"" + page.Options.FormRenderer.GetType().AssemblyQualifiedName + "\"");
+            AddRendererSettings();
+
             page.WriteLiteral(">");
             page.WriteLiteral("<input type=\"hidden\" name=\"__type\" value=\"" + HttpUtility.HtmlAttributeEncode(page.Form.Name) + "\" />");
 
             foreach (var field in page.Form.Fields.Where(f => f.Label == null))
             {
-                RenderHiddenField(field.Name, field.Id, field.Value == null ? String.Empty : FormRenderer.GetValue(field));
+                AddHiddenField(field.Name, field.Id, field.Value == null ? String.Empty : FormRenderer.GetValue(field));
             }
 
             if (!page.Form.DisableAntiForgery)
@@ -103,7 +106,18 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             }
         }
 
-        private void RenderHiddenField(string name, string id, string value)
+        private void AddRendererSettings()
+        {
+            var json = JsonConvert.SerializeObject(new
+            {
+                Type = _page.Options.FormRenderer.GetType().AssemblyQualifiedName,
+                Settings = _page.Options.FormRenderer
+            });
+
+            _page.WriteLiteral(" data-renderer=\"" + HttpUtility.HtmlAttributeEncode(json) + "\"");
+        }
+
+        private void AddHiddenField(string name, string id, string value)
         {
             var s = String.Format("<input type=\"hidden\" name=\"{0}\" id=\"{1}\" value=\"{2}\" />",
                     HttpUtility.HtmlAttributeEncode(name),

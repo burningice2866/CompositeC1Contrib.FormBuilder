@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Web.Http;
 
-using Newtonsoft.Json;
-
 using CompositeC1Contrib.FormBuilder.Web.Api.Models;
 using CompositeC1Contrib.FormBuilder.Web.UI;
 
@@ -29,22 +27,6 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
             var summary = renderer.ValidationSummary(model.Errors);
 
             return Ok(summary);
-        }
-
-        [HttpGet]
-        [ActionName("settings")]
-        public IHttpActionResult GetSettings([FromUri]string type)
-        {
-            var rendererType = Type.GetType(type);
-            if (rendererType == null || !typeof(IFormFormRenderer).IsAssignableFrom(rendererType))
-            {
-                return NotFound();
-            }
-
-            var renderer = Activator.CreateInstance(rendererType) as IFormFormRenderer;
-            var json = JsonConvert.SerializeObject(renderer);
-
-            return Ok(json);
         }
     }
 }

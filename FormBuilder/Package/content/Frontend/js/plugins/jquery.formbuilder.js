@@ -167,9 +167,16 @@
                 $.each(submitButtons, function() {
                     var btn = $(this);
                     var val = btn.val();
-                    var html = '<button class="ladda-button btn btn-primary" data-style="expand-right" type="submit" name="SubmitForm" value="' + val + '">' + val + '</button>';
 
-                    btn.replaceWith(html);
+                    var replacement = $('<button />', {
+                        'class': btn.attr('class') + ' ladda-button',
+                        'data-style': 'expand-right',
+                        'type': 'submit',
+                        'name': btn.attr('name'),
+                        'value': val
+                    }).html(val);
+
+                    btn.replaceWith(replacement);
                 });
             });
 

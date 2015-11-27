@@ -1,4 +1,8 @@
-﻿(function($, formbuilder, window, document, undefined) {
+﻿(function($, window, document, formbuilder, undefined) {
+    var selector = 'form[class^="form formwizard-"]';
+
+    formbuilder.wizard = {};
+
     var validation = function(form, step) {
         var dfd = $.Deferred();
 
@@ -22,9 +26,9 @@
             value: $('input[name=step_' + step + ']', form).val()
         });
 
-        formbuilder.clearErrors(form);
+        form.formbuilder('clearErrors');
 
-        formbuilder.validate(form, formData).fail(function() {
+        form.formbuilder('validate', formData).fail(function() {
             dfd.reject();
         }).done(function() {
             dfd.resolve();
@@ -33,19 +37,17 @@
         return dfd.promise();
     };
 
-    $(document).ready(function() {
-        var forms = $('form[class^="form formwizard-"]');
-
-        $(document).on('change', 'form[class^="form formwizard-"] :input', function() {
+    var _init = function(forms) {
+        forms.on('change', ':input', function() {
             var form = $(this).parents('form');
 
-            formbuilder.dependecyFunction(form);
+            form.formbuilder('dependecyFunction');
         });
 
         forms.each(function() {
             var form = $(this);
 
-            formbuilder.dependecyFunction(form);
+            form.formbuilder('dependecyFunction');
         });
 
         if (window.Ladda) {
@@ -70,7 +72,7 @@
             var container = button.closest('[data-step]');
             var form = container.closest('form');
 
-            formbuilder.clearErrors(form);
+            form.formbuilder('clearErrors');
 
             var step = container.data('step');
             var nextStep = button.data('nextstep');
@@ -80,7 +82,7 @@
                     window.scrollTo(0, 0);
                 }).done(function() {
                     if (nextStep !== undefined) {
-                        window.formbuilderWizard.navigateTo(nextStep, form);
+                        form.formbuilder('wizard.navigateTo', nextStep);
                     } else {
                         if (window.Ladda && button.hasClass('ladda-button')) {
                             setTimeout(function() {
@@ -95,11 +97,9 @@
                 });
             }
         });
-    });
+    };
 
-    window.formbuilderWizard = window.formbuilderWizard || {};
-
-    window.formbuilderWizard.navigateTo = function(nextStep, form) {
+    var _navigateTo = function(form, nextStep) {
         var containers = $('.js-formwizard-step[data-step]', form);
         var nextStepContainer = $('.js-formwizard-step[data-step=' + nextStep + ']', form);
 
@@ -112,5 +112,18 @@
         event.nextStep = nextStep;
 
         form.trigger(event);
-    }
-})(jQuery, window.formbuilder, window, document);
+    };
+
+    formbuilder.wizard.navigateTo = _navigateTo;
+
+    formbuilder.initializers.push({
+        selector: selector,
+        initializer: _init
+    });
+
+    $(document).ready(function() {
+        var forms = $(selector);
+
+        forms.formbuilder();
+    });
+})(jQuery, window, document, window.formbuilder);

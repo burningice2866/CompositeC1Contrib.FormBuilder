@@ -1,4 +1,7 @@
 ﻿(function($, window, document, undefined) {
+    var formbuilder = {};
+    var selector = 'form[class^="form formbuilder-"]';
+
     var getRendererSettings = function(form) {
         return form.data('renderer').Settings;
     };
@@ -46,9 +49,9 @@
     var validation = function(form) {
         var dfd = $.Deferred();
 
-        formbuilder.clearErrors(form);
+        form.formbuilder('clearErrors');
 
-        formbuilder.validate(form, form.serializeArray()).fail(function() {
+        form.formbuilder('validate', form.serializeArray()).fail(function() {
             dfd.reject();
         }).done(function() {
             dfd.resolve();
@@ -144,41 +147,37 @@
         return show;
     };
 
-    $(document).ready(function() {
-        var forms = $('form[class^="form formbuilder-"]');
-
-        forms.on('change', ':input', function() {
+    var _init = function(form) {
+        form.on('change', ':input', function() {
             var form = $(this).parents('form');
 
-            formbuilder.dependecyFunction(form);
+            form.formbuilder('dependecyFunction');
         });
 
         var btnSelector = 'input[type=submit]';
 
         if (window.Ladda) {
-            $.each(forms, function() {
-                var submitButtons = $(btnSelector, this);
+            var submitButtons = $(btnSelector, form);
 
-                $.each(submitButtons, function() {
-                    var btn = $(this);
-                    var val = btn.val();
+            $.each(submitButtons, function() {
+                var btn = $(this);
+                var val = btn.val();
 
-                    var replacement = $('<button />', {
-                        'class': btn.attr('class') + ' ladda-button',
-                        'data-style': 'expand-right',
-                        'type': 'submit',
-                        'name': btn.attr('name'),
-                        'value': val
-                    }).html(val);
+                var replacement = $('<button />', {
+                    'class': btn.attr('class') + ' ladda-button',
+                    'data-style': 'expand-right',
+                    'type': 'submit',
+                    'name': btn.attr('name'),
+                    'value': val
+                }).html(val);
 
-                    btn.replaceWith(replacement);
-                });
+                btn.replaceWith(replacement);
             });
 
             btnSelector = 'button[type=submit]';
         }
 
-        forms.on('click', btnSelector, function() {
+        form.on('click', btnSelector, function() {
             var btn = $(this);
             var form = btn.parents('form');
             var submitButtons = $(btnSelector, form);
@@ -187,8 +186,10 @@
             btn.data('clicked', true);
         });
 
-        forms.on('submit', function(e) {
-            var form = $(this);
+        form.on('submit', function(e) {
+            if (form.data('validated') === true) {
+                return;
+            }
 
             var clickedButton = $(btnSelector, form).filter(function() {
                 return $(this).data('clicked') === true;
@@ -217,10 +218,6 @@
                 }, 500);
             }
 
-            if (form.data('validated') === true) {
-                return;
-            }
-
             e.preventDefault();
 
             validation(form).fail(function() {
@@ -238,11 +235,9 @@
                 form.submit();
             });
         });
-    });
+    };
 
-    window.formbuilder = window.formbuilder || {};
-
-    formbuilder.validate = function(form, formSerialized) {
+    var _validate = function(form, formSerialized) {
         var dfd = $.Deferred();
 
         var validateEvent = $.Event('formbuilder.validate');
@@ -303,7 +298,7 @@
         return dfd.promise();
     };
 
-    formbuilder.clearErrors = function(form) {
+    var _clearErrors = function(form) {
         var rendererSettings = getRendererSettings(form);
 
         $('.' + rendererSettings.ParentGroupClass + '-group', form).removeClass(rendererSettings.ErrorClass);
@@ -312,7 +307,7 @@
         form.data('error', false);
     };
 
-    formbuilder.dependecyFunction = function(form) {
+    var _dependecyFunction = function(form) {
         // We loop this function twice so controls that are depenent on eachother on the same "level" gets 
         // shown correctly. If we don't do this, we risk a control not showing up because its depentent on 
         // the next control, which is hidden during the first run.
@@ -330,4 +325,63 @@
             });
         }
     };
+
+    formbuilder.validate = _validate;
+    formbuilder.clearErrors = _clearErrors;
+    formbuilder.dependecyFunction = _dependecyFunction;
+
+    formbuilder.initializers = [];
+
+    formbuilder.initializers.push({
+        selector: selector,
+        initializer: _init
+    });
+
+    window.formbuilder = formbuilder;
+
+    $.fn.formbuilder = function(options) {
+        if ($.type(options) === 'string') {
+            var scope = formbuilder;
+
+            var cmd = options;
+            if (cmd.indexOf('.') > -1) {
+                var split = cmd.split('.');
+                var module = split[0];
+
+                cmd = split[1];
+                scope = scope[module];
+            }
+
+            var cmdFn = scope[cmd];
+
+            if ($.isFunction(cmdFn)) {
+                var args = $.makeArray(arguments);
+
+                args.shift();
+                args.unshift(this);
+
+                return cmdFn.apply(this, args);
+            }
+        } else {
+            return this.each(function() {
+                var form = $(this);
+
+                $.each(formbuilder.initializers, function() {
+                    var initializer = this;
+
+                    if (form.is(initializer.selector)) {
+                        initializer.initializer(form);
+                    }
+
+                    return form;
+                });
+            });
+        }
+    };
+
+    $(document).ready(function() {
+        var forms = $(selector);
+
+        forms.formbuilder();
+    });
 })(jQuery, window, document);

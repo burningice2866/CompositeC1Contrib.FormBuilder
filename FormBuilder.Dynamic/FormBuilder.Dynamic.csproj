@@ -36,23 +36,24 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Composite, Version=4.2.5287.17495, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\CompositeC1.Core.4.2.1\lib\net45\Composite.dll</HintPath>
+    <Reference Include="Composite, Version=4.3.5562.29799, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1.Core.4.3\lib\net45\Composite.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="CompositeC1Contrib.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\.vendor\CompositeC1Contrib.Core.dll</HintPath>
+    <Reference Include="CompositeC1Contrib.Core, Version=0.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1Contrib.Core.0.6.3\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="CompositeC1Contrib.Email">
-      <HintPath>..\.vendor\CompositeC1Contrib.Email.dll</HintPath>
+    <Reference Include="CompositeC1Contrib.Email, Version=0.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1.Email.0.6.0\lib\net45\CompositeC1Contrib.Email.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="CompositeC1Contrib.Sorting">
       <HintPath>..\.vendor\CompositeC1Contrib.Sorting.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\CompositeC1.Core.4.2.1\lib\net45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+      <HintPath>..\packages\CompositeC1.Core.4.3\lib\net45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />

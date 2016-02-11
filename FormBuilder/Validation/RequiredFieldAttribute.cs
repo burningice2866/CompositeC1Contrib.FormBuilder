@@ -6,7 +6,13 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class RequiredFieldAttribute : FormValidationAttribute
     {
-        public RequiredFieldAttribute(string message) : base(message) { }
+        public virtual bool IsRequired { get; private set; }
+
+        public RequiredFieldAttribute(string message)
+            : base(message)
+        {
+            IsRequired = true;
+        }
 
         public override FormValidationRule CreateRule(FormField field)
         {
@@ -17,6 +23,11 @@ namespace CompositeC1Contrib.FormBuilder.Validation
             {
                 Rule = () =>
                 {
+                    if (!IsRequired)
+                    {
+                        return true;
+                    }
+
                     if (value == null)
                     {
                         return false;
@@ -64,7 +75,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
                         return ((IEnumerable<FormFile>)value).Any(f => f.ContentLength > 0);
                     }
 
-                    return value != null;
+                    return true;
                 }
             };
         }

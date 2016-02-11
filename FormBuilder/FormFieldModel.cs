@@ -79,7 +79,12 @@ namespace CompositeC1Contrib.FormBuilder
 
         public bool IsRequired
         {
-            get { return Attributes.Any(a => a is RequiredFieldAttribute); }
+            get
+            {
+                var requredAttribute = Attributes.OfType<RequiredFieldAttribute>().FirstOrDefault();
+                
+                return requredAttribute != null && requredAttribute.IsRequired;
+            }
         }
 
         public IEnumerable<KeyValuePair<string, string>> DataSource

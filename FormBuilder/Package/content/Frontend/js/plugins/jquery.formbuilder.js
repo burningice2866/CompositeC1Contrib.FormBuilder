@@ -228,7 +228,12 @@
                     l.stop();
                 }
 
-                window.scrollTo(0, 0);
+                var el = form.get(0);
+                var rect = el.getBoundingClientRect();
+
+                if (rect <= 0) {
+                    el.scrollIntoView();
+                }
             }).done(function() {
                 form.data('validated', true);
 

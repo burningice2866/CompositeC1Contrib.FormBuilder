@@ -138,14 +138,9 @@ namespace CompositeC1Contrib.FormBuilder
 
             foreach (var field in Fields.Where(f => !f.IsReadOnly))
             {
-                var val = values[field.Name];
-                if (val != null)
-                {
-                    val = val.Trim();
+                var val = (values[field.Name] ?? String.Empty).Trim();
 
-                    MapValueToField(field, val);
-                }
-
+                MapValueToField(field, val);
                 MapFilesToField(field, files);
             }
         }

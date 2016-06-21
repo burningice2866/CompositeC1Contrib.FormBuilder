@@ -89,5 +89,27 @@ namespace CompositeC1Contrib.FormBuilder
         {
             return OwningForm.IsDependencyMetRecursive(this);
         }
+
+        public string GetValueAsString()
+        {
+            if (Value == null)
+            {
+                return String.Empty;
+            }
+
+            if (ValueType == typeof(DateTime))
+            {
+                return ((DateTime)Value).ToString("yyyy-MM-dd");
+            }
+
+            if (ValueType == typeof(DateTime?))
+            {
+                var dt = (DateTime?)Value;
+
+                return dt.Value.ToString("yyyy-MM-dd");
+            }
+
+            return Value.ToString();
+        }
     }
 }

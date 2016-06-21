@@ -16,6 +16,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         public override IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
+            var renderer = context.FormRenderer;
 
             if (field.DataSource != null && field.DataSource.Any())
             {
@@ -25,7 +26,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
                 foreach (var item in field.DataSource)
                 {
-                    sb.AppendFormat("<label class=\"{0}\">", context.Options.FormRenderer.FormControlLabelClass(this));
+                    sb.AppendFormat("<label class=\"{0}\">", renderer.FormControlLabelClass(this));
 
                     sb.AppendFormat("<input type=\"{0}\" name=\"{2}\" id=\"{3}\" value=\"{4}\" title=\"{1}\" {5}",
                         ElementName,
@@ -33,7 +34,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                         HttpUtility.HtmlAttributeEncode(field.Name),
                         HttpUtility.HtmlAttributeEncode(field.Id + "_" + ix++),
                         HttpUtility.HtmlAttributeEncode(item.Key),
-                        (value == null ? String.Empty : FormRenderer.WriteChecked(FormRenderer.IsEqual(value, item.Key), "checked")));
+                        (value == null ? String.Empty : renderer.WriteChecked(Strings.IsEqual(value, item.Key), "checked")));
 
                     AddReadOnlyAttribute(field, htmlAttributes);
                     RenderExtraHtmlTags(sb, htmlAttributesDictionary);

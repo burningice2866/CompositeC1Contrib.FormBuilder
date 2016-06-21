@@ -1,5 +1,9 @@
 ﻿@inherits CompositeC1Contrib.FormBuilder.Web.UI.StandardFormsPage
 
+@{
+    FormRenderer.Horizontal = true;
+}
+
 @if (IsSuccess && (SuccessResponse != null && !SuccessResponse.IsEmpty))
 {
     @EvaluateMarkup(SuccessResponse.Root)
@@ -8,16 +12,23 @@ else
 {
     @EvaluateMarkup(IntroText.Root)
 
-    using (BeginForm(new { @class = "form-horizontal" }))
+    using (BeginForm())
     {
-        @WriteErrors()
+        @ValidationSummary()
         @WriteAllFields()
         @WriteCaptcha()
 
-        <div class="control-group submit-buttons">
-            <div class="controls">
-                <input type="submit" name="SubmitForm" class="btn btn-primary" value="@Form.SubmitButtonLabel" />
+        if (FormRenderer.Horizontal)
+        {
+            <div class="form-group">
+                <div class="col-sm-offset-@FormRenderer.LabelWidth col-sm-@(12 - FormRenderer.LabelWidth)">
+                    <button type="submit" name="SubmitForm" class="btn btn-default">@Form.SubmitButtonLabel</button>
+                </div>
             </div>
-        </div>
+        }
+        else
+        {
+            <button type="submit" class="btn btn-default">Submit</button>
+        }
     }
 }

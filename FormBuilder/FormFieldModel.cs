@@ -106,13 +106,13 @@ namespace CompositeC1Contrib.FormBuilder
                 var dict = ds as IDictionary<string, string>;
                 if (dict != null)
                 {
-                    return dict.Select(f => new KeyValuePair<string, string>(f.Key, FormRenderer.GetLocalized(f.Value)));
+                    return dict.Select(f => new KeyValuePair<string, string>(f.Key, Strings.GetLocalized(f.Value)));
                 }
 
                 var list = ds as IEnumerable<string>;
                 if (list != null)
                 {
-                    return list.Select(FormRenderer.GetLocalized).Select(str => new KeyValuePair<string, string>(str, str));
+                    return list.Select(Strings.GetLocalized).Select(str => new KeyValuePair<string, string>(str, str));
                 }
 
                 throw new InvalidOperationException("Unsupported data source type: " + ds.GetType().FullName);

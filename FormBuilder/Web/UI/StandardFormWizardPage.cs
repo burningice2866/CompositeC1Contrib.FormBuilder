@@ -13,6 +13,7 @@ using Composite.Functions;
 
 using CompositeC1Contrib.FormBuilder.Data;
 using CompositeC1Contrib.FormBuilder.FunctionProviders;
+using CompositeC1Contrib.FormBuilder.Web.UI.Rendering;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
@@ -29,9 +30,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             get { return RequestContext.Wizard; }
         }
 
-        public FormOptions Options
+        public FormRenderer FormRenderer
         {
-            get { return RequestContext.Options; }
+            get { return RequestContext.FormRenderer; }
         }
 
         protected bool IsSuccess
@@ -75,9 +76,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             return new HtmlString(doc.ToString());
         }
 
-        protected IHtmlString WriteErrors()
+        protected IHtmlString ValidationSummary()
         {
-            return RequestContext.IsOwnSubmit ? FormRenderer.WriteErrors(RequestContext.ValidationResult, RequestContext.Options) : new HtmlString(String.Empty);
+            return FormRenderer.ValidationSummary(RequestContext);
         }
 
         protected IHtmlString WriteSteps()
@@ -160,8 +161,6 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected IHtmlString RenderFormField(WizardStep step)
         {
-            var options = new FormOptions();
-
             var form = step.Form;
             var html = FormsPage.RenderModelFields(form, RequestContext).ToString();
             var xelement = XElement.Parse(html);

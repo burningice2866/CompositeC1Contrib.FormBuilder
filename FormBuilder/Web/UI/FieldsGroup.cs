@@ -11,7 +11,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             _page = page;
 
-            var cssClass = page.Options.FormRenderer.ParentGroupClass + "-group";
+            var cssClass = page.FormRenderer.ParentGroupClass + "-group";
             if (!String.IsNullOrEmpty(extraClass))
             {
                 cssClass += " " + extraClass;

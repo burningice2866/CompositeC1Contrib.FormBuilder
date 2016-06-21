@@ -9,6 +9,7 @@ using Composite.Core.Xml;
 using Composite.Functions;
 
 using CompositeC1Contrib.FormBuilder.Validation;
+using CompositeC1Contrib.FormBuilder.Web.UI.Rendering;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
@@ -22,9 +23,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         [FunctionParameter(Label = "Success response", DefaultValue = null)]
         public XhtmlDocument SuccessResponse { get; set; }
 
-        public FormOptions Options
+        public FormRenderer FormRenderer
         {
-            get { return RequestContext.Options; }
+            get { return RequestContext.FormRenderer; }
         }
 
         public Form Form
@@ -76,9 +77,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             RequestContext.Submit();
         }
 
-        protected IHtmlString WriteErrors()
+        protected IHtmlString ValidationSummary()
         {
-            return RequestContext.IsOwnSubmit ? FormRenderer.WriteErrors(ValidationResult, Options) : new HtmlString(String.Empty);
+            return FormRenderer.ValidationSummary(RequestContext);
         }
 
         protected IHtmlString WriteAllFields()
@@ -98,7 +99,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     continue;
                 }
 
-                var html = FormRenderer.FieldFor(context, field).ToString();
+                var html = context.FormRenderer.FieldFor(context, field).ToString();
                 var newValue = XElement.Parse(html);
 
                 fieldElement.ReplaceWith(newValue);
@@ -154,7 +155,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected string WriteErrorClass(string name, BaseFormBuilderRequestContext context)
         {
-            return FormRenderer.WriteErrorClass(name, context);
+            return RequestContext.FormRenderer.WriteErrorClass(name, context);
         }
     }
 }

@@ -62,7 +62,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 page.WriteLiteral(" enctype=\"multipart/form-data\"");
             }
 
-            page.WriteLiteral(" data-renderer=\"" + page.Options.FormRenderer.GetType().AssemblyQualifiedName + "\"");
+            page.WriteLiteral(" data-renderer=\"" + page.FormRenderer.GetType().AssemblyQualifiedName + "\"");
             page.WriteLiteral(">");
 
             page.WriteLiteral("<input type=\"hidden\" name=\"__type\" value=\"" + HttpUtility.HtmlAttributeEncode(wizard.Name) + "\" />");
@@ -76,7 +76,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             foreach (var field in wizard.Fields.Where(f => f.Label == null))
             {
-                RenderHiddenField(field.Name, field.Id, field.Value == null ? String.Empty : FormRenderer.GetValue(field));
+                RenderHiddenField(field.Name, field.Id, field.Value == null ? String.Empty : field.GetValueAsString());
             }
 
             if (!wizard.DisableAntiForgery)

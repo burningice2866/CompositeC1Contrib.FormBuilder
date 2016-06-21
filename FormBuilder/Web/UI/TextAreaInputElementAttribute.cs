@@ -34,7 +34,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var sb = new StringBuilder();
             var placeholderText = field.PlaceholderText;
 
-            if (String.IsNullOrEmpty(placeholderText) && context.Options.HideLabels)
+            if (String.IsNullOrEmpty(placeholderText) && context.FormRenderer.HideLabels)
             {
                 placeholderText = field.Label.Label;
             }
@@ -46,13 +46,13 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 Rows,
                 Cols);
 
-            AddHtmlAttribute("class", context.Options.FormRenderer.FormControlClass, htmlAttributes);
+            AddHtmlAttribute("class", context.FormRenderer.FormControlClass, htmlAttributes);
 
             AddReadOnlyAttribute(field, htmlAttributes);
             AddMaxLengthAttribute(field, htmlAttributes);
             RenderExtraHtmlTags(sb, field, htmlAttributes);
 
-            sb.AppendFormat(">{0}</textarea>", HttpUtility.HtmlEncode(FormRenderer.GetValue(field)));
+            sb.AppendFormat(">{0}</textarea>", HttpUtility.HtmlEncode(field.GetValueAsString()));
 
             return new HtmlString(sb.ToString());
         }

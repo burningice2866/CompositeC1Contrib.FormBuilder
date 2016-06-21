@@ -56,18 +56,19 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         public override string Render(BaseFormBuilderRequestContext context)
         {
             var sb = new StringBuilder();
+            var renderer = context.FormRenderer;
 
-            FormRenderer.WriteRowStart(InputFieldName, "captcha", FormRenderer.WriteErrorClass(InputFieldName, context), true, null, sb, context.Options);
+            renderer.WriteRowStart(InputFieldName, "captcha", renderer.WriteErrorClass(InputFieldName, context), true, null, sb);
 
-            FormRenderer.WriteLabelStart(false, InputFieldName, context.Options, sb);
-            FormRenderer.WriteLabelContent(true, Localization.Captcha_GoogleReCAPTCHA_Label, String.Empty, false, sb);
-            FormRenderer.WriteLabelEnd(sb);
+            renderer.WriteLabelStart(false, InputFieldName, sb);
+            renderer.WriteLabelContent(true, Localization.Captcha_GoogleReCAPTCHA_Label, String.Empty, false, sb);
+            renderer.WriteLabelEnd(sb);
 
-            using (new ControlsGroup(sb, context.Options))
+            using (new ControlsGroup(sb, renderer))
             {
                 if (!String.IsNullOrEmpty(Localization.Captcha_GoogleReCAPTCHA_Help))
                 {
-                    FormRenderer.WriteFieldHelpStart(sb);
+                    renderer.WriteFieldHelpStart(sb);
                 }
 
                 sb.AppendFormat("<div class=\"g-recaptcha captcha-img\" data-sitekey=\"{0}\"></div>", _siteKey);
@@ -75,11 +76,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
                 if (!String.IsNullOrEmpty(Localization.Captcha_CompositeC1_Help))
                 {
-                    FormRenderer.WriteFieldHelpEnd(Localization.Captcha_GoogleReCAPTCHA_Help, sb);
+                    renderer.WriteFieldHelpEnd(Localization.Captcha_GoogleReCAPTCHA_Help, sb);
                 }
             }
 
-            FormRenderer.WriteRowEnd(sb);
+            renderer.WriteRowEnd(sb);
 
             return sb.ToString();
         }

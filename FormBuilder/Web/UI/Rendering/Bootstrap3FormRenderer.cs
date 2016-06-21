@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace CompositeC1Contrib.FormBuilder.Web.UI.FormRenderers
+namespace CompositeC1Contrib.FormBuilder.Web.UI.Rendering
 {
-    public class Bootstrap3FormRenderer : FormRendererBase
+    public class Bootstrap3FormRenderer : FormRenderer
     {
         public override string ValidationSummaryClass
         {
@@ -21,12 +21,37 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.FormRenderers
 
         public override string FieldGroupClass
         {
-            get { return String.Empty; }
+            get
+            {
+                if (Horizontal)
+                {
+                    var width = 12 - LabelWidth;
+
+                    return "col-sm-" + width;
+                }
+
+                return String.Empty;
+            }
         }
 
         public override string HideLabelClass
         {
             get { return "sr-only"; }
+        }
+
+        public override string FormLabelClass
+        {
+            get
+            {
+                var cssClass = "control-label";
+
+                if (Horizontal)
+                {
+                    cssClass += " col-sm-" + LabelWidth;
+                }
+
+                return cssClass;
+            }
         }
 
         public override string FormControlClass

@@ -1,7 +1,5 @@
 ﻿using System;
 
-using CompositeC1Contrib.FormBuilder.Web.UI;
-
 namespace CompositeC1Contrib.FormBuilder.Attributes
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
@@ -10,7 +8,7 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
         private string _help;
         public string Help
         {
-            get { return FormRenderer.GetLocalized(_help); }
+            get { return Strings.GetLocalized(_help); }
         }
 
         public FieldHelpAttribute(string help)

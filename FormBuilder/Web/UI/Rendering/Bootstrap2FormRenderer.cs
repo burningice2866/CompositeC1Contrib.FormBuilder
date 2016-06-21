@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace CompositeC1Contrib.FormBuilder.Web.UI.FormRenderers
+namespace CompositeC1Contrib.FormBuilder.Web.UI.Rendering
 {
-    public class Bootstrap2FormRenderer : FormRendererBase
+    public class Bootstrap2FormRenderer : FormRenderer
     {
         public override string ValidationSummaryClass
         {
@@ -27,6 +27,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.FormRenderers
         public override string HideLabelClass
         {
             get { return "hide-text"; }
+        }
+
+        public override string FormLabelClass
+        {
+            get { return "control-label"; }
         }
 
         public override string FormControlClass

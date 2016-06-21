@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Text;
 
+using CompositeC1Contrib.FormBuilder.Web.UI.Rendering;
+
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public class ControlsGroup : IDisposable
@@ -10,7 +12,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         private bool _disposed;
 
-        public ControlsGroup(StringBuilder sb, FormOptions options)
+        public ControlsGroup(StringBuilder sb, FormRenderer renderer)
         {
             if (FieldsRow.Current != null)
             {
@@ -19,7 +21,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             _sb = sb;
 
-            sb.AppendFormat("<div class=\"{0}\">", options.FormRenderer.FieldGroupClass);
+            sb.AppendFormat("<div class=\"{0}\">", renderer.FieldGroupClass);
         }
 
         public ControlsGroup(FormsPage page)
@@ -31,7 +33,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             _page = page;
 
-            page.WriteLiteral(String.Format("<div class=\"{0}\">", page.Options.FormRenderer.FieldGroupClass));
+            page.WriteLiteral(String.Format("<div class=\"{0}\">", page.FormRenderer.FieldGroupClass));
         }
 
         protected virtual void Dispose(bool disposing)

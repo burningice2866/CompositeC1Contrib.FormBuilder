@@ -16,9 +16,10 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         public override IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
+            var renderer = context.FormRenderer;
             var htmlAttributesDictionary = MapHtmlTagAttributes(field, htmlAttributes);
 
-            if (!String.IsNullOrEmpty(context.Options.FormRenderer.FormControlClass))
+            if (!String.IsNullOrEmpty(renderer.FormControlClass))
             {
                 IList<string> list;
                 if (!htmlAttributesDictionary.TryGetValue("class", out list))
@@ -28,7 +29,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     htmlAttributesDictionary.Add("class", list);
                 }
 
-                list.Add(context.Options.FormRenderer.FormControlClass);
+                list.Add(renderer.FormControlClass);
             }
 
             sb.AppendFormat("<select name=\"{0}\" id=\"{1}\"",
@@ -47,7 +48,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             if (field.DataSource != null && field.DataSource.Any())
             {
                 var value = field.Value;
-                var selectLabel = context.Options.HideLabels ? field.Label.Label : Localization.Widgets_Dropdown_SelectLabel;
+                var selectLabel = renderer.HideLabels ? field.Label.Label : Localization.Widgets_Dropdown_SelectLabel;
 
                 sb.AppendFormat("<option value=\"\" selected=\"selected\" disabled=\"disabled\">{0}</option>", HttpUtility.HtmlEncode(selectLabel));
 
@@ -65,7 +66,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
                     sb.AppendFormat("<option value=\"{0}\" {1}>{2}</option>",
                         HttpUtility.HtmlAttributeEncode(item.Key),
-                        FormRenderer.WriteChecked(checkedValue, "selected"),
+                        renderer.WriteChecked(checkedValue, "selected"),
                         HttpUtility.HtmlEncode(item.Value));
                 }
             }

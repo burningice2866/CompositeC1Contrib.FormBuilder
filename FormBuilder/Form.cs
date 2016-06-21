@@ -66,7 +66,7 @@ namespace CompositeC1Contrib.FormBuilder
         {
             Model = model;
             FormData = new Dictionary<string, object>();
-            Fields = model.Fields.Select(f => new FormField(f, this)).ToList();
+            Fields = model.Fields.Select(f => new FormField(f, this)).ToList().AsReadOnly();
 
             if (model.Constructor != null)
             {

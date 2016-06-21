@@ -1,7 +1,5 @@
 ﻿using System;
 
-using CompositeC1Contrib.FormBuilder.Web.UI;
-
 namespace CompositeC1Contrib.FormBuilder.Attributes
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
@@ -10,7 +8,7 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
         private readonly string _label;
         public string Label
         {
-            get { return FormRenderer.GetLocalized(_label); }
+            get { return Strings.GetLocalized(_label); }
         }
 
         public string Link { get; set; }

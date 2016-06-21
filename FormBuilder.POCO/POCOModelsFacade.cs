@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace CompositeC1Contrib.FormBuilder
 {
-    public class POCOModelsFacade
+    public static class POCOModelsFacade
     {
         public static IModel FromType(Type formType)
         {

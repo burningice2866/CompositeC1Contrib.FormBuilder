@@ -262,6 +262,7 @@
 
                 success: function(data) {
                     var validatedEvent = $.Event('formbuilder.validated');
+
                     validatedEvent.errors = data;
 
                     form.trigger(validatedEvent);
@@ -279,20 +280,25 @@
                             });
                         });
 
-                        var validationSummaryShowingEvent = $.Event('formbuilder.validationsummary.showing');
-                        validationSummaryShowingEvent.errors = validatedEvent.errors;
+                        var validationSummarContainer = $('.' + rendererSettings.ValidationSummaryClass, form);
+                        if (validationSummarContainer.length) {
+                            getValidationSummary(form, validatedEvent.errors).then(function(summary) {
+                                var validationSummaryShowingEvent = $.Event('formbuilder.validationsummary.showing');
 
-                        getValidationSummary(form, validatedEvent.errors).then(function(summary) {
-                            validationSummaryShowingEvent.summary = summary;
+                                validationSummaryShowingEvent.errors = validatedEvent.errors;
+                                validationSummaryShowingEvent.summary = summary;
 
-                            form.trigger(validationSummaryShowingEvent);
+                                form.trigger(validationSummaryShowingEvent);
 
-                            if (!validationSummaryShowingEvent.isDefaultPrevented()) {
-                                form.prepend(summary);
-                            }
+                                if (!validationSummaryShowingEvent.isDefaultPrevented()) {
+                                    validationSummarContainer.prepend(summary);
+                                }
 
+                                dfd.reject();
+                            });
+                        } else {
                             dfd.reject();
-                        });
+                        }
                     } else {
                         dfd.resolve();
                     }
@@ -307,7 +313,7 @@
         var rendererSettings = getRendererSettings(form);
 
         $('.' + rendererSettings.ParentGroupClass + '-group', form).removeClass(rendererSettings.ErrorClass);
-        $('.' + rendererSettings.ValidationSummaryClass, form).remove();
+        $('.' + rendererSettings.ValidationSummaryClass, form).empty();;
 
         form.data('error', false);
     };

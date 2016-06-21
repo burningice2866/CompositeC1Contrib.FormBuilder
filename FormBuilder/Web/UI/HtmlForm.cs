@@ -32,6 +32,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 }
             };
 
+            if (page.FormRenderer.Horizontal)
+            {
+                htmlAttributesDictionary["class"].Add("form-horizontal");
+            }
+
             var htmlElementAttributes = page.Form.Attributes.OfType<HtmlTagAttribute>();
             var action = String.Empty;
 
@@ -97,7 +102,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             foreach (var field in page.Form.Fields.Where(f => f.Label == null))
             {
-                AddHiddenField(field.Name, field.Id, field.Value == null ? String.Empty : FormRenderer.GetValue(field));
+                AddHiddenField(field.Name, field.Id, field.Value == null ? String.Empty : field.GetValueAsString());
             }
 
             if (!page.Form.DisableAntiForgery)
@@ -110,8 +115,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             var json = JsonConvert.SerializeObject(new
             {
-                Type = _page.Options.FormRenderer.GetType().AssemblyQualifiedName,
-                Settings = _page.Options.FormRenderer
+                Type = _page.FormRenderer.GetType().AssemblyQualifiedName,
+                Settings = _page.FormRenderer
             });
 
             _page.WriteLiteral(" data-renderer=\"" + HttpUtility.HtmlAttributeEncode(json) + "\"");

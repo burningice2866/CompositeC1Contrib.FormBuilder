@@ -17,9 +17,10 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         public override IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
+            var renderer = context.FormRenderer;
             var placeholderText = field.PlaceholderText;
 
-            if (String.IsNullOrEmpty(placeholderText) && context.Options.HideLabels)
+            if (String.IsNullOrEmpty(placeholderText) && renderer.HideLabels)
             {
                 placeholderText = field.Label.Label;
             }
@@ -31,7 +32,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 HttpUtility.HtmlAttributeEncode(field.Label.Label),
                 HttpUtility.HtmlAttributeEncode(placeholderText));
 
-            AddHtmlAttribute("class", context.Options.FormRenderer.FormControlClass, htmlAttributes);
+            AddHtmlAttribute("class", renderer.FormControlClass, htmlAttributes);
 
             AddReadOnlyAttribute(field, htmlAttributes);
             AddMaxLengthAttribute(field, htmlAttributes);

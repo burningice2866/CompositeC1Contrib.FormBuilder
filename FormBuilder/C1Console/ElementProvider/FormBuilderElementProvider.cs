@@ -17,8 +17,8 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
     {
         private static readonly ActionGroup ActionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
 
-        private static readonly IList<IEntityTokenBasedElementProvider> EntityTokenHandlers = new List<IEntityTokenBasedElementProvider>();
-        private static readonly IList<IElementActionProvider> ElementActionProviders = new List<IElementActionProvider>();
+        private static readonly IList<IEntityTokenBasedElementProvider> EntityTokenHandlers;
+        private static readonly IList<IElementActionProvider> ElementActionProviders;
 
         public static readonly IEnumerable<PermissionType> AddPermissions = new[] { PermissionType.Add };
         public static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = true, ActionGroup = ActionGroup };

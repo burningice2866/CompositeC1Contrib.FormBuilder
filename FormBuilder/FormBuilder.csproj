@@ -128,6 +128,7 @@
     <Compile Include="FormField.cs" />
     <Compile Include="Form.cs" />
     <Compile Include="ModelSubmit.cs" />
+    <Compile Include="Strings.cs" />
     <Compile Include="Validation\ValidationOptions.cs" />
     <Compile Include="Wizard.cs" />
     <Compile Include="WizardModel.cs" />
@@ -178,12 +179,11 @@
     <Compile Include="Web\OwinExtensions.cs" />
     <Compile Include="Web\UI\ControlsGroup.cs" />
     <Compile Include="Web\UI\FieldsGroup.cs" />
-    <Compile Include="Web\UI\FormRenderers\FormRendererBase.cs" />
-    <Compile Include="Web\UI\FormRenderers\Bootstrap3FormRenderer.cs" />
-    <Compile Include="Web\UI\FormRenderers\Bootstrap2FormRenderer.cs" />
+    <Compile Include="Web\UI\Rendering\FormRenderer.cs" />
+    <Compile Include="Web\UI\Rendering\Bootstrap3FormRenderer.cs" />
+    <Compile Include="Web\UI\Rendering\Bootstrap2FormRenderer.cs" />
     <Compile Include="Web\UI\GoogleReCAPTCHAProvider.cs" />
     <Compile Include="Web\UI\HtmlForm.cs" />
-    <Compile Include="Web\UI\IFormFormRenderer.cs" />
     <Compile Include="Web\UI\InputElementTypeAttribute.cs" />
     <Compile Include="Attributes\MethodBasedDataSourceAttribute.cs" />
     <Compile Include="Attributes\StringBasedDataSourceAttribute.cs" />
@@ -226,10 +226,6 @@
     <Compile Include="Validation\MaxFieldLengthAttribute.cs" />
     <Compile Include="Validation\MinFieldLengthAttribute.cs" />
     <Compile Include="Validation\RequiredFieldAttribute.cs" />
-    <Compile Include="Web\UI\FormRenderer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Web\UI\FormOptions.cs" />
     <Compile Include="Web\UI\FieldsRow.cs" />
     <Compile Include="Web\UI\TextboxInputElementAttribute.cs" />
     <Compile Include="C1Console\Workflows\EditFormRenderingLayoutWorkflow.cs">
@@ -255,8 +251,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\EditFormRenderingLayoutWorkflow.xml" />
-    <Content Include="Package\content\Composite\InstalledPackages\localization\CompositeC1Contrib.FormBuilder.da-dk.xml" />
-    <Content Include="Package\content\Composite\InstalledPackages\localization\CompositeC1Contrib.FormBuilder.en-us.xml" />
+    <Content Include="Package\content\Composite\InstalledPackages\localization\CompositeC1Contrib.FormBuilder.da-dk.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Package\content\Composite\InstalledPackages\localization\CompositeC1Contrib.FormBuilder.en-us.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Package\content\Frontend\js\plugins\jquery.formbuilder.js" />
     <Content Include="Package\content\Frontend\js\plugins\jquery.formbuilder.wizard.js" />
     <Content Include="Package\install.xml">

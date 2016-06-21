@@ -1,26 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Helpers;
 
+using CompositeC1Contrib.FormBuilder.Configuration;
 using CompositeC1Contrib.FormBuilder.Validation;
-using CompositeC1Contrib.FormBuilder.Web.UI;
+using CompositeC1Contrib.FormBuilder.Web.UI.Rendering;
 
 namespace CompositeC1Contrib.FormBuilder.Web
 {
     public abstract class BaseFormBuilderRequestContext
     {
-        public ValidationResultList ValidationResult = new ValidationResultList();
+        private static Type DefaultRendererType = FormBuilderConfiguration.GetSection().RendererImplementation;
 
         protected string FormName { get; private set; }
 
-        public FormOptions Options { get; private set; }
+        public FormRenderer FormRenderer { get; private set; }
+        public ValidationResultList ValidationResult { get; set; }
 
         protected BaseFormBuilderRequestContext(string name)
         {
+            ValidationResult = new ValidationResultList();
             FormName = name;
-            Options = new FormOptions();
+            FormRenderer = (FormRenderer)Activator.CreateInstance(DefaultRendererType);
         }
 
         public virtual void OnMappedValues() { }

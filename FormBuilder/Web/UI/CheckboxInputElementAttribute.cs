@@ -16,7 +16,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         public override IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes)
         {
             var sb = new StringBuilder();
-            var value = field.Value;
+            var renderer = context.FormRenderer;
+            var value = field.Value;            
 
             if (field.ValueType == typeof(bool))
             {
@@ -32,7 +33,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     HttpUtility.HtmlAttributeEncode(field.Name),
                     HttpUtility.HtmlAttributeEncode(field.Id),
                     HttpUtility.HtmlAttributeEncode(field.Label.Label),
-                    FormRenderer.WriteChecked(bValue, "checked"));
+                    renderer.WriteChecked(bValue, "checked"));
 
                 AddReadOnlyAttribute(field, htmlAttributes);
                 RenderExtraHtmlTags(sb, field, htmlAttributes);
@@ -66,14 +67,14 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
                     foreach (var item in checkboxListOptions)
                     {
-                        sb.AppendFormat("<label class=\"{0}\">", context.Options.FormRenderer.FormControlLabelClass(this));
+                        sb.AppendFormat("<label class=\"{0}\">", renderer.FormControlLabelClass(this));
 
                         sb.AppendFormat("<input type=\"checkbox\" name=\"{1}\" id=\"{2}\" value=\"{3}\" title=\"{0}\" {4}",
                             HttpUtility.HtmlAttributeEncode(item.Value),
                             HttpUtility.HtmlAttributeEncode(field.Name),
                             HttpUtility.HtmlAttributeEncode(field.Id + "_" + ix++),
                             HttpUtility.HtmlAttributeEncode(item.Key),
-                            FormRenderer.WriteChecked(list.Contains(item.Key), "checked"));
+                            renderer.WriteChecked(list.Contains(item.Key), "checked"));
 
                         AddReadOnlyAttribute(field, htmlAttributes);
                         AddMaxLengthAttribute(field, htmlAttributes);

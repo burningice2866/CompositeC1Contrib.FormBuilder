@@ -2,8 +2,6 @@
 using System.Linq.Expressions;
 using System.Web.Mvc;
 
-using Composite.Core.Caching;
-
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public class DependencySection<T> : IDisposable where T : class, IPOCOForm
@@ -23,7 +21,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 tagBuilder.AddCssClass(cssClass);
             }
 
-            FormRenderer.DependencyAttributeFor(field, tagBuilder);
+            page.FormRenderer.DependencyAttributeFor(field, tagBuilder);
 
             page.WriteLiteral(tagBuilder.ToString(TagRenderMode.StartTag));
         }

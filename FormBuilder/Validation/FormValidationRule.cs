@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using CompositeC1Contrib.FormBuilder.Web.UI;
-
 namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class FormValidationRule
@@ -13,7 +11,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
         private readonly string _validationMessage;
         public string ValidationMessage
         {
-            get { return FormRenderer.GetLocalized(_validationMessage); }
+            get { return Strings.GetLocalized(_validationMessage); }
         }
 
         public FormValidationRule(IEnumerable<string> affectedFormIds, string validationMessage)

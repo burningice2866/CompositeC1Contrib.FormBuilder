@@ -32,23 +32,24 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             var sb = new StringBuilder();
             var encryptedValue = Captcha.CreateEncryptedValue();
+            var renderer = context.FormRenderer;
 
             sb.AppendFormat("<input type=\"hidden\" name=\"{0}\" id=\"{1}\" value=\"{2}\" />",
                 HttpUtility.HtmlAttributeEncode(HiddenFieldName),
                 HttpUtility.HtmlAttributeEncode(HiddenFieldName),
                 HttpUtility.HtmlAttributeEncode(encryptedValue));
 
-            FormRenderer.WriteRowStart(InputFieldName, "captcha", FormRenderer.WriteErrorClass(InputFieldName, context), true, null, sb, context.Options);
+            renderer.WriteRowStart(InputFieldName, "captcha", renderer.WriteErrorClass(InputFieldName, context), true, null, sb);
 
-            FormRenderer.WriteLabelStart(false, InputFieldName, context.Options, sb);
-            FormRenderer.WriteLabelContent(true, Localization.Captcha_CompositeC1_Label, String.Empty, false, sb);
-            FormRenderer.WriteLabelEnd(sb);
+            renderer.WriteLabelStart(false, InputFieldName, sb);
+            renderer.WriteLabelContent(true, Localization.Captcha_CompositeC1_Label, String.Empty, false, sb);
+            renderer.WriteLabelEnd(sb);
 
-            using (new ControlsGroup(sb, context.Options))
+            using (new ControlsGroup(sb, context.FormRenderer))
             {
                 if (!String.IsNullOrEmpty(Localization.Captcha_CompositeC1_Help))
                 {
-                    FormRenderer.WriteFieldHelpStart(sb);
+                    renderer.WriteFieldHelpStart(sb);
                 }
 
                 sb.AppendFormat("<div class=\"captcha-input\">");
@@ -61,11 +62,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
                 if (!String.IsNullOrEmpty(Localization.Captcha_CompositeC1_Help))
                 {
-                    FormRenderer.WriteFieldHelpEnd(Localization.Captcha_CompositeC1_Help, sb);
+                    renderer.WriteFieldHelpEnd(Localization.Captcha_CompositeC1_Help, sb);
                 }
             }
 
-            FormRenderer.WriteRowEnd(sb);
+            renderer.WriteRowEnd(sb);
 
             return sb.ToString();
         }

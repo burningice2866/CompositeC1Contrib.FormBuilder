@@ -3,7 +3,7 @@ using System.Configuration;
 using System.Linq;
 using System.Xml;
 
-using CompositeC1Contrib.FormBuilder.Web.UI.FormRenderers;
+using CompositeC1Contrib.FormBuilder.Web.UI.Rendering;
 
 namespace CompositeC1Contrib.FormBuilder.Configuration
 {
@@ -19,7 +19,7 @@ namespace CompositeC1Contrib.FormBuilder.Configuration
             var config = new FormBuilderConfiguration
             {
                 DefaultFunctionExecutor = defaultFunctionExecutor != null ? defaultFunctionExecutor.Value : "FormBuilder.StandardFormExecutor",
-                RendererImplementation = rendererImplementation != null ? Type.GetType(rendererImplementation.Value) : typeof(Bootstrap2FormRenderer)
+                RendererImplementation = rendererImplementation != null ? Type.GetType(rendererImplementation.Value) : typeof(Bootstrap3FormRenderer)
             };
 
             foreach (XmlNode element in section.ChildNodes)

@@ -2,7 +2,7 @@
 using System.Web.Http;
 
 using CompositeC1Contrib.FormBuilder.Web.Api.Models;
-using CompositeC1Contrib.FormBuilder.Web.UI;
+using CompositeC1Contrib.FormBuilder.Web.UI.Rendering;
 
 namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
 {
@@ -18,12 +18,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
             }
 
             var type = Type.GetType(model.Renderer);
-            if (type == null || !typeof(IFormFormRenderer).IsAssignableFrom(type))
+            if (type == null || !typeof(FormRenderer).IsAssignableFrom(type))
             {
                 return BadRequest();
             }
 
-            var renderer = (IFormFormRenderer)Activator.CreateInstance(type);
+            var renderer = (FormRenderer)Activator.CreateInstance(type);
             var summary = renderer.ValidationSummary(model.Errors);
 
             return Ok(summary);

@@ -100,7 +100,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             page.WriteLiteral(">");
             page.WriteLiteral("<input type=\"hidden\" name=\"__type\" value=\"" + HttpUtility.HtmlAttributeEncode(page.Form.Name) + "\" />");
 
-            foreach (var field in page.Form.Fields.Where(f => f.Label == null))
+            foreach (var field in page.Form.Fields.Where(f => f.IsHiddenField))
             {
                 AddHiddenField(field.Name, field.Id, field.Value == null ? String.Empty : field.GetValueAsString());
             }

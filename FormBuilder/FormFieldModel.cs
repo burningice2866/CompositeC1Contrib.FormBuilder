@@ -112,6 +112,11 @@ namespace CompositeC1Contrib.FormBuilder
             }
         }
 
+        public bool IsHiddenField
+        {
+            get { return Attributes.OfType<HiddenFieldAttribute>().Any(); }
+        }
+
         public IEnumerable<KeyValuePair<string, string>> DataSource
         {
             get

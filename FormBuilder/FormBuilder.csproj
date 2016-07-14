@@ -90,6 +90,7 @@
   <ItemGroup>
     <Compile Include="Attributes\DisplayFormatAttribute.cs" />
     <Compile Include="Attributes\DisableAntiForgeryAttribute.cs" />
+    <Compile Include="Attributes\HiddenFieldAttribute.cs" />
     <Compile Include="Attributes\RequiresCaptchaAttribute.cs" />
     <Compile Include="Attributes\PlaceholderTextAttribute.cs" />
     <Compile Include="Attributes\ForceHttpsConnectionAttribute.cs" />

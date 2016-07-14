@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using CompositeC1Contrib.FormBuilder.Attributes;
+
 namespace CompositeC1Contrib.FormBuilder
 {
     public static class POCOModelsFacade
@@ -117,7 +119,10 @@ namespace CompositeC1Contrib.FormBuilder
 
         private static IEnumerable<PropertyInfo> GetFieldProps(Type type)
         {
-            return type.GetProperties().Where(p => p.GetCustomAttribute<ExcludeFieldAttribute>(true) == null);
+            return from p in type.GetProperties()
+                   where p.GetCustomAttribute<FieldLabelAttribute>(true) != null
+                       || p.GetCustomAttribute<HiddenFieldAttribute>(true) != null
+                   select p;
         }
     }
 }

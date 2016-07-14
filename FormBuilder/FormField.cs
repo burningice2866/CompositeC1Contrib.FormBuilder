@@ -64,6 +64,11 @@ namespace CompositeC1Contrib.FormBuilder
             get { return Model.IsRequired; }
         }
 
+        public bool IsHiddenField
+        {
+            get { return Model.IsHiddenField; }
+        }
+
         public IEnumerable<KeyValuePair<string, string>> DataSource
         {
             get { return Model.DataSource; }

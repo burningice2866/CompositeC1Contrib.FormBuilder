@@ -57,7 +57,6 @@
   <ItemGroup>
     <Compile Include="FormNameAttribute.cs" />
     <Compile Include="C1Console\ElementProvider\DataEntityTokenHandler.cs" />
-    <Compile Include="ExcludeFieldAttribute.cs" />
     <Compile Include="ImportSubmittedValuesAttribute.cs" />
     <Compile Include="Web\POCOFormBuilderRequestContext.cs" />
     <Compile Include="POCOModelsProvider.cs" />

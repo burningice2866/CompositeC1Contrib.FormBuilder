@@ -328,30 +328,19 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.Rendering
             sb.Append("</p>");
         }
 
-        public void WriteLabelContent(bool isRequired, string label, string link, bool openLinkInNewWindow, StringBuilder sb)
+        public void WriteLabelContent(bool isRequired, string label, StringBuilder sb)
         {
             if (isRequired && ShowStarOnRequiredFields)
             {
                 sb.Append("<span class=\"required\">*</span>");
             }
-
-            if (!String.IsNullOrEmpty(link))
-            {
-                sb.AppendFormat("<a href=\"{0}\" title=\"{1}\" {2}>{3}</a>",
-                    HttpUtility.HtmlAttributeEncode(link),
-                    HttpUtility.HtmlAttributeEncode(label),
-                    openLinkInNewWindow ? "target=\"_blank\"" : String.Empty,
-                    HttpUtility.HtmlEncode(label));
-            }
-            else
-            {
-                sb.Append(HttpUtility.HtmlEncode(label));
-            }
+            
+            sb.Append(HttpUtility.HtmlEncode(label));
         }
 
         private void WriteLabelContent(FormField field, StringBuilder sb)
         {
-            WriteLabelContent(field.IsRequired, field.Label.Label, field.Label.Link, field.Label.OpenLinkInNewWindow, sb);
+            WriteLabelContent(field.IsRequired, field.Label, sb);
         }
 
         public string WriteErrorClass(string name, BaseFormBuilderRequestContext context)

@@ -41,7 +41,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
 
             Bindings.Add("FieldName", field.Name);
-            Bindings.Add("Label", field.Label == null ? String.Empty : field.Label.Label);
+            Bindings.Add("Label", field.Label == null ? String.Empty : field.Label);
             Bindings.Add("PlaceholderText", field.PlaceholderText);
             Bindings.Add("Help", field.Help);
             Bindings.Add("DefaultValue", defaultValue);

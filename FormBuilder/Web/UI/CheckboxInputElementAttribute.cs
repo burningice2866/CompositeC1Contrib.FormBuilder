@@ -32,7 +32,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     ElementName,
                     HttpUtility.HtmlAttributeEncode(field.Name),
                     HttpUtility.HtmlAttributeEncode(field.Id),
-                    HttpUtility.HtmlAttributeEncode(field.Label.Label),
+                    HttpUtility.HtmlAttributeEncode(field.Label),
                     renderer.WriteChecked(bValue, "checked"));
 
                 AddReadOnlyAttribute(field, htmlAttributes);

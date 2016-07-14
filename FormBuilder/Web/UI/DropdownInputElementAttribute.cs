@@ -48,7 +48,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             if (field.DataSource != null && field.DataSource.Any())
             {
                 var value = field.Value;
-                var selectLabel = renderer.HideLabels ? field.Label.Label : Localization.Widgets_Dropdown_SelectLabel;
+                var selectLabel = renderer.HideLabels ? field.Label : Strings.GetLocalizedByKey("FormBuilder.Widgets.Dropdown.SelectLabel");
 
                 sb.AppendFormat("<option value=\"\" selected=\"selected\" disabled=\"disabled\">{0}</option>", HttpUtility.HtmlEncode(selectLabel));
 

@@ -36,7 +36,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             if (String.IsNullOrEmpty(placeholderText) && context.FormRenderer.HideLabels)
             {
-                placeholderText = field.Label.Label;
+                placeholderText = field.Label;
             }
 
             sb.AppendFormat(Markup,

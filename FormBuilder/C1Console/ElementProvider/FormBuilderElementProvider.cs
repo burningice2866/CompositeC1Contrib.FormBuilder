@@ -8,6 +8,7 @@ using Composite.C1Console.Security;
 using Composite.Core.ResourceSystem;
 using Composite.Data;
 
+using CompositeC1Contrib.Composition;
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Data.Types;
 

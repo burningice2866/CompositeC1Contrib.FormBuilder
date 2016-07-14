@@ -39,7 +39,7 @@ namespace CompositeC1Contrib.FormBuilder
             get { return Model.Id; }
         }
 
-        public FieldLabelAttribute Label
+        public string Label
         {
             get { return Model.Label; }
         }

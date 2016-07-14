@@ -28,18 +28,43 @@ namespace CompositeC1Contrib.FormBuilder
             get { return (OwningForm.Name + "." + Name).Replace(".", "$"); }
         }
 
-        public FieldLabelAttribute Label
+        public string Label
         {
-            get { return Attributes.OfType<FieldLabelAttribute>().SingleOrDefault(); }
+            get
+            {
+                var attr = Attributes.OfType<FieldLabelAttribute>().SingleOrDefault();
+                if (attr == null)
+                {
+                    return null;
+                }
+
+                var label = attr.Label;
+                if (label == null)
+                {
+                    label = ResolveLocalized("Label");
+                }
+
+                return label;
+            }
         }
 
         public string PlaceholderText
         {
             get
             {
-                var placeholderAttr = Attributes.OfType<PlaceholderTextAttribute>().SingleOrDefault();
+                var attr = Attributes.OfType<PlaceholderTextAttribute>().SingleOrDefault();
+                if (attr == null)
+                {
+                    return null;
+                }
 
-                return placeholderAttr != null ? placeholderAttr.Text : String.Empty;
+                var text = attr.Text;
+                if (text == null)
+                {
+                    text = ResolveLocalized("PlaceholderText");
+                }
+
+                return text;
             }
         }
 
@@ -47,19 +72,19 @@ namespace CompositeC1Contrib.FormBuilder
         {
             get
             {
-                var helpAttribute = Attributes.OfType<FieldHelpAttribute>().FirstOrDefault();
-                if (helpAttribute != null)
+                var attr = Attributes.OfType<FieldHelpAttribute>().SingleOrDefault();
+                if (attr == null)
                 {
-                    return helpAttribute.Help;
+                    return null;
                 }
 
-                var resourceObj = HttpContext.GetGlobalResourceObject("FormBuilderHelp", Id.Replace("$", "_"));
-                if (resourceObj != null)
+                var help = attr.Help;
+                if (help == null)
                 {
-                    return (string)resourceObj;
+                    help = ResolveLocalized("Help");
                 }
 
-                return String.Empty;
+                return help;
             }
         }
 
@@ -81,9 +106,9 @@ namespace CompositeC1Contrib.FormBuilder
         {
             get
             {
-                var requredAttribute = Attributes.OfType<RequiredFieldAttribute>().FirstOrDefault();
-                
-                return requredAttribute != null && requredAttribute.IsRequired;
+                var requiredAttribute = Attributes.OfType<RequiredFieldAttribute>().FirstOrDefault();
+
+                return requiredAttribute != null && requiredAttribute.IsRequired;
             }
         }
 
@@ -103,10 +128,16 @@ namespace CompositeC1Contrib.FormBuilder
                     return null;
                 }
 
-                var dict = ds as IDictionary<string, string>;
-                if (dict != null)
+                var listOfKeyValuePair = ds as IEnumerable<KeyValuePair<string, string>>;
+                if (listOfKeyValuePair != null)
                 {
-                    return dict.Select(f => new KeyValuePair<string, string>(f.Key, Strings.GetLocalized(f.Value)));
+                    return listOfKeyValuePair.Select(f => new KeyValuePair<string, string>(f.Key, Strings.GetLocalized(f.Value)));
+                }
+
+                var dictionary = ds as IDictionary<string, string>;
+                if (dictionary != null)
+                {
+                    return dictionary.Select(f => new KeyValuePair<string, string>(f.Key, Strings.GetLocalized(f.Value)));
                 }
 
                 var list = ds as IEnumerable<string>;
@@ -162,11 +193,6 @@ namespace CompositeC1Contrib.FormBuilder
             return Regex.IsMatch(name, @"^[a-zA-Z0-9]+$");
         }
 
-        private InputElementTypeAttribute GetDefaultInputType()
-        {
-            return DefaultElementType.ContainsKey(ValueType) ? DefaultElementType[ValueType] : new TextboxInputElementAttribute();
-        }
-
         public void EnsureValueType()
         {
             var type = InputElementType.ResolveValueType(this);
@@ -174,6 +200,24 @@ namespace CompositeC1Contrib.FormBuilder
             {
                 ValueType = type;
             }
+        }
+
+        private InputElementTypeAttribute GetDefaultInputType()
+        {
+            return DefaultElementType.ContainsKey(ValueType) ? DefaultElementType[ValueType] : new TextboxInputElementAttribute();
+        }
+
+        private string ResolveLocalized(string type)
+        {
+            var key = "Forms." + OwningForm.Name + "." + Name + "." + type;
+
+            var value = HttpContext.GetGlobalResourceObject("FormBuilder", key) as string;
+            if (value == null)
+            {
+                return key;
+            }
+
+            return value;
         }
     }
 }

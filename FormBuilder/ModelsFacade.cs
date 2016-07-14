@@ -5,6 +5,8 @@ using System.Web.Hosting;
 
 using Composite.Core.IO;
 
+using CompositeC1Contrib.Composition;
+
 namespace CompositeC1Contrib.FormBuilder
 {
     public static class ModelsFacade

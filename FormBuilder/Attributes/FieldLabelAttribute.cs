@@ -8,17 +8,14 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
         private readonly string _label;
         public string Label
         {
-            get { return Strings.GetLocalized(_label); }
+            get { return _label == null ? null : Strings.GetLocalized(_label); }
         }
 
-        public string Link { get; set; }
-        public bool OpenLinkInNewWindow { get; set; }
+        public FieldLabelAttribute() : this(null) { }
 
         public FieldLabelAttribute(string label)
         {
             _label = label;
-
-            OpenLinkInNewWindow = false;
         }
     }
 }

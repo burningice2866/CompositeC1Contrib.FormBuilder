@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
+using CompositeC1Contrib.Composition;
 using CompositeC1Contrib.FormBuilder.FunctionProviders;
 using CompositeC1Contrib.FormBuilder.Web;
 

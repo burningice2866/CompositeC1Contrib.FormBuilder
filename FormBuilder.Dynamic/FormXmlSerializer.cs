@@ -145,7 +145,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
                 if (field.Label != null)
                 {
-                    add.Add(new XAttribute("label", field.Label.Label));
+                    add.Add(new XAttribute("label", field.Label));
                 }
 
                 if (field.PlaceholderText != null)

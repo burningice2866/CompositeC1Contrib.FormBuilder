@@ -93,7 +93,7 @@ namespace CompositeC1Contrib.FormBuilder
 
                 fields.Add(new XElement("field",
                     new XAttribute("name", field.Name),
-                    new XAttribute("label", field.Label.Label),
+                    new XAttribute("label", field.Label),
                     new XAttribute("value", value)));
             }
 

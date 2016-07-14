@@ -42,7 +42,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             renderer.WriteRowStart(InputFieldName, "captcha", renderer.WriteErrorClass(InputFieldName, context), true, null, sb);
 
             renderer.WriteLabelStart(false, InputFieldName, sb);
-            renderer.WriteLabelContent(true, Localization.Captcha_CompositeC1_Label, String.Empty, false, sb);
+            renderer.WriteLabelContent(true, Localization.Captcha_CompositeC1_Label, sb);
             renderer.WriteLabelEnd(sb);
 
             using (new ControlsGroup(sb, context.FormRenderer))

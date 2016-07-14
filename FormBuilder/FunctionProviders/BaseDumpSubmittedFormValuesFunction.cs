@@ -151,7 +151,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
             var row = new XElement(Namespaces.Xhtml + "tr", new XAttribute("style", "vertical-align: top;"),
                 new XElement(Namespaces.Xhtml + "td",
-                    new XElement(Namespaces.Xhtml + "strong", field.Label.Label.TrimEnd(':') + ":")));
+                    new XElement(Namespaces.Xhtml + "strong", field.Label.TrimEnd(':') + ":")));
 
             if (field.InputElementType is TextAreaInputElementAttribute)
             {

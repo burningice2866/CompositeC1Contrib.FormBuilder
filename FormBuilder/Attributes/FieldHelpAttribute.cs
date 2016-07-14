@@ -8,8 +8,10 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
         private string _help;
         public string Help
         {
-            get { return Strings.GetLocalized(_help); }
+            get { return _help == null ? null : Strings.GetLocalized(_help); }
         }
+
+        public FieldHelpAttribute() { }
 
         public FieldHelpAttribute(string help)
         {

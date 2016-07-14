@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -33,15 +32,8 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public override void ExecutePageHierarchy()
         {
-            var functionContext = new FunctionContextContainer(FunctionContextContainer, new Dictionary<string, object>
-            {
-                { BaseFormFunction.RequestContextKey, RequestContext },
-                { BaseFormFunction.InstanceKey, RequestContext.ModelInstance }
-            });
-
-            var functionContextField = typeof(RazorHelper).GetField("PageContext_FunctionContextContainer", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
-
-            PageData[functionContextField] = functionContext;
+            FunctionContextContainer.AddParameter(BaseFormFunction.RequestContextKey, RequestContext);
+            FunctionContextContainer.AddParameter(BaseFormFunction.InstanceKey, RequestContext.ModelInstance);
 
             RequestContext.Execute(Context);
 

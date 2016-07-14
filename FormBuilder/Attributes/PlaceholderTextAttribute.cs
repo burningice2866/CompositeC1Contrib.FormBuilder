@@ -8,8 +8,10 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
         private string _text;
         public string Text
         {
-            get { return Strings.GetLocalized(_text); }
+            get { return _text == null ? null : Strings.GetLocalized(_text); }
         }
+
+        public PlaceholderTextAttribute() { }
 
         public PlaceholderTextAttribute(string text)
         {

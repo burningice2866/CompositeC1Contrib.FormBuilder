@@ -22,14 +22,14 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             if (String.IsNullOrEmpty(placeholderText) && renderer.HideLabels)
             {
-                placeholderText = field.Label.Label;
+                placeholderText = field.Label;
             }
 
             sb.AppendFormat(Markup,
                 "password",
                 HttpUtility.HtmlAttributeEncode(field.Name),
                 HttpUtility.HtmlAttributeEncode(field.Id),
-                HttpUtility.HtmlAttributeEncode(field.Label.Label),
+                HttpUtility.HtmlAttributeEncode(field.Label),
                 HttpUtility.HtmlAttributeEncode(placeholderText));
 
             AddHtmlAttribute("class", renderer.FormControlClass, htmlAttributes);

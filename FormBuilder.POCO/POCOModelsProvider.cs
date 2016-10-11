@@ -38,13 +38,22 @@ namespace CompositeC1Contrib.FormBuilder
 
         public IEnumerable<ProviderModelContainer> GetModels()
         {
-            return _models.Select(e => new ProviderModelContainer
+            foreach (var m in _models)
             {
-                Source = typeof(POCOModelsProvider),
-                Type = "StaticForm",
-                Model = e.Value.Item1,
-                Function = new StandardFormFunction<POCOFormBuilderRequestContext>(e.Value.Item1.Name)
-            });
+                var functionName = m.Value.Item1.Name;
+                if (!functionName.StartsWith("Forms."))
+                {
+                    functionName = "Forms." + functionName;
+                }
+
+                yield return new ProviderModelContainer
+                {
+                    Source = typeof(POCOModelsProvider),
+                    Type = "StaticForm",
+                    Model = m.Value.Item1,
+                    Function = new StandardFormFunction<POCOFormBuilderRequestContext>(functionName)
+                };
+            }
         }
 
         private static IEnumerable<Type> GetFormTypes()

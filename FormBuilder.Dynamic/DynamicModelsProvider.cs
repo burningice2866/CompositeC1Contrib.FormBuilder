@@ -25,7 +25,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 var form = def as DynamicFormDefinition;
                 if (form != null)
                 {
-                    var function = new StandardFormFunction<DynamicFormBuilderRequestContext>(def.Name, def.IntroText, def.SuccessResponse);
+                    var functionName = GetFunctionName(def.Name);
+                    var function = new StandardFormFunction<DynamicFormBuilderRequestContext>(functionName, def.IntroText, def.SuccessResponse);
 
                     if (!String.IsNullOrEmpty(executor))
                     {
@@ -44,7 +45,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 var wizard = def as DynamicWizardDefinition;
                 if (wizard != null)
                 {
-                    var function = new FormWizardFunction<DynamicFormWizardRequestContext>(def.Name, def.IntroText, def.SuccessResponse);
+                    var functionName = GetFunctionName(def.Name);
+                    var function = new FormWizardFunction<DynamicFormWizardRequestContext>(functionName, def.IntroText, def.SuccessResponse);
 
                     if (!String.IsNullOrEmpty(executor))
                     {
@@ -60,6 +62,16 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     };
                 }
             }
+        }
+
+        private string GetFunctionName(string name)
+        {
+            if (!name.StartsWith("Forms."))
+            {
+                name = "Forms." + name;
+            }
+
+            return name;
         }
     }
 }

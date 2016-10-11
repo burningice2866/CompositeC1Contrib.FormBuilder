@@ -18,8 +18,10 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
                 foreach (var entry in ModelsFacade.GetModels())
                 {
+                    var compositeName = entry.Function.CompositeName();
+
                     IFunction function;
-                    if (!FunctionFacade.TryGetFunction(out function, entry.Model.Name))
+                    if (!FunctionFacade.TryGetFunction(out function, compositeName))
                     {
                         yield return entry.Function;
                     }

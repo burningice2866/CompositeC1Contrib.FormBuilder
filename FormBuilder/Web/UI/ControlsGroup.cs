@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 
 using CompositeC1Contrib.FormBuilder.Web.UI.Rendering;
@@ -7,47 +8,37 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public class ControlsGroup : IDisposable
     {
-        private readonly FormsPage _page;
-        private readonly StringBuilder _sb;
+        private readonly TextWriter _output;
+        private readonly FormRenderer _renderer;
 
         private bool _disposed;
 
-        public ControlsGroup(StringBuilder sb, FormRenderer renderer)
+        public ControlsGroup(StringBuilder sb, FormRenderer renderer) : this(new StringWriter(sb), renderer) { }
+        public ControlsGroup(FormsPage page) : this(page.Output, page.FormRenderer) { }
+
+        private ControlsGroup(TextWriter output, FormRenderer renderer)
         {
             if (FieldsRow.Current != null)
             {
                 return;
             }
 
-            _sb = sb;
+            _output = output;
+            _renderer = renderer;
 
-            sb.AppendFormat("<div class=\"{0}\">", renderer.FieldGroupClass);
-        }
-
-        public ControlsGroup(FormsPage page)
-        {
-            if (FieldsRow.Current != null)
+            if (!String.IsNullOrEmpty(_renderer.FieldGroupClass))
             {
-                return;
+                _output.Write(String.Format("<div class=\"{0}\">", _renderer.FieldGroupClass));
             }
-
-            _page = page;
-
-            page.WriteLiteral(String.Format("<div class=\"{0}\">", page.FormRenderer.FieldGroupClass));
         }
 
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)
             {
-                if (_page != null)
+                if (!String.IsNullOrEmpty(_renderer.FieldGroupClass))
                 {
-                    _page.WriteLiteral("</div>");
-                }
-
-                if (_sb != null)
-                {
-                    _sb.Append("</div>");
+                    _output.Write("</div>");
                 }
 
                 _disposed = true;

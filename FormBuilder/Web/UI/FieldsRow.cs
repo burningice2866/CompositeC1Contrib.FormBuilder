@@ -1,6 +1,10 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 
 using Composite.Core.Caching;
+
+using CompositeC1Contrib.FormBuilder.Web.UI.Rendering;
 
 namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
@@ -8,17 +12,20 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
     {
         private const string Key = "FormBuilder:FieldRow";
 
-        private readonly FormsPage _page;
-        private bool _disposed;
+        private readonly TextWriter _output;
+        private readonly FormRenderer _renderer;
 
-        public bool IncludeLabels { get; private set; }
+        private bool _disposed;
 
         public static FieldsRow Current
         {
             get { return RequestLifetimeCache.TryGet<FieldsRow>(Key); }
         }
 
-        public FieldsRow(FormsPage page, bool includeLabels)
+        public FieldsRow(StringBuilder sb, FormRenderer renderer) : this(new StringWriter(sb), renderer) { }
+        public FieldsRow(FormsPage page, FormRenderer renderer) : this(page.Output, renderer) { }
+
+        public FieldsRow(TextWriter output, FormRenderer renderer)
         {
             if (Current != null)
             {
@@ -27,17 +34,17 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             RequestLifetimeCache.Add(Key, this);
 
-            _page = page;
-            IncludeLabels = includeLabels;
+            _output = output;
+            _renderer = renderer;
 
-            page.WriteLiteral(String.Format("<div class=\"{0} controls-row\">", page.FormRenderer.FieldGroupClass));
+            _output.Write(String.Format("<div class=\"{0} controls-row\">", _renderer.FieldGroupClass));
         }
 
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)
             {
-                _page.WriteLiteral(String.Format("</div>"));
+                _output.Write(String.Format("</div>"));
 
                 RequestLifetimeCache.Remove(Key);
 

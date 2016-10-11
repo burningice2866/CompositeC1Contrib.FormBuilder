@@ -145,12 +145,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected FieldsRow BeginRow()
         {
-            return BeginRow(false);
-        }
-
-        protected FieldsRow BeginRow(bool includeLabels)
-        {
-            return new FieldsRow(this, includeLabels);
+            return new FieldsRow(this, FormRenderer);
         }
 
         protected string WriteErrorClass(string name, BaseFormBuilderRequestContext context)

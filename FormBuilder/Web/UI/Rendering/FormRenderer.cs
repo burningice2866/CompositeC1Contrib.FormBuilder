@@ -121,20 +121,18 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.Rendering
 
         private IHtmlString WriteRow(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes)
         {
-            var fieldsRow = FieldsRow.Current;
-
             var sb = new StringBuilder();
-            var includeLabel = ShowLabel(field);
 
             WriteRowStart(field.Name, field.InputElementType.ElementName,
                 WriteErrorClass(field.Name, context), field.IsRequired,
                 builder => DependencyAttributeFor(field, builder), sb);
 
-            if (fieldsRow == null || fieldsRow.IncludeLabels)
+            if (!HideLabels)
             {
                 if (!(field.InputElementType is CheckboxInputElementAttribute && field.ValueType == typeof(bool)))
                 {
-                    if (includeLabel)
+                    var showLabel = ShowLabel(field);
+                    if (showLabel)
                     {
                         WriteLabel(field, sb);
                     }
@@ -145,25 +143,27 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.Rendering
                 }
             }
 
-            using (new ControlsGroup(sb, context.FormRenderer))
+            using (new ControlsGroup(sb, this))
             {
-                if (fieldsRow == null || fieldsRow.IncludeLabels)
+                if (!HideLabels)
                 {
                     if (field.InputElementType is CheckboxInputElementAttribute && field.ValueType == typeof(bool))
                     {
-                        sb.Append("<label class=\"checkbox\">");
+                        sb.AppendFormat("<div class=\"{0}\">", field.InputElementType.ElementName);
+                        sb.Append("   <label>");
                     }
                 }
 
                 WriteField(context, field, sb, htmlAttributes);
 
-                if (fieldsRow == null || fieldsRow.IncludeLabels)
+                if (!HideLabels)
                 {
                     if (field.InputElementType is CheckboxInputElementAttribute && field.ValueType == typeof(bool))
                     {
                         WriteLabelContent(field, sb);
 
-                        sb.Append("</label>");
+                        sb.Append("  </label>");
+                        sb.Append("</div>");
                     }
                 }
             }
@@ -309,6 +309,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.Rendering
         private void WriteLabel(FormField field, StringBuilder sb)
         {
             var hide = HideLabels;
+
             if (field.InputElementType is FileuploadInputElementAttribute)
             {
                 hide = false;
@@ -334,7 +335,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.Rendering
             {
                 sb.Append("<span class=\"required\">*</span>");
             }
-            
+
             sb.Append(HttpUtility.HtmlEncode(label));
         }
 

@@ -61,7 +61,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public bool IsRequired
         {
-            get { return Model.IsRequired; }
+            get { return Model.IsRequired(this); }
         }
 
         public bool IsHiddenField

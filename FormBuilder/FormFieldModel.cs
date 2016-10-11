@@ -102,16 +102,6 @@ namespace CompositeC1Contrib.FormBuilder
             }
         }
 
-        public bool IsRequired
-        {
-            get
-            {
-                var requiredAttribute = Attributes.OfType<RequiredFieldAttribute>().FirstOrDefault();
-
-                return requiredAttribute != null && requiredAttribute.IsRequired;
-            }
-        }
-
         public bool IsHiddenField
         {
             get { return Attributes.OfType<HiddenFieldAttribute>().Any(); }
@@ -193,9 +183,11 @@ namespace CompositeC1Contrib.FormBuilder
             ValueType = valueType;
         }
 
-        public static bool IsValidName(string name)
+        public bool IsRequired(FormField field)
         {
-            return Regex.IsMatch(name, @"^[a-zA-Z0-9]+$");
+            var requiredAttribute = Attributes.OfType<RequiredFieldAttribute>().FirstOrDefault();
+
+            return requiredAttribute != null && requiredAttribute.IsRequired(field);
         }
 
         public void EnsureValueType()
@@ -205,6 +197,11 @@ namespace CompositeC1Contrib.FormBuilder
             {
                 ValueType = type;
             }
+        }
+
+        public static bool IsValidName(string name)
+        {
+            return Regex.IsMatch(name, @"^[a-zA-Z0-9]+$");
         }
 
         private InputElementTypeAttribute GetDefaultInputType()

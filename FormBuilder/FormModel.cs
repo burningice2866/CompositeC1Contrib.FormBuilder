@@ -60,7 +60,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public FormModel(string name)
         {
-            Verify.That(IsValidName(name), "Invalid form name, only a-z and 0-9 is allowed");
+            Verify.That(IsValidName(name), "Invalid form name, only a-z, 0-9 and symbols - is allowed");
 
             Name = name;
 
@@ -72,7 +72,7 @@ namespace CompositeC1Contrib.FormBuilder
         {
             var parts = name.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
 
-            return parts.Length >= 2 && parts.All(p => Regex.IsMatch(p, @"^[a-zA-Z0-9]+$"));
+            return parts.Length >= 2 && parts.All(p => Regex.IsMatch(p, @"^[a-zA-Z0-9-]+$"));
         }
     }
 }

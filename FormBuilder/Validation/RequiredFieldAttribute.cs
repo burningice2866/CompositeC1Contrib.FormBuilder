@@ -56,10 +56,18 @@ namespace CompositeC1Contrib.FormBuilder.Validation
                     {
                         return (int)value > 0;
                     }
-
                     if (valueType == typeof(int?))
                     {
                         return ((int?)value).HasValue;
+                    }
+
+                    if (valueType == typeof(Guid))
+                    {
+                        return (Guid)value != Guid.Empty;
+                    }
+                    if (valueType == typeof(Guid?))
+                    {
+                        return ((Guid?)value).HasValue;
                     }
 
                     if (valueType == typeof(DateTime))

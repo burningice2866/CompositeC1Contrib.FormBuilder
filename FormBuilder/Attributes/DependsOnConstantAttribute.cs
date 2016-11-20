@@ -22,7 +22,7 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
 
         public override bool DependencyMet(Form form)
         {
-            var field = form.Fields.Single(f => f.Name == ReadFromFieldName);
+            var field = form.Fields.Get(ReadFromFieldName);
             var actualValue = field.Value;
 
             foreach (var obj in RequiredFieldValues)

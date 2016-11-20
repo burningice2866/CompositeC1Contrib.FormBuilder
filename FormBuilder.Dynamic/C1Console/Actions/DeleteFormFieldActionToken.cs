@@ -37,7 +37,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
         {
             var fieldToken = (FormFieldEntityToken)entityToken;
             var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
-            var field = definition.Model.Fields.Single(f => f.Name == fieldToken.FieldName);
+            var field = definition.Model.Fields.Get(fieldToken.FieldName);
 
             definition.Model.Fields.Remove(field);
 

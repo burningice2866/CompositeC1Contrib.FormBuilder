@@ -1,29 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
 
 using Composite.C1Console.Elements;
 using Composite.C1Console.Security;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 
-using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
+using CompositeC1Contrib.Composition;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider.EntityTokenHandlers
 {
-    [Export(typeof(IEntityTokenBasedElementProvider))]
-    public class FieldValidatorsEntityTokenHandler : IEntityTokenBasedElementProvider
+    [Export("FormBuilder", typeof(IElementProviderFor))]
+    public class FieldValidatorsEntityTokenHandler : IElementProviderFor
     {
-        public bool IsProviderFor(EntityToken token)
-        {
-            return token is FieldValidatorsEntityToken;
-        }
+        private static readonly ActionGroup ActionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
+        private static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = true, ActionGroup = ActionGroup };
 
-        public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)
+        public IEnumerable<Type> ProviderFor
+        {
+            get { return new[] { typeof(FieldValidatorsEntityToken) }; }
+        }
+        
+        public IEnumerable<Element> Provide(ElementProviderContext context, EntityToken token)
         {
             var validatorToken = (FieldValidatorsEntityToken)token;
             var form = DynamicFormsFacade.GetFormByName(validatorToken.FormName);
@@ -32,7 +34,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider.Entit
             {
                 if (form != null)
                 {
-                    var field = form.Model.Fields.SingleOrDefault(f => f.Name == validatorToken.FieldName);
+                    var field = form.Model.Fields.Get(validatorToken.FieldName);
                     if (field != null)
                     {
                         foreach (var validator in field.ValidationAttributes)
@@ -60,7 +62,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider.Entit
                                     Label = "Edit",
                                     ToolTip = "Edit",
                                     Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                                    ActionLocation = FormBuilderElementProvider.ActionLocation
+                                    ActionLocation = ActionLocation
                                 }
                             });
 
@@ -72,7 +74,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider.Entit
                                     Label = "Delete",
                                     ToolTip = "Delete",
                                     Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-delete"),
-                                    ActionLocation = FormBuilderElementProvider.ActionLocation
+                                    ActionLocation = ActionLocation
                                 }
                             });
 

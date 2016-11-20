@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
@@ -7,7 +8,7 @@ using Composite.C1Console.Security;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 
-using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
+using CompositeC1Contrib.Composition;
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
@@ -15,15 +16,18 @@ using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 {
-    [Export(typeof(IEntityTokenBasedElementProvider))]
-    public class FormFolderEntityTokenHandler : IEntityTokenBasedElementProvider
+    [Export("FormBuilder", typeof(IElementProviderFor))]
+    public class FormFolderEntityTokenHandler : IElementProviderFor
     {
-        public bool IsProviderFor(EntityToken token)
+        private static readonly ActionGroup ActionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
+        private static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = true, ActionGroup = ActionGroup };
+
+        public IEnumerable<Type> ProviderFor
         {
-            return token is FormFolderEntityToken;
+            get { return new[] { typeof(FormFolderEntityToken) }; }
         }
 
-        public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)
+        public IEnumerable<Element> Provide(ElementProviderContext context, EntityToken token)
         {
             var formFolderToken = (FormFolderEntityToken)token;
 
@@ -70,7 +74,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                             Label = "Edit",
                             ToolTip = "Edit",
                             Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                            ActionLocation = FormBuilderElementProvider.ActionLocation
+                            ActionLocation = ActionLocation
                         }
                     });
                 }
@@ -83,7 +87,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         Label = "Delete",
                         ToolTip = "Delete",
                         Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-delete"),
-                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                        ActionLocation = ActionLocation
                     }
                 });
 
@@ -122,7 +126,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         Label = "Edit step",
                         ToolTip = "Edit step",
                         Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                        ActionLocation = ActionLocation
                     }
                 });
 
@@ -134,7 +138,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         Label = "Delete step",
                         ToolTip = "Delete step",
                         Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-delete"),
-                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                        ActionLocation = ActionLocation
                     }
                 });
 

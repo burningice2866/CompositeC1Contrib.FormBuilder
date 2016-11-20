@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="yes"?>
 <mi:PackageInstaller xmlns:mi="http://www.composite.net/ns/management/packageinstaller/1.0">
-  <mi:PackageRequirements minimumCompositeVersion="4.0.4897.31550"
+  <mi:PackageRequirements minimumCompositeVersion="4.2.5287.17495"
                           maximumCompositeVersion="9.9999.9999.9999" />
 
   <mi:PackageInformation name="Contribution.CompositeC1Contrib.FormBuilder"
@@ -19,6 +19,8 @@
     <mi:Add installerType="Composite.Core.PackageSystem.PackageFragmentInstallers.FilePackageFragmentInstaller, Composite" uninstallerType="Composite.Core.PackageSystem.PackageFragmentInstallers.FilePackageFragmentUninstaller, Composite">
       <Files>
         <File sourceFilename="~\bin\CompositeC1Contrib.FormBuilder.dll" targetFilename="~\bin\CompositeC1Contrib.FormBuilder.dll" allowOverwrite="true" />
+        <File sourceFilename="~\bin\da\CompositeC1Contrib.FormBuilder.resources.dll" targetFilename="~\bin\da\CompositeC1Contrib.FormBuilder.resources.dll" allowOverwrite="true" />
+        <File sourceFilename="~\bin\kl\CompositeC1Contrib.FormBuilder.resources.dll" targetFilename="~\bin\kl\CompositeC1Contrib.FormBuilder.resources.dll" allowOverwrite="true" />
         
         <File sourceFilename="~\content\App_Data\Razor\FormBuilder\StandardFormExecutor.cshtml" targetFilename="~\App_Data\Razor\FormBuilder\StandardFormExecutor.cshtml" allowOverwrite="true" />
         <File sourceFilename="~\content\App_Data\Razor\FormBuilder\StandardFormWizardExecutor.cshtml" targetFilename="~\App_Data\Razor\FormBuilder\StandardFormWizardExecutor.cshtml" allowOverwrite="true" />
@@ -28,7 +30,6 @@
       </Files>
 
       <Directories>
-        <Directory sourceDirectory="~\content\Composite\InstalledPackages\localization\" targetDirectory="~\Composite\InstalledPackages\localization\" allowOverwrite="true" />
         <Directory sourceDirectory="~\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\" targetDirectory="~\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\" allowOverwrite="true" deleteTargetDirectory="true" />
       </Directories>
     </mi:Add>

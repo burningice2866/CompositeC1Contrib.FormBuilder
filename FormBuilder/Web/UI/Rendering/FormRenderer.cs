@@ -66,9 +66,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.Rendering
             var fieldsWritten = new List<string>();
             var sb = new StringBuilder();
 
-            if (!String.IsNullOrEmpty(Localization.Validation_ErrorNotification_Header))
+            if (!String.IsNullOrEmpty(Localization.T("Validation_ErrorNotification_Header")))
             {
-                sb.Append("<p>" + HttpUtility.HtmlEncode(Localization.Validation_ErrorNotification_Header) + "</p>");
+                sb.Append("<p>" + HttpUtility.HtmlEncode(Localization.T("Validation_ErrorNotification_Header")) + "</p>");
             }
 
             sb.Append("<ul>");
@@ -87,9 +87,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.Rendering
 
             sb.Append("</ul>");
 
-            if (!String.IsNullOrEmpty(Localization.Validation_ErrorNotification_Footer))
+            if (!String.IsNullOrEmpty(Localization.T("Validation_ErrorNotification_Footer")))
             {
-                sb.Append("<p>" + HttpUtility.HtmlEncode(Localization.Validation_ErrorNotification_Footer) + "</p>");
+                sb.Append("<p>" + HttpUtility.HtmlEncode(Localization.T("Validation_ErrorNotification_Footer")) + "</p>");
             }
 
             return sb.ToString();

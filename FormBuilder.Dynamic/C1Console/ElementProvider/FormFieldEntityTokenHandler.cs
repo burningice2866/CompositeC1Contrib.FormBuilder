@@ -8,8 +8,8 @@ using Composite.C1Console.Security;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 
+using CompositeC1Contrib.Composition;
 using CompositeC1Contrib.FormBuilder.Attributes;
-using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
@@ -17,15 +17,18 @@ using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 {
-    [Export(typeof(IEntityTokenBasedElementProvider))]
-    public class FormFieldEntityTokenHandler : IEntityTokenBasedElementProvider
+    [Export("FormBuilder", typeof(IElementProviderFor))]
+    public class FormFieldEntityTokenHandler : IElementProviderFor
     {
-        public bool IsProviderFor(EntityToken token)
+        private static readonly ActionGroup ActionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
+        private static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = true, ActionGroup = ActionGroup };
+
+        public IEnumerable<Type> ProviderFor
         {
-            return token is FormFieldEntityToken;
+            get { return new[] { typeof(FormFieldEntityToken) }; }
         }
 
-        public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)
+        public IEnumerable<Element> Provide(ElementProviderContext context, EntityToken token)
         {
             var fieldToken = (FormFieldEntityToken)token;
             var form = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
@@ -35,7 +38,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 yield break;
             }
 
-            var field = form.Model.Fields.SingleOrDefault(f => f.Name == fieldToken.FieldName);
+            var field = form.Model.Fields.Get(fieldToken.FieldName);
             if (field == null)
             {
                 yield break;
@@ -62,7 +65,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     Label = "Add validator",
                     ToolTip = "Add validator",
                     Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                    ActionLocation = FormBuilderElementProvider.ActionLocation
+                    ActionLocation = ActionLocation
                 }
             });
 
@@ -81,7 +84,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 }
             };
 
-            var addDependencyActionToken = new WorkflowActionToken(typeof (AddFieldDependencyWorkflow), new[] {PermissionType.Add});
+            var addDependencyActionToken = new WorkflowActionToken(typeof(AddFieldDependencyWorkflow), new[] { PermissionType.Add });
             fieldDependencyElement.AddAction(new ElementAction(new ActionHandle(addDependencyActionToken))
             {
                 VisualData = new ActionVisualizedData
@@ -89,7 +92,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     Label = "Add dependency",
                     ToolTip = "Add dependency",
                     Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                    ActionLocation = FormBuilderElementProvider.ActionLocation
+                    ActionLocation = ActionLocation
                 }
             });
 
@@ -122,7 +125,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     Label = "Delete datasource",
                     ToolTip = "Delete datasource",
                     Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-delete"),
-                    ActionLocation = FormBuilderElementProvider.ActionLocation
+                    ActionLocation = ActionLocation
                 }
             });
 
@@ -136,7 +139,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         Label = "Add value",
                         ToolTip = "Add value",
                         Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                        ActionLocation = ActionLocation
                     }
                 });
             }

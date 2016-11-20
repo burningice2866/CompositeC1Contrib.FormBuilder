@@ -35,7 +35,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             var definition = DynamicFormsFacade.GetFormByName(token.FormName);
 
-            var field = definition.Model.Fields.Single(f => f.Name == token.FieldName);
+            var field = definition.Model.Fields.Get(token.FieldName);
             var dependency = field.DependencyAttributes.Single(d => d.ReadFromFieldName == token.FromFieldName);
 
             field.Attributes.Remove(dependency);

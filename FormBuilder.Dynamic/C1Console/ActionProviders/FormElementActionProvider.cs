@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
 
 using Composite.C1Console.Elements;
 using Composite.C1Console.Security;
@@ -6,7 +8,7 @@ using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 using Composite.Data;
 
-using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
+using CompositeC1Contrib.Composition;
 using CompositeC1Contrib.FormBuilder.C1Console.Workflows;
 using CompositeC1Contrib.FormBuilder.Data.Types;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
@@ -14,101 +16,110 @@ using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ActionProviders
 {
-    [Export(typeof(IElementActionProvider))]
-    public class FormElementActionProvider : IElementActionProvider
+    [Export("FormBuilder", typeof(IElementActionProviderFor))]
+    public class FormElementActionProvider : IElementActionProviderFor
     {
-        public bool IsProviderFor(EntityToken entityToken)
+        private static readonly ActionGroup ActionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
+        private static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = true, ActionGroup = ActionGroup };
+
+        public IEnumerable<Type> ProviderFor
         {
-            var dataToken = entityToken as DataEntityToken;
-            if (dataToken == null)
+            get
             {
-                return false;
+                return new[] { typeof(DataEntityToken) };
             }
-
-            var modelReference = dataToken.Data as IModelReference;
-            if (modelReference == null)
-            {
-                return false;
-            }
-
-            return true;
         }
 
         public void AddActions(Element element)
         {
-            var modelReference = (IModelReference)((DataEntityToken)element.ElementHandle.EntityToken).Data;
+            var actions = Provide(element.ElementHandle.EntityToken);
+
+            element.AddAction(actions);
+        }
+
+        public IEnumerable<ElementAction> Provide(EntityToken entityToken)
+        {
+            var dataEntityToken = (DataEntityToken)entityToken;
+
+            var modelReference = dataEntityToken.Data as IModelReference;
+            if (modelReference == null)
+            {
+                yield break;
+            }
 
             var def = DefinitionsFacade.GetDefinition(modelReference.Name);
             if (def == null)
             {
-                return;
+                yield break;
             }
 
             if (def is DynamicFormDefinition)
             {
                 var editActionToken = new WorkflowActionToken(typeof(EditFormWorkflow));
-                element.AddAction(new ElementAction(new ActionHandle(editActionToken))
+                yield return new ElementAction(new ActionHandle(editActionToken))
                 {
+                    TagValue = "edit",
+
                     VisualData = new ActionVisualizedData
                     {
                         Label = "Edit",
                         ToolTip = "Edit",
                         Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                        ActionLocation = ActionLocation
                     }
-                });
+                };
 
                 var editRenderingLayoutActionToken = new WorkflowActionToken(typeof(EditFormRenderingLayoutWorkflow));
-                element.AddAction(new ElementAction(new ActionHandle(editRenderingLayoutActionToken))
+                yield return new ElementAction(new ActionHandle(editRenderingLayoutActionToken))
                 {
                     VisualData = new ActionVisualizedData
                     {
                         Label = "Edit rendering layout",
                         ToolTip = "Edit rendering layout",
                         Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                        ActionLocation = ActionLocation
                     }
-                });
+                };
             }
 
             if (def is DynamicWizardDefinition)
             {
                 var editActionToken = new WorkflowActionToken(typeof(EditFormWizardWorkflow));
-                element.AddAction(new ElementAction(new ActionHandle(editActionToken))
+                yield return new ElementAction(new ActionHandle(editActionToken))
                 {
                     VisualData = new ActionVisualizedData
                     {
                         Label = "Edit",
                         ToolTip = "Edit",
                         Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                        ActionLocation = ActionLocation
                     }
-                });
+                };
             }
 
             var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + modelReference.Name, typeof(DeleteFormActionToken));
-            element.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
+            yield return new ElementAction(new ActionHandle(deleteActionToken))
             {
                 VisualData = new ActionVisualizedData
                 {
                     Label = "Delete",
                     ToolTip = "Delete",
                     Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-delete"),
-                    ActionLocation = FormBuilderElementProvider.ActionLocation
+                    ActionLocation = ActionLocation
                 }
-            });
+            };
 
             var copyActionToken = new WorkflowActionToken(typeof(CopyFormWorkflow));
-            element.AddAction(new ElementAction(new ActionHandle(copyActionToken))
+            yield return new ElementAction(new ActionHandle(copyActionToken))
             {
                 VisualData = new ActionVisualizedData
                 {
                     Label = "Copy",
                     ToolTip = "Copy",
                     Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                    ActionLocation = FormBuilderElementProvider.ActionLocation
+                    ActionLocation = ActionLocation
                 }
-            });
+            };
         }
     }
 }

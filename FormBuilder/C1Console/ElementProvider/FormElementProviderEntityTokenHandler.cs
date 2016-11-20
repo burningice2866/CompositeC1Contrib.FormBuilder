@@ -9,20 +9,21 @@ using Composite.Core.ResourceSystem;
 using Composite.Data;
 using Composite.Data.Types;
 
+using CompositeC1Contrib.Composition;
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Data.Types;
 
 namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
 {
-    [Export(typeof(IEntityTokenBasedElementProvider))]
-    public class FormElementProviderEntityTokenHandler : IEntityTokenBasedElementProvider
+    [Export("FormBuilder", typeof(IElementProviderFor))]
+    public class FormElementProviderEntityTokenHandler : IElementProviderFor
     {
-        public bool IsProviderFor(EntityToken token)
+        public IEnumerable<Type> ProviderFor
         {
-            return token is FormElementProviderEntityToken;
+            get { return new[] { typeof(FormElementProviderEntityToken) }; }
         }
 
-        public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)
+        public IEnumerable<Element> Provide(ElementProviderContext context, EntityToken token)
         {
             return GetNamespaceAndFormElements(context, String.Empty);
         }

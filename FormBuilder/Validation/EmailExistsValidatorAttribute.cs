@@ -7,7 +7,11 @@ namespace CompositeC1Contrib.FormBuilder.Validation
     {
         private readonly bool _onlyApproved = true;
 
+        public EmailExistsValidatorAttribute() : this(null) { }
+
         public EmailExistsValidatorAttribute(string message) : this(message, true) { }
+
+        public EmailExistsValidatorAttribute(bool onlyApproved) : this(null, onlyApproved) { }
 
         public EmailExistsValidatorAttribute(string message, bool onlyApproved)
             : base(message)
@@ -19,10 +23,10 @@ namespace CompositeC1Contrib.FormBuilder.Validation
         {
             var value = (string)field.Value;
 
-            return new FormValidationRule(new[] { field.Name }, Message)
+            return CreateRule(field, () =>
             {
-                Rule = () => Membership.FindUsersByEmail(value).Cast<MembershipUser>().Any(u => !_onlyApproved || u.IsApproved)
-            };
+                return Membership.FindUsersByEmail(value).Cast<MembershipUser>().Any(u => !_onlyApproved || u.IsApproved);
+            });
         }
     }
 }

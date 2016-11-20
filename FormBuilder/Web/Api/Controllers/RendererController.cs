@@ -6,6 +6,7 @@ using CompositeC1Contrib.FormBuilder.Web.UI.Rendering;
 
 namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
 {
+    [SetCultureFilter]
     public class RendererController : ApiController
     {
         [HttpPost]

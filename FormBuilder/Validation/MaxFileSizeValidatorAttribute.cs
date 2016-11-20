@@ -1,10 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class MaxFileSizeValidatorAttribute : BaseFileValidatorAttribute
     {
         public double Size { get; private set; }
+
+        public MaxFileSizeValidatorAttribute(double fileSize) : this(null, fileSize) { }
 
         public MaxFileSizeValidatorAttribute(string message, double fileSize)
             : base(message)
@@ -16,10 +19,14 @@ namespace CompositeC1Contrib.FormBuilder.Validation
         {
             var value = GetFiles(field);
 
-            return new FormValidationRule(new[] { field.Name }, Message)
+            var rule = CreateRule(field, () =>
             {
-                Rule = () => value.Sum(f => f.ContentLength) <= Size
-            };
+                return value.Sum(f => f.ContentLength) <= Size;
+            });
+
+            rule.FormatMessage = m => String.Format(m, Size);
+
+            return rule;
         }
     }
 }

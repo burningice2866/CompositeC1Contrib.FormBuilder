@@ -8,6 +8,8 @@ namespace CompositeC1Contrib.FormBuilder.Validation
     {
         private readonly bool _isRequired;
 
+        public RequiredFieldAttribute() : this(null) { }
+
         public RequiredFieldAttribute(string message)
             : base(message)
         {
@@ -24,73 +26,70 @@ namespace CompositeC1Contrib.FormBuilder.Validation
             var valueType = field.ValueType;
             var value = field.Value;
 
-            return new FormValidationRule(new[] { field.Name }, Message)
+            return CreateRule(field, () =>
             {
-                Rule = () =>
+                if (!IsRequired(field))
                 {
-                    if (!IsRequired(field))
-                    {
-                        return true;
-                    }
-
-                    if (value == null)
-                    {
-                        return false;
-                    }
-
-                    if (valueType == typeof(string))
-                    {
-                        return !String.IsNullOrWhiteSpace((string)value);
-                    }
-                    if (valueType == typeof(IEnumerable<string>))
-                    {
-                        return ((IEnumerable<string>)value).Any(f => !String.IsNullOrWhiteSpace(f));
-                    }
-
-                    if (valueType == typeof(bool))
-                    {
-                        return (bool)value;
-                    }
-
-                    if (valueType == typeof(int))
-                    {
-                        return (int)value > 0;
-                    }
-                    if (valueType == typeof(int?))
-                    {
-                        return ((int?)value).HasValue;
-                    }
-
-                    if (valueType == typeof(Guid))
-                    {
-                        return (Guid)value != Guid.Empty;
-                    }
-                    if (valueType == typeof(Guid?))
-                    {
-                        return ((Guid?)value).HasValue;
-                    }
-
-                    if (valueType == typeof(DateTime))
-                    {
-                        return (DateTime)value > DateTime.MinValue;
-                    }
-                    if (valueType == typeof(DateTime?))
-                    {
-                        return ((DateTime?)value).HasValue;
-                    }
-
-                    if (valueType == typeof(FormFile))
-                    {
-                        return ((FormFile)value).ContentLength > 0;
-                    }
-                    if (valueType == typeof(IEnumerable<FormFile>))
-                    {
-                        return ((IEnumerable<FormFile>)value).Any(f => f.ContentLength > 0);
-                    }
-
                     return true;
                 }
-            };
+
+                if (value == null)
+                {
+                    return false;
+                }
+
+                if (valueType == typeof(string))
+                {
+                    return !String.IsNullOrWhiteSpace((string)value);
+                }
+                if (valueType == typeof(IEnumerable<string>))
+                {
+                    return ((IEnumerable<string>)value).Any(f => !String.IsNullOrWhiteSpace(f));
+                }
+
+                if (valueType == typeof(bool))
+                {
+                    return (bool)value;
+                }
+
+                if (valueType == typeof(int))
+                {
+                    return (int)value > 0;
+                }
+                if (valueType == typeof(int?))
+                {
+                    return ((int?)value).HasValue;
+                }
+
+                if (valueType == typeof(Guid))
+                {
+                    return (Guid)value != Guid.Empty;
+                }
+                if (valueType == typeof(Guid?))
+                {
+                    return ((Guid?)value).HasValue;
+                }
+
+                if (valueType == typeof(DateTime))
+                {
+                    return (DateTime)value > DateTime.MinValue;
+                }
+                if (valueType == typeof(DateTime?))
+                {
+                    return ((DateTime?)value).HasValue;
+                }
+
+                if (valueType == typeof(FormFile))
+                {
+                    return ((FormFile)value).ContentLength > 0;
+                }
+                if (valueType == typeof(IEnumerable<FormFile>))
+                {
+                    return ((IEnumerable<FormFile>)value).Any(f => f.ContentLength > 0);
+                }
+
+                return true;
+            });
         }
     }
 }

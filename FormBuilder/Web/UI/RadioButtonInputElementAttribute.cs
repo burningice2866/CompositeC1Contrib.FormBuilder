@@ -34,7 +34,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                         HttpUtility.HtmlAttributeEncode(field.Name),
                         HttpUtility.HtmlAttributeEncode(field.Id + "_" + ix++),
                         HttpUtility.HtmlAttributeEncode(item.Key),
-                        (value == null ? String.Empty : renderer.WriteChecked(Strings.IsEqual(value, item.Key), "checked")));
+                        (value == null ? String.Empty : renderer.WriteChecked(item.Key.IsEqualTo(value), "checked")));
 
                     AddReadOnlyAttribute(field, htmlAttributes);
                     RenderExtraHtmlTags(sb, htmlAttributesDictionary);

@@ -9,6 +9,8 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 
         public string RegexPattern { get; private set; }
 
+        public RegexValidatorAttribute(string regexPattern) : this(null, regexPattern) { }
+
         public RegexValidatorAttribute(string message, string regexPattern)
             : base(message)
         {
@@ -20,18 +22,15 @@ namespace CompositeC1Contrib.FormBuilder.Validation
         {
             var value = (string)field.Value;
 
-            return new FormValidationRule(new[] { field.Name }, Message)
+            return CreateRule(field, () =>
             {
-                Rule = () =>
+                if (String.IsNullOrEmpty(value))
                 {
-                    if (String.IsNullOrEmpty(value))
-                    {
-                        return !field.IsRequired;
-                    }
-
-                    return _regex.IsMatch(value);
+                    return !field.IsRequired;
                 }
-            };
+
+                return _regex.IsMatch(value);
+            });
         }
     }
 }

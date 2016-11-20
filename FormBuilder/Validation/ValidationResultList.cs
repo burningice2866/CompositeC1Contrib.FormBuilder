@@ -24,7 +24,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
                 }
 
                 return true;
-            }).Where(r => !r.Rule());
+            }).Where(r => r.IsInvalid());
 
             return new ValidationResultList(failingRules);
         }

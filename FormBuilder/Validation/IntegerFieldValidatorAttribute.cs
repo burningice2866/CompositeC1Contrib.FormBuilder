@@ -4,29 +4,28 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class IntegerFieldValidatorAttribute : FormValidationAttribute
     {
+        public IntegerFieldValidatorAttribute() { }
+
         public IntegerFieldValidatorAttribute(string message) : base(message) { }
 
         public override FormValidationRule CreateRule(FormField field)
         {
-            return new FormValidationRule(new[] { field.Name }, Message)
+            return CreateRule(field, () =>
             {
-                Rule = () =>
+                var s = field.OwningForm.SubmittedValues[field.Name];
+                if (String.IsNullOrEmpty(s))
                 {
-                    var s = field.OwningForm.SubmittedValues[field.Name];
-                    if (String.IsNullOrEmpty(s))
-                    {
-                        return !field.IsRequired;
-                    }
-
-                    int i;
-                    if (!int.TryParse(s, out i))
-                    {
-                        return false;
-                    }
-
-                    return true;
+                    return !field.IsRequired;
                 }
-            };
+
+                int i;
+                if (!int.TryParse(s, out i))
+                {
+                    return false;
+                }
+
+                return true;
+            });
         }
     }
 }

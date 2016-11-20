@@ -6,8 +6,10 @@ namespace CompositeC1Contrib.FormBuilder.Validation
     {
         private readonly int _daysFromNow;
 
+        public DaysFromNowValidatorAttribute(int daysFromNow) : this(null, daysFromNow) { }
+
         public DaysFromNowValidatorAttribute(string message, int daysFromNow)
-            : base(String.Format(message, daysFromNow))
+            : base(message)
         {
             _daysFromNow = daysFromNow;
         }
@@ -25,18 +27,19 @@ namespace CompositeC1Contrib.FormBuilder.Validation
                 dt = (DateTime?)field.Value;
             }
 
-            return new FormValidationRule(new[] { field.Name }, Message)
+            var rule = CreateRule(field, () =>
             {
-                Rule = () =>
+                if (!dt.HasValue)
                 {
-                    if (!dt.HasValue)
-                    {
-                        return !field.IsRequired;
-                    }
-
-                    return (dt.Value - DateTime.Now).Days >= _daysFromNow;
+                    return !field.IsRequired;
                 }
-            };
+
+                return (dt.Value - DateTime.Now).Days >= _daysFromNow;
+            });
+
+            rule.FormatMessage = m => String.Format(m, _daysFromNow);
+
+            return rule;
         }
     }
 }

@@ -6,6 +6,8 @@ namespace CompositeC1Contrib.FormBuilder.Validation
     {
         public int Length { get; private set; }
 
+        public MaxFieldLengthAttribute(int length) : this(null, length) { }
+
         public MaxFieldLengthAttribute(string message, int length)
             : base(message)
         {
@@ -16,18 +18,19 @@ namespace CompositeC1Contrib.FormBuilder.Validation
         {
             var value = (string)field.Value;
 
-            return new FormValidationRule(new[] { field.Name }, String.Format(Message, Length))
+            var rule = CreateRule(field, () =>
             {
-                Rule = () =>
+                if (String.IsNullOrEmpty(value))
                 {
-                    if (String.IsNullOrEmpty(value))
-                    {
-                        return !field.IsRequired;
-                    }
-
-                    return value.Length <= Length;
+                    return !field.IsRequired;
                 }
-            };
+
+                return value.Length <= Length;
+            });
+
+            rule.FormatMessage = m => String.Format(m, Length);
+
+            return rule;
         }
     }
 }

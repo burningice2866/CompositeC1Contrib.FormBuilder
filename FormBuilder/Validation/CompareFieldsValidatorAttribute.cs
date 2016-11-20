@@ -1,11 +1,11 @@
-﻿using System.Linq;
-
-namespace CompositeC1Contrib.FormBuilder.Validation
+﻿namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class CompareFieldsValidatorAttribute : FormValidationAttribute
     {
         private readonly string _fieldToCompare;
         private readonly CompareOperator _op;
+
+        public CompareFieldsValidatorAttribute(string fieldToCompare, CompareOperator op) : this(null, fieldToCompare, op) { }
 
         public CompareFieldsValidatorAttribute(string message, string fieldToCompare, CompareOperator op)
             : base(message)
@@ -17,21 +17,18 @@ namespace CompositeC1Contrib.FormBuilder.Validation
         public override FormValidationRule CreateRule(FormField field)
         {
             var value = field.Value;
-            var valueToCompare = field.OwningForm.Fields.Single(f => f.Name == _fieldToCompare).Value;
+            var valueToCompare = field.OwningForm.Fields.Get(_fieldToCompare).Value;
 
-            return new FormValidationRule(new[] { field.Name, _fieldToCompare }, Message)
+            return CreateRule(field, new[] { field.Name, _fieldToCompare }, () =>
             {
-                Rule = () =>
+                switch (_op)
                 {
-                    switch (_op)
-                    {
-                        case CompareOperator.Equal: return value.Equals(valueToCompare);
-                        case CompareOperator.NotEqual: return !value.Equals(valueToCompare);
-                    }
-
-                    return true;
+                    case CompareOperator.Equal: return value.Equals(valueToCompare);
+                    case CompareOperator.NotEqual: return !value.Equals(valueToCompare);
                 }
-            };
+
+                return true;
+            });
         }
     }
 }

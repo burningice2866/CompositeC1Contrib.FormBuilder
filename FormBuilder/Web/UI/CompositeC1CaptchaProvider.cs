@@ -24,7 +24,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var isValid = Captcha.Decrypt(encryptedValue, out dt, out value) && value == postedValue;
             if (!isValid)
             {
-                validationMessages.Add(InputFieldName, Localization.Captcha_CompositeC1_Error);
+                validationMessages.Add(InputFieldName, Localization.T("Captcha_CompositeC1_Error"));
             }
         }
 
@@ -42,12 +42,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             renderer.WriteRowStart(InputFieldName, "captcha", renderer.WriteErrorClass(InputFieldName, context), true, null, sb);
 
             renderer.WriteLabelStart(false, InputFieldName, sb);
-            renderer.WriteLabelContent(true, Localization.Captcha_CompositeC1_Label, sb);
+            renderer.WriteLabelContent(true, Localization.T("Captcha_CompositeC1_Label"), sb);
             renderer.WriteLabelEnd(sb);
 
             using (new ControlsGroup(sb, context.FormRenderer))
             {
-                if (!String.IsNullOrEmpty(Localization.Captcha_CompositeC1_Help))
+                if (!String.IsNullOrEmpty(Localization.T("Captcha_CompositeC1_Help")))
                 {
                     renderer.WriteFieldHelpStart(sb);
                 }
@@ -60,9 +60,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 sb.AppendFormat("<img src=\"{0}\" />", Captcha.GetImageUrl(encryptedValue));
                 sb.AppendFormat("</div>");
 
-                if (!String.IsNullOrEmpty(Localization.Captcha_CompositeC1_Help))
+                if (!String.IsNullOrEmpty(Localization.T("Captcha_CompositeC1_Help")))
                 {
-                    renderer.WriteFieldHelpEnd(Localization.Captcha_CompositeC1_Help, sb);
+                    renderer.WriteFieldHelpEnd(Localization.T("Captcha_CompositeC1_Help"), sb);
                 }
             }
 

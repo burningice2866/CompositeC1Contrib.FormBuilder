@@ -61,12 +61,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             renderer.WriteRowStart(InputFieldName, "captcha", renderer.WriteErrorClass(InputFieldName, context), true, null, sb);
 
             renderer.WriteLabelStart(false, InputFieldName, sb);
-            renderer.WriteLabelContent(true, Localization.Captcha_GoogleReCAPTCHA_Label, sb);
+            renderer.WriteLabelContent(true, Localization.T("Captcha_GoogleReCAPTCHA_Label"), sb);
             renderer.WriteLabelEnd(sb);
 
             using (new ControlsGroup(sb, renderer))
             {
-                if (!String.IsNullOrEmpty(Localization.Captcha_GoogleReCAPTCHA_Help))
+                if (!String.IsNullOrEmpty(Localization.T("Captcha_GoogleReCAPTCHA_Help")))
                 {
                     renderer.WriteFieldHelpStart(sb);
                 }
@@ -74,9 +74,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 sb.AppendFormat("<div class=\"g-recaptcha captcha-img\" data-sitekey=\"{0}\"></div>", _siteKey);
                 sb.AppendFormat("<script type=\"text/javascript\" src=\"https://www.google.com/recaptcha/api.js?hl={0}\"></script>", Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName);
 
-                if (!String.IsNullOrEmpty(Localization.Captcha_CompositeC1_Help))
+                if (!String.IsNullOrEmpty(Localization.T("Captcha_CompositeC1_Help")))
                 {
-                    renderer.WriteFieldHelpEnd(Localization.Captcha_GoogleReCAPTCHA_Help, sb);
+                    renderer.WriteFieldHelpEnd(Localization.T("Captcha_GoogleReCAPTCHA_Help"), sb);
                 }
             }
 

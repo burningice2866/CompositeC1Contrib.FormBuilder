@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using CompositeC1Contrib.FormBuilder;
 using CompositeC1Contrib.FormBuilder.Validation;
 
-using System.Linq;
-
 using NUnit.Framework;
 
 namespace FormBuilder.Test.Validation
@@ -31,9 +29,11 @@ namespace FormBuilder.Test.Validation
         protected FormValidationRule CreateRule(T value)
         {
             var form = new Form(_field.OwningForm);
-            var field = new FormField(_field, form);
 
-            field.Value = value;
+            var field = new FormField(_field, form)
+            {
+                Value = value
+            };
 
             return _validator.CreateRule(field);
         }

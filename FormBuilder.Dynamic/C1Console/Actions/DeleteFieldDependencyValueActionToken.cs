@@ -38,11 +38,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
             var token = (FieldDependencyValueEntityToken)entityToken;
             var definition = DynamicFormsFacade.GetFormByName(token.FormName);
 
-            var field = definition.Model.Fields.Single(f => f.Name == token.FieldName);
-            var dependnecy = (DependsOnConstantAttribute)field.DependencyAttributes.Single(d => d.ReadFromFieldName == token.FromFieldName);
-            var valueToRemove = dependnecy.RequiredFieldValues.Single(v => v.ToString() == token.Value);
-            
-            dependnecy.RequiredFieldValues.Remove(valueToRemove);
+            var field = definition.Model.Fields.Get(token.FieldName);
+            var dependency = (DependsOnConstantAttribute)field.DependencyAttributes.Single(d => d.ReadFromFieldName == token.FromFieldName);
+            var valueToRemove = dependency.RequiredFieldValues.Single(v => v.ToString() == token.Value);
+
+            dependency.RequiredFieldValues.Remove(valueToRemove);
 
             DynamicFormsFacade.SaveForm(definition);
 

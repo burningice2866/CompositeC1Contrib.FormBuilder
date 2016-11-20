@@ -38,16 +38,16 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Composite, Version=4.3.5562.29799, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1.Core.4.3\lib\net45\Composite.dll</HintPath>
+    <Reference Include="Composite, Version=4.2.5287.17495, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1.Core.4.2.1\lib\net45\Composite.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="CompositeC1Contrib.Core, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1Contrib.Core.0.7.0\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
+    <Reference Include="Composite.Workflows, Version=4.2.5287.17500, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1.Core.4.2.1\lib\net45\Composite.Workflows.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="CompositeC1Contrib.Email, Version=0.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1.Email.0.6.0\lib\net45\CompositeC1Contrib.Email.dll</HintPath>
+    <Reference Include="CompositeC1Contrib.Core, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1Contrib.Core.0.8.2\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -63,15 +63,15 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Reflection.Context" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+    <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Http.WebHost, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -95,17 +95,23 @@
     <Compile Include="Attributes\PlaceholderTextAttribute.cs" />
     <Compile Include="Attributes\ForceHttpsConnectionAttribute.cs" />
     <Compile Include="Attributes\DataSourceAttribute.cs" />
+    <Compile Include="C1Console\ActionProviders\FormElementActionProvider.cs" />
+    <Compile Include="C1Console\ActionProviders\FormFieldElementActionProvider.cs" />
     <Compile Include="C1Console\Actions\DownloadSubmittedFormsActionToken.cs" />
     <Compile Include="C1Console\ElementProvider\FormFolderEntityTokenHandler.cs" />
     <Compile Include="C1Console\ElementProvider\FormBuilderElementProvider.cs" />
     <Compile Include="C1Console\ElementProvider\FormElementProviderEntityTokenHandler.cs" />
-    <Compile Include="C1Console\ElementProvider\IElementActionProvider.cs" />
-    <Compile Include="C1Console\ElementProvider\IEntityTokenBasedElementProvider.cs" />
     <Compile Include="C1Console\ElementProvider\NamespaceFolderEntityTokenHandler.cs" />
     <Compile Include="C1Console\EntityTokens\FormElementProviderEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormFieldEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\FormFolderEntityToken.cs" />
     <Compile Include="C1Console\EntityTokens\NamespaceFolderEntityToken.cs" />
+    <Compile Include="C1Console\Workflows\EditFormFieldSettingsWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="C1Console\Workflows\EditFormSettingsWorkflow.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Configuration\CaptchaConfiguration.cs" />
     <Compile Include="Configuration\FormBuilderConfiguration.cs" />
     <Compile Include="Configuration\FormBuilderConfigurationHandler.cs" />
@@ -127,9 +133,13 @@
     <Compile Include="FormattingUtils.cs" />
     <Compile Include="FormField.cs" />
     <Compile Include="Form.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="ModelSubmit.cs" />
-    <Compile Include="Strings.cs" />
+    <Compile Include="ResourceFacade.cs" />
+    <Compile Include="Localization.cs" />
+    <Compile Include="StringExtensions.cs" />
     <Compile Include="Validation\ValidationOptions.cs" />
+    <Compile Include="Web\Api\SetCultureFilterAttribute.cs" />
     <Compile Include="Wizard.cs" />
     <Compile Include="WizardModel.cs" />
     <Compile Include="WizardStep.cs" />
@@ -142,7 +152,6 @@
     <Compile Include="IModel.cs" />
     <Compile Include="ProviderModelContainer.cs" />
     <Compile Include="SafeDirectoryCatalog.cs" />
-    <Compile Include="SerializableMailTemplate.cs" />
     <Compile Include="Validation\BaseFileValidatorAttribute.cs" />
     <Compile Include="Validation\MaxFileSizeValidatorAttribute.cs" />
     <Compile Include="Validation\ValidationResultList.cs" />
@@ -206,13 +215,8 @@
     <Compile Include="Web\UI\FormsPage.cs" />
     <Compile Include="FormModel.cs" />
     <Compile Include="FormValidationEventArgs.cs" />
-    <Compile Include="Localization.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Localization.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Validation\BaseFormValidationAttribute.cs" />
+    <Compile Include="Validation\FormValidationAttribute.cs" />
     <Compile Include="Validation\CompareFieldsValidatorAttribute.cs" />
     <Compile Include="Validation\CompareOperator.cs" />
     <Compile Include="Validation\DecimalFieldValidatorAttribute.cs" />
@@ -234,10 +238,6 @@
     <Compile Include="Web\UI\WizardHtmlForm.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Localization.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Localization.cs</LastGenOutput>
-    </None>
     <None Include="packages.config" />
     <None Include="Package\config\App_Data\Composite\composite.config" />
     <None Include="Package\config\web.config" />
@@ -250,26 +250,38 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\EditFormFieldSettingsWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\EditFormRenderingLayoutWorkflow.xml" />
-    <Content Include="Package\content\Composite\InstalledPackages\localization\CompositeC1Contrib.FormBuilder.da-dk.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Package\content\Composite\InstalledPackages\localization\CompositeC1Contrib.FormBuilder.en-us.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder\EditFormSettingsWorkflow.xml" />
     <Content Include="Package\content\Frontend\js\plugins\jquery.formbuilder.js" />
     <Content Include="Package\content\Frontend\js\plugins\jquery.formbuilder.wizard.js" />
     <Content Include="Package\install.xml">
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Strings.kl.resx">
+      <LastGenOutput>Strings.gl.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Strings.da.resx">
+      <LastGenOutput>Strings.da.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Strings.resx">
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>del "$(ProjectDir)Package\bin\"
 mkdir "$(ProjectDir)Package\bin\"
 
 copy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)Package\Bin\$(TargetFileName)"
+
+mkdir "$(ProjectDir)Package\bin\da"
+copy "$(TargetDir)da\$(TargetName).resources.dll" "$(ProjectDir)Package\Bin\da\$(TargetName).resources.dll"
+
+mkdir "$(ProjectDir)Package\bin\kl"
+copy "$(TargetDir)kl\$(TargetName).resources.dll" "$(ProjectDir)Package\Bin\kl\$(TargetName).resources.dll"
 
 del "$(ProjectDir)\Package\package.zip"
 

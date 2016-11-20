@@ -13,7 +13,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
 {
     public abstract class BaseFormBuilderRequestContext
     {
-        private static Type DefaultRendererType = FormBuilderConfiguration.GetSection().RendererImplementation;
+        private static Type RendererImplementation = FormBuilderConfiguration.GetSection().RendererImplementation;
 
         protected string FormName { get; private set; }
 
@@ -24,7 +24,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
         {
             ValidationResult = new ValidationResultList();
             FormName = name;
-            FormRenderer = (FormRenderer)Activator.CreateInstance(DefaultRendererType);
+            FormRenderer = (FormRenderer)Activator.CreateInstance(RendererImplementation);
         }
 
         public virtual void OnMappedValues() { }

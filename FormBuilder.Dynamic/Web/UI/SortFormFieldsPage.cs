@@ -49,7 +49,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Web.UI
         private static void UpdateOrder(DynamicFormDefinition formDefinition, string serializedOrder)
         {
             var newOrder = ParseNewOrder(serializedOrder);
-            var tmpList = newOrder.OrderBy(i => i.Value).Select(itm => formDefinition.Model.Fields.Single(f => f.Name == itm.Key)).ToList();
+            var tmpList = newOrder.OrderBy(i => i.Value).Select(itm => formDefinition.Model.Fields.Get(itm.Key)).ToList();
 
             formDefinition.Model.Fields.Clear();
 

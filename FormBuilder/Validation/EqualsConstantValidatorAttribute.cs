@@ -1,8 +1,12 @@
-﻿namespace CompositeC1Contrib.FormBuilder.Validation
+﻿using System;
+
+namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class EqualsConstantValidatorAttribute : FormValidationAttribute
     {
         readonly object _constant;
+
+        public EqualsConstantValidatorAttribute(object constant) : this(null, constant) { }
 
         public EqualsConstantValidatorAttribute(string message, object constant)
             : base(message)
@@ -14,10 +18,14 @@
         {
             var value = field.Value;
 
-            return new FormValidationRule(new[] { field.Name }, Message)
+            var rule = CreateRule(field, () =>
             {
-                Rule = () => (value == _constant)
-            };
+                return value == _constant;
+            });
+
+            rule.FormatMessage = m => String.Format(m, _constant);
+
+            return rule;
         }
     }
 }

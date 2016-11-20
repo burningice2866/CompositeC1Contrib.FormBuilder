@@ -1,0 +1,27 @@
+<cms:formdefinition
+  xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0"
+  xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0"
+  xmlns:ff="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0"
+  xmlns:f="http://www.composite.net/ns/function/1.0">
+  <cms:bindings>
+    <cms:binding name="Label" type="System.String" optional="true" />
+  </cms:bindings>
+
+  <cms:layout>
+    <TabPanels>
+      <TabPanels.Label>
+        <cms:read source="Label" />
+      </TabPanels.Label>
+
+      <PlaceHolder>
+        <FieldGroup Label="Basic">
+          <TextBox Label="Label">
+            <TextBox.Text>
+              <cms:bind source="Label" />
+            </TextBox.Text>
+          </TextBox>
+        </FieldGroup>
+      </PlaceHolder>
+    </TabPanels>
+  </cms:layout>
+</cms:formdefinition>

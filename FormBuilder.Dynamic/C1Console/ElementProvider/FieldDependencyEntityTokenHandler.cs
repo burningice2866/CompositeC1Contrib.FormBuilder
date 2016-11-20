@@ -8,22 +8,25 @@ using Composite.C1Console.Security;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 
-using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
+using CompositeC1Contrib.Composition;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 {
-    [Export(typeof(IEntityTokenBasedElementProvider))]
-    public class FieldDependencyEntityTokenHandler : IEntityTokenBasedElementProvider
+    [Export("FormBuilder", typeof(IElementProviderFor))]
+    public class FieldDependencyEntityTokenHandler : IElementProviderFor
     {
-        public bool IsProviderFor(EntityToken token)
+        private static readonly ActionGroup ActionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
+        private static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = true, ActionGroup = ActionGroup };
+
+        public IEnumerable<Type> ProviderFor
         {
-            return token is FieldDependencyEntityToken;
+            get { return new[] { typeof(FieldDependencyEntityToken) }; }
         }
 
-        public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)
+        public IEnumerable<Element> Provide(ElementProviderContext context, EntityToken token)
         {
             var dependencyToken = (FieldDependencyEntityToken)token;
             var form = DynamicFormsFacade.GetFormByName(dependencyToken.FormName);
@@ -33,7 +36,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                 yield break;
             }
 
-            var field = form.Model.Fields.SingleOrDefault(f => f.Name == dependencyToken.FieldName);
+            var field = form.Model.Fields.Get(dependencyToken.FieldName);
             if (field == null)
             {
                 yield break;
@@ -66,7 +69,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                             Label = "Edit dependency",
                             ToolTip = "Edit dependency",
                             Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                            ActionLocation = FormBuilderElementProvider.ActionLocation
+                            ActionLocation = ActionLocation
                         }
                     });
 
@@ -78,7 +81,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                             Label = "Add value",
                             ToolTip = "Add value",
                             Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                            ActionLocation = FormBuilderElementProvider.ActionLocation
+                            ActionLocation = ActionLocation
                         }
                     });
 
@@ -90,7 +93,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                             Label = "Delete",
                             ToolTip = "Delete",
                             Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-delete"),
-                            ActionLocation = FormBuilderElementProvider.ActionLocation
+                            ActionLocation = ActionLocation
                         }
                     });
 
@@ -128,7 +131,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                             Label = "Delete",
                             ToolTip = "Delete",
                             Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-delete"),
-                            ActionLocation = FormBuilderElementProvider.ActionLocation
+                            ActionLocation = ActionLocation
                         }
                     });
 

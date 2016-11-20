@@ -21,7 +21,7 @@ namespace FormBuilder.Test.Validation
             var files = mimeTypes.Select(m => new FormFile { ContentType = m });
             var rule = CreateRule(files);
 
-            Assert.That(rule.Rule(), Is.True);
+            Assert.That(rule.IsValid(), Is.True);
         }
 
         [TestCase("application/gif")]
@@ -32,7 +32,7 @@ namespace FormBuilder.Test.Validation
             var files = mimeTypes.Select(m => new FormFile { ContentType = m });
             var rule = CreateRule(files);
 
-            Assert.That(rule.Rule(), Is.False);
+            Assert.That(rule.IsValid(), Is.False);
         }
     }
 }

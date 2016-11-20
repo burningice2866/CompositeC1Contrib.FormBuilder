@@ -17,7 +17,7 @@ namespace FormBuilder.Test.Validation
         {
             var rule = CreateRule(new FormFile { ContentType = mimeType });
 
-            Assert.That(rule.Rule(), Is.True);
+            Assert.That(rule.IsValid(), Is.True);
         }
 
         [TestCase("application/gif")]
@@ -26,7 +26,7 @@ namespace FormBuilder.Test.Validation
         {
             var rule = CreateRule(new FormFile { ContentType = mimeType });
 
-            Assert.That(rule.Rule(), Is.False);
+            Assert.That(rule.IsValid(), Is.False);
         }
     }
 }

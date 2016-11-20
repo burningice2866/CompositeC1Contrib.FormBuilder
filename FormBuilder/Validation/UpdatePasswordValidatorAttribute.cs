@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Web.Security;
 
 namespace CompositeC1Contrib.FormBuilder.Validation
@@ -8,6 +7,8 @@ namespace CompositeC1Contrib.FormBuilder.Validation
     {
         private readonly string _newPasswordField;
         private readonly string _repeatNewPasswordField;
+
+        public UpdatePasswordValidatorAttribute(string newPasswordField, string repeatNewPasswordField) : this(null, newPasswordField, repeatNewPasswordField) { }
 
         public UpdatePasswordValidatorAttribute(string message, string newPasswordField, string repeatNewPasswordField)
             : base(message)
@@ -19,22 +20,19 @@ namespace CompositeC1Contrib.FormBuilder.Validation
         public override FormValidationRule CreateRule(FormField field)
         {
             var value = (string)field.Value;
-            var newPassword = (string)field.OwningForm.Fields.Single(f => f.Name == _newPasswordField).Value;
+            var newPassword = (string)field.OwningForm.Fields.Get(_newPasswordField).Value;
 
-            return new FormValidationRule(new[] { field.Name, _newPasswordField, _repeatNewPasswordField }, Message)
+            return CreateRule(field, new[] { field.Name, _newPasswordField, _repeatNewPasswordField }, () =>
             {
-                Rule = () =>
+                if (!String.IsNullOrEmpty(newPassword))
                 {
-                    if (!String.IsNullOrEmpty(newPassword))
-                    {
-                        var user = Membership.GetUser();
+                    var user = Membership.GetUser();
 
-                        return Membership.ValidateUser(user.UserName, value);
-                    }
-
-                    return String.IsNullOrEmpty(value) || field.OwningForm.IsValid(new[] { _newPasswordField, _repeatNewPasswordField });
+                    return Membership.ValidateUser(user.UserName, value);
                 }
-            };
+
+                return String.IsNullOrEmpty(value) || field.OwningForm.IsValid(new[] { _newPasswordField, _repeatNewPasswordField });
+            });
         }
     }
 }

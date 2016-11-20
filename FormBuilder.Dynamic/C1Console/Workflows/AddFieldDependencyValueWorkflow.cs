@@ -28,8 +28,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             var definition = DynamicFormsFacade.GetFormByName(token.FormName);
 
-            var field = definition.Model.Fields.Single(f => f.Name == token.FieldName);
-            var fromField = definition.Model.Fields.Single(f => f.Name == token.FromFieldName);
+            var field = definition.Model.Fields.Get(token.FieldName);
+            var fromField = definition.Model.Fields.Get(token.FromFieldName);
             var dependency = (DependsOnConstantAttribute)field.DependencyAttributes.Single(d => d.ReadFromFieldName == token.FromFieldName);
 
             var valueType = fromField.ValueType == typeof(IEnumerable<string>) ? typeof(string) : fromField.ValueType;
@@ -49,8 +49,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var value = GetBinding<string>("Value");
 
             var definition = DynamicFormsFacade.GetFormByName(token.FormName);
-            var field = definition.Model.Fields.Single(f => f.Name == token.FieldName);
-            var fromField = definition.Model.Fields.Single(f => f.Name == token.FromFieldName);
+            var field = definition.Model.Fields.Get(token.FieldName);
+            var fromField = definition.Model.Fields.Get(token.FromFieldName);
             var dependency = field.DependencyAttributes.Single(d => d.ReadFromFieldName == token.FromFieldName);
 
             var valueType = fromField.ValueType == typeof(IEnumerable<string>) ? typeof(string) : fromField.ValueType;

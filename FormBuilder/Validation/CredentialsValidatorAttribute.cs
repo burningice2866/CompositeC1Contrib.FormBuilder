@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Web.Security;
+﻿using System.Web.Security;
 
 using Composite.C1Console.Security;
 
@@ -11,6 +10,8 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 
         public bool CheckUserName { get; set; }
         public bool CheckEmail { get; set; }
+
+        public CredentialsValidatorAttribute(string passwordField) : this(null, passwordField) { }
 
         public CredentialsValidatorAttribute(string message, string passwordField)
             : base(message)
@@ -24,43 +25,40 @@ namespace CompositeC1Contrib.FormBuilder.Validation
         public override FormValidationRule CreateRule(FormField field)
         {
             var value = (string)field.Value;
-            var password = (string)field.OwningForm.Fields.Single(f => f.Name == _passwordField).Value;
+            var password = (string)field.OwningForm.Fields.Get(_passwordField).Value;
 
-            return new FormValidationRule(new[] { field.Name, _passwordField }, Message)
+            return CreateRule(field, new[] { field.Name, _passwordField }, () =>
             {
-                Rule = () =>
+                var isValid = false;
+
+                if (!isValid && CheckUserName)
                 {
-                    var isValid = false;
+                    var user = Membership.GetUser(value);
 
-                    if (!isValid && CheckUserName)
+                    isValid = IsValid(user);
+                }
+
+                if (!isValid && CheckEmail)
+                {
+                    var username = Membership.GetUserNameByEmail(value);
+                    if (username != null)
                     {
-                        var user = Membership.GetUser(value);
-
-                        isValid = IsValid(user);
-                    }
-
-                    if (!isValid && CheckEmail)
-                    {
-                        var username = Membership.GetUserNameByEmail(value);
-                        if (username != null)
+                        var user = Membership.GetUser(username);
+                        if (user != null)
                         {
-                            var user = Membership.GetUser(username);
-                            if (user != null)
-                            {
-                                isValid = IsValid(user);
-                                value = username;
-                            }
+                            isValid = IsValid(user);
+                            value = username;
                         }
                     }
-
-                    if (!isValid)
-                    {
-                        return false;
-                    }
-
-                    return UserValidationFacade.IsLoggedIn() || Membership.ValidateUser(value, password);
                 }
-            };
+
+                if (!isValid)
+                {
+                    return false;
+                }
+
+                return UserValidationFacade.IsLoggedIn() || Membership.ValidateUser(value, password);
+            });
         }
 
         private static bool IsValid(MembershipUser user)

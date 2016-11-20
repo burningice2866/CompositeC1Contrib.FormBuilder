@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
 using Composite.C1Console.Elements;
@@ -6,22 +7,25 @@ using Composite.C1Console.Security;
 using Composite.Core.ResourceSystem;
 using Composite.Data;
 
+using CompositeC1Contrib.Composition;
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Data.Types;
 
 namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
 {
-    [Export(typeof(IEntityTokenBasedElementProvider))]
-    public class DataEntityTokenHandler : IEntityTokenBasedElementProvider
+    [Export("FormBuilder", typeof(IElementProviderFor))]
+    public class DataEntityTokenHandler : IElementProviderFor
     {
-        public bool IsProviderFor(EntityToken token)
+        public IEnumerable<Type> ProviderFor
         {
-            return token is DataEntityToken;
+            get { return new[] { typeof(DataEntityToken) }; }
         }
 
-        public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)
+        public IEnumerable<Element> Provide(ElementProviderContext context, EntityToken token)
         {
-            var modelReference = (IModelReference)((DataEntityToken)token).Data;
+            var dataToken = (DataEntityToken)token;
+
+            var modelReference = dataToken.Data as IModelReference;
             if (modelReference == null)
             {
                 yield break;

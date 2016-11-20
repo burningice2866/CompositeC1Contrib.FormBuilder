@@ -4,7 +4,6 @@
     {
         public bool ValidateFiles { get; set; }
         public bool ValidateCaptcha { get; set; }
-
         public ValidationOptions()
         {
             ValidateFiles = true;

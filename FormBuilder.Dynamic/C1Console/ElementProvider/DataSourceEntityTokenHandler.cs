@@ -1,35 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
 
 using Composite.C1Console.Elements;
 using Composite.C1Console.Security;
 using Composite.Core.ResourceSystem;
 
+using CompositeC1Contrib.Composition;
 using CompositeC1Contrib.FormBuilder.Attributes;
-using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider.EntityTokenHandlers
 {
-    [Export(typeof(IEntityTokenBasedElementProvider))]
-    public class DataSourceEntityTokenHandler : IEntityTokenBasedElementProvider
+    [Export("FormBuilder", typeof(IElementProviderFor))]
+    public class DataSourceEntityTokenHandler : IElementProviderFor
     {
-        public bool IsProviderFor(EntityToken token)
+        private static readonly ActionGroup ActionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
+        private static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = true, ActionGroup = ActionGroup };
+
+        public IEnumerable<Type> ProviderFor
         {
-            return token is DataSourceEntityToken;
+            get { return new[] { typeof(DataSourceEntityToken) }; }
         }
 
-        public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)
+        public IEnumerable<Element> Provide(ElementProviderContext context, EntityToken token)
         {
             var returnList = new List<Element>();
 
             var dataSourceToken = (DataSourceEntityToken)token;
             var type = Type.GetType(dataSourceToken.Type);
 
-            if (type != typeof (StringBasedDataSourceAttribute))
+            if (type != typeof(StringBasedDataSourceAttribute))
             {
                 return returnList;
             }
@@ -40,7 +42,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider.Entit
                 return returnList;
             }
 
-            var field = form.Model.Fields.SingleOrDefault(f => f.Name == dataSourceToken.FieldName);
+            var field = form.Model.Fields.Get(dataSourceToken.FieldName);
             if (field == null)
             {
                 return returnList;
@@ -75,7 +77,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider.Entit
                         Label = "Delete",
                         ToolTip = "Delete",
                         Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-delete"),
-                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                        ActionLocation = ActionLocation
                     }
                 });
 

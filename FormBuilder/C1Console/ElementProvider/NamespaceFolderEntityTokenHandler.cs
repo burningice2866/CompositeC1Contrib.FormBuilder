@@ -1,22 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
 using Composite.C1Console.Elements;
 using Composite.C1Console.Security;
 
+using CompositeC1Contrib.Composition;
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 
 namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
 {
-    [Export(typeof(IEntityTokenBasedElementProvider))]
-    public class NamespaceFolderEntityTokenHandler : IEntityTokenBasedElementProvider
+    [Export("FormBuilder", typeof(IElementProviderFor))]
+    public class NamespaceFolderEntityTokenHandler : IElementProviderFor
     {
-        public bool IsProviderFor(EntityToken token)
+        public IEnumerable<Type> ProviderFor
         {
-            return token is NamespaceFolderEntityToken;
+            get { return new[] { typeof(NamespaceFolderEntityToken) }; }
         }
 
-        public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)
+        public IEnumerable<Element> Provide(ElementProviderContext context, EntityToken token)
         {
             var folderToken = (NamespaceFolderEntityToken)token;
             var elements = FormElementProviderEntityTokenHandler.GetNamespaceAndFormElements(context, folderToken.Namespace);

@@ -32,7 +32,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var token = (FormFieldEntityToken)EntityToken;
             var definition = DynamicFormsFacade.GetFormByName(token.FormName);
-            var field = definition.Model.Fields.Single(f => f.Name == token.FieldName);
+            var field = definition.Model.Fields.Get(token.FieldName);
 
             DataSourceAttribute attribute;
             var datasourceType = Type.GetType(GetBinding<string>("DataSourceType"));

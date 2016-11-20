@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Web;
 using System.Xml.Linq;
 
@@ -67,6 +66,33 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             if (RequestContext.IsSuccess)
             {
                 HandleSubmit();
+            }
+
+
+            if (IntroText == null)
+            {
+                var value = Localization.T("Forms." + Form.Model.Name + ".IntroText");
+                if (value != null)
+                {
+                    try
+                    {
+                        IntroText = XhtmlDocument.Parse(value);
+                    }
+                    catch { }
+                }
+            }
+
+            if (SuccessResponse == null)
+            {
+                var value = Localization.T("Forms." + Form.Model.Name + ".SuccessResponse");
+                if (value != null)
+                {
+                    try
+                    {
+                        SuccessResponse = XhtmlDocument.Parse(value);
+                    }
+                    catch { }
+                }
             }
 
             base.ExecutePageHierarchy();
@@ -150,7 +176,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected string WriteErrorClass(string name, BaseFormBuilderRequestContext context)
         {
-            return RequestContext.FormRenderer.WriteErrorClass(name, context);
+            return FormRenderer.WriteErrorClass(name, context);
         }
     }
 }

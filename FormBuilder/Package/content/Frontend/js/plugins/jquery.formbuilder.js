@@ -21,6 +21,13 @@
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
 
+            beforeSend: function(xhr) {
+                var ci = form.data('culture');
+                if (ci) {
+                    xhr.setRequestHeader('X-FormBuilder-Culture', ci);
+                }
+            },
+
             success: function(data) {
                 var el = $(data);
 
@@ -259,6 +266,13 @@
                 url: '/formbuilder/validation',
                 data: formSerialized,
                 dataType: 'json',
+
+                beforeSend: function(xhr) {
+                    var ci = form.data('culture');
+                    if (ci) {
+                        xhr.setRequestHeader('X-FormBuilder-Culture', ci);
+                    }
+                },
 
                 success: function(data) {
                     var validatedEvent = $.Event('formbuilder.validated');

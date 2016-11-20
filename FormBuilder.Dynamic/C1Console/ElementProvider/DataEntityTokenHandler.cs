@@ -9,22 +9,25 @@ using Composite.Core.ResourceSystem;
 using Composite.Core.WebClient;
 using Composite.Data;
 
-using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
+using CompositeC1Contrib.Composition;
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Data.Types;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 {
-    [Export(typeof(IEntityTokenBasedElementProvider))]
-    public class DataEntityTokenHandler : IEntityTokenBasedElementProvider
+    [Export("FormBuilder", typeof(IElementProviderFor))]
+    public class DataEntityTokenHandler : IElementProviderFor
     {
-        public bool IsProviderFor(EntityToken token)
+        private static readonly ActionGroup ActionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
+        private static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = true, ActionGroup = ActionGroup };
+
+        public IEnumerable<Type> ProviderFor
         {
-            return token is DataEntityToken;
+            get { return new[] { typeof(DataEntityToken) }; }
         }
 
-        public IEnumerable<Element> Handle(ElementProviderContext context, EntityToken token)
+        public IEnumerable<Element> Provide(ElementProviderContext context, EntityToken token)
         {
             var modelReference = (IModelReference)((DataEntityToken)token).Data;
             if (modelReference == null)
@@ -61,7 +64,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         Label = "Add field",
                         ToolTip = "Add field",
                         Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                        ActionLocation = ActionLocation
                     }
                 });
 
@@ -74,7 +77,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         Label = "Sort fields",
                         ToolTip = "Sort fields",
                         Icon = ResourceHandle.BuildIconFromDefaultProvider("cut"),
-                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                        ActionLocation = ActionLocation
                     }
                 });
 
@@ -104,7 +107,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         Label = "Add step",
                         ToolTip = "Add step",
                         Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                        ActionLocation = ActionLocation
                     }
                 });
 
@@ -117,7 +120,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                         Label = "Sort steps",
                         ToolTip = "Sort steps",
                         Icon = ResourceHandle.BuildIconFromDefaultProvider("cut"),
-                        ActionLocation = FormBuilderElementProvider.ActionLocation
+                        ActionLocation = ActionLocation
                     }
                 });
 
@@ -145,7 +148,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
                     Label = "Add submit handler",
                     ToolTip = "Add submit handler",
                     Icon = ResourceHandle.BuildIconFromDefaultProvider("generated-type-data-edit"),
-                    ActionLocation = FormBuilderElementProvider.ActionLocation
+                    ActionLocation = ActionLocation
                 }
             });
 

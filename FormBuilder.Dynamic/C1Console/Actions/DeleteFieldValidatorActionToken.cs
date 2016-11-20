@@ -36,7 +36,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
         {
             var token = (FieldValidatorsEntityToken)entityToken;
             var definition = DynamicFormsFacade.GetFormByName(token.FormName);
-            var field = definition.Model.Fields.Single(f => f.Name == token.FieldName);
+            var field = definition.Model.Fields.Get(token.FieldName);
             var keyToRemove = field.ValidationAttributes.Single(itm => itm.GetType().AssemblyQualifiedName == token.Type);
 
             field.Attributes.Remove(keyToRemove);

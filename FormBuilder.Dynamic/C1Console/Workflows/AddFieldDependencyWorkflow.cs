@@ -15,7 +15,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         public static Dictionary<string, string> GetFromFields(FieldDependencyEntityToken entityToken)
         {
             var definition = DynamicFormsFacade.GetFormByName(entityToken.FormName);
-            var field = definition.Model.Fields.First(f => f.Name == entityToken.FieldName);
+            var field = definition.Model.Fields.Get(entityToken.FieldName);
 
             return definition.Model.Fields.Where(f =>
                 f.Name != entityToken.FieldName &&
@@ -42,7 +42,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var token = (FieldDependencyEntityToken)EntityToken;
             var definition = DynamicFormsFacade.GetFormByName(token.FormName);
 
-            var field = definition.Model.Fields.Single(f => f.Name == token.FieldName);
+            var field = definition.Model.Fields.Get(token.FieldName);
 
             var fromFieldName = GetBinding<string>("FromFieldName");
 
@@ -59,7 +59,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var token = (FieldDependencyEntityToken)EntityToken;
             var definition = DynamicFormsFacade.GetFormByName(token.FormName);
-            var field = definition.Model.Fields.Single(f => f.Name == token.FieldName);
+            var field = definition.Model.Fields.Get(token.FieldName);
 
             var fromFieldName = GetBinding<string>("FromFieldName");
 

@@ -6,7 +6,11 @@ namespace CompositeC1Contrib.FormBuilder.Validation
     {
         public string[] MimeTypes { get; private set; }
 
+        public FileMimeTypeValidatorAttribute(string mimeType) : this(null, mimeType) { }
+
         public FileMimeTypeValidatorAttribute(string message, string mimeType) : this(message, new[] { mimeType }) { }
+
+        public FileMimeTypeValidatorAttribute(params string[] mimeTypes) : this(null, mimeTypes) { }
 
         public FileMimeTypeValidatorAttribute(string message, params string[] mimeTypes)
             : base(message)
@@ -18,10 +22,10 @@ namespace CompositeC1Contrib.FormBuilder.Validation
         {
             var value = GetFiles(field);
 
-            return new FormValidationRule(new[] { field.Name }, Message)
+            return CreateRule(field, () =>
             {
-                Rule = () => value.Select(f => f.ContentType).All(mimeType => MimeTypes.Contains(mimeType))
-            };
+                return value.Select(f => f.ContentType).All(mimeType => MimeTypes.Contains(mimeType));
+            });
         }
     }
 }

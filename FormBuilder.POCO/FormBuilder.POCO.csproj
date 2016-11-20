@@ -36,11 +36,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Composite, Version=4.2.5287.17495, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\CompositeC1.Core.4.2.1\lib\net45\Composite.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="CompositeC1Contrib.Core, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1Contrib.Core.0.7.0\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
+    <Reference Include="CompositeC1Contrib.Core, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1Contrib.Core.0.8.2\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

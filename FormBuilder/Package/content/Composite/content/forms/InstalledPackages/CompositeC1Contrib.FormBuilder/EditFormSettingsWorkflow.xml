@@ -1,0 +1,31 @@
+<cms:formdefinition
+  xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0"
+  xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0"
+  xmlns:ff="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0"
+  xmlns:f="http://www.composite.net/ns/function/1.0">
+  <cms:bindings>
+    <cms:binding name="Name" type="System.String" optional="true" />
+    <cms:binding name="IntroText" type="System.String" optional="true" />
+    <cms:binding name="SuccessResponse" type="System.String" optional="true" />
+  </cms:bindings>
+
+  <cms:layout>
+    <TabPanels>
+      <TabPanels.Label>
+        <cms:read source="Name" />
+      </TabPanels.Label>
+
+      <XhtmlEditor Label="Intro text">
+        <XhtmlEditor.Xhtml>
+          <cms:bind source="IntroText"/>
+        </XhtmlEditor.Xhtml>
+      </XhtmlEditor>
+
+      <XhtmlEditor Label="Success response">
+        <XhtmlEditor.Xhtml>
+          <cms:bind source="SuccessResponse"/>
+        </XhtmlEditor.Xhtml>
+      </XhtmlEditor>
+    </TabPanels>
+  </cms:layout>
+</cms:formdefinition>

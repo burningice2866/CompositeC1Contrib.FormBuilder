@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Helpers;
@@ -21,10 +22,10 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             _page = page;
 
-            var htmlAttributesDictionary = new Dictionary<string, IList<string>> 
+            var htmlAttributesDictionary = new Dictionary<string, IList<string>>
             {
                 {
-                    "class", new List<string> 
+                    "class", new List<string>
                     {
                         "form",
                         "formbuilder-" + page.Form.Name.ToLowerInvariant()
@@ -38,7 +39,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             }
 
             var htmlElementAttributes = page.Form.Attributes.OfType<HtmlTagAttribute>();
-            var action = String.Empty;
+            var action = "POST";
 
             foreach (var attr in htmlElementAttributes)
             {
@@ -97,8 +98,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             AddRendererSettings();
 
+            page.WriteLiteral(" data-culture=\"" + CultureInfo.CurrentCulture.Name + "\"");
+
             page.WriteLiteral(">");
+
             page.WriteLiteral("<input type=\"hidden\" name=\"__type\" value=\"" + HttpUtility.HtmlAttributeEncode(page.Form.Name) + "\" />");
+
 
             foreach (var field in page.Form.Fields.Where(f => f.IsHiddenField))
             {

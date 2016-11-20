@@ -12,6 +12,7 @@ using CompositeC1Contrib.FormBuilder.Web.Api.Models;
 
 namespace CompositeC1Contrib.FormBuilder.Web.Api.Controllers
 {
+    [SetCultureFilter]
     public class ValidationController : ApiController
     {
         [HttpPost]

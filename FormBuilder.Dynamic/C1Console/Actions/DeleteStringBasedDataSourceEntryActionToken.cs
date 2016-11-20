@@ -37,17 +37,16 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
         {
             var entryToken = (StringBasedDataSourceEntryEntityToken)entityToken;
             var definition = DynamicFormsFacade.GetFormByName(entryToken.FormName);
-            var field = definition.Model.Fields.Single(f => f.Name == entryToken.FieldName);
-            var datasSource = field.DataSource.ToList();
-            var keyToRemove = datasSource.Single(itm => itm.Key == entryToken.Id);
+            var field = definition.Model.Fields.Get(entryToken.FieldName);
+            var dataSource = field.DataSource.ToList();
 
-            datasSource.Remove(keyToRemove);
+            dataSource.Remove(dataSource.Get(entryToken.Id));
 
             var dataSourceAttribute = field.Attributes.OfType<StringBasedDataSourceAttribute>().First();
 
             field.Attributes.Remove(dataSourceAttribute);
 
-            dataSourceAttribute = new StringBasedDataSourceAttribute(datasSource.Select(itm => itm.Key).ToArray());
+            dataSourceAttribute = new StringBasedDataSourceAttribute(dataSource.Select(itm => itm.Key).ToArray());
 
             field.Attributes.Add(dataSourceAttribute);
 

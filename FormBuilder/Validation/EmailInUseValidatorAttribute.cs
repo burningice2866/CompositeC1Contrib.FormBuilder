@@ -8,7 +8,11 @@ namespace CompositeC1Contrib.FormBuilder.Validation
     {
         private readonly bool _onlyApproved = true;
 
+        public EmailInUseValidatorAttribute() : this(null) { }
+
         public EmailInUseValidatorAttribute(string message) : this(message, true) { }
+
+        public EmailInUseValidatorAttribute(bool onlyApproved) : this(null, onlyApproved) { }
 
         public EmailInUseValidatorAttribute(string message, bool onlyApproved)
             : base(message)
@@ -20,24 +24,21 @@ namespace CompositeC1Contrib.FormBuilder.Validation
         {
             var value = (string)field.Value;
 
-            return new FormValidationRule(new[] { field.Name }, Message)
+            return CreateRule(field, () =>
             {
-                Rule = () =>
+                var currentUser = Membership.GetUser();
+                if (currentUser != null)
                 {
-                    var currentUser = Membership.GetUser();
-                    if (currentUser != null)
+                    if (!String.Equals(value, currentUser.Email, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (!String.Equals(value, currentUser.Email, StringComparison.OrdinalIgnoreCase))
-                        {
-                            return !IsEmailInUse(value, _onlyApproved);
-                        }
-
-                        return true;
+                        return !IsEmailInUse(value, _onlyApproved);
                     }
 
-                    return !IsEmailInUse(value, _onlyApproved);
+                    return true;
                 }
-            };
+
+                return !IsEmailInUse(value, _onlyApproved);
+            });
         }
 
         public static bool IsEmailInUse(string email, bool onlyApproved)

@@ -31,7 +31,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var fieldToken = (FormFieldEntityToken)EntityToken;
 
             var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
-            var field = definition.Model.Fields.Single(f => f.Name == fieldToken.FieldName);
+            var field = definition.Model.Fields.Get(fieldToken.FieldName);
             var defaultValue = String.Empty;
 
             XElement el;
@@ -121,7 +121,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var isReadOnly = GetBinding<bool>("IsReadOnly");
 
             var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
-            var field = definition.Model.Fields.Single(f => f.Name == fieldToken.FieldName);
+            var field = definition.Model.Fields.Get(fieldToken.FieldName);
 
             var isNewName = field.Name != fieldName;
 
@@ -251,7 +251,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 }
 
                 var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
-                var field = definition.Model.Fields.SingleOrDefault(f => f.Name == fieldName);
+                var field = definition.Model.Fields.Get(fieldName);
 
                 if (field != null)
                 {

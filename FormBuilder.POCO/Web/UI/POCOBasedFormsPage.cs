@@ -79,7 +79,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         protected IHtmlString NameFor(Expression<Func<T, object>> fieldSelector)
         {
             var prop = GetProperty(fieldSelector);
-            var field = RequestContext.ModelInstance.Fields.Single(f => f.Name == prop.Name);
+            var field = RequestContext.ModelInstance.Fields.Get(prop.Name);
 
             return FormRenderer.NameFor(field);
         }
@@ -88,7 +88,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             var prop = GetProperty(fieldSelector);
 
-            return RequestContext.ModelInstance.Fields.Single(f => f.Name == prop.Name);
+            return RequestContext.ModelInstance.Fields.Get(prop.Name);
         }
 
         public PropertyInfo GetProperty(string name)

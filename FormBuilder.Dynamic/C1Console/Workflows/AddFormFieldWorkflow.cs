@@ -93,7 +93,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             var folderToken = (FormFolderEntityToken)EntityToken;
             var definition = DynamicFormsFacade.GetFormByName(folderToken.FormName);
-            var field = definition.Model.Fields.SingleOrDefault(f => f.Name == fieldName);
+            var field = definition.Model.Fields.Get(fieldName);
 
             if (field != null)
             {

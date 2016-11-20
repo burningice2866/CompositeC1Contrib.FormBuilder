@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
 
 using Composite;
 
@@ -38,13 +37,7 @@ namespace CompositeC1Contrib.FormBuilder
                     return null;
                 }
 
-                var label = attr.Label;
-                if (label == null)
-                {
-                    label = ResolveLocalized("Label");
-                }
-
-                return label;
+                return Localization.EvaluateT(this, "Label", attr.Label);
             }
         }
 
@@ -58,13 +51,7 @@ namespace CompositeC1Contrib.FormBuilder
                     return null;
                 }
 
-                var text = attr.Text;
-                if (text == null)
-                {
-                    text = ResolveLocalized("PlaceholderText");
-                }
-
-                return text;
+                return Localization.EvaluateT(this, "PlaceholderText", attr.Text);
             }
         }
 
@@ -78,13 +65,7 @@ namespace CompositeC1Contrib.FormBuilder
                     return null;
                 }
 
-                var help = attr.Help;
-                if (help == null)
-                {
-                    help = ResolveLocalized("Help");
-                }
-
-                return help;
+                return Localization.EvaluateT(this, "Help", attr.Help);
             }
         }
 
@@ -126,19 +107,19 @@ namespace CompositeC1Contrib.FormBuilder
                 var listOfKeyValuePair = ds as IEnumerable<KeyValuePair<string, string>>;
                 if (listOfKeyValuePair != null)
                 {
-                    return listOfKeyValuePair.Select(f => new KeyValuePair<string, string>(f.Key, Strings.GetLocalized(f.Value)));
+                    return listOfKeyValuePair.Select(f => new KeyValuePair<string, string>(f.Key, Localization.Localize(f.Value)));
                 }
 
                 var dictionary = ds as IDictionary<string, string>;
                 if (dictionary != null)
                 {
-                    return dictionary.Select(f => new KeyValuePair<string, string>(f.Key, Strings.GetLocalized(f.Value)));
+                    return dictionary.Select(f => new KeyValuePair<string, string>(f.Key, Localization.Localize(f.Value)));
                 }
 
                 var list = ds as IEnumerable<string>;
                 if (list != null)
                 {
-                    return list.Select(Strings.GetLocalized).Select(str => new KeyValuePair<string, string>(str, str));
+                    return list.Select(Localization.Localize).Select(str => new KeyValuePair<string, string>(str, str));
                 }
 
                 throw new InvalidOperationException("Unsupported data source type: " + ds.GetType().FullName);
@@ -163,7 +144,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         static FormFieldModel()
         {
-            DefaultElementType = new Dictionary<Type, InputElementTypeAttribute>() 
+            DefaultElementType = new Dictionary<Type, InputElementTypeAttribute>()
             {
                 { typeof(bool), new CheckboxInputElementAttribute() },
                 { typeof(IEnumerable<string>), new CheckboxInputElementAttribute() },
@@ -207,19 +188,6 @@ namespace CompositeC1Contrib.FormBuilder
         private InputElementTypeAttribute GetDefaultInputType()
         {
             return DefaultElementType.ContainsKey(ValueType) ? DefaultElementType[ValueType] : new TextboxInputElementAttribute();
-        }
-
-        private string ResolveLocalized(string type)
-        {
-            var key = "Forms." + OwningForm.Name + "." + Name + "." + type;
-
-            var value = HttpContext.GetGlobalResourceObject("FormBuilder", key) as string;
-            if (value == null)
-            {
-                return key;
-            }
-
-            return value;
         }
     }
 }

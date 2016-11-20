@@ -20,11 +20,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 var token = (FieldValidatorsEntityToken)EntityToken;
 
                 var definition = DynamicFormsFacade.GetFormByName(token.FormName);
-                var field = definition.Model.Fields.Single(f => f.Name == token.FieldName);
+                var field = definition.Model.Fields.Get(token.FieldName);
                 var validator = field.ValidationAttributes.Single(v => v.GetType().AssemblyQualifiedName == token.Type);
 
                 Bindings.Add("FieldName", token.FieldName);
-                Bindings.Add("Message", validator.Message);
+                Bindings.Add("Message", validator.GetValidationMessage(field));
             }
         }
 
@@ -35,10 +35,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var message = GetBinding<string>("Message");
 
             var definition = DynamicFormsFacade.GetFormByName(token.FormName);
-            var field = definition.Model.Fields.Single(f => f.Name == token.FieldName);
+            var field = definition.Model.Fields.Get(token.FieldName);
             var validator = field.ValidationAttributes.Single(v => v.GetType().AssemblyQualifiedName == token.Type);
 
-            validator.Message = message;
+            validator.ValidationMessage = message;
 
             DynamicFormsFacade.SaveForm(definition);
 

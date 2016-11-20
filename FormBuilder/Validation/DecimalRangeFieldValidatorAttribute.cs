@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+
 
 namespace CompositeC1Contrib.FormBuilder.Validation
 {
@@ -7,47 +8,47 @@ namespace CompositeC1Contrib.FormBuilder.Validation
         private readonly decimal _minValue;
         private readonly decimal _maxValue;
 
-        public DecimalRangeFieldValidatorAttribute(string message, string minValue)
-            : base(message)
-        {
-            _minValue = decimal.Parse(minValue, CultureInfo.InvariantCulture.NumberFormat);
-            _maxValue = decimal.MaxValue;
-        }
+        public DecimalRangeFieldValidatorAttribute(decimal minValue) : this(null, minValue) { }
 
-        public DecimalRangeFieldValidatorAttribute(string message, string minValue, string maxValue)
+        public DecimalRangeFieldValidatorAttribute(string message, decimal minValue) : this(message, minValue, decimal.MaxValue) { }
+
+        public DecimalRangeFieldValidatorAttribute(decimal minValue, decimal maxValue) : this(null, minValue, maxValue) { }
+
+        public DecimalRangeFieldValidatorAttribute(string message, decimal minValue, decimal maxValue)
             : base(message)
         {
-            _minValue = decimal.Parse(minValue, CultureInfo.InvariantCulture.NumberFormat);
-            _maxValue = decimal.Parse(maxValue, CultureInfo.InvariantCulture.NumberFormat);
+            _minValue = minValue;
+            _maxValue = maxValue;
         }
 
         public override FormValidationRule CreateRule(FormField field)
         {
-            return new FormValidationRule(new[] { field.Name }, Message)
+            var rule = CreateRule(field, () =>
             {
-                Rule = () =>
+                var s = field.OwningForm.SubmittedValues[field.Name];
+                var i = 0m;
+
+                if (!decimal.TryParse(s, out i))
                 {
-                    var s = field.OwningForm.SubmittedValues[field.Name];
-                    var i = 0m;
-
-                    if (!decimal.TryParse(s, out i))
-                    {
-                        return !field.IsRequired;
-                    }
-
-                    if (i < _minValue)
-                    {
-                        return false;
-                    }
-
-                    if (i > _maxValue)
-                    {
-                        return false;
-                    }
-
-                    return true;
+                    return !field.IsRequired;
                 }
-            };
+
+                if (i < _minValue)
+                {
+                    return false;
+                }
+
+                if (i > _maxValue)
+                {
+                    return false;
+                }
+
+                return true;
+            });
+
+            rule.FormatMessage = m => String.Format(m, _minValue, _maxValue);
+
+            return rule;
         }
     }
 }

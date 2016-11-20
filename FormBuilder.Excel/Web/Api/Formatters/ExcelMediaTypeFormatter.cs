@@ -101,7 +101,7 @@ namespace CompositeC1Contrib.FormBuilder.Excel.Web.Api.Formatters
 
                 foreach (var value in submit.Values)
                 {
-                    var field = model.Fields.SingleOrDefault(f => f.Name == value.Key);
+                    var field = model.Fields.Get(value.Key);
                     if (field == null)
                     {
                         continue;

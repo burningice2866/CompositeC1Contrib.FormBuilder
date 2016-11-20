@@ -36,7 +36,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
         {
             var token = (FieldDependencyEntityToken)entityToken;
             var definition = DynamicFormsFacade.GetFormByName(token.FormName);
-            var field = definition.Model.Fields.Single(f => f.Name == token.FieldName);
+            var field = definition.Model.Fields.Get(token.FieldName);
             var keyToRemove = field.DependencyAttributes.Single(itm => itm.ReadFromFieldName == token.FromFieldName);
 
             field.Attributes.Remove(keyToRemove);

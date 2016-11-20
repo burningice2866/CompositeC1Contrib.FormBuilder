@@ -15,7 +15,7 @@ namespace FormBuilder.Test.Validation
         {
             var rule = CreateRule(i);
 
-            Assert.That(rule.Rule(), Is.True);
+            Assert.That(rule.IsValid(), Is.True);
         }
 
         [TestCase("12345")]
@@ -23,7 +23,7 @@ namespace FormBuilder.Test.Validation
         {
             var rule = CreateRule(i);
 
-            Assert.That(rule.Rule(), Is.True);
+            Assert.That(rule.IsValid(), Is.True);
         }
 
         [TestCase("123456")]
@@ -32,7 +32,7 @@ namespace FormBuilder.Test.Validation
         {
             var rule = CreateRule(i);
 
-            Assert.That(rule.Rule(), Is.False);
+            Assert.That(rule.IsValid(), Is.False);
         }
     }
 }

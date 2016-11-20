@@ -129,7 +129,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
         {
             using (var data = new DataConnection())
             {
-                var templates = data.Get<IMailTemplate>().Where(t => t.Key == definition.Name +"."+ Name);
+                var templates = data.Get<IMailTemplate>().Where(t => t.Key == definition.Name + "." + Name);
 
                 data.Delete<IMailTemplate>(templates);
             }
@@ -152,9 +152,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
                     AddFilesToMessage(files, builder);
                 }
 
-                var msg = builder.BuildMailMessage();
-
-                MailsFacade.EnqueueMessage(msg);
+                using (var msg = builder.BuildMailMessage())
+                {
+                    MailsFacade.EnqueueMessage(msg);
+                }
             }
         }
     }

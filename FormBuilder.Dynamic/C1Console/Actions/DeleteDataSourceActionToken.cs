@@ -37,7 +37,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
         {
             var entryToken = (DataSourceEntityToken)entityToken;
             var definition = DynamicFormsFacade.GetFormByName(entryToken.FormName);
-            var field = definition.Model.Fields.Single(f => f.Name == entryToken.FieldName);
+            var field = definition.Model.Fields.Get(entryToken.FieldName);
             var dataSourceAttribute = field.Attributes.OfType<DataSourceAttribute>().First();
 
             field.Attributes.Remove(dataSourceAttribute);

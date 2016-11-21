@@ -42,7 +42,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
                     {
                         Label = field.Name,
                         ToolTip = field.Name,
-                        HasChildren = true,
+                        HasChildren = false,
                         Icon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-closed-root"),
                         OpenedIcon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-opened-root")
                     }

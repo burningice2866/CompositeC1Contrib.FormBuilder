@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -11,6 +12,7 @@ using CompositeC1Contrib.FormBuilder.Web.UI;
 
 namespace CompositeC1Contrib.FormBuilder
 {
+    [DebuggerDisplay("{Name}")]
     public class FormFieldModel
     {
         private static readonly IDictionary<Type, InputElementTypeAttribute> DefaultElementType;

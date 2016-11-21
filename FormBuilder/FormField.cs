@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Validation;
@@ -7,6 +8,7 @@ using CompositeC1Contrib.FormBuilder.Web.UI;
 
 namespace CompositeC1Contrib.FormBuilder
 {
+    [DebuggerDisplay("{Name}")]
     public class FormField
     {
         public FormFieldModel Model { get; private set; }

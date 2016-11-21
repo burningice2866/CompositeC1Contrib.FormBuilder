@@ -3,6 +3,8 @@ using System.Text.RegularExpressions;
 
 using Composite.Core.ResourceSystem;
 
+using CompositeC1Contrib.Localization;
+
 namespace CompositeC1Contrib.FormBuilder
 {
     public static class Localization
@@ -16,13 +18,15 @@ namespace CompositeC1Contrib.FormBuilder
                 var match = _t.Match(text);
                 if (match.Success)
                 {
+
                     var key = match.Groups[1].Value;
 
-                    var localized = T(key);
+                    var localized = C1Res.T(key);
                     if (localized != null)
                     {
                         return text.Remove(match.Index, match.Length).Insert(match.Index, localized);
                     }
+
                 }
             }
 
@@ -61,19 +65,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static string T(string key, CultureInfo culture)
         {
-            var resourceManager = ResourceFacade.GetResourceManager();
-            if (resourceManager == null)
-            {
-                return null;
-            }
-
-            var localized = resourceManager.GetString(key, culture);
-            if (localized == null)
-            {
-                localized = ResourceFacade.DefaultResourceManager.GetString(key, culture);
-            }
-
-            return localized;
+            return C1Res.GetResourceManager("FormBuilder").GetString(key, culture) ?? ResourceFacade.InternalResourceManager.GetString(key, culture);
         }
     }
 }

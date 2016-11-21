@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -9,6 +10,7 @@ using CompositeC1Contrib.FormBuilder.Attributes;
 
 namespace CompositeC1Contrib.FormBuilder
 {
+    [DebuggerDisplay("{Name}")]
     public sealed class FormModel : IModel
     {
         public string Name { get; set; }

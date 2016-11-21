@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
@@ -11,6 +12,7 @@ using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder
 {
+    [DebuggerDisplay("{Name}")]
     public sealed class Form : IModelInstance
     {
         private static readonly IDictionary<Type, IValueMapper> ValueMappers;

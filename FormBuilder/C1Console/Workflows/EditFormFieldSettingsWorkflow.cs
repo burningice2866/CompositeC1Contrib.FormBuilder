@@ -172,7 +172,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
                 var binding = "Validation-" + name;
 
                 AddTextBox(fieldGroup, label, binding);
-                AddDynamicBinding(bindingsXElement, binding, attr.GetValidationMessage(field));
+                AddDynamicBinding(bindingsXElement, binding, GetValue("Validation." + name) ?? attr.GetValidationMessage(field));
             }
 
             tabPanelsElement.Add(

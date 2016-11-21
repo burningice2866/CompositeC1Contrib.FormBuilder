@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Specialized;
-
-using CompositeC1Contrib.FormBuilder.Validation;
 
 namespace CompositeC1Contrib.FormBuilder
 {

@@ -39,7 +39,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             }
 
             var htmlElementAttributes = page.Form.Attributes.OfType<HtmlTagAttribute>();
-            var action = "POST";
+            var action = (string)null;
 
             foreach (var attr in htmlElementAttributes)
             {
@@ -78,7 +78,12 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 }
             }
 
-            page.WriteLiteral(String.Format("<form method=\"post\" action=\"{0}\"", action));
+            page.WriteLiteral("<form method=\"post\"");
+
+            if (!String.IsNullOrEmpty(action))
+            {
+                page.WriteLiteral(String.Format(" action=\"{0}\"", action));
+            }
 
             foreach (var kvp in htmlAttributesDictionary)
             {

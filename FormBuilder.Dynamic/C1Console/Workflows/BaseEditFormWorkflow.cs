@@ -5,12 +5,14 @@ using System.Xml.Linq;
 using Composite.C1Console.Actions;
 using Composite.C1Console.Forms;
 using Composite.C1Console.Forms.DataServices;
+using Composite.C1Console.Users;
 using Composite.Core.Xml;
 using Composite.Data;
 
 using CompositeC1Contrib.FormBuilder.Configuration;
 using CompositeC1Contrib.FormBuilder.Data.Types;
 using CompositeC1Contrib.FormBuilder.Dynamic.Configuration;
+using CompositeC1Contrib.Localization;
 using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
@@ -31,25 +33,15 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             Bindings.Add("RequiresCaptcha", model.RequiresCaptcha);
             Bindings.Add("ForceHttpsConnection", model.ForceHttps);
 
-            Bindings.Add("IntroText", definition.IntroText.ToString());
-            Bindings.Add("SuccessResponse", definition.SuccessResponse.ToString());
+            Bindings.Add("IntroText", GetValue("IntroText"));
+            Bindings.Add("SuccessResponse", GetValue("SuccessResponse"));
 
             var markupProvider = new FormDefinitionFileMarkupProvider(_formFile);
             var formDocument = XDocument.Load(markupProvider.GetReader());
 
             var root = formDocument.Root;
-            if (root == null)
-            {
-                return;
-            }
 
-            var layoutXElement = root.Element(Namespaces.BindingForms10 + FormKeyTagNames.Layout);
-            if (layoutXElement == null)
-            {
-                return;
-            }
-
-            var tabPanelElements = layoutXElement.Element(Namespaces.BindingFormsStdUiControls10 + "TabPanels");
+            var tabPanelElements = root?.Element(Namespaces.BindingForms10 + FormKeyTagNames.Layout)?.Element(Namespaces.BindingFormsStdUiControls10 + "TabPanels");
             if (tabPanelElements == null)
             {
                 return;
@@ -107,35 +99,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        protected void SaveExtraSettings(IDynamicDefinition definition)
-        {
-            var introText = GetBinding<string>("IntroText");
-            var successResponse = GetBinding<string>("SuccessResponse");
-
-            definition.IntroText = XhtmlDocument.Parse(introText);
-            definition.SuccessResponse = XhtmlDocument.Parse(successResponse);
-
-            var config = FormBuilderConfiguration.GetSection();
-            var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
-
-            var settingsType = plugin.SettingsHandler;
-            if (settingsType == null)
-            {
-                definition.Settings = null;
-
-                return;
-            }
-
-            definition.Settings = (IFormSettings)Activator.CreateInstance(settingsType);
-
-            foreach (var prop in settingsType.GetProperties().Where(p => BindingExist(p.Name)))
-            {
-                var value = GetBinding<object>(prop.Name);
-
-                prop.SetValue(definition.Settings, value, null);
-            }
-        }
-
         public override bool Validate()
         {
             var token = GetBinding<DataEntityToken>("BoundToken");
@@ -168,16 +131,27 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         protected void Save(IDynamicDefinition definition)
         {
+            SaveExtraSettings(definition);
+
             var token = GetBinding<DataEntityToken>("BoundToken");
             var modelReference = (IModelReference)token.Data;
 
             var name = GetBinding<string>("Name");
 
-            SaveExtraSettings(definition);
+            var introText = GetBinding<string>("IntroText");
+            var successResponse = GetBinding<string>("SuccessResponse");
+
+            using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
+            {
+                writer.AddResource(GetKey("IntroText"), introText);
+                writer.AddResource(GetKey("SuccessResponse"), successResponse);
+            }
 
             var isNewName = name != modelReference.Name;
             if (isNewName)
             {
+                LocalizationsFacade.RenameNamespace("Forms." + modelReference.Name, "Forms." + name, "FormBuilder");
+
                 DefinitionsFacade.Copy(definition, name);
                 DefinitionsFacade.Delete(definition);
 
@@ -195,6 +169,44 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
 
             CreateParentTreeRefresher().PostRefreshMesseges(EntityToken);
+        }
+
+        private void SaveExtraSettings(IDynamicDefinition definition)
+        {
+            var config = FormBuilderConfiguration.GetSection();
+            var plugin = (DynamicFormBuilderConfiguration)config.Plugins["dynamic"];
+
+            var settingsType = plugin.SettingsHandler;
+            if (settingsType == null)
+            {
+                definition.Settings = null;
+
+                return;
+            }
+
+            definition.Settings = (IFormSettings)Activator.CreateInstance(settingsType);
+
+            foreach (var prop in settingsType.GetProperties().Where(p => BindingExist(p.Name)))
+            {
+                var value = GetBinding<object>(prop.Name);
+
+                prop.SetValue(definition.Settings, value, null);
+            }
+        }
+
+        protected string GetValue(string setting)
+        {
+            var key = GetKey(setting);
+
+            return Localization.T(key, UserSettings.ActiveLocaleCultureInfo);
+        }
+
+        protected string GetKey(string setting)
+        {
+            var formToken = GetBinding<DataEntityToken>("BoundToken");
+            var modelReference = (IModelReference)formToken.Data;
+
+            return "Forms." + modelReference.Name + "." + setting;
         }
     }
 }

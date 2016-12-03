@@ -7,6 +7,8 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
     {
         public string Label { get; private set; }
 
+        public SubmitButtonLabelAttribute() { }
+
         public SubmitButtonLabelAttribute(string label)
         {
             Label = label;

@@ -24,24 +24,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 var attrs = new List<Attribute>();
                 var fieldName = f.Attribute("name").Value;
 
-                var label = f.Attribute("label");
-                if (label != null)
-                {
-                    attrs.Add(new FieldLabelAttribute(label.Value));
-                }
-
-                var placeholderText = f.Attribute("placeholderText");
-                if (placeholderText != null)
-                {
-                    attrs.Add(new PlaceholderTextAttribute(placeholderText.Value));
-                }
-
-                var help = f.Attribute("help");
-                if (help != null)
-                {
-                    attrs.Add(new FieldHelpAttribute(help.Value));
-                }
-
                 foreach (var el in f.Elements())
                 {
                     switch (el.Name.LocalName)
@@ -57,6 +39,24 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 var valueType = valueTypeAttr != null ? Type.GetType(valueTypeAttr.Value) : typeof(string);
 
                 var formField = new FormFieldModel(model, fieldName, valueType, attrs);
+
+                var label = Localization.EvaluateT(formField, "Label", null);
+                if (label != null)
+                {
+                    formField.Attributes.Add(new FieldLabelAttribute());
+                }
+
+                var placeholderText = Localization.EvaluateT(formField, "PlaceholderText", null);
+                if (placeholderText != null)
+                {
+                    formField.Attributes.Add(new PlaceholderTextAttribute());
+                }
+
+                var help = Localization.EvaluateT(formField, "Help", null);
+                if (help != null)
+                {
+                    formField.Attributes.Add(new FieldHelpAttribute());
+                }
 
                 var isReadOnlyAttr = f.Attribute("isReadOnly");
                 if (isReadOnlyAttr != null)
@@ -105,13 +105,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 metaData.Add(new XElement("requiresCaptcha"));
             }
 
-            var layout = new XElement("Layout",
-                    new XAttribute("submitButtonLabel", definition.Model.SubmitButtonLabel));
-
-            SaveLayout(definition, layout);
-
-            metaData.Add(layout);
-
             if (definition.DefaultValues.Any())
             {
                 var defaultValues = new XElement("DefaultValues");
@@ -143,20 +136,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     new XAttribute("name", field.Name),
                     new XAttribute("valueType", field.ValueType.AssemblyQualifiedName));
 
-                if (field.Label != null)
-                {
-                    add.Add(new XAttribute("label", field.Label));
-                }
-
-                if (field.PlaceholderText != null)
-                {
-                    add.Add(new XAttribute("placeholderText", field.PlaceholderText));
-                }
-
-                if (!String.IsNullOrEmpty(field.Help))
-                {
-                    add.Add(new XAttribute("help", field.Help));
-                }
 
                 if (field.IsReadOnly)
                 {
@@ -292,16 +271,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 definition.Model.Attributes.Add(new RequiresCaptchaAttribute());
             }
 
-            var layoutElement = metaData.Element("Layout");
-            if (layoutElement != null)
-            {
-                var label = layoutElement.Attribute("submitButtonLabel").Value;
-
-                definition.Model.Attributes.Add(new SubmitButtonLabelAttribute(label));
-
-                ParseLayout(layoutElement, definition);
-            }
-
             ParseMetaDataDefaultValues(metaData, definition);
             ParseSubmitHandlers(metaData, definition);
             ParseFormSettings(metaData, definition);
@@ -374,7 +343,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             attrs.Add(attribute);
         }
 
-        private static void ParseValidationRules(XElement el, IList<Attribute> attrs)
+        private static void ParseValidationRules(XElement el, ICollection<Attribute> attrs)
         {
             var rules = el.Elements("Add");
             foreach (var rule in rules)

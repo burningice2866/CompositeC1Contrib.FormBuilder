@@ -19,10 +19,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ActionProviders
         private static readonly ActionGroup ActionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
         private static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = true, ActionGroup = ActionGroup };
 
-        public IEnumerable<Type> ProviderFor
-        {
-            get { return new[] { typeof(FormSubmitHandlerEntityToken) }; }
-        }
+        public IEnumerable<Type> ProviderFor => new[] { typeof(FormSubmitHandlerEntityToken) };
 
         public void AddActions(Element element)
         {

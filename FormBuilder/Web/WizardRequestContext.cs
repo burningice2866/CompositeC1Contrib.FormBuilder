@@ -1,18 +1,21 @@
-﻿namespace CompositeC1Contrib.FormBuilder.Web
+﻿using System;
+
+namespace CompositeC1Contrib.FormBuilder.Web
 {
     public abstract class WizardRequestContext : BaseFormBuilderRequestContext<Wizard>
     {
-        public Wizard Wizard
-        {
-            get { return ModelInstance; }
-        }
+        public Wizard Wizard => ModelInstance;
 
-        protected WizardRequestContext(string name)
-            : base(name)
+        protected WizardRequestContext(IModel model)
+            : base(model)
         {
-            var model = ModelsFacade.GetModel<WizardModel>(name);
+            var wizardModel = model as WizardModel;
+            if (wizardModel == null)
+            {
+                throw new ArgumentException($"Supplied form was not of the correct type, expected '{typeof(WizardModel).FullName}' but got '{model.GetType().FullName}");
+            }
 
-            ModelInstance = new Wizard(model);
+            ModelInstance = new Wizard(wizardModel);
         }
     }
 }

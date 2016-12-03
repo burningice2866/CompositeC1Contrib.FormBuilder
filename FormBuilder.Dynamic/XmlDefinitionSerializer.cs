@@ -3,8 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
-using Composite.Core.Xml;
-
 using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic
@@ -42,7 +40,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
         public abstract IDynamicDefinition Load(string name, XElement xml);
 
-        protected void SaveDefinitionFile(string name, XElement xml)
+        protected static void SaveDefinitionFile(string name, XElement xml)
         {
             var dir = Path.Combine(ModelsFacade.RootPath, name);
             var file = Path.Combine(dir, "DynamicDefinition.xml");
@@ -96,45 +94,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
         }
 
-        protected void SaveLayout(IDynamicDefinition definition, XElement root)
-        {
-            if (definition.IntroText != null)
-            {
-                root.Add(new XElement("introText", definition.IntroText.ToString()));
-            }
-
-            if (definition.IntroText != null)
-            {
-                root.Add(new XElement("successResponse", definition.SuccessResponse.ToString()));
-            }
-        }
-
-        protected void ParseLayout(XElement layout, IDynamicDefinition definition)
-        {
-            var introText = layout.Element("introText");
-            if (introText != null)
-            {
-                definition.IntroText = XhtmlDocument.Parse(introText.Value);
-            }
-
-            var successResponse = layout.Element("successResponse");
-            if (successResponse != null)
-            {
-                definition.SuccessResponse = XhtmlDocument.Parse(successResponse.Value);
-            }
-
-            if (definition.IntroText == null)
-            {
-                definition.IntroText = new XhtmlDocument();
-            }
-
-            if (definition.SuccessResponse == null)
-            {
-                definition.SuccessResponse = new XhtmlDocument();
-            }
-        }
-
-        protected void ParseSubmitHandlers(XElement root, IDynamicDefinition definition)
+        protected static void ParseSubmitHandlers(XElement root, IDynamicDefinition definition)
         {
             var submitHandlersElement = root.Element("SubmitHandlers");
             if (submitHandlersElement == null)
@@ -167,7 +127,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
         }
 
-        protected void ParseFormSettings(XElement metaData, IDynamicDefinition definition)
+        protected static void ParseFormSettings(XElement metaData, IDynamicDefinition definition)
         {
             var formSettingsElement = metaData.Element("FormSettings");
             if (formSettingsElement == null)

@@ -18,7 +18,6 @@ namespace CompositeC1Contrib.FormBuilder
                 var match = _t.Match(text);
                 if (match.Success)
                 {
-
                     var key = match.Groups[1].Value;
 
                     var localized = C1Res.T(key);
@@ -40,7 +39,12 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static string EvaluateT(FormFieldModel field, string type, string defaultValue)
         {
-            var key = "Forms." + field.OwningForm.Name + "." + field.Name + "." + type;
+            return EvaluateT(field.OwningForm, field.Name + "." + type, defaultValue);
+        }
+
+        public static string EvaluateT(IModel form, string type, string defaultValue)
+        {
+            var key = "Forms." + form.Name + "." + type;
 
             return EvaluateT(key, defaultValue);
         }
@@ -53,7 +57,7 @@ namespace CompositeC1Contrib.FormBuilder
                 return evaluated;
             }
 
-            return defaultValue == null ? key : Localize(defaultValue);
+            return defaultValue == null ? null : Localize(defaultValue);
         }
 
         public static string T(string key)

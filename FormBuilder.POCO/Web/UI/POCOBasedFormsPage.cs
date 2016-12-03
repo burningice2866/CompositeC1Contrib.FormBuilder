@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Web;
 
 using Composite.AspNet.Razor;
-using Composite.Functions;
 
 using CompositeC1Contrib.FormBuilder.FunctionProviders;
 
@@ -15,18 +14,14 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
     {
         protected new T Form { get; private set; }
 
-        private readonly FormRequestContext _requestContext;
-        protected override FormRequestContext RequestContext
-        {
-            get { return _requestContext; }
-        }
+        protected override FormRequestContext RequestContext { get; }
 
         protected POCOBasedFormsPage()
         {
             var model = POCOModelsFacade.FromType(typeof(T));
-            var context = new POCOFormBuilderRequestContext(model.Name);
+            var context = new POCOFormBuilderRequestContext(model);
 
-            _requestContext = context;
+            RequestContext = context;
             Form = (T)context.Instance;
         }
 

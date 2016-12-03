@@ -27,25 +27,13 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             get { return RequestContext.FormRenderer; }
         }
 
-        public Form Form
-        {
-            get { return RequestContext.ModelInstance; }
-        }
+        public Form Form => RequestContext.ModelInstance;
 
-        protected bool IsOwnSubmit
-        {
-            get { return RequestContext.IsOwnSubmit; }
-        }
+        protected bool IsOwnSubmit => RequestContext.IsOwnSubmit;
 
-        protected bool IsSuccess
-        {
-            get { return RequestContext.IsSuccess; }
-        }
+        protected bool IsSuccess => RequestContext.IsSuccess;
 
-        public ValidationResultList ValidationResult
-        {
-            get { return RequestContext.ValidationResult; }
-        }
+        public ValidationResultList ValidationResult => RequestContext.ValidationResult;
 
         public IHtmlString EvaluateMarkup(XElement element)
         {
@@ -71,7 +59,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             if (IntroText == null)
             {
-                var value = Localization.T("Forms." + Form.Model.Name + ".IntroText");
+                var value = Localization.EvaluateT(Form.Model, "IntroText", null);
                 if (value != null)
                 {
                     try
@@ -84,7 +72,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             if (SuccessResponse == null)
             {
-                var value = Localization.T("Forms." + Form.Model.Name + ".SuccessResponse");
+                var value = Localization.EvaluateT(Form.Model, "SuccessResponse", null);
                 if (value != null)
                 {
                     try

@@ -5,6 +5,7 @@ using System.Xml.Linq;
 using Composite.C1Console.Actions;
 using Composite.C1Console.Forms;
 using Composite.C1Console.Forms.DataServices;
+using Composite.C1Console.Users;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 using Composite.Core.Xml;
@@ -14,6 +15,7 @@ using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Configuration;
 using CompositeC1Contrib.FormBuilder.Dynamic.Configuration;
 using CompositeC1Contrib.FormBuilder.Web.UI;
+using CompositeC1Contrib.Localization;
 using CompositeC1Contrib.Workflows;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
@@ -41,9 +43,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
 
             Bindings.Add("FieldName", field.Name);
-            Bindings.Add("Label", field.Label == null ? String.Empty : field.Label);
-            Bindings.Add("PlaceholderText", field.PlaceholderText);
-            Bindings.Add("Help", field.Help);
+
+            Bindings.Add("Label", GetValue("Label") ?? field.Label);
+            Bindings.Add("PlaceholderText", GetValue("PlaceholderText") ?? field.PlaceholderText);
+            Bindings.Add("Help", GetValue("Help") ?? field.Help);
+
             Bindings.Add("DefaultValue", defaultValue);
             Bindings.Add("ValueType", field.ValueType);
             Bindings.Add("InputElementType", field.InputElementType.GetType().AssemblyQualifiedName);
@@ -107,6 +111,33 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 }
             }
         }
+        public override bool Validate()
+        {
+            var fieldToken = (FormFieldEntityToken)EntityToken;
+
+            var fieldName = GetBinding<string>("FieldName");
+            if (fieldName != fieldToken.FieldName)
+            {
+                if (!FormFieldModel.IsValidName(fieldName))
+                {
+                    ShowFieldMessage("FieldName", "Field name is invalid, only a-z and 0-9 is allowed");
+
+                    return false;
+                }
+
+                var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
+                var field = definition.Model.Fields.Get(fieldName);
+
+                if (field != null)
+                {
+                    ShowFieldMessage("FieldName", "Field name already exists");
+
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         public override void OnFinish(object sender, EventArgs e)
         {
@@ -124,57 +155,74 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var field = definition.Model.Fields.Get(fieldToken.FieldName);
 
             var isNewName = field.Name != fieldName;
-
-            if (isNewName && RenderingLayoutFacade.HasCustomRenderingLayout(fieldToken.FormName))
+            if (isNewName)
             {
-                var layout = RenderingLayoutFacade.GetRenderingLayout(fieldToken.FormName);
-                var fieldElement = layout.Body.Descendants().SingleOrDefault(el => el.Name == Namespaces.Xhtml + "p" && el.Value.Trim() == "%" + field.Name + "%");
+                LocalizationsFacade.RenameNamespace("Forms." + fieldToken.FormName + "." + field.Name, "Forms." + fieldToken.FormName + "." + fieldName, "FormBuilder");
 
-                if (fieldElement != null)
+                if (RenderingLayoutFacade.HasCustomRenderingLayout(fieldToken.FormName))
                 {
-                    fieldElement.Value = String.Format("%{0}%", fieldName);
-                }
+                    var layout = RenderingLayoutFacade.GetRenderingLayout(fieldToken.FormName);
 
-                RenderingLayoutFacade.SaveRenderingLayout(fieldToken.FormName, layout);
+                    var fieldElement = layout.Body.Descendants().SingleOrDefault(el => el.Name == Namespaces.Xhtml + "p" && el.Value.Trim() == "%" + field.Name + "%");
+                    if (fieldElement != null)
+                    {
+                        fieldElement.Value = $"%{fieldName}%";
+                    }
+
+                    RenderingLayoutFacade.SaveRenderingLayout(fieldToken.FormName, layout);
+                }
             }
 
             field.Name = fieldName;
             field.IsReadOnly = isReadOnly;
 
-            var labelAttr = field.Attributes.OfType<FieldLabelAttribute>().SingleOrDefault();
-            if (labelAttr != null)
+            using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
             {
-                field.Attributes.Remove(labelAttr);
-            }
+                writer.AddResource(GetKey("Label"), (string)null);
+                writer.AddResource(GetKey("PlaceholderText"), (string)null);
+                writer.AddResource(GetKey("Help"), (string)null);
 
-            if (!String.IsNullOrEmpty(label))
-            {
-                labelAttr = new FieldLabelAttribute(label);
-                field.Attributes.Add(labelAttr);
-            }
+                var labelAttr = field.Attributes.OfType<FieldLabelAttribute>().SingleOrDefault();
+                if (labelAttr != null)
+                {
+                    field.Attributes.Remove(labelAttr);
+                }
 
-            var placeholderAttr = field.Attributes.OfType<PlaceholderTextAttribute>().SingleOrDefault();
-            if (placeholderAttr != null)
-            {
-                field.Attributes.Remove(placeholderAttr);
-            }
+                if (!String.IsNullOrEmpty(label))
+                {
+                    labelAttr = new FieldLabelAttribute(label);
+                    field.Attributes.Add(labelAttr);
 
-            if (!String.IsNullOrEmpty(placeholderText))
-            {
-                placeholderAttr = new PlaceholderTextAttribute(placeholderText);
-                field.Attributes.Add(placeholderAttr);
-            }
+                    writer.AddResource(GetKey("Label"), label);
+                }
 
-            var helpAttribute = field.Attributes.OfType<FieldHelpAttribute>().FirstOrDefault();
-            if (helpAttribute != null)
-            {
-                field.Attributes.Remove(helpAttribute);
-            }
+                var placeholderAttr = field.Attributes.OfType<PlaceholderTextAttribute>().SingleOrDefault();
+                if (placeholderAttr != null)
+                {
+                    field.Attributes.Remove(placeholderAttr);
+                }
 
-            if (!String.IsNullOrEmpty(help))
-            {
-                helpAttribute = new FieldHelpAttribute(help);
-                field.Attributes.Add(helpAttribute);
+                if (!String.IsNullOrEmpty(placeholderText))
+                {
+                    placeholderAttr = new PlaceholderTextAttribute(placeholderText);
+                    field.Attributes.Add(placeholderAttr);
+
+                    writer.AddResource(GetKey("PlaceholderText"), placeholderText);
+                }
+
+                var helpAttribute = field.Attributes.OfType<FieldHelpAttribute>().FirstOrDefault();
+                if (helpAttribute != null)
+                {
+                    field.Attributes.Remove(helpAttribute);
+                }
+
+                if (!String.IsNullOrEmpty(help))
+                {
+                    helpAttribute = new FieldHelpAttribute(help);
+                    field.Attributes.Add(helpAttribute);
+
+                    writer.AddResource(GetKey("Help"), help);
+                }
             }
 
             definition.DefaultValues.Remove(field.Name);
@@ -236,32 +284,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             }
         }
 
-        public override bool Validate()
+        private string GetValue(string setting)
+        {
+            var key = GetKey(setting);
+
+            return Localization.T(key, UserSettings.ActiveLocaleCultureInfo);
+        }
+
+        private string GetKey(string setting)
         {
             var fieldToken = (FormFieldEntityToken)EntityToken;
-            var fieldName = GetBinding<string>("FieldName");
 
-            if (fieldName != fieldToken.FieldName)
-            {
-                if (!FormFieldModel.IsValidName(fieldName))
-                {
-                    ShowFieldMessage("FieldName", "Field name is invalid, only a-z and 0-9 is allowed");
-
-                    return false;
-                }
-
-                var definition = DynamicFormsFacade.GetFormByName(fieldToken.FormName);
-                var field = definition.Model.Fields.Get(fieldName);
-
-                if (field != null)
-                {
-                    ShowFieldMessage("FieldName", "Field name already exists");
-
-                    return false;
-                }
-            }
-
-            return true;
+            return "Forms." + fieldToken.FormName + "." + fieldToken.FieldName + "." + setting;
         }
     }
 }

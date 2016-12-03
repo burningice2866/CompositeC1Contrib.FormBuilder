@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0" xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0" xmlns:f="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0" xmlns:formbuilder="https://bitbucket.org/burningice/compositec1contrib.formbuilder/1.0">
+<cms:formdefinition xmlns="http://www.composite.net/ns/management/bindingforms/std.ui.controls.lib/1.0"
+                    xmlns:cms="http://www.composite.net/ns/management/bindingforms/1.0"
+                    xmlns:f="http://www.composite.net/ns/management/bindingforms/std.function.lib/1.0"
+                    xmlns:formbuilder="https://compositec1contrib.net/formbuilder/1.0">
   <cms:bindings>
     <cms:binding name="StepName" type="System.String" />
     <cms:binding name="FormName" type="System.String" />

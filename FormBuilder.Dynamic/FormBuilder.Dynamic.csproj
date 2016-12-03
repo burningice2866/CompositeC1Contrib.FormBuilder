@@ -44,12 +44,16 @@
       <HintPath>..\packages\CompositeC1.Core.4.2.1\lib\net45\Composite.Workflows.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="CompositeC1Contrib.Core, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1Contrib.Core.0.8.2\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
+    <Reference Include="CompositeC1Contrib.Core, Version=0.8.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1Contrib.Core.0.8.3\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="CompositeC1Contrib.Email, Version=0.6.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CompositeC1.Email.0.6.7\lib\net45\CompositeC1Contrib.Email.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="CompositeC1Contrib.Localization, Version=0.2.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1.Localization.0.2.4\lib\net45\CompositeC1Contrib.Localization.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="CompositeC1Contrib.Sorting, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -232,9 +236,7 @@
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditFieldValidatorWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditFormFieldWorkflow.xml" />
     <Content Include="Package\content\Composite\content\forms\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\EditFormWorkflow.xml" />
-    <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\FunctionSelector.ascx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
+    <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\FunctionSelector.ascx" />
     <Content Include="Package\content\Composite\InstalledPackages\CompositeC1Contrib.FormBuilder.Dynamic\SortFormFields.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>

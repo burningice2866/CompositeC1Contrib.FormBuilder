@@ -5,19 +5,15 @@ namespace CompositeC1Contrib.FormBuilder.Web
 {
     public class POCOFormBuilderRequestContext : FormRequestContext
     {
-        private readonly IPOCOForm _instance;
-        public IPOCOForm Instance
+        public IPOCOForm Instance { get; }
+
+        public POCOFormBuilderRequestContext(IModel model)
+            : base(model)
         {
-            get { return _instance; }
+            Instance = (IPOCOForm)ModelInstance.FormData["PocoInstance"];
         }
 
-        public POCOFormBuilderRequestContext(string formName)
-            : base(formName)
-        {
-            _instance = (IPOCOForm)ModelInstance.FormData["PocoInstance"];
-        }
-
-        public override void OnMappedValues()
+        protected override void OnMappedValues()
         {
             POCOModelsFacade.MapValues(Instance, ModelInstance);
         }

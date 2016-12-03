@@ -12,15 +12,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
     {
         public EditFormSettingsWorkflow() : base("\\InstalledPackages\\CompositeC1Contrib.FormBuilder\\EditFormSettingsWorkflow.xml") { }
 
-        protected IModelReference ModelReference
-        {
-            get
-            {
-                var dataToken = (DataEntityToken)EntityToken;
-
-                return dataToken.Data as IModelReference;
-            }
-        }
+        private IModelReference ModelReference => (IModelReference)((DataEntityToken)EntityToken).Data;
 
         private string GetKey(string setting)
         {
@@ -42,12 +34,9 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
                 return;
             }
 
-            using (var data = new DataConnection())
-            {
-                Bindings.Add("Name", ModelReference.Name);
-                Bindings.Add("IntroText", GetValue("IntroText"));
-                Bindings.Add("SuccessResponse", GetValue("SuccessResponse"));
-            }
+            Bindings.Add("Name", ModelReference.Name);
+            Bindings.Add("IntroText", GetValue("IntroText"));
+            Bindings.Add("SuccessResponse", GetValue("SuccessResponse"));
         }
 
         public override void OnFinish(object sender, EventArgs e)
@@ -55,13 +44,10 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
             var introText = GetBinding<string>("IntroText");
             var successResponse = GetBinding<string>("SuccessResponse");
 
-            using (var data = new DataConnection())
+            using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
             {
-                using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
-                {
-                    writer.AddResource(GetKey("IntroText"), introText);
-                    writer.AddResource(GetKey("SuccessResponse"), successResponse);
-                }
+                writer.AddResource(GetKey("IntroText"), introText);
+                writer.AddResource(GetKey("SuccessResponse"), successResponse);
             }
 
             var treeRefresher = CreateParentTreeRefresher();

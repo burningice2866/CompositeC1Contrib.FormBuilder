@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 
 using Composite.C1Console.Elements;
 using Composite.C1Console.Security;
@@ -14,6 +15,8 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
     [Export("FormBuilder", typeof(IElementProviderFor))]
     public class FormFolderEntityTokenHandler : IElementProviderFor
     {
+        private ProviderContainer<IElementProviderFor> _entityTokenHandlers;
+
         public IEnumerable<Type> ProviderFor
         {
             get { return new[] { typeof(FormFolderEntityToken) }; }
@@ -33,6 +36,11 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
                 yield break;
             }
 
+            if (_entityTokenHandlers == null)
+            {
+                _entityTokenHandlers = new ProviderContainer<IElementProviderFor>("FormBuilder");
+            }
+
             foreach (var field in form.Fields)
             {
                 var elementHandle = context.CreateElementHandle(new FormFieldEntityToken(form.Name, field.Name));
@@ -42,7 +50,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
                     {
                         Label = field.Name,
                         ToolTip = field.Name,
-                        HasChildren = false,
+                        HasChildren = _entityTokenHandlers.GetProvidersFor(elementHandle.EntityToken).Any(),
                         Icon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-closed-root"),
                         OpenedIcon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-opened-root")
                     }

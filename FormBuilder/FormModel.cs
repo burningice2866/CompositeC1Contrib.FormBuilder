@@ -13,50 +13,32 @@ namespace CompositeC1Contrib.FormBuilder
     [DebuggerDisplay("{Name}")]
     public sealed class FormModel : IModel
     {
-        public string Name { get; set; }
-        public IList<FormFieldModel> Fields { get; private set; }
-        public IList<Attribute> Attributes { get; private set; }
+        public string Name { get; }
+        public IList<FormFieldModel> Fields { get; }
+        public IList<Attribute> Attributes { get; }
 
         public Action<Form> Constructor { get; set; }
         public Action<Form, FormValidationEventArgs> OnValidateHandler { get; set; }
         public Action<Form> SetDefaultValuesHandler { get; set; }
 
-        public bool DisableAntiForgery
-        {
-            get { return Attributes.OfType<DisableAntiForgeryAttribute>().Any(); }
-        }
+        public bool DisableAntiForgery => Attributes.OfType<DisableAntiForgeryAttribute>().Any();
 
-        public bool RequiresCaptcha
-        {
-            get { return Attributes.OfType<RequiresCaptchaAttribute>().Any(); }
-        }
+        public bool RequiresCaptcha => Attributes.OfType<RequiresCaptchaAttribute>().Any();
 
-        public bool ForceHttps
-        {
-            get { return Attributes.OfType<ForceHttpsConnectionAttribute>().Any(); }
-        }
+        public bool ForceHttps => Attributes.OfType<ForceHttpsConnectionAttribute>().Any();
 
         public bool HasFileUpload
         {
-            get
-            {
-                return Fields.Any(f => f.ValueType == typeof(FormFile) || f.ValueType == typeof(IEnumerable<FormFile>));
-            }
+            get { return Fields.Any(f => f.ValueType == typeof(FormFile) || f.ValueType == typeof(IEnumerable<FormFile>)); }
         }
 
         public string SubmitButtonLabel
         {
             get
             {
-                var label = "Indsend";
+                var attr = Attributes.OfType<SubmitButtonLabelAttribute>().SingleOrDefault();
 
-                var labelAttribute = Attributes.OfType<SubmitButtonLabelAttribute>().FirstOrDefault();
-                if (labelAttribute != null)
-                {
-                    label = labelAttribute.Label;
-                }
-
-                return label;
+                return Localization.EvaluateT(this, "SubmitButtonLabel", attr == null ? "Indsend" : attr.Label);
             }
         }
 

@@ -1,13 +1,19 @@
-﻿namespace CompositeC1Contrib.FormBuilder.Web
+﻿using System;
+
+namespace CompositeC1Contrib.FormBuilder.Web
 {
     public abstract class FormRequestContext : BaseFormBuilderRequestContext<Form>
     {
-        protected FormRequestContext(string name)
-            : base(name)
+        protected FormRequestContext(IModel model)
+            : base(model)
         {
-            var model = ModelsFacade.GetModel<FormModel>(name);
+            var formModel = model as FormModel;
+            if (formModel == null)
+            {
+                throw new ArgumentException($"Supplied form was not of the correct type, expected '{typeof(FormModel).FullName}' but got '{model.GetType().FullName}");
+            }
 
-            ModelInstance = new Form(model);
+            ModelInstance = new Form(formModel);
         }
 
         public override void Submit()

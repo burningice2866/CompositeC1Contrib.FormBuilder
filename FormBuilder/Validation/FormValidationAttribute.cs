@@ -5,18 +5,18 @@ namespace CompositeC1Contrib.FormBuilder.Validation
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public abstract class FormValidationAttribute : Attribute
     {
-        public string ValidationMessage { private get; set; }
+        private readonly string _validationMessage;
 
         protected FormValidationAttribute() { }
 
         protected FormValidationAttribute(string validationMessage)
         {
-            ValidationMessage = validationMessage;
+            _validationMessage = validationMessage;
         }
 
         public string GetValidationMessage(FormFieldModel field)
         {
-            return Localization.EvaluateT(field, "Validation." + GetType().Name, ValidationMessage);
+            return Localization.EvaluateT(field, "Validation." + GetType().Name, _validationMessage);
         }
 
         public virtual FormValidationRule CreateRule(FormField field)

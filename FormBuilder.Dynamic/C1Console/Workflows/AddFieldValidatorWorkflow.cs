@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Composite.C1Console.Users;
 using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.Composition;
@@ -17,15 +18,15 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public static Dictionary<string, string> GetValidatorTypes()
         {
-            var formValidationAttributeType = typeof (FormValidationAttribute);
+            var formValidationAttributeType = typeof(FormValidationAttribute);
 
             var types = CompositionContainerFacade.GetExportedTypes<FormValidationAttribute>(b =>
                 b.ForTypesMatching(t => t != formValidationAttributeType
                                         && formValidationAttributeType.IsAssignableFrom(t)
-                                        && t.GetConstructor(new[] {typeof (string)}) != null)
+                                        && t.GetConstructor(Type.EmptyTypes) != null)
                     .Export<FormValidationAttribute>());
 
-            return types.ToDictionary(t => t.AssemblyQualifiedName, t => t.Name);
+            return types.ToDictionary(t => t.AssemblyQualifiedName, t => t.NameWithoutTrailingAttribute());
         }
 
         public override void OnInitialize(object sender, EventArgs e)
@@ -47,11 +48,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             var validatorType = Type.GetType(GetBinding<string>("ValidatorType"));
             var message = GetBinding<string>("Message");
-            var attribute = (FormValidationAttribute)Activator.CreateInstance(validatorType, new[] { message });
+            var attribute = (FormValidationAttribute)Activator.CreateInstance(validatorType, message);
 
             field.Attributes.Add(attribute);
 
             DynamicFormsFacade.SaveForm(definition);
+
+            using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
+            {
+                var key = "Forms." + token.FormName + "." + token.FieldName + ".Validation." + attribute.GetType().Name;
+
+                writer.AddResource(key, message);
+            }
 
             var editToken = new FieldValidatorsEntityToken(token.FormName, token.FieldName, validatorType);
             var workflowToken = new WorkflowActionToken(typeof(EditFieldValidatorWorkflow));

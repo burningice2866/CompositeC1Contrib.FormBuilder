@@ -11,14 +11,16 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public static class ModelsFacade
     {
-        private static readonly object Lock = new object();
-        private static IDictionary<string, ProviderModelContainer> _cachedList;
+        private static Lazy<IDictionary<string, ProviderModelContainer>> _cachedList = new Lazy<IDictionary<string, ProviderModelContainer>>(() =>
+        {
+            return Providers.SelectMany(provider => provider.GetModels()).ToDictionary(o => o.Model.Name);
+        });
 
         public static readonly string RootPath = HostingEnvironment.MapPath("~/App_Data/FormBuilder");
 
         public static event EventHandler FormChanges;
 
-        public static IEnumerable<IModelsProvider> Providers { get; private set; }
+        public static IEnumerable<IModelsProvider> Providers { get; }
 
         static ModelsFacade()
         {
@@ -45,38 +47,22 @@ namespace CompositeC1Contrib.FormBuilder
         {
             ProviderModelContainer container;
 
-            return GetCachedList().TryGetValue(name, out container) ? container.Model : null;
+            return _cachedList.Value.TryGetValue(name, out container) ? container.Model : null;
         }
 
         public static IEnumerable<ProviderModelContainer> GetModels()
         {
-            return GetCachedList().Values;
-        }
-
-        private static IDictionary<string, ProviderModelContainer> GetCachedList()
-        {
-            if (_cachedList == null)
-            {
-                lock (Lock)
-                {
-                    if (_cachedList == null)
-                    {
-                        _cachedList = Providers.SelectMany(provider => provider.GetModels()).ToDictionary(o => o.Model.Name);
-                    }
-                }
-            }
-
-            return _cachedList;
+            return _cachedList.Value.Values;
         }
 
         public static void NotifyFormChanges()
         {
-            _cachedList = null;
-
-            if (FormChanges != null)
+            _cachedList = new Lazy<IDictionary<string, ProviderModelContainer>>(() =>
             {
-                FormChanges(null, EventArgs.Empty);
-            }
+                return Providers.SelectMany(provider => provider.GetModels()).ToDictionary(o => o.Model.Name);
+            });
+
+            FormChanges?.Invoke(null, EventArgs.Empty);
         }
     }
 }

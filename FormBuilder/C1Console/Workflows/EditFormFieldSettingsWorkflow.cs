@@ -7,7 +7,6 @@ using Composite.C1Console.Forms;
 using Composite.C1Console.Forms.DataServices;
 using Composite.C1Console.Users;
 using Composite.Core.Xml;
-using Composite.Data;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
@@ -22,10 +21,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
 
         public EditFormFieldSettingsWorkflow() : base(null) { }
 
-        private FormFieldEntityToken FieldEntityToken
-        {
-            get { return (FormFieldEntityToken)EntityToken; }
-        }
+        private FormFieldEntityToken FieldEntityToken => (FormFieldEntityToken)EntityToken;
 
         private string GetValue(string setting)
         {
@@ -58,41 +54,38 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
         {
             var label = GetBinding<string>("Label");
 
-            using (var data = new DataConnection())
+            using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
             {
-                using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
+                writer.AddResource(GetKey("Label"), label);
+
+                var model = ModelsFacade.GetModel<FormModel>(FieldEntityToken.FormName);
+                var field = model.Fields.Get(FieldEntityToken.FieldName);
+
+                if (field.Attributes.OfType<PlaceholderTextAttribute>().Any())
                 {
-                    writer.AddResource(GetKey("Label"), label);
+                    var placeholderText = GetBinding<string>("PlaceholderText");
 
-                    var model = ModelsFacade.GetModel<FormModel>(FieldEntityToken.FormName);
-                    var field = model.Fields.Get(FieldEntityToken.FieldName);
+                    writer.AddResource(GetKey("PlaceholderText"), placeholderText);
+                }
 
-                    if (field.Attributes.OfType<PlaceholderTextAttribute>().Any())
-                    {
-                        var placeholderText = GetBinding<string>("PlaceholderText");
+                if (field.Attributes.OfType<FieldHelpAttribute>().Any())
+                {
+                    var help = GetBinding<string>("Help");
 
-                        writer.AddResource(GetKey("PlaceholderText"), placeholderText);
-                    }
+                    writer.AddResource(GetKey("Help"), help);
+                }
 
-                    if (field.Attributes.OfType<FieldHelpAttribute>().Any())
-                    {
-                        var help = GetBinding<string>("Help");
+                var validationAttributes = field.Attributes.OfType<FormValidationAttribute>();
+                foreach (var attr in validationAttributes)
+                {
+                    var name = attr.GetType().Name;
 
-                        writer.AddResource(GetKey("Help"), help);
-                    }
+                    var key = "Validation." + name;
+                    var binding = "Validation-" + name;
 
-                    var validationAttributes = field.Attributes.OfType<FormValidationAttribute>();
-                    foreach (var attr in validationAttributes)
-                    {
-                        var name = attr.GetType().Name;
+                    var value = GetBinding<string>(binding);
 
-                        var key = "Validation." + name;
-                        var binding = "Validation-" + name;
-
-                        var value = GetBinding<string>(binding);
-
-                        writer.AddResource(GetKey(key), value);
-                    }
+                    writer.AddResource(GetKey(key), value);
                 }
             }
 
@@ -168,7 +161,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
             foreach (var attr in validationAttributes)
             {
                 var name = attr.GetType().Name;
-                var label = name.EndsWith("Attribute") ? name.Substring(0, name.Length - "Attribute".Length) : name;
+                var label = attr.AttributeName();
                 var binding = "Validation-" + name;
 
                 AddTextBox(fieldGroup, label, binding);

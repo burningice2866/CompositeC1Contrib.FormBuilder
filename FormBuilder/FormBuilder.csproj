@@ -46,12 +46,12 @@
       <HintPath>..\packages\CompositeC1.Core.4.2.1\lib\net45\Composite.Workflows.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="CompositeC1Contrib.Core, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1Contrib.Core.0.8.2\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
+    <Reference Include="CompositeC1Contrib.Core, Version=0.8.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1Contrib.Core.0.8.3\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="CompositeC1Contrib.Localization, Version=0.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1.Localization.0.2.2\lib\net45\CompositeC1Contrib.Localization.dll</HintPath>
+    <Reference Include="CompositeC1Contrib.Localization, Version=0.2.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1.Localization.0.2.4\lib\net45\CompositeC1Contrib.Localization.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -142,6 +142,8 @@
     <Compile Include="ResourceFacade.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="StringExtensions.cs" />
+    <Compile Include="AttributeExtensions.cs" />
+    <Compile Include="TypeExtensions.cs" />
     <Compile Include="Validation\ValidationOptions.cs" />
     <Compile Include="Web\Api\SetCultureFilterAttribute.cs" />
     <Compile Include="Wizard.cs" />

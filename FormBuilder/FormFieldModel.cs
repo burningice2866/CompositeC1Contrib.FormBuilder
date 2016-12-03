@@ -17,29 +17,24 @@ namespace CompositeC1Contrib.FormBuilder
     {
         private static readonly IDictionary<Type, InputElementTypeAttribute> DefaultElementType;
 
-        public FormModel OwningForm { get; private set; }
+        public FormModel OwningForm { get; }
 
         public string Name { get; set; }
         public bool IsReadOnly { get; set; }
-        public IList<Attribute> Attributes { get; private set; }
+        public IList<Attribute> Attributes { get; }
         public Type ValueType { get; set; }
 
-        public string Id
-        {
-            get { return (OwningForm.Name + "." + Name).Replace(".", "$"); }
-        }
+        public string Id => (OwningForm.Name + "." + Name).Replace(".", "$");
+        public bool IsHiddenField => Attributes.OfType<HiddenFieldAttribute>().Any();
+        public IEnumerable<FormDependencyAttribute> DependencyAttributes => Attributes.OfType<FormDependencyAttribute>();
 
         public string Label
         {
             get
             {
                 var attr = Attributes.OfType<FieldLabelAttribute>().SingleOrDefault();
-                if (attr == null)
-                {
-                    return null;
-                }
 
-                return Localization.EvaluateT(this, "Label", attr.Label);
+                return attr == null ? null : Localization.EvaluateT(this, "Label", attr.Label);
             }
         }
 
@@ -48,12 +43,8 @@ namespace CompositeC1Contrib.FormBuilder
             get
             {
                 var attr = Attributes.OfType<PlaceholderTextAttribute>().SingleOrDefault();
-                if (attr == null)
-                {
-                    return null;
-                }
 
-                return Localization.EvaluateT(this, "PlaceholderText", attr.Text);
+                return attr == null ? null : Localization.EvaluateT(this, "PlaceholderText", attr.Text);
             }
         }
 
@@ -62,12 +53,8 @@ namespace CompositeC1Contrib.FormBuilder
             get
             {
                 var attr = Attributes.OfType<FieldHelpAttribute>().SingleOrDefault();
-                if (attr == null)
-                {
-                    return null;
-                }
 
-                return Localization.EvaluateT(this, "Help", attr.Help);
+                return attr == null ? null : Localization.EvaluateT(this, "Help", attr.Help);
             }
         }
 
@@ -76,18 +63,9 @@ namespace CompositeC1Contrib.FormBuilder
             get
             {
                 var inputTypeAttribute = Attributes.OfType<InputElementTypeAttribute>().FirstOrDefault();
-                if (inputTypeAttribute != null)
-                {
-                    return inputTypeAttribute;
-                }
 
-                return GetDefaultInputType();
+                return inputTypeAttribute ?? GetDefaultInputType();
             }
-        }
-
-        public bool IsHiddenField
-        {
-            get { return Attributes.OfType<HiddenFieldAttribute>().Any(); }
         }
 
         public IEnumerable<KeyValuePair<string, string>> DataSource
@@ -139,11 +117,6 @@ namespace CompositeC1Contrib.FormBuilder
             }
         }
 
-        public IEnumerable<FormDependencyAttribute> DependencyAttributes
-        {
-            get { return Attributes.OfType<FormDependencyAttribute>(); }
-        }
-
         static FormFieldModel()
         {
             DefaultElementType = new Dictionary<Type, InputElementTypeAttribute>()
@@ -156,13 +129,13 @@ namespace CompositeC1Contrib.FormBuilder
             };
         }
 
-        public FormFieldModel(FormModel owningForm, string name, Type valueType, IList<Attribute> attributes)
+        public FormFieldModel(FormModel owningForm, string name, Type valueType, IEnumerable<Attribute> attributes)
         {
             Verify.That(IsValidName(name), "Invalid field name, only a-z and 0-9 is allowed");
 
             OwningForm = owningForm;
             Name = name;
-            Attributes = attributes;
+            Attributes = attributes.ToList();
             ValueType = valueType;
         }
 

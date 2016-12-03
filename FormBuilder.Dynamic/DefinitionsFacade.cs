@@ -6,7 +6,7 @@ using Composite.Core.IO;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
-    public class DefinitionsFacade
+    public static class DefinitionsFacade
     {
         public static IEnumerable<IDynamicDefinition> GetDefinitions()
         {

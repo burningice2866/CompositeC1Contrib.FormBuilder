@@ -1,7 +1,5 @@
 ﻿using System;
 
-using CompositeC1Contrib.FormBuilder.Web.UI;
-
 namespace CompositeC1Contrib.FormBuilder.Attributes
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]

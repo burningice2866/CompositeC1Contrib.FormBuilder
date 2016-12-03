@@ -13,21 +13,21 @@ namespace CompositeC1Contrib.FormBuilder.Web
 {
     public abstract class BaseFormBuilderRequestContext
     {
-        private static Type RendererImplementation = FormBuilderConfiguration.GetSection().RendererImplementation;
+        private static readonly Type RendererImplementation = FormBuilderConfiguration.GetSection().RendererImplementation;
 
-        protected string FormName { get; private set; }
+        protected IModel Form { get; private set; }
 
         public FormRenderer FormRenderer { get; private set; }
-        public ValidationResultList ValidationResult { get; set; }
+        public ValidationResultList ValidationResult { get; protected set; }
 
-        protected BaseFormBuilderRequestContext(string name)
+        protected BaseFormBuilderRequestContext(IModel form)
         {
             ValidationResult = new ValidationResultList();
-            FormName = name;
+            Form = form;
             FormRenderer = (FormRenderer)Activator.CreateInstance(RendererImplementation);
         }
 
-        public virtual void OnMappedValues() { }
+        protected virtual void OnMappedValues() { }
         public virtual void Submit() { }
     }
 
@@ -58,12 +58,9 @@ namespace CompositeC1Contrib.FormBuilder.Web
             }
         }
 
-        public bool IsOwnSubmit
-        {
-            get { return HttpContext.Request.RequestType == "POST" && HttpContext.Request.Form["__type"] == ModelInstance.Name; }
-        }
+        public bool IsOwnSubmit => HttpContext.Request.RequestType == "POST" && HttpContext.Request.Form["__type"] == ModelInstance.Name;
 
-        protected BaseFormBuilderRequestContext(string name) : base(name) { }
+        protected BaseFormBuilderRequestContext(IModel form) : base(form) { }
 
         public virtual void Execute(HttpContextBase context)
         {
@@ -90,7 +87,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
             var requestFiles = request.Files;
             var files = new List<FormFile>();
 
-            for (int i = 0; i < requestFiles.Count; i++)
+            for (var i = 0; i < requestFiles.Count; i++)
             {
                 var f = requestFiles[i];
                 if (f == null)

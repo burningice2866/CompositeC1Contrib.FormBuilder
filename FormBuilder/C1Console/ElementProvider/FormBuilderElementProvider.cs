@@ -17,7 +17,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
     {
         public FormBuilderElementProvider() : base("FormBuilder") { }
 
-        public override IEnumerable<Element> GetRootsImpl(SearchToken searchToken)
+        protected override IEnumerable<Element> GetRootsImpl(SearchToken searchToken)
         {
             var elementHandle = Context.CreateElementHandle(new FormElementProviderEntityToken());
             var rootElement = new Element(elementHandle)

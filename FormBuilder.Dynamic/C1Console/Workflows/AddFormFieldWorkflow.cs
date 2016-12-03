@@ -16,7 +16,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
     public class AddFormFieldWorkflow : Basic1StepDialogWorkflow
     {
-        private static readonly Dictionary<string, string> InputElementTypes = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> InputElementTypes;
 
         static AddFormFieldWorkflow()
         {
@@ -35,16 +35,18 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public override void OnInitialize(object sender, EventArgs e)
         {
-            if (!BindingExist("FieldName"))
+            if (BindingExist("FieldName"))
             {
-                var folderToken = (FormFolderEntityToken)EntityToken;
-
-                Bindings.Add("HasCustomRenderingLayout", RenderingLayoutFacade.HasCustomRenderingLayout(folderToken.FormName));
-
-                Bindings.Add("FieldName", String.Empty);
-                Bindings.Add("InputElementType", InputElementTypes.First().Key);
-                Bindings.Add("AddFieldToRenderingLayout", true);
+                return;
             }
+
+            var folderToken = (FormFolderEntityToken)EntityToken;
+
+            Bindings.Add("HasCustomRenderingLayout", RenderingLayoutFacade.HasCustomRenderingLayout(folderToken.FormName));
+
+            Bindings.Add("FieldName", String.Empty);
+            Bindings.Add("InputElementType", InputElementTypes.First().Key);
+            Bindings.Add("AddFieldToRenderingLayout", true);
         }
 
         public override void OnFinish(object sender, EventArgs e)

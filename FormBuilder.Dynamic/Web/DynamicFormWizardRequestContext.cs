@@ -4,7 +4,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
 {
     public class DynamicFormWizardRequestContext : WizardRequestContext
     {
-        public DynamicFormWizardRequestContext(string name) : base(name) { }
+        public DynamicFormWizardRequestContext(IModel model) : base(model) { }
 
         public override void Submit()
         {

@@ -16,10 +16,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
     [Export("FormBuilder", typeof(IElementProviderFor))]
     public class DataEntityTokenHandler : IElementProviderFor
     {
-        public IEnumerable<Type> ProviderFor
-        {
-            get { return new[] { typeof(DataEntityToken) }; }
-        }
+        public IEnumerable<Type> ProviderFor => new[] { typeof(DataEntityToken) };
 
         public IEnumerable<Element> Provide(ElementProviderContext context, EntityToken token)
         {

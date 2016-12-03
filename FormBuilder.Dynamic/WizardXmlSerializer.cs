@@ -50,12 +50,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 wizard.Model.Steps.Add(wizardStep);
             }
 
-            var layoutElement = xml.Element("Layout");
-            if (layoutElement != null)
-            {
-                ParseLayout(layoutElement, wizard);
-            }
-
             ParseSubmitHandlers(xml, wizard);
             ParseFormSettings(xml, wizard);
 
@@ -70,12 +64,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 new XAttribute("name", wizard.Name),
                 new XAttribute("requiresCaptcha", wizard.Model.RequiresCaptcha),
                 new XAttribute("forceHttpsConnection", wizard.Model.ForceHttps));
-
-            var layout = new XElement("Layout");
-
-            SaveLayout(form, layout);
-
-            root.Add(layout);
 
             var steps = new XElement("Steps");
 

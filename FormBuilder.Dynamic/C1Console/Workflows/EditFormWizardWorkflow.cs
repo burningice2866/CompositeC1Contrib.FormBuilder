@@ -17,12 +17,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 return;
             }
 
+            Bindings.Add("BoundToken", EntityToken);
+
             var modelReference = (IModelReference)((DataEntityToken)EntityToken).Data;
             var wizard = DynamicWizardsFacade.GetWizard(modelReference.Name);
 
             SetupFormData(wizard, wizard.Model);
-
-            Bindings.Add("BoundToken", EntityToken);
         }
 
         public override void OnFinish(object sender, EventArgs e)

@@ -1,17 +1,11 @@
-﻿using Composite.Core.Xml;
-
-using CompositeC1Contrib.FormBuilder.Web;
+﻿using CompositeC1Contrib.FormBuilder.Web;
 
 namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 {
     public class FormWizardFunction<T> : BaseFormFunction<T, Wizard> where T : WizardRequestContext
     {
-        protected override string StandardFormExecutor
-        {
-            get { return "FormBuilder.StandardFormWizardExecutor"; }
-        }
+        protected override string StandardFormExecutor => "FormBuilder.StandardFormWizardExecutor";
 
-        public FormWizardFunction(string name) : this(name, null, null) { }
-        public FormWizardFunction(string name, XhtmlDocument introText, XhtmlDocument successResponse) : base(name, introText, successResponse) { }
+        public FormWizardFunction(IModel form) : base(form) { }
     }
 }

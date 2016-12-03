@@ -26,23 +26,14 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
         public abstract object Execute(ParameterList parameters, FunctionContextContainer context);
 
         public string OverrideFormExecutor { get; set; }
-        public string Namespace { get; private set; }
-        public string Name { get; private set; }
+        public string Namespace { get; }
+        public string Name { get; }
 
-        public string Description
-        {
-            get { return String.Empty; }
-        }
+        public string Description => String.Empty;
 
-        public EntityToken EntityToken
-        {
-            get { return new FormBuilderFunctionEntityToken(typeof(FormBuilderFunctionProvider).Name, Namespace + "." + Name); }
-        }
+        public EntityToken EntityToken => new FormBuilderFunctionEntityToken(typeof(FormBuilderFunctionProvider).Name, Namespace + "." + Name);
 
-        public Type ReturnType
-        {
-            get { return typeof(XhtmlDocument); }
-        }
+        public Type ReturnType => typeof(XhtmlDocument);
 
         public IEnumerable<ParameterProfile> ParameterProfiles
         {
@@ -67,17 +58,44 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
         protected abstract string StandardFormExecutor { get; }
 
-        protected BaseFormFunction(string name) : this(name, null, null) { }
-
-        protected BaseFormFunction(string name, XhtmlDocument introText, XhtmlDocument successResponse)
+        protected BaseFormFunction(IModel form)
         {
-            var parts = name.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            var functionName = form.Name;
+            if (!functionName.StartsWith("Forms."))
+            {
+                functionName = "Forms." + functionName;
+            }
+
+            var parts = functionName.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
 
             Namespace = String.Join(".", parts.Take(parts.Length - 1));
             Name = parts.Skip(parts.Length - 1).Take(1).Single();
 
-            _intoText = introText;
-            _successResponse = successResponse;
+            if (_intoText == null)
+            {
+                var value = Localization.EvaluateT(form, "IntroText", null);
+                if (value != null)
+                {
+                    try
+                    {
+                        _intoText = XhtmlDocument.Parse(value);
+                    }
+                    catch { }
+                }
+            }
+
+            if (_successResponse == null)
+            {
+                var value = Localization.EvaluateT(form, "SuccessResponse", null);
+                if (value != null)
+                {
+                    try
+                    {
+                        _successResponse = XhtmlDocument.Parse(value);
+                    }
+                    catch { }
+                }
+            }
         }
     }
 
@@ -85,8 +103,12 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
         where TRequestContext : BaseFormBuilderRequestContext<TInstance>
         where TInstance : IModelInstance
     {
-        protected BaseFormFunction(string name) : this(name, null, null) { }
-        protected BaseFormFunction(string name, XhtmlDocument introText, XhtmlDocument successResponse) : base(name, introText, successResponse) { }
+        private IModel _form;
+
+        protected BaseFormFunction(IModel form) : base(form)
+        {
+            _form = form;
+        }
 
         protected static void CopyFunctionParameters(ParameterList parameters, FunctionContextContainer newContext, IDictionary<string, object> functionParameters)
         {
@@ -113,7 +135,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
         public override object Execute(ParameterList parameters, FunctionContextContainer context)
         {
-            var requestContext = (BaseFormBuilderRequestContext<TInstance>)Activator.CreateInstance(typeof(TRequestContext), new object[] { Namespace + "." + Name });
+            var requestContext = (BaseFormBuilderRequestContext<TInstance>)Activator.CreateInstance(typeof(TRequestContext), _form);
             var httpContext = new HttpContextWrapper(HttpContext.Current);
 
             requestContext.Execute(httpContext);

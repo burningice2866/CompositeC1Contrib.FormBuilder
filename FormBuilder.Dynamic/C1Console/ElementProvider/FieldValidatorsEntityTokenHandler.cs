@@ -12,7 +12,7 @@ using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows;
 
-namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider.EntityTokenHandlers
+namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider
 {
     [Export("FormBuilder", typeof(IElementProviderFor))]
     public class FieldValidatorsEntityTokenHandler : IElementProviderFor
@@ -20,11 +20,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider.Entit
         private static readonly ActionGroup ActionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
         private static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Add, IsInFolder = false, IsInToolbar = true, ActionGroup = ActionGroup };
 
-        public IEnumerable<Type> ProviderFor
-        {
-            get { return new[] { typeof(FieldValidatorsEntityToken) }; }
-        }
-        
+        public IEnumerable<Type> ProviderFor => new[] { typeof(FieldValidatorsEntityToken) };
+
         public IEnumerable<Element> Provide(ElementProviderContext context, EntityToken token)
         {
             var validatorToken = (FieldValidatorsEntityToken)token;
@@ -39,15 +36,15 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider.Entit
                     {
                         foreach (var validator in field.ValidationAttributes)
                         {
-                            var name = validator.GetType().Name;
+                            var validatorType = validator.GetType();
 
                             var fieldValidatorElementHandle = context.CreateElementHandle(new FieldValidatorsEntityToken(form.Name, field.Name, validator.GetType()));
                             var fieldValidatorElement = new Element(fieldValidatorElementHandle)
                             {
                                 VisualData = new ElementVisualizedData
                                 {
-                                    Label = name,
-                                    ToolTip = name,
+                                    Label = validator.AttributeName(),
+                                    ToolTip = validator.AttributeName(),
                                     HasChildren = false,
                                     Icon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-closed-root"),
                                     OpenedIcon = ResourceHandle.BuildIconFromDefaultProvider("localization-element-opened-root")
@@ -66,7 +63,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ElementProvider.Entit
                                 }
                             });
 
-                            var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + name, typeof(DeleteFieldValidatorActionToken));
+                            var deleteActionToken = new ConfirmWorkflowActionToken("Delete: " + validator.AttributeName(), typeof(DeleteFieldValidatorActionToken));
                             fieldValidatorElement.AddAction(new ElementAction(new ActionHandle(deleteActionToken))
                             {
                                 VisualData = new ActionVisualizedData

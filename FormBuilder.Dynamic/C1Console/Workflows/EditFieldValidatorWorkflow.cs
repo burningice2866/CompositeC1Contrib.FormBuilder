@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 
+using Composite.C1Console.Users;
 using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
@@ -15,17 +16,19 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
         public override void OnInitialize(object sender, EventArgs e)
         {
-            if (!BindingExist("Message"))
+            if (BindingExist("Message"))
             {
-                var token = (FieldValidatorsEntityToken)EntityToken;
-
-                var definition = DynamicFormsFacade.GetFormByName(token.FormName);
-                var field = definition.Model.Fields.Get(token.FieldName);
-                var validator = field.ValidationAttributes.Single(v => v.GetType().AssemblyQualifiedName == token.Type);
-
-                Bindings.Add("FieldName", token.FieldName);
-                Bindings.Add("Message", validator.GetValidationMessage(field));
+                return;
             }
+
+            var token = (FieldValidatorsEntityToken)EntityToken;
+
+            var definition = DynamicFormsFacade.GetFormByName(token.FormName);
+            var field = definition.Model.Fields.Get(token.FieldName);
+            var validator = field.ValidationAttributes.Single(v => v.GetType().AssemblyQualifiedName == token.Type);
+
+            Bindings.Add("FieldName", token.FieldName);
+            Bindings.Add("Message", validator.GetValidationMessage(field));
         }
 
         public override void OnFinish(object sender, EventArgs e)
@@ -38,9 +41,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var field = definition.Model.Fields.Get(token.FieldName);
             var validator = field.ValidationAttributes.Single(v => v.GetType().AssemblyQualifiedName == token.Type);
 
-            validator.ValidationMessage = message;
+            using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
+            {
+                var key = "Forms." + token.FormName + "." + token.FieldName + ".Validation." + validator.GetType().Name;
 
-            DynamicFormsFacade.SaveForm(definition);
+                writer.AddResource(key, message);
+            }
 
             CreateSpecificTreeRefresher().PostRefreshMesseges(EntityToken);
             SetSaveStatus(true);

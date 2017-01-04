@@ -1,5 +1,6 @@
 using System;
 
+using Composite.C1Console.Users;
 using Composite.C1Console.Workflow;
 using Composite.Core.Xml;
 using Composite.Data;
@@ -16,14 +17,16 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
 
         public override void OnInitialize(object sender, EventArgs e)
         {
-            if (!BindingExist("Title"))
+            if (BindingExist("Title"))
             {
-                var formToken = (IModelReference)((DataEntityToken)EntityToken).Data;
-                var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(formToken.Name);
-
-                Bindings.Add("Title", formToken.Name + " rendering layout");
-                Bindings.Add("RenderingMarkup", renderingMarkup.ToString());
+                return;
             }
+
+            var formToken = (IModelReference)((DataEntityToken)EntityToken).Data;
+            var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(formToken.Name, UserSettings.ActiveLocaleCultureInfo);
+
+            Bindings.Add("Title", formToken.Name + " rendering layout");
+            Bindings.Add("RenderingMarkup", renderingMarkup.ToString());
         }
 
         public override void OnFinish(object sender, EventArgs e)
@@ -31,7 +34,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
             var formToken = (IModelReference)((DataEntityToken)EntityToken).Data;
             var renderingMarkup = GetBinding<string>("RenderingMarkup");
 
-            RenderingLayoutFacade.SaveRenderingLayout(formToken.Name, XhtmlDocument.Parse(renderingMarkup));
+            RenderingLayoutFacade.SaveRenderingLayout(formToken.Name, XhtmlDocument.Parse(renderingMarkup), UserSettings.ActiveLocaleCultureInfo);
 
             SetSaveStatus(true);
         }

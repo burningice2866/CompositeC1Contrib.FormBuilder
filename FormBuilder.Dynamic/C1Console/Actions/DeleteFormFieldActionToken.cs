@@ -4,9 +4,11 @@ using System.Linq;
 
 using Composite.C1Console.Actions;
 using Composite.C1Console.Security;
+using Composite.C1Console.Users;
 using Composite.Core.Xml;
 
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
+using CompositeC1Contrib.Localization;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 {
@@ -41,9 +43,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 
             definition.Model.Fields.Remove(field);
 
-            if (RenderingLayoutFacade.HasCustomRenderingLayout(fieldToken.FormName))
+            if (RenderingLayoutFacade.HasCustomRenderingLayout(fieldToken.FormName, UserSettings.ActiveLocaleCultureInfo))
             {
-                var layout = RenderingLayoutFacade.GetRenderingLayout(fieldToken.FormName);
+                var layout = RenderingLayoutFacade.GetRenderingLayout(fieldToken.FormName, UserSettings.ActiveLocaleCultureInfo);
                 var fieldElement = layout.Body.Descendants().SingleOrDefault(el => el.Name == Namespaces.Xhtml + "p" && el.Value.Trim() == "%" + field.Name + "%");
 
                 if (fieldElement != null)
@@ -51,10 +53,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
                     fieldElement.Remove();
                 }
 
-                RenderingLayoutFacade.SaveRenderingLayout(fieldToken.FormName, layout);
+                RenderingLayoutFacade.SaveRenderingLayout(fieldToken.FormName, layout, UserSettings.ActiveLocaleCultureInfo);
             }
 
             DynamicFormsFacade.SaveForm(definition);
+            LocalizationsFacade.DeleteNamespace(Localization.GenerateKey(fieldToken.FormName, fieldToken.FieldName));
 
             new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(entityToken);
 

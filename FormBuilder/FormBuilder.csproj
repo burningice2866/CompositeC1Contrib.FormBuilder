@@ -50,8 +50,8 @@
       <HintPath>..\packages\CompositeC1Contrib.Core.0.8.3\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="CompositeC1Contrib.Localization, Version=0.2.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1.Localization.0.2.4\lib\net45\CompositeC1Contrib.Localization.dll</HintPath>
+    <Reference Include="CompositeC1Contrib.Localization, Version=0.2.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1.Localization.0.2.5\lib\net45\CompositeC1Contrib.Localization.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">

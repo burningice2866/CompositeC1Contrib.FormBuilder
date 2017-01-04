@@ -5,7 +5,10 @@ using Composite.C1Console.Actions;
 using Composite.C1Console.Security;
 using Composite.Data;
 
+using CompositeC1Contrib.FormBuilder.C1Console.ElementProvider;
+using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Data.Types;
+using CompositeC1Contrib.Localization;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 {
@@ -38,8 +41,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
             var definition = DefinitionsFacade.GetDefinition(modelReference.Name);
 
             DefinitionsFacade.Delete(definition);
+            LocalizationsFacade.DeleteNamespace(Localization.GenerateKey(modelReference.Name));
 
-            new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(entityToken);
+            var ns = modelReference.Name.Substring(0, modelReference.Name.LastIndexOf("."));
+
+            new SpecificTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(new NamespaceFolderEntityToken(typeof(FormBuilderElementProvider).Name, ns));
 
             return null;
         }

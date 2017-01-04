@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Globalization;
+using System.Linq;
 using System.Web;
 using System.Xml.Linq;
 
@@ -103,7 +104,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public static IHtmlString RenderModelFields(IModelInstance instance, BaseFormBuilderRequestContext context)
         {
-            var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(instance.Name);
+            var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(instance.Name, CultureInfo.CurrentCulture);
 
             foreach (var field in instance.Fields.Where(f => f.Label != null))
             {

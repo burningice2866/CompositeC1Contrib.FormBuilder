@@ -157,11 +157,14 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var isNewName = field.Name != fieldName;
             if (isNewName)
             {
-                LocalizationsFacade.RenameNamespace("Forms." + fieldToken.FormName + "." + field.Name, "Forms." + fieldToken.FormName + "." + fieldName, "FormBuilder");
+                var oldNs = Localization.GenerateKey(fieldToken.FormName, field.Name);
+                var newNs = Localization.GenerateKey(fieldToken.FormName, fieldName);
 
-                if (RenderingLayoutFacade.HasCustomRenderingLayout(fieldToken.FormName))
+                LocalizationsFacade.RenameNamespace(oldNs, newNs, Localization.ResourceSet);
+
+                if (RenderingLayoutFacade.HasCustomRenderingLayout(fieldToken.FormName, UserSettings.ActiveLocaleCultureInfo))
                 {
-                    var layout = RenderingLayoutFacade.GetRenderingLayout(fieldToken.FormName);
+                    var layout = RenderingLayoutFacade.GetRenderingLayout(fieldToken.FormName, UserSettings.ActiveLocaleCultureInfo);
 
                     var fieldElement = layout.Body.Descendants().SingleOrDefault(el => el.Name == Namespaces.Xhtml + "p" && el.Value.Trim() == "%" + field.Name + "%");
                     if (fieldElement != null)
@@ -169,7 +172,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                         fieldElement.Value = $"%{fieldName}%";
                     }
 
-                    RenderingLayoutFacade.SaveRenderingLayout(fieldToken.FormName, layout);
+                    RenderingLayoutFacade.SaveRenderingLayout(fieldToken.FormName, layout, UserSettings.ActiveLocaleCultureInfo);
                 }
             }
 
@@ -295,7 +298,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var fieldToken = (FormFieldEntityToken)EntityToken;
 
-            return "Forms." + fieldToken.FormName + "." + fieldToken.FieldName + "." + setting;
+            setting = fieldToken.FieldName + "." + setting;
+
+            return Localization.GenerateKey(fieldToken.FormName, setting);
         }
     }
 }

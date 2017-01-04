@@ -11,6 +11,9 @@ namespace CompositeC1Contrib.FormBuilder
     {
         private static readonly Regex _t = new Regex("T\\((.+)\\)", RegexOptions.Compiled);
 
+        public const string ResourceSet = "FormBuilder";
+        public const string KeyPrefix = "Forms";
+
         public static string Localize(string text)
         {
             if (text.Contains("T("))
@@ -37,14 +40,14 @@ namespace CompositeC1Contrib.FormBuilder
             return text;
         }
 
-        public static string EvaluateT(FormFieldModel field, string type, string defaultValue)
+        public static string EvaluateT(FormFieldModel field, string setting, string defaultValue)
         {
-            return EvaluateT(field.OwningForm, field.Name + "." + type, defaultValue);
+            return EvaluateT(field.OwningForm, field.Name + "." + setting, defaultValue);
         }
 
-        public static string EvaluateT(IModel form, string type, string defaultValue)
+        public static string EvaluateT(IModel form, string setting, string defaultValue)
         {
-            var key = "Forms." + form.Name + "." + type;
+            var key = GenerateKey(form.Name, setting);
 
             return EvaluateT(key, defaultValue);
         }
@@ -69,7 +72,17 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static string T(string key, CultureInfo culture)
         {
-            return C1Res.GetResourceManager("FormBuilder").GetString(key, culture) ?? ResourceFacade.InternalResourceManager.GetString(key, culture);
+            return C1Res.GetResourceManager(ResourceSet).GetString(key, culture) ?? ResourceFacade.InternalResourceManager.GetString(key, culture);
+        }
+
+        public static string GenerateKey(string form)
+        {
+            return KeyPrefix + "." + form;
+        }
+
+        public static string GenerateKey(string form, string setting)
+        {
+            return KeyPrefix + "." + form + "." + setting;
         }
     }
 }

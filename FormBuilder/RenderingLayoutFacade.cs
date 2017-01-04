@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -9,23 +9,29 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public class RenderingLayoutFacade
     {
-        private const string RenderingLayoutFileName = "RenderingLayout.xml";
-
-        public static bool HasCustomRenderingLayout(string formName)
+        public static bool HasCustomRenderingLayout(string formName, CultureInfo culture)
         {
-            var file = Path.Combine(ModelsFacade.RootPath, formName, RenderingLayoutFileName);
+            var key = GetKey(formName);
 
-            return File.Exists(file);
+            var layut = Localization.T(key, culture);
+            if (layut == null)
+            {
+                return false;
+            }
+
+            var xhtml = XhtmlDocument.Parse(layut);
+
+            return !xhtml.IsEmpty;
         }
 
-        public static XhtmlDocument GetRenderingLayout(string formName)
+        public static XhtmlDocument GetRenderingLayout(string formName, CultureInfo culture)
         {
-            if (HasCustomRenderingLayout(formName))
+            if (HasCustomRenderingLayout(formName, culture))
             {
-                var file = Path.Combine(ModelsFacade.RootPath, formName, RenderingLayoutFileName);
-                var fileContent = File.ReadAllText(file);
+                var key = GetKey(formName);
+                var layut = Localization.T(key, culture);
 
-                return XhtmlDocument.Parse(fileContent);
+                return XhtmlDocument.Parse(layut);
             }
 
             var model = ModelsFacade.GetModel(formName);
@@ -44,24 +50,19 @@ namespace CompositeC1Contrib.FormBuilder
             return doc;
         }
 
-        public static void SaveRenderingLayout(string formName, XhtmlDocument markup)
+        public static void SaveRenderingLayout(string formName, XhtmlDocument layout, CultureInfo culture)
         {
-            var dir = Path.Combine(ModelsFacade.RootPath, formName);
-            var file = Path.Combine(dir, RenderingLayoutFileName);
+            using (var writer = ResourceFacade.GetResourceWriter(culture))
+            {
+                var key = GetKey(formName);
 
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
+                writer.AddResource(key, layout.ToString());
             }
+        }
 
-            if (markup.IsEmpty)
-            {
-                File.Delete(file);
-            }
-            else
-            {
-                File.WriteAllText(file, markup.ToString());
-            }
+        private static string GetKey(string formName)
+        {
+            return Localization.GenerateKey(formName, "RenderingLayout");
         }
     }
 }

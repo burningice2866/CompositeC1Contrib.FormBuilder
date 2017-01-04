@@ -4,6 +4,7 @@ using Composite.Data;
 
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Data.Types;
+using CompositeC1Contrib.Localization;
 
 namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 {
@@ -16,6 +17,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var definition = DefinitionsFacade.GetDefinition(modelReference.Name);
 
             DefinitionsFacade.Copy(definition, newName);
+
+            LocalizationsFacade.CopyNamespace(Localization.KeyPrefix + "." + modelReference.Name, Localization.KeyPrefix + "." + newName, Localization.ResourceSet);
 
             CreateSpecificTreeRefresher().PostRefreshMesseges(new FormElementProviderEntityToken());
         }

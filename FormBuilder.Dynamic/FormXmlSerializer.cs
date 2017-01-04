@@ -41,7 +41,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 var formField = new FormFieldModel(model, fieldName, valueType, attrs);
 
                 var label = Localization.EvaluateT(formField, "Label", null);
-                if (label != null)
+                if (label == null)
+                {
+                    formField.Attributes.Add(new HiddenFieldAttribute());
+                }
+                else
                 {
                     formField.Attributes.Add(new FieldLabelAttribute());
                 }
@@ -251,7 +255,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             attrs.Add(inputElementAttr);
         }
 
-        private void ParseMetaData(XElement xml, DynamicFormDefinition definition)
+        private static void ParseMetaData(XElement xml, DynamicFormDefinition definition)
         {
             var metaData = xml.Element("MetaData");
             if (metaData == null)

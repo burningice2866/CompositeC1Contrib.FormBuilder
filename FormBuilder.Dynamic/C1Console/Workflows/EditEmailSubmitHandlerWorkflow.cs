@@ -1,9 +1,11 @@
 using System;
 using System.Linq;
 
+using Composite.C1Console.Users;
 using Composite.C1Console.Workflow;
 using Composite.Data;
 
+using CompositeC1Contrib.Email.Data;
 using CompositeC1Contrib.Email.Data.Types;
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
 using CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers;
@@ -29,6 +31,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             using (var data = new DataConnection())
             {
                 var template = data.Get<IMailTemplate>().Single(t => t.Key == definition.Name + "." + handler.Name);
+                var content = template.GetContent(UserSettings.ActiveLocaleCultureInfo);
 
                 Bindings.Add("Name", handler.Name);
                 Bindings.Add("IncludeAttachments", handler.IncludeAttachments);
@@ -37,8 +40,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 Bindings.Add("To", template.To);
                 Bindings.Add("Cc", template.Cc);
                 Bindings.Add("Bcc", template.Bcc);
-                Bindings.Add("Subject", template.Subject);
-                Bindings.Add("Body", template.Body);
+                Bindings.Add("Subject", content.Subject);
+                Bindings.Add("Body", content.Body);
                 Bindings.Add("EncryptMessage", template.EncryptMessage);
                 Bindings.Add("EncryptPassword", template.EncryptPassword);
             }
@@ -64,14 +67,36 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             handler.Name = name;
             handler.IncludeAttachments = includeAttachments;
-            handler.MailTemplate.From = from;
-            handler.MailTemplate.To = to;
-            handler.MailTemplate.Cc = cc;
-            handler.MailTemplate.Bcc = bcc;
-            handler.MailTemplate.Subject = subject;
-            handler.MailTemplate.Body = body;
-            handler.MailTemplate.EncryptMessage = encryptMessage;
-            handler.MailTemplate.EncryptPassword = encryptPassword;
+
+            using (var data = new DataConnection())
+            {
+                var templateKey = definition.Name + "." + handler.Name;
+                var template = data.Get<IMailTemplate>().SingleOrDefault(t => t.Key == templateKey) ?? data.CreateNew<IMailTemplate>();
+
+                template.Key = templateKey;
+                template.From = from;
+                template.To = to;
+                template.Cc = cc;
+                template.Bcc = bcc;
+                template.EncryptMessage = encryptMessage;
+                template.EncryptPassword = encryptPassword;
+
+                if (template.DataSourceId.ExistsInStore)
+                {
+                    data.Update(template);
+                }
+                else
+                {
+                    data.Add(template);
+                }
+
+                var templateContent = template.GetContent(UserSettings.ActiveLocaleCultureInfo);
+
+                templateContent.Subject = subject;
+                templateContent.Body = body;
+
+                data.Update(templateContent);
+            }
 
             definition.SubmitHandlers.Remove(existingHandler);
             definition.SubmitHandlers.Add(handler);

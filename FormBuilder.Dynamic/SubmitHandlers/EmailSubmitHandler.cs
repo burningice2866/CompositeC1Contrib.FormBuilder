@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net.Mail;
 using System.Xml.Linq;
 
-using Composite.Core.Xml;
 using Composite.Data;
 
 using CompositeC1Contrib.Email;
@@ -18,7 +17,6 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
     [EditWorkflow(typeof(EditEmailSubmitHandlerWorkflow))]
     public class EmailSubmitHandler : FormSubmitHandler
     {
-        public SerializableMailTemplate MailTemplate { get; private set; }
         public bool IncludeAttachments { get; set; }
 
         protected IEnumerable<FormFile> GetFiles(IModelInstance instance)
@@ -51,76 +49,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
             }
         }
 
-        public override void Load(IDynamicDefinition definition, XElement handler)
-        {
-            using (var data = new DataConnection())
-            {
-                var templateKey = definition.Name + "." + Name;
-                var template = data.Get<IMailTemplate>().SingleOrDefault(t => t.Key == templateKey);
-
-                if (template == null)
-                {
-                    template = data.CreateNew<IMailTemplate>();
-
-                    template.Key = templateKey;
-                    template.From = handler.Attribute("From").GetValueOrDefault(String.Empty);
-                    template.To = handler.Attribute("To").GetValueOrDefault(String.Empty);
-                    template.Cc = handler.Attribute("Cc").GetValueOrDefault(String.Empty);
-                    template.Bcc = handler.Attribute("Bcc").GetValueOrDefault(String.Empty);
-                    template.Subject = handler.Element("Subject") != null ? handler.Element("Subject").Value : String.Empty;
-                    template.Body = handler.Element("Body") != null ? handler.Element("Body").Value : String.Empty;
-                    template.EncryptMessage = false;
-                    template.EncryptPassword = String.Empty;
-
-                    data.Add(template);
-                }
-
-                MailTemplate = SerializableMailTemplate.FromData(template);
-            }
-
-            base.Load(definition, handler);
-        }
-
         public override void Save(IDynamicDefinition definition, XElement handler)
         {
             handler.Add(new XAttribute("IncludeAttachments", IncludeAttachments));
-
-            if (MailTemplate != null)
-            {
-                using (var data = new DataConnection())
-                {
-                    var add = false;
-                    var templateKey = definition.Name + "." + Name;
-
-                    var template = data.Get<IMailTemplate>().SingleOrDefault(t => t.Key == templateKey);
-                    if (template == null)
-                    {
-                        add = true;
-
-                        template = data.CreateNew<IMailTemplate>();
-                    }
-
-                    template.Key = templateKey;
-                    template.From = MailTemplate.From;
-                    template.To = MailTemplate.To;
-                    template.Cc = MailTemplate.Cc;
-                    template.Bcc = MailTemplate.Bcc;
-                    template.Subject = MailTemplate.Subject;
-                    template.Body = MailTemplate.Body;
-                    template.EncryptMessage = MailTemplate.EncryptMessage;
-                    template.EncryptPassword = MailTemplate.EncryptPassword;
-
-                    if (add)
-                    {
-                        data.Add(template);
-
-                    }
-                    else
-                    {
-                        data.Update(template);
-                    }
-                }
-            }
 
             base.Save(definition, handler);
         }
@@ -130,8 +61,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
             using (var data = new DataConnection())
             {
                 var templates = data.Get<IMailTemplate>().Where(t => t.Key == definition.Name + "." + Name);
+                var templateContents = data.Get<IMailTemplateContent>().Where(t => t.TemplateKey == definition.Name + "." + Name);
 
                 data.Delete<IMailTemplate>(templates);
+                data.Delete<IMailTemplateContent>(templateContents);
             }
 
             base.Delete(definition);

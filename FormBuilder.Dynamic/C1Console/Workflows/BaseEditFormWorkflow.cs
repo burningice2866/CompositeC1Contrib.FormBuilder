@@ -113,7 +113,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             if (!FormModel.IsValidName(name))
             {
-                ShowFieldMessage("Name", "Form name is invalid, only a-z and 0-9 is allowed");
+                ShowFieldMessage("Name", "Invalid form name, only a-z, 0-9 and symbols - is allowed");
 
                 return false;
             }
@@ -150,7 +150,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var isNewName = name != modelReference.Name;
             if (isNewName)
             {
-                LocalizationsFacade.RenameNamespace("Forms." + modelReference.Name, "Forms." + name, "FormBuilder");
+                LocalizationsFacade.RenameNamespace(Localization.KeyPrefix + "." + modelReference.Name, Localization.KeyPrefix + "." + name, Localization.ResourceSet);
 
                 DefinitionsFacade.Copy(definition, name);
                 DefinitionsFacade.Delete(definition);
@@ -206,7 +206,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var formToken = GetBinding<DataEntityToken>("BoundToken");
             var modelReference = (IModelReference)formToken.Data;
 
-            return "Forms." + modelReference.Name + "." + setting;
+            return Localization.GenerateKey(modelReference.Name, setting);
         }
     }
 }

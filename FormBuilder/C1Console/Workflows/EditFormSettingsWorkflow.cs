@@ -14,14 +14,9 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
 
         private IModelReference ModelReference => (IModelReference)((DataEntityToken)EntityToken).Data;
 
-        private string GetKey(string setting)
-        {
-            return "Forms." + ModelReference.Name + "." + setting;
-        }
-
         private string GetValue(string setting)
         {
-            var key = GetKey(setting);
+            var key = Localization.GenerateKey(ModelReference.Name, setting);
             var value = Localization.T(key, UserSettings.ActiveLocaleCultureInfo);
 
             return value == key ? String.Empty : value;
@@ -46,8 +41,8 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
 
             using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
             {
-                writer.AddResource(GetKey("IntroText"), introText);
-                writer.AddResource(GetKey("SuccessResponse"), successResponse);
+                writer.AddResource(Localization.GenerateKey(ModelReference.Name, "IntroText"), introText);
+                writer.AddResource(Localization.GenerateKey(ModelReference.Name, "SuccessResponse"), successResponse);
             }
 
             var treeRefresher = CreateParentTreeRefresher();

@@ -56,7 +56,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
             {
-                var key = "Forms." + token.FormName + "." + token.FieldName + ".Validation." + attribute.GetType().Name;
+                var setting = token.FieldName + ".Validation." + attribute.GetType().Name;
+                var key = Localization.GenerateKey(token.FormName, setting);
 
                 writer.AddResource(key, message);
             }

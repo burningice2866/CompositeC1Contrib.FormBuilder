@@ -32,7 +32,9 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
 
         private string GetKey(string setting)
         {
-            return "Forms." + FieldEntityToken.FormName + "." + FieldEntityToken.FieldName + "." + setting;
+            setting = FieldEntityToken.FieldName + "." + setting;
+
+            return Localization.GenerateKey(FieldEntityToken.FormName, setting);
         }
 
         public override void OnInitialize(object sender, EventArgs e)

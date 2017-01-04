@@ -36,24 +36,24 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Composite, Version=4.2.5287.17495, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1.Core.4.2.1\lib\net45\Composite.dll</HintPath>
+    <Reference Include="Composite, Version=4.3.5562.29799, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1.Core.4.3\lib\net45\Composite.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Composite.Workflows, Version=4.2.5287.17500, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1.Core.4.2.1\lib\net45\Composite.Workflows.dll</HintPath>
+    <Reference Include="Composite.Workflows, Version=4.3.5562.29802, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1.Core.4.3\lib\net45\Composite.Workflows.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="CompositeC1Contrib.Core, Version=0.8.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CompositeC1Contrib.Core.0.8.3\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="CompositeC1Contrib.Email, Version=0.6.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1.Email.0.6.7\lib\net45\CompositeC1Contrib.Email.dll</HintPath>
+    <Reference Include="CompositeC1Contrib.Email, Version=0.8.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1.Email.0.8.1\lib\net45\CompositeC1Contrib.Email.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="CompositeC1Contrib.Localization, Version=0.2.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1.Localization.0.2.4\lib\net45\CompositeC1Contrib.Localization.dll</HintPath>
+    <Reference Include="CompositeC1Contrib.Localization, Version=0.2.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1.Localization.0.2.5\lib\net45\CompositeC1Contrib.Localization.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="CompositeC1Contrib.Sorting, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -61,7 +61,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1.Core.4.2.1\lib\net45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+      <HintPath>..\packages\CompositeC1.Core.4.3\lib\net45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -168,7 +168,6 @@
     <Compile Include="FormModelMailMessageBuilder.cs" />
     <Compile Include="FormXmlSerializer.cs" />
     <Compile Include="IDynamicDefinition.cs" />
-    <Compile Include="SerializableMailTemplate.cs" />
     <Compile Include="SubmitHandlers\EmailSubmitHandler.cs" />
     <Compile Include="SubmitHandlers\FormSubmitHandler.cs" />
     <Compile Include="Web\DynamicFormBuilderRequestContext.cs" />

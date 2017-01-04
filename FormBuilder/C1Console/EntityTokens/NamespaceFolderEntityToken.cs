@@ -5,6 +5,9 @@ using System.Linq;
 using Composite.C1Console.Elements;
 using Composite.C1Console.Security;
 using Composite.Core.ResourceSystem;
+using Composite.Data;
+
+using CompositeC1Contrib.FormBuilder.Data.Types;
 
 namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
 {
@@ -41,20 +44,23 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
 
         public static Element CreateElement(ElementProviderContext context, string source, string label, string ns)
         {
-            var folderHandle = context.CreateElementHandle(new NamespaceFolderEntityToken(source, ns));
-            var folderElement = new Element(folderHandle)
+            using (var data = new DataConnection())
             {
-                VisualData = new ElementVisualizedData
+                var folderHandle = context.CreateElementHandle(new NamespaceFolderEntityToken(source, ns));
+                var folderElement = new Element(folderHandle)
                 {
-                    Label = label,
-                    ToolTip = label,
-                    HasChildren = true,
-                    Icon = ResourceHandle.BuildIconFromDefaultProvider("datagroupinghelper-folder-closed"),
-                    OpenedIcon = ResourceHandle.BuildIconFromDefaultProvider("datagroupinghelper-folder-open")
-                }
-            };
+                    VisualData = new ElementVisualizedData
+                    {
+                        Label = label,
+                        ToolTip = label,
+                        HasChildren = data.Get<IModelReference>().Any(m => m.Name.StartsWith(ns + ".")),
+                        Icon = ResourceHandle.BuildIconFromDefaultProvider("datagroupinghelper-folder-closed"),
+                        OpenedIcon = ResourceHandle.BuildIconFromDefaultProvider("datagroupinghelper-folder-open")
+                    }
+                };
 
-            return folderElement;
+                return folderElement;
+            }
         }
 
         public override string Serialize()

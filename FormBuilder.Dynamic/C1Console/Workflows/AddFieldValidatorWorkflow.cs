@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Composite.C1Console.Users;
 using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.Composition;
@@ -54,7 +53,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             DynamicFormsFacade.SaveForm(definition);
 
-            using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
+            using (var writer = ResourceFacade.GetResourceWriter())
             {
                 var setting = token.FieldName + ".Validation." + attribute.GetType().Name;
                 var key = Localization.GenerateKey(token.FormName, setting);

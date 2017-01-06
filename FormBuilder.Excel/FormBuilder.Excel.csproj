@@ -39,8 +39,8 @@
       <HintPath>..\packages\CompositeC1.Core.4.2.1\lib\net45\Composite.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="CompositeC1Contrib.Core, Version=0.8.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1Contrib.Core.0.8.3\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
+    <Reference Include="CompositeC1Contrib.Core, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1Contrib.Core.0.8.4\lib\net45\CompositeC1Contrib.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">

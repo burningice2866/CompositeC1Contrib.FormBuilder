@@ -4,7 +4,6 @@ using System.Linq;
 
 using Composite.C1Console.Actions;
 using Composite.C1Console.Security;
-using Composite.C1Console.Users;
 using Composite.Core.Xml;
 
 using CompositeC1Contrib.FormBuilder.C1Console.EntityTokens;
@@ -43,9 +42,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 
             definition.Model.Fields.Remove(field);
 
-            if (RenderingLayoutFacade.HasCustomRenderingLayout(fieldToken.FormName, UserSettings.ActiveLocaleCultureInfo))
+            if (RenderingLayoutFacade.HasCustomRenderingLayout(fieldToken.FormName))
             {
-                var layout = RenderingLayoutFacade.GetRenderingLayout(fieldToken.FormName, UserSettings.ActiveLocaleCultureInfo);
+                var layout = RenderingLayoutFacade.GetRenderingLayout(fieldToken.FormName);
                 var fieldElement = layout.Body.Descendants().SingleOrDefault(el => el.Name == Namespaces.Xhtml + "p" && el.Value.Trim() == "%" + field.Name + "%");
 
                 if (fieldElement != null)
@@ -53,7 +52,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
                     fieldElement.Remove();
                 }
 
-                RenderingLayoutFacade.SaveRenderingLayout(fieldToken.FormName, layout, UserSettings.ActiveLocaleCultureInfo);
+                RenderingLayoutFacade.SaveRenderingLayout(fieldToken.FormName, layout);
             }
 
             DynamicFormsFacade.SaveForm(definition);

@@ -5,7 +5,6 @@ using System.Xml.Linq;
 using Composite.C1Console.Actions;
 using Composite.C1Console.Forms;
 using Composite.C1Console.Forms.DataServices;
-using Composite.C1Console.Users;
 using Composite.Core.Xml;
 
 using CompositeC1Contrib.FormBuilder.Attributes;
@@ -27,7 +26,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
         {
             var key = GetKey(setting);
 
-            return Localization.T(key, UserSettings.ActiveLocaleCultureInfo);
+            return Localization.T(key);
         }
 
         private string GetKey(string setting)
@@ -56,7 +55,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
         {
             var label = GetBinding<string>("Label");
 
-            using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
+            using (var writer = ResourceFacade.GetResourceWriter())
             {
                 writer.AddResource(GetKey("Label"), label);
 

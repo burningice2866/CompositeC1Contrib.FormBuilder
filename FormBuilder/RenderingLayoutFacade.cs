@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -9,11 +8,11 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public class RenderingLayoutFacade
     {
-        public static bool HasCustomRenderingLayout(string formName, CultureInfo culture)
+        public static bool HasCustomRenderingLayout(string formName)
         {
             var key = GetKey(formName);
 
-            var layut = Localization.T(key, culture);
+            var layut = Localization.T(key);
             if (layut == null)
             {
                 return false;
@@ -24,12 +23,12 @@ namespace CompositeC1Contrib.FormBuilder
             return !xhtml.IsEmpty;
         }
 
-        public static XhtmlDocument GetRenderingLayout(string formName, CultureInfo culture)
+        public static XhtmlDocument GetRenderingLayout(string formName)
         {
-            if (HasCustomRenderingLayout(formName, culture))
+            if (HasCustomRenderingLayout(formName))
             {
                 var key = GetKey(formName);
-                var layut = Localization.T(key, culture);
+                var layut = Localization.T(key);
 
                 return XhtmlDocument.Parse(layut);
             }
@@ -50,9 +49,9 @@ namespace CompositeC1Contrib.FormBuilder
             return doc;
         }
 
-        public static void SaveRenderingLayout(string formName, XhtmlDocument layout, CultureInfo culture)
+        public static void SaveRenderingLayout(string formName, XhtmlDocument layout)
         {
-            using (var writer = ResourceFacade.GetResourceWriter(culture))
+            using (var writer = ResourceFacade.GetResourceWriter())
             {
                 var key = GetKey(formName);
 

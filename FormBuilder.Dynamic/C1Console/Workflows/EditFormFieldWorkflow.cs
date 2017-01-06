@@ -5,7 +5,6 @@ using System.Xml.Linq;
 using Composite.C1Console.Actions;
 using Composite.C1Console.Forms;
 using Composite.C1Console.Forms.DataServices;
-using Composite.C1Console.Users;
 using Composite.C1Console.Workflow;
 using Composite.Core.ResourceSystem;
 using Composite.Core.Xml;
@@ -162,9 +161,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
                 LocalizationsFacade.RenameNamespace(oldNs, newNs, Localization.ResourceSet);
 
-                if (RenderingLayoutFacade.HasCustomRenderingLayout(fieldToken.FormName, UserSettings.ActiveLocaleCultureInfo))
+                if (RenderingLayoutFacade.HasCustomRenderingLayout(fieldToken.FormName))
                 {
-                    var layout = RenderingLayoutFacade.GetRenderingLayout(fieldToken.FormName, UserSettings.ActiveLocaleCultureInfo);
+                    var layout = RenderingLayoutFacade.GetRenderingLayout(fieldToken.FormName);
 
                     var fieldElement = layout.Body.Descendants().SingleOrDefault(el => el.Name == Namespaces.Xhtml + "p" && el.Value.Trim() == "%" + field.Name + "%");
                     if (fieldElement != null)
@@ -172,14 +171,14 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                         fieldElement.Value = $"%{fieldName}%";
                     }
 
-                    RenderingLayoutFacade.SaveRenderingLayout(fieldToken.FormName, layout, UserSettings.ActiveLocaleCultureInfo);
+                    RenderingLayoutFacade.SaveRenderingLayout(fieldToken.FormName, layout);
                 }
             }
 
             field.Name = fieldName;
             field.IsReadOnly = isReadOnly;
 
-            using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
+            using (var writer = ResourceFacade.GetResourceWriter())
             {
                 writer.AddResource(GetKey("Label"), (string)null);
                 writer.AddResource(GetKey("PlaceholderText"), (string)null);
@@ -291,7 +290,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var key = GetKey(setting);
 
-            return Localization.T(key, UserSettings.ActiveLocaleCultureInfo);
+            return Localization.T(key);
         }
 
         private string GetKey(string setting)

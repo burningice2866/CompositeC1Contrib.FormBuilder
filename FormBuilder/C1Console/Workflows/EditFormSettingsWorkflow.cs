@@ -1,6 +1,5 @@
 using System;
 
-using Composite.C1Console.Users;
 using Composite.Data;
 
 using CompositeC1Contrib.FormBuilder.Data.Types;
@@ -17,7 +16,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
         private string GetValue(string setting)
         {
             var key = Localization.GenerateKey(ModelReference.Name, setting);
-            var value = Localization.T(key, UserSettings.ActiveLocaleCultureInfo);
+            var value = Localization.T(key);
 
             return value == key ? String.Empty : value;
         }
@@ -39,7 +38,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
             var introText = GetBinding<string>("IntroText");
             var successResponse = GetBinding<string>("SuccessResponse");
 
-            using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
+            using (var writer = ResourceFacade.GetResourceWriter())
             {
                 writer.AddResource(Localization.GenerateKey(ModelReference.Name, "IntroText"), introText);
                 writer.AddResource(Localization.GenerateKey(ModelReference.Name, "SuccessResponse"), successResponse);

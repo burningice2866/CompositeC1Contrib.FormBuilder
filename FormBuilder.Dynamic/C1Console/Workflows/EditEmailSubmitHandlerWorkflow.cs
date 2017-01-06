@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 
-using Composite.C1Console.Users;
 using Composite.C1Console.Workflow;
 using Composite.Data;
 
@@ -31,7 +30,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             using (var data = new DataConnection())
             {
                 var template = data.Get<IMailTemplate>().Single(t => t.Key == definition.Name + "." + handler.Name);
-                var content = template.GetContent(UserSettings.ActiveLocaleCultureInfo);
+                var content = template.GetContent();
 
                 Bindings.Add("Name", handler.Name);
                 Bindings.Add("IncludeAttachments", handler.IncludeAttachments);
@@ -90,7 +89,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                     data.Add(template);
                 }
 
-                var templateContent = template.GetContent(UserSettings.ActiveLocaleCultureInfo);
+                var templateContent = template.GetContent();
 
                 templateContent.Subject = subject;
                 templateContent.Body = body;

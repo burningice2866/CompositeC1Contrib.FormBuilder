@@ -5,7 +5,6 @@ using System.Xml.Linq;
 using Composite.C1Console.Actions;
 using Composite.C1Console.Forms;
 using Composite.C1Console.Forms.DataServices;
-using Composite.C1Console.Users;
 using Composite.Core.Xml;
 using Composite.Data;
 
@@ -141,7 +140,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var introText = GetBinding<string>("IntroText");
             var successResponse = GetBinding<string>("SuccessResponse");
 
-            using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
+            using (var writer = ResourceFacade.GetResourceWriter())
             {
                 writer.AddResource(GetKey("IntroText"), introText);
                 writer.AddResource(GetKey("SuccessResponse"), successResponse);
@@ -198,7 +197,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
         {
             var key = GetKey(setting);
 
-            return Localization.T(key, UserSettings.ActiveLocaleCultureInfo);
+            return Localization.T(key);
         }
 
         protected string GetKey(string setting)

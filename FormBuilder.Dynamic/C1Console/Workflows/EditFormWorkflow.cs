@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Composite.C1Console.Users;
 using Composite.C1Console.Workflow;
 using Composite.Data;
 
@@ -55,7 +54,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 submitButtonLabelAttr = new SubmitButtonLabelAttribute(submitButtonLabel);
                 definition.Model.Attributes.Add(submitButtonLabelAttr);
 
-                using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
+                using (var writer = ResourceFacade.GetResourceWriter())
                 {
                     writer.AddResource(GetKey("SubmitButtonLabel"), submitButtonLabel);
                 }

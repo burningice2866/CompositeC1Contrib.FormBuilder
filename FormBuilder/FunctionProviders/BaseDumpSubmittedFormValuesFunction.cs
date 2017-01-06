@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Xml.Linq;
@@ -64,7 +63,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
         {
             if (useRenderingLayout)
             {
-                var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(form.Name, CultureInfo.CurrentCulture);
+                var renderingMarkup = RenderingLayoutFacade.GetRenderingLayout(form.Name);
 
                 var elements = new List<XElement>();
                 var fields = new List<FormField>();

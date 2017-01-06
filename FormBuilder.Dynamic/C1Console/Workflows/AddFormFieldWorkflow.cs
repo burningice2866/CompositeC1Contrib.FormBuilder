@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-using Composite.C1Console.Users;
 using Composite.C1Console.Workflow;
 using Composite.Core.Xml;
 
@@ -43,7 +42,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             var folderToken = (FormFolderEntityToken)EntityToken;
 
-            Bindings.Add("HasCustomRenderingLayout", RenderingLayoutFacade.HasCustomRenderingLayout(folderToken.FormName, UserSettings.ActiveLocaleCultureInfo));
+            Bindings.Add("HasCustomRenderingLayout", RenderingLayoutFacade.HasCustomRenderingLayout(folderToken.FormName));
 
             Bindings.Add("FieldName", String.Empty);
             Bindings.Add("InputElementType", InputElementTypes.First().Key);
@@ -67,13 +66,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             DynamicFormsFacade.SaveForm(definition);
 
-            if (RenderingLayoutFacade.HasCustomRenderingLayout(folderToken.FormName, UserSettings.ActiveLocaleCultureInfo) && addFieldToRenderingLayout)
+            if (RenderingLayoutFacade.HasCustomRenderingLayout(folderToken.FormName) && addFieldToRenderingLayout)
             {
-                var layut = RenderingLayoutFacade.GetRenderingLayout(folderToken.FormName, UserSettings.ActiveLocaleCultureInfo);
+                var layut = RenderingLayoutFacade.GetRenderingLayout(folderToken.FormName);
 
                 layut.Body.Add(new XElement(Namespaces.Xhtml + "p", String.Format("%{0}%", fieldName)));
 
-                RenderingLayoutFacade.SaveRenderingLayout(folderToken.FormName, layut, UserSettings.ActiveLocaleCultureInfo);
+                RenderingLayoutFacade.SaveRenderingLayout(folderToken.FormName, layut);
             }
 
             var fieldToken = new FormFieldEntityToken(folderToken.FormName, fieldName);

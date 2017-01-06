@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 
-using Composite.C1Console.Users;
 using Composite.C1Console.Workflow;
 
 using CompositeC1Contrib.FormBuilder.Dynamic.C1Console.EntityTokens;
@@ -41,7 +40,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var field = definition.Model.Fields.Get(token.FieldName);
             var validator = field.ValidationAttributes.Single(v => v.GetType().AssemblyQualifiedName == token.Type);
 
-            using (var writer = ResourceFacade.GetResourceWriter(UserSettings.ActiveLocaleCultureInfo))
+            using (var writer = ResourceFacade.GetResourceWriter())
             {
                 var setting = token.FieldName + ".Validation." + validator.GetType().Name;
                 var key = Localization.GenerateKey(token.FormName, setting);

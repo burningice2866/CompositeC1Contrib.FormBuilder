@@ -29,7 +29,17 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             using (var data = new DataConnection())
             {
-                var template = data.Get<IMailTemplate>().Single(t => t.Key == definition.Name + "." + handler.Name);
+                var key = definition.Name + "." + handler.Name;
+
+                var template = data.Get<IMailTemplate>().SingleOrDefault(t => t.Key == key);
+                if (template == null)
+                {
+                    template = data.CreateNew<IMailTemplate>();
+                    template.Key = key;
+
+                    template = data.Add(template);
+                }
+
                 var content = template.GetContent();
 
                 Bindings.Add("Name", handler.Name);

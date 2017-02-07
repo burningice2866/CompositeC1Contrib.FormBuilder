@@ -266,6 +266,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Strings.de.resx" />
     <EmbeddedResource Include="Strings.kl.resx">
       <LastGenOutput>Strings.gl.Designer.cs</LastGenOutput>
     </EmbeddedResource>

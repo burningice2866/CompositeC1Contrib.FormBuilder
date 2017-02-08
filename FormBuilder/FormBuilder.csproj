@@ -290,9 +290,8 @@ copy "$(TargetDir)da\$(TargetName).resources.dll" "$(ProjectDir)Package\Bin\da\$
 mkdir "$(ProjectDir)Package\bin\kl"
 copy "$(TargetDir)kl\$(TargetName).resources.dll" "$(ProjectDir)Package\Bin\kl\$(TargetName).resources.dll"
 
-del "$(ProjectDir)\Package\package.zip"
-
-"$(ProjectDir)..\.vendor\7z.exe" a "$(ProjectDir)\Package\package.zip" -tzip -r "$(ProjectDir)\Package\*"</PostBuildEvent>
+mkdir "$(ProjectDir)Package\bin\de"
+copy "$(TargetDir)de\$(TargetName).resources.dll" "$(ProjectDir)Package\Bin\de\$(TargetName).resources.dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

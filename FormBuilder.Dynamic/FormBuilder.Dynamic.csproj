@@ -251,11 +251,7 @@
     <PostBuildEvent>del "$(ProjectDir)Package\bin\"
 mkdir "$(ProjectDir)Package\bin\"
 
-copy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)Package\Bin\$(TargetFileName)"
-
-del "$(ProjectDir)\Package\package.zip"
-
-"$(ProjectDir)..\.vendor\7z.exe" a "$(ProjectDir)\Package\package.zip" -tzip -r "$(ProjectDir)\Package\*"</PostBuildEvent>
+copy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)Package\Bin\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

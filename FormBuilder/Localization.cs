@@ -72,7 +72,13 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static string T(string key, CultureInfo culture)
         {
-            return C1Res.GetResourceManager(ResourceSet).GetString(key, culture) ?? ResourceFacade.InternalResourceManager.GetString(key, culture);
+            var value = C1Res.GetResourceManager(ResourceSet).GetString(key, culture);
+            if (value == null)
+            {
+                value = ResourceFacade.InternalResourceManager.GetString(key.Replace(".", "_"), culture);
+            }
+
+            return value;
         }
 
         public static string GenerateKey(string form)

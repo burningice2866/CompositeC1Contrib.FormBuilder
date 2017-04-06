@@ -8,11 +8,23 @@ namespace CompositeC1Contrib.FormBuilder.Validation
     public class FormValidationRule
     {
         private Func<bool> _rule;
+        private string _validatioMessage;
 
         public IEnumerable<string> AffectedFormIds { get; private set; }
         public Func<string, string> FormatMessage { get; set; }
 
-        public string ValidationMessage { get; private set; }
+        public string ValidationMessage
+        {
+            get
+            {
+                if (FormatMessage != null)
+                {
+                    return FormatMessage(_validatioMessage);
+                }
+
+                return _validatioMessage;
+            }
+        }
 
         [Obsolete("Pass the rule into the constructor")]
         public Func<bool> Rule
@@ -31,7 +43,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 
             _rule = rule;
 
-            ValidationMessage = validationMessage;
+            _validatioMessage = validationMessage;
             AffectedFormIds = new List<string>(affectedFormIds);
         }
 

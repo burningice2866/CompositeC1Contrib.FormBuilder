@@ -45,9 +45,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static IModel GetModel(string name)
         {
-            ProviderModelContainer container;
-
-            return _cachedList.Value.TryGetValue(name, out container) ? container.Model : null;
+            return _cachedList.Value.TryGetValue(name, out ProviderModelContainer container) ? container.Model : null;
         }
 
         public static IEnumerable<ProviderModelContainer> GetModels()

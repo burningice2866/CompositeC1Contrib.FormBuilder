@@ -20,15 +20,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
             get { return _permissionTypes; }
         }
 
-        public override string Serialize()
-        {
-            return String.Empty;
-        }
+        public override string Serialize() => String.Empty;
 
-        public static ActionToken Deserialize(string serializedData)
-        {
-            return new DeleteDataSourceActionToken();
-        }
+        public static ActionToken Deserialize(string serializedData) => new DeleteDataSourceActionToken();
     }
 
     public class DeleteDataSourceActionExecutor : IActionExecutor

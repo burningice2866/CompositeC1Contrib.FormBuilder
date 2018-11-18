@@ -19,8 +19,7 @@ namespace CompositeC1Contrib.FormBuilder
         {
             var formName = formType.FullName;
 
-            var formNameAttribte = formType.GetCustomAttributes(typeof(FormNameAttribute), false).FirstOrDefault() as FormNameAttribute;
-            if (formNameAttribte != null)
+            if (formType.GetCustomAttributes(typeof(FormNameAttribute), false).FirstOrDefault() is FormNameAttribute formNameAttribte)
             {
                 formName = formNameAttribte.FullName;
             }
@@ -87,8 +86,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public static void SetDefaultValues(IPOCOForm instance, Form form)
         {
-            var defaultValuesProvider = instance as IProvidesDefaultValues;
-            if (defaultValuesProvider != null)
+            if (instance is IProvidesDefaultValues defaultValuesProvider)
             {
                 defaultValuesProvider.SetDefaultValues();
             }

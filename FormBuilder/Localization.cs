@@ -81,14 +81,8 @@ namespace CompositeC1Contrib.FormBuilder
             return value;
         }
 
-        public static string GenerateKey(string form)
-        {
-            return KeyPrefix + "." + form;
-        }
+        public static string GenerateKey(string form) => KeyPrefix + "." + form;
 
-        public static string GenerateKey(string form, string setting)
-        {
-            return KeyPrefix + "." + form + "." + setting;
-        }
+        public static string GenerateKey(string form, string setting) => KeyPrefix + "." + form + "." + setting;
     }
 }

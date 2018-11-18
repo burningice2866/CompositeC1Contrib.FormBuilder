@@ -25,40 +25,19 @@ namespace CompositeC1Contrib.FormBuilder
         public NameValueCollection SubmittedValues { get; private set; }
         public IDictionary<string, object> FormData { get; private set; }
 
-        public string Name
-        {
-            get { return Model.Name; }
-        }
+        public string Name => Model.Name;
 
-        public IList<Attribute> Attributes
-        {
-            get { return Model.Attributes; }
-        }
+        public IList<Attribute> Attributes => Model.Attributes;
 
-        public bool DisableAntiForgery
-        {
-            get { return Model.DisableAntiForgery; }
-        }
+        public bool DisableAntiForgery => Model.DisableAntiForgery;
 
-        public bool RequiresCaptcha
-        {
-            get { return Model.RequiresCaptcha; }
-        }
+        public bool RequiresCaptcha => Model.RequiresCaptcha;
 
-        public bool ForceHttps
-        {
-            get { return Model.ForceHttps; }
-        }
+        public bool ForceHttps => Model.ForceHttps;
 
-        public bool HasFileUpload
-        {
-            get { return Model.HasFileUpload; }
-        }
+        public bool HasFileUpload => Model.HasFileUpload;
 
-        public string SubmitButtonLabel
-        {
-            get { return Model.SubmitButtonLabel; }
-        }
+        public string SubmitButtonLabel => Model.SubmitButtonLabel;
 
         static Form()
         {
@@ -71,10 +50,7 @@ namespace CompositeC1Contrib.FormBuilder
             FormData = new Dictionary<string, object>();
             Fields = model.Fields.Select(f => new FormField(f, this)).ToList().AsReadOnly();
 
-            if (model.Constructor != null)
-            {
-                model.Constructor(this);
-            }
+            model?.Constructor(this);
         }
 
         public bool IsValid(IEnumerable<string> fieldNames)
@@ -125,10 +101,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public void SetDefaultValues()
         {
-            if (Model.SetDefaultValuesHandler != null)
-            {
-                Model.SetDefaultValuesHandler(this);
-            }
+            Model?.SetDefaultValuesHandler(this);
         }
 
         public void MapValues(NameValueCollection values, IEnumerable<FormFile> files)
@@ -238,8 +211,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         private void MapValueToField(FormField field, string val)
         {
-            IValueMapper mapper;
-            if (ValueMappers.TryGetValue(field.ValueType, out mapper))
+            if (ValueMappers.TryGetValue(field.ValueType, out var mapper))
             {
                 mapper.MapValue(field, val);
             }

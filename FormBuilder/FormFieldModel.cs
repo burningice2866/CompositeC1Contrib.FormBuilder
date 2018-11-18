@@ -84,20 +84,17 @@ namespace CompositeC1Contrib.FormBuilder
                     return null;
                 }
 
-                var listOfKeyValuePair = ds as IEnumerable<KeyValuePair<string, string>>;
-                if (listOfKeyValuePair != null)
+                if (ds is IEnumerable<KeyValuePair<string, string>> listOfKeyValuePair)
                 {
                     return listOfKeyValuePair.Select(f => new KeyValuePair<string, string>(f.Key, Localization.Localize(f.Value)));
                 }
 
-                var dictionary = ds as IDictionary<string, string>;
-                if (dictionary != null)
+                if (ds is IDictionary<string, string> dictionary)
                 {
                     return dictionary.Select(f => new KeyValuePair<string, string>(f.Key, Localization.Localize(f.Value)));
                 }
 
-                var list = ds as IEnumerable<string>;
-                if (list != null)
+                if (ds is IEnumerable<string> list)
                 {
                     return list.Select(Localization.Localize).Select(str => new KeyValuePair<string, string>(str, str));
                 }

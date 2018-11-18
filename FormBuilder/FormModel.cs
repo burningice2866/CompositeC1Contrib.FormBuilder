@@ -27,10 +27,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public bool ForceHttps => Attributes.OfType<ForceHttpsConnectionAttribute>().Any();
 
-        public bool HasFileUpload
-        {
-            get { return Fields.Any(f => f.ValueType == typeof(FormFile) || f.ValueType == typeof(IEnumerable<FormFile>)); }
-        }
+        public bool HasFileUpload => Fields.Any(f => f.ValueType == typeof(FormFile) || f.ValueType == typeof(IEnumerable<FormFile>));
 
         public string SubmitButtonLabel
         {

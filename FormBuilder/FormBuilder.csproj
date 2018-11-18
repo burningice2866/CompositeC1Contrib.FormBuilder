@@ -92,6 +92,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\AllowHtmlAttribute.cs" />
     <Compile Include="Attributes\DisplayFormatAttribute.cs" />
     <Compile Include="Attributes\DisableAntiForgeryAttribute.cs" />
     <Compile Include="Attributes\HiddenFieldAttribute.cs" />

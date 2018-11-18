@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Helpers;
 
+using CompositeC1Contrib.FormBuilder.Attributes;
 using CompositeC1Contrib.FormBuilder.Configuration;
 using CompositeC1Contrib.FormBuilder.Validation;
 using CompositeC1Contrib.FormBuilder.Web.UI.Rendering;
@@ -108,10 +110,33 @@ namespace CompositeC1Contrib.FormBuilder.Web
                 }
             }
 
-            ModelInstance.MapValues(request.Form, files);
+            var postedValues = GetPostedValues(request);
+
+            ModelInstance.MapValues(postedValues, files);
             OnMappedValues();
 
             ValidationResult = ModelInstance.Validate(new ValidationOptions());
+        }
+
+        private NameValueCollection GetPostedValues(HttpRequestBase request)
+        {
+            var nmc = new NameValueCollection();
+
+            foreach (var field in ModelInstance.Fields)
+            {
+                var form = request.Form;
+
+                if (field.Attributes.OfType<AllowHtmlAttribute>().Any())
+                {
+                    form = request.Unvalidated.Form;
+                }
+
+                var value = form[field.Name];
+
+                nmc.Add(field.Name, value);
+            }
+
+            return nmc;
         }
     }
 }

@@ -3,31 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using Composite.Core;
+
 using CompositeC1Contrib.FormBuilder.Attributes;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CompositeC1Contrib.FormBuilder
 {
     public static class POCOModelsFacade
     {
+        private static PropertyInfo prop = typeof(ServiceLocator).GetProperty("RequestScopedServiceProvider", BindingFlags.NonPublic | BindingFlags.Static);
+
         public static IModel FromType(Type formType)
         {
-            ConstructorInfo constructor = null;
-
-            foreach (var ctor in formType.GetConstructors(BindingFlags.Instance | BindingFlags.Public))
-            {
-                var parameters = ctor.GetParameters();
-
-                if (parameters.Length == 0)
-                {
-                    constructor = ctor;
-                }
-            }
-
-            if (constructor == null)
-            {
-                throw new InvalidOperationException("No parameterless constructor on form");
-            }
-
             var formName = formType.FullName;
 
             var formNameAttribte = formType.GetCustomAttributes(typeof(FormNameAttribute), false).FirstOrDefault() as FormNameAttribute;
@@ -40,7 +29,9 @@ namespace CompositeC1Contrib.FormBuilder
             {
                 Constructor = f =>
                 {
-                    var instance = constructor.Invoke(null);
+                    var serviceProvider = (IServiceProvider)prop.GetValue(null);
+
+                    var instance = ActivatorUtilities.CreateInstance(serviceProvider, formType);
 
                     f.FormData.Add("PocoInstance", instance);
                 }

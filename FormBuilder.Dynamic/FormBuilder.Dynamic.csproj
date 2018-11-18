@@ -54,9 +54,8 @@
       <HintPath>..\packages\CompositeC1.Localization.0.2.6\lib\net45\CompositeC1Contrib.Localization.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="CompositeC1Contrib.Sorting, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1.Sorting.1.6.0\lib\net45\CompositeC1Contrib.Sorting.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="CompositeC1Contrib.Sorting, Version=1.7.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1.Sorting.1.7.1\lib\net451\CompositeC1Contrib.Sorting.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\CompositeC1.Core.6.1\lib\net461\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>

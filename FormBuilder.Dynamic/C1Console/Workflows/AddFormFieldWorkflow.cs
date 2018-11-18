@@ -78,7 +78,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var fieldToken = new FormFieldEntityToken(folderToken.FormName, fieldName);
             var workflowToken = new WorkflowActionToken(typeof(EditFormFieldWorkflow));
 
-            CreateAddNewTreeRefresher(EntityToken).PostRefreshMesseges(fieldToken);
+            CreateAddNewTreeRefresher(EntityToken).PostRefreshMessages(fieldToken);
             ExecuteAction(fieldToken, workflowToken);
         }
 

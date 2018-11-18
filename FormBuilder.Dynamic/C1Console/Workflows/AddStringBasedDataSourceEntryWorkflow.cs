@@ -41,7 +41,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             DynamicFormsFacade.SaveForm(definition);
 
-            CreateAddNewTreeRefresher(EntityToken).PostRefreshMesseges(new StringBasedDataSourceEntryEntityToken(dataSourceToken.FormName, dataSourceToken.FieldName, entryValue));
+            CreateAddNewTreeRefresher(EntityToken).PostRefreshMessages(new StringBasedDataSourceEntryEntityToken(dataSourceToken.FormName, dataSourceToken.FieldName, entryValue));
         }
 
         public override bool Validate()

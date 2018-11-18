@@ -57,7 +57,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var wizardStepToken = new FormWizardStepEntityToken(wizard.Name, step.Name);
             var workflowToken = new WorkflowActionToken(typeof(EditWizardStepWorkflow));
 
-            CreateAddNewTreeRefresher(EntityToken).PostRefreshMesseges(wizardStepToken);
+            CreateAddNewTreeRefresher(EntityToken).PostRefreshMessages(wizardStepToken);
             ExecuteAction(wizardStepToken, workflowToken);
         }
 

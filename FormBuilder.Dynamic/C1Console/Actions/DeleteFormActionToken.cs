@@ -45,7 +45,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 
             var ns = modelReference.Name.Substring(0, modelReference.Name.LastIndexOf("."));
 
-            new SpecificTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(new NamespaceFolderEntityToken(typeof(FormBuilderElementProvider).Name, ns));
+            new SpecificTreeRefresher(flowControllerServicesContainer).PostRefreshMessages(new NamespaceFolderEntityToken(typeof(FormBuilderElementProvider).Name, ns));
 
             return null;
         }

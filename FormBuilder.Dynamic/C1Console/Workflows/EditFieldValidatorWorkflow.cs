@@ -48,7 +48,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 writer.AddResource(key, message);
             }
 
-            CreateSpecificTreeRefresher().PostRefreshMesseges(EntityToken);
+            CreateSpecificTreeRefresher().PostRefreshMessages(EntityToken);
             SetSaveStatus(true);
         }
     }

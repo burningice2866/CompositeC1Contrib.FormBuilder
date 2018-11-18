@@ -52,7 +52,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             DynamicFormsFacade.SaveForm(definition);
 
-            CreateSpecificTreeRefresher().PostRefreshMesseges(EntityToken);
+            CreateSpecificTreeRefresher().PostRefreshMessages(EntityToken);
         }
 
         public override bool Validate()

@@ -91,7 +91,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Workflows
             }
 
             var treeRefresher = CreateParentTreeRefresher();
-            treeRefresher.PostRefreshMesseges(EntityToken);
+            treeRefresher.PostRefreshMessages(EntityToken);
 
             SetSaveStatus(true);
         }

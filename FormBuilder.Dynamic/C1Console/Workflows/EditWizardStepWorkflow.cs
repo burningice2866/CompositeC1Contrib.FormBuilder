@@ -66,7 +66,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
                 SetSaveStatus(true);
             }
 
-            CreateParentTreeRefresher().PostRefreshMesseges(EntityToken);
+            CreateParentTreeRefresher().PostRefreshMessages(EntityToken);
         }
 
         public override bool Validate()

@@ -91,7 +91,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             DefinitionsFacade.Save(definition);
 
-            CreateSpecificTreeRefresher().PostRefreshMesseges(token);
+            CreateSpecificTreeRefresher().PostRefreshMessages(token);
 
             var editWorkFlowAttribute = handlerType.GetCustomAttribute<EditWorkflowAttribute>();
             if (editWorkFlowAttribute != null)

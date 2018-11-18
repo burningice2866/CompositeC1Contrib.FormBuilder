@@ -45,7 +45,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
             var serializer = XmlDefinitionSerializer.GetSerializer(definition.Name);
             serializer.Save(definition);
 
-            new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(entityToken);
+            new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMessages(entityToken);
 
             return null;
         }

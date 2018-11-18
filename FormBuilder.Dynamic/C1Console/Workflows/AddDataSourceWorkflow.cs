@@ -53,7 +53,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             DynamicFormsFacade.SaveForm(definition);
 
             var treeRefresher = CreateSpecificTreeRefresher();
-            treeRefresher.PostRefreshMesseges(EntityToken);
+            treeRefresher.PostRefreshMessages(EntityToken);
         }
     }
 }

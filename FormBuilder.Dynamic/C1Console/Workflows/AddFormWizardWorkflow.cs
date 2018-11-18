@@ -23,7 +23,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             var workflowToken = new WorkflowActionToken(typeof(EditFormWizardWorkflow));
 
-            CreateSpecificTreeRefresher().PostRefreshMesseges(EntityToken);
+            CreateSpecificTreeRefresher().PostRefreshMessages(EntityToken);
             ExecuteAction(token, workflowToken);
         }
     }

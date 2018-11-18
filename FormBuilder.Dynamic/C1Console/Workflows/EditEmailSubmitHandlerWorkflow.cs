@@ -112,7 +112,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             DefinitionsFacade.Save(definition);
 
-            CreateSpecificTreeRefresher().PostRefreshMesseges(EntityToken);
+            CreateSpecificTreeRefresher().PostRefreshMessages(EntityToken);
             SetSaveStatus(true);
         }
 

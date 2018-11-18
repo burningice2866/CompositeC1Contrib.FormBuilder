@@ -64,7 +64,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
             var editToken = new FieldValidatorsEntityToken(token.FormName, token.FieldName, validatorType);
             var workflowToken = new WorkflowActionToken(typeof(EditFieldValidatorWorkflow));
 
-            CreateSpecificTreeRefresher().PostRefreshMesseges(EntityToken);
+            CreateSpecificTreeRefresher().PostRefreshMessages(EntityToken);
             ExecuteAction(editToken, workflowToken);
         }
 

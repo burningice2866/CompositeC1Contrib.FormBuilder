@@ -20,7 +20,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             LocalizationsFacade.CopyNamespace(Localization.KeyPrefix + "." + modelReference.Name, Localization.KeyPrefix + "." + newName, Localization.ResourceSet);
 
-            CreateSpecificTreeRefresher().PostRefreshMesseges(new FormElementProviderEntityToken());
+            CreateSpecificTreeRefresher().PostRefreshMessages(new FormElementProviderEntityToken());
         }
     }
 }

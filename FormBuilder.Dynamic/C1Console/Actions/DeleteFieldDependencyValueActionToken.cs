@@ -46,7 +46,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 
             DynamicFormsFacade.SaveForm(definition);
 
-            new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(entityToken);
+            new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMessages(entityToken);
 
             return null;
         }

@@ -42,7 +42,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
 
             DynamicWizardsFacade.SaveWizard(wizard);
 
-            new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(entityToken);
+            new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMessages(entityToken);
 
             return null;
         }

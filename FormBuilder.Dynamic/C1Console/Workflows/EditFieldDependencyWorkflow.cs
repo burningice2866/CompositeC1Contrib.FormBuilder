@@ -48,7 +48,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Workflows
 
             UpdateBinding("Token", newToken);
             SetSaveStatus(true, newToken);
-            CreateSpecificTreeRefresher().PostRefreshMesseges(new FieldDependencyEntityToken(token.FormName, token.FieldName));
+            CreateSpecificTreeRefresher().PostRefreshMessages(new FieldDependencyEntityToken(token.FormName, token.FieldName));
         }
     }
 }

@@ -58,7 +58,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.Actions
             DynamicFormsFacade.SaveForm(definition);
             LocalizationsFacade.DeleteNamespace(Localization.GenerateKey(fieldToken.FormName, fieldToken.FieldName));
 
-            new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMesseges(entityToken);
+            new ParentTreeRefresher(flowControllerServicesContainer).PostRefreshMessages(entityToken);
 
             return null;
         }

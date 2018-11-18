@@ -153,7 +153,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="C1Console\Workflows\EditWorkflowAttribute.cs" />
-    <Compile Include="CompositeFormRendererConverter.cs" />
     <Compile Include="Configuration\DynamicFormBuilderConfiguration.cs" />
     <Compile Include="DefinitionsFacade.cs" />
     <Compile Include="DynamicFormDefinition.cs" />

@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="yes"?>
 <mi:PackageInstaller xmlns:mi="http://www.composite.net/ns/management/packageinstaller/1.0">
-  <mi:PackageRequirements minimumCompositeVersion="5.1.6072.17836"
+  <mi:PackageRequirements minimumCompositeVersion="5.3.6135.33075"
                           maximumCompositeVersion="9.9999.9999.9999" />
 
   <mi:PackageInformation name="Contribution.CompositeC1Contrib.FormBuilder"

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CompositeC1Contrib.FormBuilder.Excel</RootNamespace>
     <AssemblyName>CompositeC1Contrib.FormBuilder.Excel</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <TargetFrameworkProfile />
@@ -36,8 +36,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\ClosedXML.0.76.0\lib\net40-client\ClosedXML.dll</HintPath>
     </Reference>
-    <Reference Include="Composite, Version=5.1.6072.17836, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CompositeC1.Core.5.1\lib\net451\Composite.dll</HintPath>
+    <Reference Include="Composite, Version=5.3.6135.33075, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CompositeC1.Core.5.3\lib\net461\Composite.dll</HintPath>
     </Reference>
     <Reference Include="CompositeC1Contrib.Core, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CompositeC1Contrib.Core.0.8.4\lib\net45\CompositeC1Contrib.Core.dll</HintPath>

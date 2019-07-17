@@ -8,10 +8,7 @@ namespace CompositeC1Contrib.FormBuilder.Data
     [Export(typeof(IValueMapper))]
     public class BoolValueMapper : IValueMapper
     {
-        public Type ValueMapperFor
-        {
-            get { return typeof(bool); }
-        }
+        public Type ValueMapperFor => typeof(bool);
 
         public void MapValue(FormField field, string value)
         {
@@ -33,10 +30,7 @@ namespace CompositeC1Contrib.FormBuilder.Data
     [Export(typeof(IValueMapper))]
     public class NullableBoolValueMapper : IValueMapper
     {
-        public Type ValueMapperFor
-        {
-            get { return typeof(bool?); }
-        }
+        public Type ValueMapperFor => typeof(bool?);
 
         public void MapValue(FormField field, string value)
         {
@@ -55,10 +49,7 @@ namespace CompositeC1Contrib.FormBuilder.Data
     [Export(typeof(IValueMapper))]
     public class EnumerableBoolValueMapper : IValueMapper
     {
-        public Type ValueMapperFor
-        {
-            get { return typeof(IEnumerable<bool>); }
-        }
+        public Type ValueMapperFor => typeof(IEnumerable<bool>);
 
         public void MapValue(FormField field, string value)
         {

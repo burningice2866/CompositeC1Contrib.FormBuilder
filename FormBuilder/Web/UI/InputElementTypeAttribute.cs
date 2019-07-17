@@ -13,9 +13,9 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public abstract class InputElementTypeAttribute : Attribute
     {
-        abstract public string ElementName { get; }
+        public abstract string ElementName { get; }
 
-        abstract public IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes);
+        public abstract IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes);
 
         public virtual Type ResolveValueType(FormFieldModel field)
         {
@@ -41,8 +41,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         protected void AddHtmlAttribute(string attribute, string value, IDictionary<string, string> htmlAttributes)
         {
-            string currValue;
-            if (!htmlAttributes.TryGetValue(attribute, out currValue))
+            if (!htmlAttributes.TryGetValue(attribute, out _))
             {
                 htmlAttributes.Add(attribute, value);
             }
@@ -65,7 +64,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             {
                 sb.Append(" " + kvp.Key + "=\"");
 
-                for (int i = 0; i < kvp.Value.Count; i++)
+                for (var i = 0; i < kvp.Value.Count; i++)
                 {
                     var itm = kvp.Value[i];
 
@@ -90,8 +89,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             var fieldHmlTagAttributes = field.Attributes.OfType<HtmlTagAttribute>();
             foreach (var attr in fieldHmlTagAttributes)
             {
-                IList<string> list;
-                if (!result.TryGetValue(attr.Attribute, out list))
+                if (!result.TryGetValue(attr.Attribute, out _))
                 {
                     result.Add(attr.Attribute, new List<string>());
                 }
@@ -103,8 +101,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             {
                 foreach (var kvp in htmlAttributes)
                 {
-                    IList<string> list;
-                    if (!result.TryGetValue(kvp.Key, out list))
+                    if (!result.TryGetValue(kvp.Key, out var list))
                     {
                         list = new List<string>();
 

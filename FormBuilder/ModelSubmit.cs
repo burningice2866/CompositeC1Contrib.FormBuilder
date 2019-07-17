@@ -46,7 +46,6 @@ namespace CompositeC1Contrib.FormBuilder
                 submit.Time = DateTime.Parse(submittedTime, CultureInfo.InvariantCulture);
             }
 
-
             return submit;
         }
     }

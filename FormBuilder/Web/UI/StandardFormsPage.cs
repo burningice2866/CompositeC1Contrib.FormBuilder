@@ -6,9 +6,6 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public abstract class StandardFormsPage : FormsPage
     {
-        protected override FormRequestContext RequestContext
-        {
-            get { return (FormRequestContext)FunctionContextContainer.GetParameterValue(BaseFormFunction.RequestContextKey, typeof(FormRequestContext)); }
-        }
+        protected override FormRequestContext RequestContext => (FormRequestContext)FunctionContextContainer.GetParameterValue(BaseFormFunction.RequestContextKey, typeof(FormRequestContext));
     }
 }

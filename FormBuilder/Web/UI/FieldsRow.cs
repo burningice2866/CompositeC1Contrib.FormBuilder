@@ -17,10 +17,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         private bool _disposed;
 
-        public static FieldsRow Current
-        {
-            get { return RequestLifetimeCache.TryGet<FieldsRow>(Key); }
-        }
+        public static FieldsRow Current => RequestLifetimeCache.TryGet<FieldsRow>(Key);
 
         public FieldsRow(StringBuilder sb, FormRenderer renderer) : this(new StringWriter(sb), renderer) { }
         public FieldsRow(FormsPage page, FormRenderer renderer) : this(page.Output, renderer) { }
@@ -37,7 +34,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             _output = output;
             _renderer = renderer;
 
-            _output.Write(String.Format("<div class=\"{0} controls-row\">", _renderer.FieldGroupClass));
+            _output.Write($"<div class=\"{_renderer.FieldGroupClass} controls-row\">");
         }
 
         protected virtual void Dispose(bool disposing)

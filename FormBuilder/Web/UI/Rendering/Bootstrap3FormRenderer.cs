@@ -4,20 +4,11 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.Rendering
 {
     public class Bootstrap3FormRenderer : FormRenderer
     {
-        public override string ValidationSummaryClass
-        {
-            get { return "error-notification"; }
-        }
+        public override string ValidationSummaryClass => "error-notification";
 
-        public override string ErrorClass
-        {
-            get { return "has-error"; }
-        }
+        public override string ErrorClass => "has-error";
 
-        public override string ParentGroupClass
-        {
-            get { return "form"; }
-        }
+        public override string ParentGroupClass => "form";
 
         public override string FieldGroupClass
         {
@@ -34,10 +25,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.Rendering
             }
         }
 
-        public override string HideLabelClass
-        {
-            get { return "sr-only"; }
-        }
+        public override string HideLabelClass => "sr-only";
 
         public override string FormLabelClass
         {
@@ -54,10 +42,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.Rendering
             }
         }
 
-        public override string FormControlClass
-        {
-            get { return "form-control"; }
-        }
+        public override string FormControlClass => "form-control";
 
         public override string FormControlLabelClass(InputElementTypeAttribute inputElement)
         {

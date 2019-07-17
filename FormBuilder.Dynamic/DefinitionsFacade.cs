@@ -32,9 +32,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
             }
 
             var xml = XElement.Load(file);
-            var seralizer = XmlDefinitionSerializer.GetSerializer(xml);
+            var serializer = XmlDefinitionSerializer.GetSerializer(xml);
 
-            return seralizer.Load(name, xml);
+            return serializer.Load(name, xml);
         }
 
         public static void Save(IDynamicDefinition definition)
@@ -50,9 +50,9 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
             C1Directory.Delete(dir, true);
 
-            foreach (var submithandler in definition.SubmitHandlers)
+            foreach (var submitHandler in definition.SubmitHandlers)
             {
-                submithandler.Delete(definition);
+                submitHandler.Delete(definition);
             }
 
             ModelsFacade.NotifyFormChanges();

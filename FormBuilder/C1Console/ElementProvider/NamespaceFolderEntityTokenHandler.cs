@@ -13,10 +13,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
     [Export("FormBuilder", typeof(IElementProviderFor))]
     public class NamespaceFolderEntityTokenHandler : IElementProviderFor
     {
-        public IEnumerable<Type> ProviderFor
-        {
-            get { return new[] { typeof(NamespaceFolderEntityToken) }; }
-        }
+        public IEnumerable<Type> ProviderFor => new[] { typeof(NamespaceFolderEntityToken) };
 
         public IEnumerable<Element> Provide(ElementProviderContext context, EntityToken token)
         {

@@ -22,10 +22,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         [FunctionParameter(Label = "Success response", DefaultValue = null)]
         public XhtmlDocument SuccessResponse { get; set; }
 
-        public FormRenderer FormRenderer
-        {
-            get { return RequestContext.FormRenderer; }
-        }
+        public FormRenderer FormRenderer => RequestContext.FormRenderer;
 
         public Form Form => RequestContext.ModelInstance;
 
@@ -55,7 +52,6 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
             {
                 HandleSubmit();
             }
-
 
             if (IntroText == null)
             {

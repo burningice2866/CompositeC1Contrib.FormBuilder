@@ -10,9 +10,6 @@
         public string PreviousButtonLabel { get; set; }
 
         private IModel _formModel;
-        public IModel FormModel
-        {
-            get { return _formModel ?? (_formModel = ModelsFacade.GetModel(FormName)); }
-        }
+        public IModel FormModel => _formModel ?? (_formModel = ModelsFacade.GetModel(FormName));
     }
 }

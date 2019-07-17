@@ -10,23 +10,14 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public class Wizard : IModelInstance
     {
-        public WizardModel Model { get; private set; }
-        public IList<WizardStep> Steps { get; private set; }
+        public WizardModel Model { get; }
+        public IList<WizardStep> Steps { get; }
 
-        public string Name
-        {
-            get { return Model.Name; }
-        }
+        public string Name => Model.Name;
 
-        public bool RequiresCaptcha
-        {
-            get { return Model.RequiresCaptcha; }
-        }
+        public bool RequiresCaptcha => Model.RequiresCaptcha;
 
-        public bool ForceHttps
-        {
-            get { return Model.ForceHttps; }
-        }
+        public bool ForceHttps => Model.ForceHttps;
 
         public IList<FormField> Fields
         {
@@ -59,7 +50,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         public void MapValues(NameValueCollection values, IEnumerable<FormFile> files)
         {
-            for (int i = 0; i < Steps.Count; i++)
+            for (var i = 0; i < Steps.Count; i++)
             {
                 var step = Steps[i];
                 var form = step.Form;

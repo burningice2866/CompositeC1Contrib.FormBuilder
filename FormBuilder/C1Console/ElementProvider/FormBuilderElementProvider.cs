@@ -41,14 +41,12 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
 
             foreach (var token in entityTokens)
             {
-                var dataToken = token as DataEntityToken;
-                if (dataToken == null)
+                if (!(token is DataEntityToken dataToken))
                 {
                     continue;
                 }
 
-                var modelReference = dataToken.Data as IModelReference;
-                if (modelReference == null)
+                if (!(dataToken.Data is IModelReference modelReference))
                 {
                     continue;
                 }

@@ -12,7 +12,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public abstract class POCOBasedFormsPage<T> : FormsPage where T : class, IPOCOForm
     {
-        protected new T Form { get; private set; }
+        protected new T Form { get; }
 
         protected override FormRequestContext RequestContext { get; }
 

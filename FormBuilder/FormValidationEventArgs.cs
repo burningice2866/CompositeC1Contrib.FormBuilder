@@ -5,7 +5,7 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public class FormValidationEventArgs : EventArgs
     {
-        public NameValueCollection SubmittedValues { get; private set; }
+        public NameValueCollection SubmittedValues { get; }
         public bool Cancel { get; set; }
 
         public FormValidationEventArgs(NameValueCollection submittedValues)

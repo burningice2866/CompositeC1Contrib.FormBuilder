@@ -109,7 +109,7 @@ namespace CompositeC1Contrib.FormBuilder.Excel.Web.Api.Formatters
 
                     var usableType = GetUsableFieldType(field);
 
-                    object val = null;
+                    object val;
 
                     try
                     {

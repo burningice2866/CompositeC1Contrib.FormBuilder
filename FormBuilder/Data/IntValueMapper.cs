@@ -6,15 +6,11 @@ namespace CompositeC1Contrib.FormBuilder.Data
     [Export(typeof(IValueMapper))]
     public class IntValueMapper : IValueMapper
     {
-        public Type ValueMapperFor
-        {
-            get { return typeof(int); }
-        }
+        public Type ValueMapperFor => typeof(int);
 
         public void MapValue(FormField field, string value)
         {
-            int val;
-            int.TryParse(value, out val);
+            int.TryParse(value, out var val);
 
             field.Value = val;
         }
@@ -23,15 +19,11 @@ namespace CompositeC1Contrib.FormBuilder.Data
     [Export(typeof(IValueMapper))]
     public class NullableIntValueMapper : IValueMapper
     {
-        public Type ValueMapperFor
-        {
-            get { return typeof(int?); }
-        }
+        public Type ValueMapperFor => typeof(int?);
 
         public void MapValue(FormField field, string value)
         {
-            int val;
-            if (int.TryParse(value, out val))
+            if (int.TryParse(value, out var val))
             {
                 field.Value = val;
             }

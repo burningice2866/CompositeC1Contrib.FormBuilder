@@ -29,7 +29,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.Rendering
         public abstract string FormLabelClass { get; }
         public abstract string FormControlClass { get; }
 
-        public FormRenderer()
+        protected FormRenderer()
         {
             ShowStarOnRequiredFields = false;
             HideLabels = false;
@@ -193,10 +193,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.Rendering
                 tagBuilder.AddCssClass("required");
             }
 
-            if (extraAttributesRenderer != null)
-            {
-                extraAttributesRenderer(tagBuilder);
-            }
+            extraAttributesRenderer?.Invoke(tagBuilder);
 
             sb.Append(tagBuilder.ToString(TagRenderMode.StartTag));
         }
@@ -211,7 +208,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.Rendering
             sb.Append("</div>");
         }
 
-        private bool ShowLabel(FormField field)
+        private static bool ShowLabel(FormField field)
         {
             if (field.ValueType == typeof(bool))
             {
@@ -277,7 +274,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI.Rendering
 
         public string WriteChecked(bool write, string attr)
         {
-            return write ? String.Format("{0}=\"{0}\"", attr) : String.Empty;
+            return write ? $"{attr}=\"{attr}\"" : String.Empty;
         }
 
         public void WriteLabelStart(bool hide, string id, StringBuilder sb)

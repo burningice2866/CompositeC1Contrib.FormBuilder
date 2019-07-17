@@ -9,10 +9,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
     {
         private const string Markup = "<input type=\"{0}\" name=\"{1}\" id=\"{2}\" title=\"{3}\" placeholder=\"{4}\"";
 
-        public override string ElementName
-        {
-            get { return "textbox"; }
-        }
+        public override string ElementName => "textbox";
 
         public override IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes)
         {

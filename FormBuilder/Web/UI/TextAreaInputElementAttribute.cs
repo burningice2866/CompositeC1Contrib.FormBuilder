@@ -12,10 +12,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         public int Cols { get; set; }
         public int Rows { get; set; }
 
-        public override string ElementName
-        {
-            get { return "textarea"; }
-        }
+        public override string ElementName => "textarea";
 
         public TextAreaInputElementAttribute()
         {

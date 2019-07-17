@@ -20,8 +20,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
                 {
                     var compositeName = entry.Function.CompositeName();
 
-                    IFunction function;
-                    if (!FunctionFacade.TryGetFunction(out function, compositeName))
+                    if (!FunctionFacade.TryGetFunction(out _, compositeName))
                     {
                         yield return entry.Function;
                     }

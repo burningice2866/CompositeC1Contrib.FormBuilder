@@ -24,16 +24,16 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 throw new InvalidOperationException("C1 function " + _c1FunctionName + " not recognized");
             }
 
-            var paramenters = new Dictionary<string, object> 
+            var parameters = new Dictionary<string, object> 
             {
                 { "Name", field.Name },
-                { "HtmlAttrivutes", htmlAttributes },
+                { "HtmlAttributes", htmlAttributes },
                 { "IsRequired", field.IsRequired },
                 { "Label", field.Label },
                 { "Placeholder", field.PlaceholderText }
             };
 
-            var result = FunctionFacade.Execute<XhtmlDocument>(function, paramenters);
+            var result = FunctionFacade.Execute<XhtmlDocument>(function, parameters);
 
             return new HtmlString(result.ToString());
         }

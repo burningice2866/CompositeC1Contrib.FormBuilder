@@ -16,21 +16,18 @@ namespace CompositeC1Contrib.FormBuilder
                 return String.Empty;
             }
 
-            if (field.Value is IEnumerable<string>)
+            if (field.Value is IEnumerable<string> enumerable)
             {
-                return String.Join(", ", field.Value as IEnumerable<string>);
+                return String.Join(", ", enumerable);
             }
 
-            if (field.Value is FormFile)
+            if (field.Value is FormFile file)
             {
-                var file = field.Value as FormFile;
-
                 return GetFileFieldValue(file);
             }
 
-            if (field.Value is IEnumerable<FormFile>)
+            if (field.Value is IEnumerable<FormFile> files)
             {
-                var files = field.Value as IEnumerable<FormFile>;
                 var values = files.Select(GetFileFieldValue).ToList();
 
                 return String.Join(", ", values);
@@ -44,10 +41,9 @@ namespace CompositeC1Contrib.FormBuilder
                 var hasValue = (bool)field.ValueType.GetProperty("HasValue").GetValue(field.Value, null);
                 if (hasValue)
                 {
-                    var value = field.ValueType.GetProperty("Value").GetValue(field.Value, null) as IFormattable;
-                    if (value != null)
+                    if (field.ValueType.GetProperty("Value").GetValue(field.Value, null) is IFormattable formattable)
                     {
-                        return value.ToString(formatAttr.FormatString, CultureInfo.CurrentUICulture);
+                        return formattable.ToString(formatAttr.FormatString, CultureInfo.CurrentUICulture);
                     }
                 }
             }
@@ -62,7 +58,7 @@ namespace CompositeC1Contrib.FormBuilder
 
         private static string GetFileFieldValue(FormFile file)
         {
-            return String.Format("{0} ({1} KB)", file.FileName, file.ContentLength / 1024);
+            return $"{file.FileName} ({file.ContentLength / 1024} KB)";
         }
     }
 }

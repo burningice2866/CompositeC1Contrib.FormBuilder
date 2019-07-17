@@ -22,8 +22,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
         {
             var dataToken = (DataEntityToken)token;
 
-            var modelReference = dataToken.Data as IModelReference;
-            if (modelReference == null)
+            if (!(dataToken.Data is IModelReference modelReference))
             {
                 yield break;
             }

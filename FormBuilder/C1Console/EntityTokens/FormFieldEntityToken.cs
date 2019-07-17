@@ -8,37 +8,20 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
     [SecurityAncestorProvider(typeof(FormFieldAncestorProvider))]
     public class FormFieldEntityToken : EntityToken
     {
-        public override string Type
-        {
-            get { return String.Empty; }
-        }
+        public override string Type => String.Empty;
 
-        private readonly string _source;
-        public override string Source
-        {
-            get { return _source; }
-        }
+        public override string Source { get; }
 
-        private readonly string _id;
-        public override string Id
-        {
-            get { return _id; }
-        }
+        public override string Id { get; }
 
-        public string FormName
-        {
-            get { return Source; }
-        }
+        public string FormName => Source;
 
-        public string FieldName
-        {
-            get { return Id; }
-        }
+        public string FieldName => Id;
 
         public FormFieldEntityToken(string formName, string fieldName)
         {
-            _source = formName;
-            _id = fieldName;
+            Source = formName;
+            Id = fieldName;
         }
 
         public override string Serialize()
@@ -48,11 +31,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
 
         public static EntityToken Deserialize(string serializedEntityToken)
         {
-            string type;
-            string source;
-            string id;
-
-            DoDeserialize(serializedEntityToken, out type, out source, out id);
+            DoDeserialize(serializedEntityToken, out _, out var source, out var id);
 
             return new FormFieldEntityToken(source, id);
         }
@@ -62,8 +41,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
     {
         public IEnumerable<EntityToken> GetParents(EntityToken entityToken)
         {
-            var fieldToken = entityToken as FormFieldEntityToken;
-            if (fieldToken != null)
+            if (entityToken is FormFieldEntityToken fieldToken)
             {
                 yield return new FormFolderEntityToken(fieldToken.FormName, "Fields");
             }

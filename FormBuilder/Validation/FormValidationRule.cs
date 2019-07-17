@@ -8,9 +8,9 @@ namespace CompositeC1Contrib.FormBuilder.Validation
     public class FormValidationRule
     {
         private Func<bool> _rule;
-        private string _validatioMessage;
+        private string _validationMessage;
 
-        public IEnumerable<string> AffectedFormIds { get; private set; }
+        public IEnumerable<string> AffectedFormIds { get; }
         public Func<string, string> FormatMessage { get; set; }
 
         public string ValidationMessage
@@ -19,10 +19,10 @@ namespace CompositeC1Contrib.FormBuilder.Validation
             {
                 if (FormatMessage != null)
                 {
-                    return FormatMessage(_validatioMessage);
+                    return FormatMessage(_validationMessage);
                 }
 
-                return _validatioMessage;
+                return _validationMessage;
             }
         }
 
@@ -43,7 +43,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 
             _rule = rule;
 
-            _validatioMessage = validationMessage;
+            _validationMessage = validationMessage;
             AffectedFormIds = new List<string>(affectedFormIds);
         }
 

@@ -8,10 +8,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public class DropdownInputElementAttribute : InputElementTypeAttribute
     {
-        public override string ElementName
-        {
-            get { return "selectbox"; }
-        }
+        public override string ElementName => "selectbox";
 
         public override IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes)
         {
@@ -21,8 +18,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             if (!String.IsNullOrEmpty(renderer.FormControlClass))
             {
-                IList<string> list;
-                if (!htmlAttributesDictionary.TryGetValue("class", out list))
+                if (!htmlAttributesDictionary.TryGetValue("class", out var list))
                 {
                     list = new List<string>();
 

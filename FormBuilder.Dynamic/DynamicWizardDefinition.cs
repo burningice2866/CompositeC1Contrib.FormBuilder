@@ -11,11 +11,11 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
     public class DynamicWizardDefinition : IDynamicDefinition
     {
-        public WizardModel Model { get; private set; }
+        public WizardModel Model { get; }
 
         public string Name { get; set; }
 
-        public IList<FormSubmitHandler> SubmitHandlers { get; private set; }
+        public IList<FormSubmitHandler> SubmitHandlers { get; }
 
         public XhtmlDocument IntroText { get; set; }
         public XhtmlDocument SuccessResponse { get; set; }

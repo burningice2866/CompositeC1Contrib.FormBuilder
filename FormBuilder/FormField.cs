@@ -11,80 +11,38 @@ namespace CompositeC1Contrib.FormBuilder
     [DebuggerDisplay("{Name}")]
     public class FormField
     {
-        public FormFieldModel Model { get; private set; }
+        public FormFieldModel Model { get; }
 
-        public Form OwningForm { get; private set; }
+        public Form OwningForm { get; }
         public object Value { get; set; }
 
-        public string Name
-        {
-            get { return Model.Name; }
-        }
+        public string Name => Model.Name;
 
-        public bool IsReadOnly
-        {
-            get { return Model.IsReadOnly; }
-        }
+        public bool IsReadOnly => Model.IsReadOnly;
 
-        public IList<Attribute> Attributes
-        {
-            get { return Model.Attributes; }
-        }
+        public IList<Attribute> Attributes => Model.Attributes;
 
-        public Type ValueType
-        {
-            get { return Model.ValueType; }
-        }
+        public Type ValueType => Model.ValueType;
 
-        public string Id
-        {
-            get { return Model.Id; }
-        }
+        public string Id => Model.Id;
 
-        public string Label
-        {
-            get { return Model.Label; }
-        }
+        public string Label => Model.Label;
 
-        public string PlaceholderText
-        {
-            get { return Model.PlaceholderText; }
-        }
+        public string PlaceholderText => Model.PlaceholderText;
 
-        public string Help
-        {
-            get { return Model.Help; }
-        }
+        public string Help => Model.Help;
 
-        public InputElementTypeAttribute InputElementType
-        {
-            get { return Model.InputElementType; }
-        }
+        public InputElementTypeAttribute InputElementType => Model.InputElementType;
 
-        public bool IsRequired
-        {
-            get { return Model.IsRequired(this); }
-        }
+        public bool IsRequired => Model.IsRequired(this);
 
-        public bool IsHiddenField
-        {
-            get { return Model.IsHiddenField; }
-        }
+        public bool IsHiddenField => Model.IsHiddenField;
 
-        public IEnumerable<KeyValuePair<string, string>> DataSource
-        {
-            get { return Model.DataSource; }
-        }
+        public IEnumerable<KeyValuePair<string, string>> DataSource => Model.DataSource;
 
-        public IEnumerable<FormValidationAttribute> ValidationAttributes
-        {
-            get { return Model.ValidationAttributes; }
-        }
+        public IEnumerable<FormValidationAttribute> ValidationAttributes => Model.ValidationAttributes;
 
-        public IEnumerable<FormDependencyAttribute> DependencyAttributes
-        {
-            get { return Model.DependencyAttributes; }
-        }
+        public IEnumerable<FormDependencyAttribute> DependencyAttributes => Model.DependencyAttributes;
 
         public FormField(FormFieldModel model, Form instance)
         {

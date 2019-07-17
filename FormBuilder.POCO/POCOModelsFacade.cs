@@ -13,22 +13,22 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public static class POCOModelsFacade
     {
-        private static PropertyInfo prop = typeof(ServiceLocator).GetProperty("RequestScopedServiceProvider", BindingFlags.NonPublic | BindingFlags.Static);
+        private static readonly PropertyInfo Prop = typeof(ServiceLocator).GetProperty("RequestScopedServiceProvider", BindingFlags.NonPublic | BindingFlags.Static);
 
         public static IModel FromType(Type formType)
         {
             var formName = formType.FullName;
 
-            if (formType.GetCustomAttributes(typeof(FormNameAttribute), false).FirstOrDefault() is FormNameAttribute formNameAttribte)
+            if (formType.GetCustomAttributes(typeof(FormNameAttribute), false).FirstOrDefault() is FormNameAttribute formNameAttribute)
             {
-                formName = formNameAttribte.FullName;
+                formName = formNameAttribute.FullName;
             }
 
             var model = new FormModel(formName)
             {
                 Constructor = f =>
                 {
-                    var serviceProvider = (IServiceProvider)prop.GetValue(null);
+                    var serviceProvider = (IServiceProvider)Prop.GetValue(null);
 
                     var instance = ActivatorUtilities.CreateInstance(serviceProvider, formType);
 

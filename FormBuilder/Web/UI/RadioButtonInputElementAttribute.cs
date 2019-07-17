@@ -8,10 +8,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public class RadioButtonInputElementAttribute : InputElementTypeAttribute
     {
-        public override string ElementName
-        {
-            get { return "radio"; }
-        }
+        public override string ElementName => "radio";
 
         public override IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes)
         {

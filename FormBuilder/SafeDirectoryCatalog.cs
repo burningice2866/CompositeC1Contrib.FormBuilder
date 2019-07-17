@@ -38,9 +38,6 @@ namespace CompositeC1Contrib.FormBuilder
             }
         }
 
-        public override IQueryable<ComposablePartDefinition> Parts
-        {
-            get { return _catalog.Parts; }
-        }
+        public override IQueryable<ComposablePartDefinition> Parts => _catalog.Parts;
     }
 }

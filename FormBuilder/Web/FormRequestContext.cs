@@ -4,11 +4,9 @@ namespace CompositeC1Contrib.FormBuilder.Web
 {
     public abstract class FormRequestContext : BaseFormBuilderRequestContext<Form>
     {
-        protected FormRequestContext(IModel model)
-            : base(model)
+        protected FormRequestContext(IModel model) : base(model)
         {
-            var formModel = model as FormModel;
-            if (formModel == null)
+            if (!(model is FormModel formModel))
             {
                 throw new ArgumentException($"Supplied form was not of the correct type, expected '{typeof(FormModel).FullName}' but got '{model.GetType().FullName}");
             }
@@ -20,7 +18,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
         {
             if (HttpContext.IsDebuggingEnabled)
             {
-                SaveSubmitFacade.SaveSubmitDebug(ModelInstance);
+                SaveSubmitFacade.SaveSubmitDebug(ModelInstance, HttpContext);
             }
 
             base.Submit();

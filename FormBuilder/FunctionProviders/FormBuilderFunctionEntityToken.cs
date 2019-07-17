@@ -8,27 +8,16 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
     [SecurityAncestorProvider(typeof(StandardFunctionSecurityAncestorProvider))]
     public class FormBuilderFunctionEntityToken : EntityToken
     {
-        private readonly string _id;
-        public override string Id
-        {
-            get { return _id; ; }
-        }
+        public override string Id { get; }
 
-        private readonly string _source;
-        public override string Source
-        {
-            get { return _source; }
-        }
+        public override string Source { get; }
 
-        public override string Type
-        {
-            get { return String.Empty; }
-        }
+        public override string Type => String.Empty;
 
         public FormBuilderFunctionEntityToken(string source, string id)
         {
-            _source = source;
-            _id = id;
+            Source = source;
+            Id = id;
         }
 
         public override string Serialize()
@@ -38,11 +27,7 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 
         public static EntityToken Deserialize(string serializedEntityToken)
         {
-            string type;
-            string source;
-            string id;
-
-            DoDeserialize(serializedEntityToken, out type, out source, out id);
+            DoDeserialize(serializedEntityToken, out _, out var source, out var id);
 
             return new FormBuilderFunctionEntityToken(source, id);
         }

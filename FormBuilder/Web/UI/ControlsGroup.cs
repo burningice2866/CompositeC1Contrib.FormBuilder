@@ -28,7 +28,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
             if (!String.IsNullOrEmpty(_renderer.FieldGroupClass))
             {
-                _output.Write(String.Format("<div class=\"{0}\">", _renderer.FieldGroupClass));
+                _output.Write($"<div class=\"{_renderer.FieldGroupClass}\">");
             }
         }
 

@@ -37,8 +37,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Formatters
             {
                 using (var writer = new StreamWriter(writeStream))
                 {
-                    var itm = value as IEnumerable<ModelSubmit>;
-                    if (itm == null)
+                    if (!(value is IEnumerable<ModelSubmit> itm))
                     {
                         throw new InvalidOperationException("Cannot serialize type");
                     }
@@ -89,7 +88,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.Api.Formatters
                 return String.Empty;
             }
 
-            return field.IndexOfAny(SpecialChars) != -1 ? String.Format("\"{0}\"", field.Replace("\"", "\"\"")) : field;
+            return field.IndexOfAny(SpecialChars) != -1 ? $"\"{field.Replace("\"", "\"\"")}\"" : field;
         }
     }
 }

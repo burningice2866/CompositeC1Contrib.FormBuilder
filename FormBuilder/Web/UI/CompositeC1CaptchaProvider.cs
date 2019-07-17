@@ -15,13 +15,10 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 
         public override void Validate(HttpContextBase ctx, ValidationResultList validationMessages)
         {
-            string value;
-            DateTime dt;
-
             var encryptedValue = ctx.Request.Form[HiddenFieldName];
             var postedValue = ctx.Request.Form[InputFieldName];
 
-            var isValid = Captcha.Decrypt(encryptedValue, out dt, out value) && value == postedValue;
+            var isValid = Captcha.Decrypt(encryptedValue, out _, out var value) && value == postedValue;
             if (!isValid)
             {
                 validationMessages.Add(InputFieldName, Localization.T("Captcha.CompositeC1.Error"));

@@ -24,7 +24,7 @@ namespace CompositeC1Contrib.FormBuilder
 
                 if (_models.ContainsKey(model.Name))
                 {
-                    throw new InvalidOperationException(String.Format("Form '{0}' has already been added", model.Name));
+                    throw new InvalidOperationException($"Form '{model.Name}' has already been added");
                 }
 
                 _models.Add(model.Name, Tuple.Create(model, type));

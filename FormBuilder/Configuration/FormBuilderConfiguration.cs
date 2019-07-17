@@ -13,7 +13,7 @@ namespace CompositeC1Contrib.FormBuilder.Configuration
 
         public CaptchaConfiguration Captcha { get; set; }
 
-        public IDictionary<string, IPluginConfiguration> Plugins { get; private set; }
+        public IDictionary<string, IPluginConfiguration> Plugins { get; }
 
         public FormBuilderConfiguration()
         {

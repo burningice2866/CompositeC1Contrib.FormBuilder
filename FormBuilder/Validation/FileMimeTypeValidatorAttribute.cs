@@ -4,7 +4,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class FileMimeTypeValidatorAttribute : BaseFileValidatorAttribute
     {
-        public string[] MimeTypes { get; private set; }
+        public string[] MimeTypes { get; }
 
         public FileMimeTypeValidatorAttribute(string mimeType) : this(null, mimeType) { }
 

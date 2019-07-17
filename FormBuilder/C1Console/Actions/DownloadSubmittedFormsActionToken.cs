@@ -10,13 +10,10 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.Actions
     [ActionExecutor(typeof(DownloadSubmittedFormsActionExecutor))]
     public class DownloadSubmittedFormsActionToken : ActionToken
     {
-        public string FormName { get; private set; }
-        public string Extension { get; private set; }
+        public string FormName { get; }
+        public string Extension { get; }
 
-        public override IEnumerable<PermissionType> PermissionTypes
-        {
-            get { return new[] { PermissionType.Read }; }
-        }
+        public override IEnumerable<PermissionType> PermissionTypes => new[] { PermissionType.Read };
 
         public DownloadSubmittedFormsActionToken(string formName, string extension)
         {

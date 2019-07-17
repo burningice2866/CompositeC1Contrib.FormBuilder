@@ -22,8 +22,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     executor = def.Settings.GetFormExecutor(def);
                 }
 
-                var form = def as DynamicFormDefinition;
-                if (form != null)
+                if (def is DynamicFormDefinition form)
                 {
                     var function = new StandardFormFunction<DynamicFormBuilderRequestContext>(form.Model);
 
@@ -41,8 +40,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                     };
                 }
 
-                var wizard = def as DynamicWizardDefinition;
-                if (wizard != null)
+                if (def is DynamicWizardDefinition wizard)
                 {
                     var function = new FormWizardFunction<DynamicFormWizardRequestContext>(wizard.Model);
 

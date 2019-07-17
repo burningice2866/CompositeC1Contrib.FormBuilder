@@ -6,15 +6,11 @@ namespace CompositeC1Contrib.FormBuilder.Data
     [Export(typeof(IValueMapper))]
     public class DecimalValueMapper : IValueMapper
     {
-        public Type ValueMapperFor
-        {
-            get { return typeof(decimal); }
-        }
+        public Type ValueMapperFor => typeof(decimal);
 
         public void MapValue(FormField field, string value)
         {
-            decimal val;
-            decimal.TryParse(value, out val);
+            decimal.TryParse(value, out var val);
 
             field.Value = val;
         }
@@ -23,15 +19,11 @@ namespace CompositeC1Contrib.FormBuilder.Data
     [Export(typeof(IValueMapper))]
     public class NullableDecimalValueMapper : IValueMapper
     {
-        public Type ValueMapperFor
-        {
-            get { return typeof(decimal?); }
-        }
+        public Type ValueMapperFor => typeof(decimal?);
 
         public void MapValue(FormField field, string value)
         {
-            decimal val;
-            if (decimal.TryParse(value, out val))
+            if (decimal.TryParse(value, out var val))
             {
                 field.Value = val;
             }

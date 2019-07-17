@@ -17,9 +17,9 @@ namespace CompositeC1Contrib.FormBuilder.Web
     {
         private static readonly Type RendererImplementation = FormBuilderConfiguration.GetSection().RendererImplementation;
 
-        protected IModel Form { get; private set; }
+        protected IModel Form { get; }
 
-        public FormRenderer FormRenderer { get; private set; }
+        public FormRenderer FormRenderer { get; }
         public ValidationResultList ValidationResult { get; protected set; }
 
         protected BaseFormBuilderRequestContext(IModel form)

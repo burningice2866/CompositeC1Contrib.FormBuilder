@@ -14,13 +14,12 @@ namespace CompositeC1Contrib.FormBuilder.Data
         private DataProviderContext _context;
         public DataProviderContext Context
         {
-            set { _context = value; }
+            set => _context = value;
         }
 
         public T GetData<T>(IDataId dataId) where T : class, IData
         {
-            var formId = dataId as ModelReferenceId;
-            if (formId == null)
+            if (!(dataId is ModelReferenceId formId))
             {
                 throw new InvalidOperationException();
             }

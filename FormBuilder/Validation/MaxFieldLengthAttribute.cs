@@ -4,7 +4,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class MaxFieldLengthAttribute : FormValidationAttribute
     {
-        public int Length { get; private set; }
+        public int Length { get; }
 
         public MaxFieldLengthAttribute(int length) : this(null, length) { }
 

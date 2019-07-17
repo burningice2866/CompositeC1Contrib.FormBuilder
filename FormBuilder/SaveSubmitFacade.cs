@@ -10,9 +10,8 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public class SaveSubmitFacade
     {
-        public static void SaveSubmitDebug(IModelInstance instance)
+        public static void SaveSubmitDebug(IModelInstance instance, HttpContextBase ctx)
         {
-            var ctx = HttpContext.Current;
             var utcTime = DateTime.UtcNow;
             var timeStamp = utcTime.ToString("yyyy-MM-dd HH.mm.ss", CultureInfo.InvariantCulture);
             var dir = Path.Combine(ModelsFacade.RootPath, instance.Name, "Debug");
@@ -25,7 +24,7 @@ namespace CompositeC1Contrib.FormBuilder
             }
 
             var debugData = new XElement("debug",
-                new XElement("url", ctx.Request.Url.ToString()),
+                new XElement("url", ctx.Request?.Url?.ToString()),
                 new XElement("clientIp", ctx.Request.UserHostAddress),
                 new XElement("ua", ctx.Request.UserAgent));
 
@@ -82,9 +81,9 @@ namespace CompositeC1Contrib.FormBuilder
             {
                 string value;
 
-                if (field.Value is DateTime)
+                if (field.Value is DateTime dateTime)
                 {
-                    value = ((DateTime)field.Value).ToString("o", CultureInfo.InvariantCulture);
+                    value = dateTime.ToString("o", CultureInfo.InvariantCulture);
                 }
                 else
                 {

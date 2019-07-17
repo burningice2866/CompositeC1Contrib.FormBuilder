@@ -5,7 +5,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class MaxFileSizeValidatorAttribute : BaseFileValidatorAttribute
     {
-        public double Size { get; private set; }
+        public double Size { get; }
 
         public MaxFileSizeValidatorAttribute(double fileSize) : this(null, fileSize) { }
 

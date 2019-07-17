@@ -25,25 +25,13 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         [FunctionParameter(Label = "Success response", DefaultValue = null)]
         public XhtmlDocument SuccessResponse { get; set; }
 
-        protected Wizard Wizard
-        {
-            get { return RequestContext.Wizard; }
-        }
+        protected Wizard Wizard => RequestContext.Wizard;
 
-        public FormRenderer FormRenderer
-        {
-            get { return RequestContext.FormRenderer; }
-        }
+        public FormRenderer FormRenderer => RequestContext.FormRenderer;
 
-        protected bool IsSuccess
-        {
-            get { return RequestContext.IsSuccess; }
-        }
+        protected bool IsSuccess => RequestContext.IsSuccess;
 
-        protected WizardRequestContext RequestContext
-        {
-            get { return (WizardRequestContext)FunctionContextContainer.GetParameterValue(BaseFormFunction.RequestContextKey, typeof(WizardRequestContext)); }
-        }
+        protected WizardRequestContext RequestContext => (WizardRequestContext)FunctionContextContainer.GetParameterValue(BaseFormFunction.RequestContextKey, typeof(WizardRequestContext));
 
         public override void ExecutePageHierarchy()
         {

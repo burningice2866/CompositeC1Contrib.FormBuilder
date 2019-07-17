@@ -89,7 +89,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
         {
             var response = ctx.Request.Form[HiddenFieldName];
             var ip = ctx.Request.UserHostAddress;
-            var url = String.Format("{0}?secret={1}&remoteip={2}&v={3}&response={4}", SiteVerifyUrl, _secret, ip, Version, response);
+            var url = $"{SiteVerifyUrl}?secret={_secret}&remoteip={ip}&v={Version}&response={response}";
 
             using (var client = new HttpClient())
             {

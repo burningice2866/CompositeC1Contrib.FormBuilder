@@ -6,11 +6,9 @@ namespace CompositeC1Contrib.FormBuilder.Web
     {
         public Wizard Wizard => ModelInstance;
 
-        protected WizardRequestContext(IModel model)
-            : base(model)
+        protected WizardRequestContext(IModel model): base(model)
         {
-            var wizardModel = model as WizardModel;
-            if (wizardModel == null)
+            if (!(model is WizardModel wizardModel))
             {
                 throw new ArgumentException($"Supplied form was not of the correct type, expected '{typeof(WizardModel).FullName}' but got '{model.GetType().FullName}");
             }

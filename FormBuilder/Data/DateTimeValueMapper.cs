@@ -6,10 +6,7 @@ namespace CompositeC1Contrib.FormBuilder.Data
     [Export(typeof(IValueMapper))]
     public class DateTimeValueMapper : IValueMapper
     {
-        public Type ValueMapperFor
-        {
-            get { return typeof(DateTime); }
-        }
+        public Type ValueMapperFor => typeof(DateTime);
 
         public void MapValue(FormField field, string value)
         {
@@ -23,15 +20,11 @@ namespace CompositeC1Contrib.FormBuilder.Data
     [Export(typeof(IValueMapper))]
     public class NullableDateTimeValueMapper : IValueMapper
     {
-        public Type ValueMapperFor
-        {
-            get { return typeof(DateTime?); }
-        }
+        public Type ValueMapperFor => typeof(DateTime?);
 
         public void MapValue(FormField field, string value)
         {
-            DateTime val;
-            if (DateTime.TryParse(value, out val))
+            if (DateTime.TryParse(value, out var val))
             {
                 field.Value = val;
             }

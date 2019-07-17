@@ -23,11 +23,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ActionProviders
         private static readonly ActionGroup ActionGroup = new ActionGroup(ActionGroupPriority.PrimaryHigh);
         private static readonly ActionLocation ActionLocation = new ActionLocation { ActionType = ActionType.Edit, IsInFolder = false, IsInToolbar = true, ActionGroup = ActionGroup };
 
-        public IEnumerable<Type> ProviderFor
-        {
-            get { return new[] { typeof(FormFieldEntityToken) }; }
-
-        }
+        public IEnumerable<Type> ProviderFor => new[] { typeof(FormFieldEntityToken) };
 
         public void AddActions(Element element)
         {

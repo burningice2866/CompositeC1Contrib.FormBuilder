@@ -4,7 +4,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
 {
     public class MinFieldLengthAttribute : FormValidationAttribute
     {
-        public int Length { get; private set; }
+        public int Length { get; }
 
         public MinFieldLengthAttribute(int length) : this(null, length) { }
 

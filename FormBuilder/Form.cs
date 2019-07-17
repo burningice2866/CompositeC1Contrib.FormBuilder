@@ -19,11 +19,11 @@ namespace CompositeC1Contrib.FormBuilder
 
         private IDictionary<FormField, ValidationResultList> _ruleList;
 
-        public FormModel Model { get; private set; }
-        public IList<FormField> Fields { get; private set; }
+        public FormModel Model { get; }
+        public IList<FormField> Fields { get; }
 
         public NameValueCollection SubmittedValues { get; private set; }
-        public IDictionary<string, object> FormData { get; private set; }
+        public IDictionary<string, object> FormData { get; }
 
         public string Name => Model.Name;
 
@@ -209,7 +209,7 @@ namespace CompositeC1Contrib.FormBuilder
             }
         }
 
-        private void MapValueToField(FormField field, string val)
+        private static void MapValueToField(FormField field, string val)
         {
             if (ValueMappers.TryGetValue(field.ValueType, out var mapper))
             {

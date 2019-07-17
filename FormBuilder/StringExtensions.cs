@@ -4,9 +4,9 @@
     {
         public static bool IsEqualTo(this string value, object obj)
         {
-            if (obj is bool)
+            if (obj is bool b)
             {
-                return bool.Parse(value) == (bool)obj;
+                return bool.Parse(value) == b;
             }
 
             return obj.ToString() == value;

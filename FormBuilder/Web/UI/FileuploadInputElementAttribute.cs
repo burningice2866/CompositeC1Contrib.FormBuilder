@@ -10,10 +10,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public class FileuploadInputElementAttribute : InputElementTypeAttribute
     {
-        public override string ElementName
-        {
-            get { return "file"; }
-        }
+        public override string ElementName => "file";
 
         public override IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes)
         {

@@ -44,7 +44,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                 }
             }
 
-            page.WriteLiteral(String.Format("<form method=\"post\" action=\"{0}\"", action));
+            page.WriteLiteral($"<form method=\"post\" action=\"{action}\"");
 
             foreach (var kvp in htmlAttributesDictionary)
             {

@@ -7,8 +7,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
     {
         public IPOCOForm Instance { get; }
 
-        public POCOFormBuilderRequestContext(IModel model)
-            : base(model)
+        public POCOFormBuilderRequestContext(IModel model) : base(model)
         {
             Instance = (IPOCOForm)ModelInstance.FormData["PocoInstance"];
         }

@@ -11,10 +11,10 @@ namespace CompositeC1Contrib.FormBuilder.Configuration
     {
         public object Create(object parent, object configContext, XmlNode section)
         {
-            var sectionAttibutes = section.Attributes.Cast<XmlAttribute>().ToList();
+            var sectionAttributes = section.Attributes.Cast<XmlAttribute>().ToList();
 
-            var defaultFunctionExecutor = sectionAttibutes.SingleOrDefault(attr => attr.Name == "defaultFunctionExecutor");
-            var rendererImplementation = sectionAttibutes.SingleOrDefault(attr => attr.Name == "rendererImplementation");
+            var defaultFunctionExecutor = sectionAttributes.SingleOrDefault(attr => attr.Name == "defaultFunctionExecutor");
+            var rendererImplementation = sectionAttributes.SingleOrDefault(attr => attr.Name == "rendererImplementation");
 
             var config = new FormBuilderConfiguration
             {

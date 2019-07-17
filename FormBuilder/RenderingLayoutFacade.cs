@@ -12,13 +12,13 @@ namespace CompositeC1Contrib.FormBuilder
         {
             var key = GetKey(formName);
 
-            var layut = Localization.T(key);
-            if (layut == null)
+            var layout = Localization.T(key);
+            if (layout == null)
             {
                 return false;
             }
 
-            var xhtml = XhtmlDocument.Parse(layut);
+            var xhtml = XhtmlDocument.Parse(layout);
 
             return !xhtml.IsEmpty;
         }
@@ -28,22 +28,22 @@ namespace CompositeC1Contrib.FormBuilder
             if (HasCustomRenderingLayout(formName))
             {
                 var key = GetKey(formName);
-                var layut = Localization.T(key);
+                var layout = Localization.T(key);
 
-                return XhtmlDocument.Parse(layut);
+                return XhtmlDocument.Parse(layout);
             }
 
             var model = ModelsFacade.GetModel(formName);
             if (model == null)
             {
-                throw new ArgumentException(String.Format("Form '{0}' not loaded", formName));
+                throw new ArgumentException($"Form '{formName}' not loaded");
             }
 
             var doc = new XhtmlDocument();
 
             foreach (var field in model.Fields.Where(f => f.Label != null))
             {
-                doc.Body.Add(new XElement(Namespaces.Xhtml + "p", String.Format("%{0}%", field.Name)));
+                doc.Body.Add(new XElement(Namespaces.Xhtml + "p", $"%{field.Name}%"));
             }
 
             return doc;

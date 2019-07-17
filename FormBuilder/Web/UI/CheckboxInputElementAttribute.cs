@@ -8,10 +8,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
 {
     public class CheckboxInputElementAttribute : InputElementTypeAttribute
     {
-        public override string ElementName
-        {
-            get { return "checkbox"; }
-        }
+        public override string ElementName => "checkbox";
 
         public override IHtmlString GetHtmlString(BaseFormBuilderRequestContext context, FormField field, IDictionary<string, string> htmlAttributes)
         {
@@ -54,8 +51,7 @@ namespace CompositeC1Contrib.FormBuilder.Web.UI
                     }
                     else
                     {
-                        var str = value as string;
-                        if (str != null)
+                        if (value is string str)
                         {
                             list = new[] { str };
                         }

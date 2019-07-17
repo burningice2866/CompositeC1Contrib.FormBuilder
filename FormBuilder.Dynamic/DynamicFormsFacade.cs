@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 
 using Composite.Functions;
 
@@ -24,8 +23,7 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 
             foreach (var field in instance.Fields)
             {
-                XElement defaultValueSetter;
-                if (!def.DefaultValues.TryGetValue(field.Name, out defaultValueSetter))
+                if (!def.DefaultValues.TryGetValue(field.Name, out var defaultValueSetter))
                 {
                     continue;
                 }

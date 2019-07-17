@@ -5,10 +5,10 @@ namespace CompositeC1Contrib.FormBuilder
 {
     public sealed class WizardModel : IModel
     {
-        public string Name { get; private set; }
+        public string Name { get; }
         public bool RequiresCaptcha { get; set; }
         public bool ForceHttps { get; set; }
-        public IList<WizardStepModel> Steps { get; private set; }
+        public IList<WizardStepModel> Steps { get; }
 
         public IList<FormFieldModel> Fields
         {

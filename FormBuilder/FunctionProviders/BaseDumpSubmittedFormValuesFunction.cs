@@ -14,27 +14,15 @@ namespace CompositeC1Contrib.FormBuilder.FunctionProviders
 {
     public abstract class BaseDumpSubmittedFormValuesFunction : IFunction
     {
-        public string Namespace
-        {
-            get { return "FormBuilder"; }
-        }
+        public string Namespace => "FormBuilder";
 
         public string Name { get; protected set; }
 
-        public EntityToken EntityToken
-        {
-            get { return new FormBuilderFunctionEntityToken(typeof(FormBuilderFunctionProvider).Name, Namespace + "." + Name); }
-        }
+        public EntityToken EntityToken => new FormBuilderFunctionEntityToken(typeof(FormBuilderFunctionProvider).Name, Namespace + "." + Name);
 
-        public string Description
-        {
-            get { return String.Empty; }
-        }
+        public string Description => String.Empty;
 
-        public Type ReturnType
-        {
-            get { return typeof(XhtmlDocument); }
-        }
+        public Type ReturnType => typeof(XhtmlDocument);
 
         public IEnumerable<ParameterProfile> ParameterProfiles
         {

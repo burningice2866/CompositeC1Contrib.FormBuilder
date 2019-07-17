@@ -7,7 +7,7 @@ namespace CompositeC1Contrib.FormBuilder.Validation
     {
         private readonly Regex _regex;
 
-        public string RegexPattern { get; private set; }
+        public string RegexPattern { get; }
 
         public RegexValidatorAttribute(string regexPattern) : this(null, regexPattern) { }
 

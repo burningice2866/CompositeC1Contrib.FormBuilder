@@ -13,8 +13,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.Configuration
 {
     public class DynamicFormBuilderConfiguration : IPluginConfiguration
     {
-        public IList<InputElementHandler> InputElementHandlers { get; private set; }
-        public IList<SubmitHandlerElement> SubmitHandlers { get; private set; }
+        public IList<InputElementHandler> InputElementHandlers { get; }
+        public IList<SubmitHandlerElement> SubmitHandlers { get; }
         public Type SettingsHandler { get; private set; }
 
         public DynamicFormBuilderConfiguration()

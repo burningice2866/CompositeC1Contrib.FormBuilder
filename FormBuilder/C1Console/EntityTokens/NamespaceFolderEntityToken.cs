@@ -14,32 +14,18 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
     [SecurityAncestorProvider(typeof(NamespaceFolderAncestorProvider))]
     public class NamespaceFolderEntityToken : EntityToken
     {
-        public override string Type
-        {
-            get { return String.Empty; }
-        }
+        public override string Type => String.Empty;
 
-        private readonly string _source;
-        public override string Source
-        {
-            get { return _source; }
-        }
+        public override string Source { get; }
 
-        private readonly string _id;
-        public override string Id
-        {
-            get { return _id; }
-        }
+        public override string Id => Namespace;
 
-        public string Namespace
-        {
-            get { return _id; }
-        }
+        public string Namespace { get; }
 
         public NamespaceFolderEntityToken(string source, string ns)
         {
-            _source = source;
-            _id = ns;
+            Source = source;
+            Namespace = ns;
         }
 
         public static Element CreateElement(ElementProviderContext context, string source, string label, string ns)
@@ -70,11 +56,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
 
         public static EntityToken Deserialize(string serializedEntityToken)
         {
-            string type;
-            string source;
-            string id;
-
-            DoDeserialize(serializedEntityToken, out type, out source, out id);
+            DoDeserialize(serializedEntityToken, out _, out var source, out var id);
 
             return new NamespaceFolderEntityToken(source, id);
         }
@@ -84,8 +66,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
     {
         public IEnumerable<EntityToken> GetParents(EntityToken entityToken)
         {
-            var namespaceToken = entityToken as NamespaceFolderEntityToken;
-            if (namespaceToken == null)
+            if (!(entityToken is NamespaceFolderEntityToken namespaceToken))
             {
                 return Enumerable.Empty<EntityToken>();
             }

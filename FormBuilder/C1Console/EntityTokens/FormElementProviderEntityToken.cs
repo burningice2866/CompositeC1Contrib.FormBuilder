@@ -8,20 +8,11 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.EntityTokens
     [SecurityAncestorProvider(typeof(NoAncestorSecurityAncestorProvider))]
     public class FormElementProviderEntityToken : EntityToken
     {
-        public override string Id
-        {
-            get { return "FormElementProviderEntityToken"; }
-        }
+        public override string Id => "FormElementProviderEntityToken";
 
-        public override string Source
-        {
-            get { return String.Empty; }
-        }
+        public override string Source => String.Empty;
 
-        public override string Type
-        {
-            get { return String.Empty; }
-        }
+        public override string Type => String.Empty;
 
         public override string Serialize()
         {

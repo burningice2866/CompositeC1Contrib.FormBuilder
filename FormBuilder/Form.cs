@@ -50,7 +50,7 @@ namespace CompositeC1Contrib.FormBuilder
             FormData = new Dictionary<string, object>();
             Fields = model.Fields.Select(f => new FormField(f, this)).ToList().AsReadOnly();
 
-            model?.Constructor(this);
+            model.Constructor?.Invoke(this);
         }
 
         public bool IsValid(IEnumerable<string> fieldNames)

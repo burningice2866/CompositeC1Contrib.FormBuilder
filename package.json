@@ -1,0 +1,25 @@
+{
+  "name": "c1contrib.formbuilder",
+  "version": "0.13.0",
+  "description": "FormBuilder for C1 CMS",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/burningice2866/CompositeC1Contrib.FormBuilder.git"
+  },
+  "keywords": [
+    "cms",
+    "composite-c1",
+    "orckestracms",
+    "forms",
+    "formbuilder"
+  ],
+  "author": "burningice",
+  "bugs": {
+    "url": "https://github.com/burningice2866/CompositeC1Contrib.FormBuilder/issues"
+  },
+  "homepage": "https://github.com/burningice2866/CompositeC1Contrib.FormBuilder#readme",
+  "files": [
+    "FormBuilder/Package/content/App_Data/**",
+    "FormBuilder/Package/content/Frontend/**"
+  ]
+}

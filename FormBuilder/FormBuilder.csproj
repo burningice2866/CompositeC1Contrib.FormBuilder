@@ -64,21 +64,9 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Reflection.Context" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Web.Http.WebHost, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.2\lib\net45\System.Web.Http.WebHost.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.dll</HintPath>
@@ -143,7 +131,7 @@
     <Compile Include="AttributeExtensions.cs" />
     <Compile Include="TypeExtensions.cs" />
     <Compile Include="Validation\ValidationOptions.cs" />
-    <Compile Include="Web\Api\SetCultureFilterAttribute.cs" />
+    <Compile Include="Web\Api\Handlers\FormBuilderHttpHandlerBase.cs" />
     <Compile Include="Wizard.cs" />
     <Compile Include="WizardModel.cs" />
     <Compile Include="WizardStep.cs" />
@@ -159,13 +147,10 @@
     <Compile Include="Validation\BaseFileValidatorAttribute.cs" />
     <Compile Include="Validation\MaxFileSizeValidatorAttribute.cs" />
     <Compile Include="Validation\ValidationResultList.cs" />
-    <Compile Include="Web\Api\C1ConsoleAuthorizeAttribute.cs" />
-    <Compile Include="Web\Api\Controllers\ModelSubmitsController.cs" />
-    <Compile Include="Web\Api\Controllers\RendererController.cs" />
-    <Compile Include="Web\Api\Formatters\CsvMediaTypeFormatter.cs" />
+    <Compile Include="Web\Api\Handlers\ModelSubmitsCsvHandler.cs" />
+    <Compile Include="Web\Api\Handlers\RendererHandler.cs" />
     <Compile Include="SubmitField.cs" />
     <Compile Include="Web\Api\Models\ValidationSummaryModel.cs" />
-    <Compile Include="Web\Api\RequireSessionStateControllerHandler.cs" />
     <Compile Include="Web\BaseFormBuilderRequestContext.cs" />
     <Compile Include="Web\UI\CompositeC1CaptchaProvider.cs" />
     <Compile Include="Web\FormRequestContext.cs" />
@@ -185,7 +170,7 @@
     <Compile Include="Attributes\FieldLabelAttribute.cs" />
     <Compile Include="Attributes\HtmlTagAttribute.cs" />
     <Compile Include="Attributes\FunctionBasedDataSourceAttribute.cs" />
-    <Compile Include="Web\Api\Controllers\ValidationController.cs" />
+    <Compile Include="Web\Api\Handlers\ValidationHandler.cs" />
     <Compile Include="Web\Api\Models\ValidationError.cs" />
     <Compile Include="Web\WizardRequestContext.cs" />
     <Compile Include="Web\CaptchaProvider.cs" />

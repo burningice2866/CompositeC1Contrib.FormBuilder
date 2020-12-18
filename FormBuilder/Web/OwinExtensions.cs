@@ -1,27 +1,24 @@
 ﻿using System.IO;
-using System.Web.Http;
 using System.Web.Routing;
-
-using Owin;
 
 using Composite.Core.IO;
 
-using CompositeC1Contrib.FormBuilder.Web.Api;
-using CompositeC1Contrib.FormBuilder.Web.Api.Formatters;
+using CompositeC1Contrib.FormBuilder.Web.Api.Handlers;
+using CompositeC1Contrib.Web;
+
+using Owin;
 
 namespace CompositeC1Contrib.FormBuilder.Web
 {
     public static class OwinExtensions
     {
-        public static void UseCompositeC1ContribFormBuilder(this IAppBuilder app, HttpConfiguration config)
+        public static void UseCompositeC1ContribFormBuilder(this IAppBuilder app)
         {
             var routes = RouteTable.Routes;
 
-            routes.MapHttpRoute("Renderer", "formbuilder/renderer/{action}", new { controller = "renderer" });
-            routes.MapHttpRoute("Submits", "formbuilder/{name}/submits.{ext}", new { controller = "modelsubmits" });
-            routes.MapHttpRoute("Validation", "formbuilder/validation", new { controller = "validation" }).RouteHandler = new RequireSessionStateControllerRouteHandler();
-
-            config.Formatters.Add(new CsvMediaTypeFormatter());
+            routes.AddGenericHandler<ValidationHandler>("formbuilder/validation");
+            routes.AddGenericHandler<RendererHandler>("formbuilder/renderer/validationsummary");
+            routes.AddGenericHandler<ModelSubmitsCsvHandler>("formbuilder/{name}/submits.csv");
 
             Init();
         }
@@ -60,6 +57,7 @@ namespace CompositeC1Contrib.FormBuilder.Web
                 }
 
                 var newFilePath = Path.Combine(folder, "RenderingLayout.xml");
+
                 File.Move(file, newFilePath);
             }
 

@@ -5,7 +5,7 @@
 
   <mi:PackageInformation name="Contribution.CompositeC1Contrib.FormBuilder.POCO"
                          groupName="Contribution.CompositeC1Contrib"
-                         version="0.13.0" author="@burningice" website="https://github.com/burningice2866/CompositeC1Contrib.FormBuilder"
+                         version="0.14.0" author="@burningice" website="https://github.com/burningice2866/CompositeC1Contrib.FormBuilder"
                          readMoreUrl="https://github.com/burningice2866/CompositeC1Contrib.FormBuilder"
                          id="95d4c3e6-9dbe-463f-b735-d4d48bb7cecc"
                          canBeUninstalled="true"

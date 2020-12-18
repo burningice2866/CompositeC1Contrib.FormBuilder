@@ -5,7 +5,7 @@
 
   <mi:PackageInformation name="Contribution.CompositeC1Contrib.FormBuilder.Excel"
                          groupName="Contribution.CompositeC1Contrib"
-                         version="0.13.0" author="@burningice" website="https://github.com/burningice2866/CompositeC1Contrib.FormBuilder"
+                         version="0.14.0" author="@burningice" website="https://github.com/burningice2866/CompositeC1Contrib.FormBuilder"
                          readMoreUrl="https://github.com/burningice2866/CompositeC1Contrib.FormBuilder"
                          id="627f59da-a157-44f2-80ad-0671aa0a6e90"
                          canBeUninstalled="true"

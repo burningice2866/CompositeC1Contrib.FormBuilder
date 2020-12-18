@@ -5,7 +5,7 @@
 
   <mi:PackageInformation name="Contribution.CompositeC1Contrib.FormBuilder.Dynamic"
                          groupName="Contribution.CompositeC1Contrib"
-                         version="0.13.0" author="@burningice" website="https://github.com/burningice2866/CompositeC1Contrib.FormBuilder"
+                         version="0.14.0" author="@burningice" website="https://github.com/burningice2866/CompositeC1Contrib.FormBuilder"
                          readMoreUrl="https://github.com/burningice2866/CompositeC1Contrib.FormBuilder"
                          id="9fbd6717-a688-4009-803e-7b4da614fd78"
                          canBeUninstalled="true"

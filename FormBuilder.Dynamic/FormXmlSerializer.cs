@@ -212,11 +212,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                 var dataSourceAttribute = field.Attributes.OfType<DataSourceAttribute>().FirstOrDefault();
                 if (dataSourceAttribute != null)
                 {
-                    var datasource = new XElement("DataSource",
+                    var dataSource = new XElement("DataSource",
                         new XAttribute("type", dataSourceAttribute.GetType().AssemblyQualifiedName));
 
-                    var stringBasedDataSourceAttribute = dataSourceAttribute as StringBasedDataSourceAttribute;
-                    if (stringBasedDataSourceAttribute != null)
+                    if (dataSourceAttribute is StringBasedDataSourceAttribute stringBasedDataSourceAttribute)
                     {
                         var values = new XElement("values");
 
@@ -226,10 +225,10 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
                                 new XAttribute("value", value)));
                         }
 
-                        datasource.Add(values);
+                        dataSource.Add(values);
                     }
 
-                    add.Add(datasource);
+                    add.Add(dataSource);
                 }
 
                 fields.Add(add);

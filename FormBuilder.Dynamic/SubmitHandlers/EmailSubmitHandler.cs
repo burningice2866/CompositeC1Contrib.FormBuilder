@@ -63,8 +63,8 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.SubmitHandlers
                 var templates = data.Get<IMailTemplate>().Where(t => t.Key == definition.Name + "." + Name);
                 var templateContents = data.Get<IMailTemplateContent>().Where(t => t.TemplateKey == definition.Name + "." + Name);
 
-                data.Delete(templates);
-                data.Delete(templateContents);
+                data.Delete<IMailTemplate>(templates);
+                data.Delete<IMailTemplateContent>(templateContents);
             }
 
             base.Delete(definition);

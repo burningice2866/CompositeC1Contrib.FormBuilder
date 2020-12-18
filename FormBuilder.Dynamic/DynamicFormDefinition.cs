@@ -12,12 +12,12 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic
 {
     public class DynamicFormDefinition : IDynamicDefinition
     {
-        public FormModel Model { get; private set; }
+        public FormModel Model { get; }
 
         public string Name { get; set; }
         
-        public IDictionary<string, XElement> DefaultValues { get; private set; }
-        public IList<FormSubmitHandler> SubmitHandlers { get; private set; }
+        public IDictionary<string, XElement> DefaultValues { get; }
+        public IList<FormSubmitHandler> SubmitHandlers { get; }
 
         public XhtmlDocument IntroText { get; set; }
         public XhtmlDocument SuccessResponse { get; set; }

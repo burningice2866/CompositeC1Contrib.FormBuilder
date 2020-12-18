@@ -5,7 +5,7 @@ namespace CompositeC1Contrib.FormBuilder.Attributes
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class FieldLabelAttribute : Attribute
     {
-        public string Label { get; private set; }
+        public string Label { get; }
 
         public FieldLabelAttribute() { }
 

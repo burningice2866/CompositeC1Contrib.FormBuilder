@@ -33,12 +33,13 @@ namespace CompositeC1Contrib.FormBuilder.Dynamic.C1Console.ActionProviders
             var token = (FormSubmitHandlerEntityToken)entityToken;
 
             var type = Type.GetType(token.Type);
-            if (type == null || type != typeof(SaveFormSubmitHandler))
+            if (type == null || !typeof(SaveFormSubmitHandler).IsAssignableFrom(type))
             {
                 yield break;
             }
 
             var downloadActionToken = new DownloadSubmittedFormsActionToken(token.FormName, ".csv");
+
             yield return new ElementAction(new ActionHandle(downloadActionToken))
             {
                 VisualData = new ActionVisualizedData

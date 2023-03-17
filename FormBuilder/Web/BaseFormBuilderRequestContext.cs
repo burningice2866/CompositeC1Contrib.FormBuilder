@@ -122,18 +122,17 @@ namespace CompositeC1Contrib.FormBuilder.Web
         {
             var nmc = new NameValueCollection();
 
-            foreach (var field in ModelInstance.Fields)
+            foreach (var key in request.Form.AllKeys)
             {
                 var form = request.Form;
 
-                if (field.Attributes.OfType<AllowHtmlAttribute>().Any())
+                var field = ModelInstance.Fields.SingleOrDefault(f => f.Name == key);
+                if (field != null && field.Attributes.OfType<AllowHtmlAttribute>().Any())
                 {
                     form = request.Unvalidated.Form;
                 }
 
-                var value = form[field.Name];
-
-                nmc.Add(field.Name, value);
+                nmc.Add(key, form[key]);
             }
 
             return nmc;

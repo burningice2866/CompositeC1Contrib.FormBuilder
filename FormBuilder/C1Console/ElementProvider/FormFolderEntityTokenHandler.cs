@@ -38,7 +38,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
                 _entityTokenHandlers = new ProviderContainer<IElementProviderFor>("FormBuilder");
             }
 
-            foreach (var field in form.Fields)
+            foreach (var field in form.Fields.OrderBy(f => f.Name))
             {
                 var elementHandle = context.CreateElementHandle(new FormFieldEntityToken(form.Name, field.Name));
                 var fieldElement = new Element(elementHandle)

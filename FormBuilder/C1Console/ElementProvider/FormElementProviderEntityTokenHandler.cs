@@ -102,7 +102,7 @@ namespace CompositeC1Contrib.FormBuilder.C1Console.ElementProvider
                     yield return folderElement;
                 }
 
-                foreach (var form in formElements)
+                foreach (var form in formElements.OrderBy(f => f.VisualData.Label))
                 {
                     yield return form;
                 }
